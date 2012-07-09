@@ -1,19 +1,67 @@
 #pragma once
+#include <BWAPI/Type.h>
+#include <BWAPI/UnitType.h>
 
-#include <string>
-#include <set>
-#include <BWAPI/Race.h>
-#include <BWAPI/Order.h>
-#include "Type.h"
 namespace BWAPI
 {
-  class UnitType;
   class WeaponType;
-  class TechType : public Type
+  class Order;
+  class Race;
+
+  namespace TechTypes
+  {
+    /// Enumeration of Tech Types
+    namespace Enum
+    {
+      enum Enum
+      {
+        Stim_Packs = 0,
+        Lockdown,
+        EMP_Shockwave,
+        Spider_Mines,
+        Scanner_Sweep,
+        Tank_Siege_Mode,
+        Defensive_Matrix,
+        Irradiate,
+        Yamato_Gun,
+        Cloaking_Field,
+        Personnel_Cloaking,
+        Burrowing,
+        Infestation,
+        Spawn_Broodlings,
+        Dark_Swarm,
+        Plague,
+        Consume,
+        Ensnare,
+        Parasite,
+        Psionic_Storm,
+        Hallucination,
+        Recall,
+        Stasis_Field,
+        Archon_Warp,
+        Restoration,
+        Disruption_Web,
+        Unused_26,
+        Mind_Control,
+        Dark_Archon_Meld,
+        Feedback,
+        Optical_Flare,
+        Maelstrom,
+        Lurker_Aspect,
+        Unused_33,
+        Healing,
+
+        None = 44,
+        Nuclear_Strike,
+        Unknown,
+        MAX
+      };
+    };
+  }
+  class TechType : public Type<TechType, TechTypes::Enum::Unknown>
   {
     public:
-      TechType();
-      TechType(int id);
+      TechType(int id = TechTypes::Enum::None);
 
       /** Returns the name of the tech type. */
       const std::string &getName() const;
@@ -33,7 +81,7 @@ namespace BWAPI
       int researchTime() const;
 
       /** Returns the amount of energy used each time this tech type is used. */
-      int energyUsed() const;
+      int energyCost() const;
 
       /** Returns the type of unit that researches this tech type. If this tech type is available for free
        * (does not need to be researched), then this method will return UnitTypes::None. */
@@ -52,7 +100,7 @@ namespace BWAPI
 
       /** Returns the set of units that can use this tech type. Usually this will just be a set of one unit
        * type, however in some cases, such as TechTypes::Burrowing, several unit types will be returned. */
-      const std::set<UnitType>& whatUses() const;
+      const UnitType::const_set& whatUses() const;
 
       /** Returns the order used to execute this tech type as an action. */
       Order getOrder() const;
@@ -63,8 +111,8 @@ namespace BWAPI
     TechType getTechType(std::string name);
 
     /** Returns the set of all the TechTypes. */
-    const std::set<TechType>& allTechTypes();
-    void init();
+    const TechType::const_set& allTechTypes();
+
     extern const TechType Stim_Packs;
     extern const TechType Lockdown;
     extern const TechType EMP_Shockwave;
@@ -99,7 +147,7 @@ namespace BWAPI
     extern const TechType Lurker_Aspect;
     extern const TechType Healing;
     extern const TechType None;
-    extern const TechType Unknown;
     extern const TechType Nuclear_Strike;
+    extern const TechType Unknown;
   };
 }

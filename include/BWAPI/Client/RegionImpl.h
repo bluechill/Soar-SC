@@ -3,13 +3,15 @@
 #include <BWAPI/Position.h>
 #include <BWAPI/Client/RegionData.h>
 
+#include <BWAPI/Regionset.h>
+
 namespace BWAPI
 {
   class RegionImpl : public Region
   {
   private:
     RegionData *self;
-    std::set<BWAPI::Region*> neighbors;
+    Regionset neighbors;
     BWAPI::Region *closestAccessibleRgn;
     BWAPI::Region *closestInaccessibleRgn;
   public:
@@ -22,7 +24,7 @@ namespace BWAPI
     virtual int getDefensePriority() const;
     virtual bool isWalkable() const;
 
-    virtual const std::set<BWAPI::Region*> &getNeighbors() const;
+    virtual const Regionset &getNeighbors() const;
 
     virtual int getBoundsLeft() const;
     virtual int getBoundsTop() const;
@@ -31,8 +33,6 @@ namespace BWAPI
 
     virtual BWAPI::Region *getClosestAccessibleRegion() const;
     virtual BWAPI::Region *getClosestInaccessibleRegion() const;
-
-    virtual int getDistance(BWAPI::Region *other) const;
   };
 
 };

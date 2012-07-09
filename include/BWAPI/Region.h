@@ -1,10 +1,14 @@
 #pragma once
-
-#include <set>
 #include <BWAPI/Position.h>
+#include <BWAPI/Filters.h>
+#include <BWAPI/UnaryFilter.h>
 
 namespace BWAPI
 {
+  class Regionset;
+  class Unitset;
+  class Unit;
+
   class Region
   {
   protected:
@@ -29,7 +33,7 @@ namespace BWAPI
     virtual bool isWalkable() const = 0;
 
     /** Retrieves the set of neighbors that this region is connected to. */
-    virtual const std::set<Region*> &getNeighbors() const = 0;
+    virtual const Regionset &getNeighbors() const = 0;
 
     /** Retrieves the approximate region boundry as specified by Broodwar. */
     virtual int getBoundsLeft() const = 0;
@@ -37,13 +41,28 @@ namespace BWAPI
     virtual int getBoundsRight() const = 0;
     virtual int getBoundsBottom() const = 0;
 
-    /** Retrieves the closest accessable neighbor region. */
+    /** Retrieves the closest accessible neighbor region. */
     virtual BWAPI::Region *getClosestAccessibleRegion() const = 0;
 
-    /** Retrieves the closest inaccessable neighbor region. */
+    /** Retrieves the closest inaccessible neighbor region. */
     virtual BWAPI::Region *getClosestInaccessibleRegion() const = 0;
 
     /** Retrieves the center-to-center distance between two regions. */
-    virtual int getDistance(BWAPI::Region *other) const = 0;
+    int getDistance(BWAPI::Region *other) const;
+
+    /// @~English
+    /// Retrieves a Unitset containing all the units
+    /// that are in this region, including the
+    /// ability to filter the units before the
+    /// Unitset's creation.
+    ///
+    /// @param pred Optional function predicate
+    /// for filtering the units.
+    /// 
+    /// @returns A Unitset containing all units
+    /// in this region that have met the
+    /// requirements of \p pred.
+    /// @~
+    Unitset getUnits(const UnitFilter &pred = nullptr) const;
   };
 };

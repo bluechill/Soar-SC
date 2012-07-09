@@ -1,31 +1,35 @@
 #pragma once
-
 #include <list>
-#include <map>
-#include <set>
-#include <vector>
+#include <string>
 
-#include <BWAPI/Color.h>
-#include <BWAPI/CoordinateType.h>
-#include <BWAPI/Error.h>
-#include <BWAPI/Event.h>
-#include <BWAPI/Flag.h>
-#include <BWAPI/GameType.h>
-#include <BWAPI/Race.h>
-#include <BWAPI/Region.h>
-#include <BWAPI/Order.h>
-#include <BWAPI/Latency.h>
-#include <BWAPI/TilePosition.h>
 #include <BWAPI/UnitType.h>
-#include <BWAPI/TechType.h>
-#include <BWAPI/UpgradeType.h>
-#include <BWAPI/Input.h>
+#include <BWAPI/Error.h>
+
+#include <BWAPI/Filters.h>
+#include <BWAPI/UnaryFilter.h>
+
 namespace BWAPI
 {
+  // Forward Declarations
+  class Bulletset;
+  class Color;
+  class Event;
   class Force;
+  class Forceset;
+  class GameType;
   class Player;
+  class Playerset;
+  class Race;
+  class Region;
+  class Regionset;
+  class TechType;
   class Unit;
-  class Bullet;
+  class UnitCommand;
+  class Unitset;
+  class UpgradeType;
+
+  enum MouseButton;
+  enum Key;
 
   /** The abstract Game class is implemented by BWAPI and offers many methods for retrieving information
    * about the current Broodwar game, including the set of players, units, map information, as well as
@@ -37,197 +41,240 @@ namespace BWAPI
     virtual ~Game() {};
   public :
     /** Returns the set of all forces in the match. */
-    virtual std::set< Force* >& getForces() = 0;
+    virtual const Forceset& getForces() const = 0;
 
     /** Returns the set of all players in the match. Note that this includes the Neutral player, which owns
      * all the neutral units such as minerals, critters, etc. */
-    virtual std::set< Player* >& getPlayers() = 0;
+    virtual const Playerset& getPlayers() const = 0;
 
     /** Returns all the visible units. If Flag::CompleteMapInformation is enabled, the set of all units
      * is returned, not just visible ones. Note that units inside refineries are not included in this set
      * yet. */
-    virtual std::set< Unit* >& getAllUnits() = 0;
+    virtual const Unitset& getAllUnits() const = 0;
 
     /** Returns the set of all accessible mineral patches. */
-    virtual std::set< Unit* >& getMinerals() = 0;
+    virtual const Unitset& getMinerals() const = 0;
 
     /** Returns the set of all accessible vespene geysers. */
-    virtual std::set< Unit* >& getGeysers() = 0;
+    virtual const Unitset& getGeysers() const = 0;
 
     /** Returns the set of all accessible neutral units. */
-    virtual std::set< Unit* >& getNeutralUnits() = 0;
+    virtual const Unitset& getNeutralUnits() const = 0;
 
     /** Returns the set of all mineral patches (including mined out and other inaccessible ones). */
-    virtual std::set< Unit* >& getStaticMinerals() = 0;
+    virtual const Unitset& getStaticMinerals() const = 0;
 
     /** Returns the set of all vespene geysers (including mined out and other inaccessible ones). */
-    virtual std::set< Unit* >& getStaticGeysers() = 0;
+    virtual const Unitset& getStaticGeysers() const = 0;
 
     /** Returns the set of all neutral units (including mined out and other inaccessible ones). */
-    virtual std::set< Unit* >& getStaticNeutralUnits() = 0;
+    virtual const Unitset& getStaticNeutralUnits() const = 0;
 
     /** Returns all visible bullets. If Flag::CompleteMapInformation is enabled, the set of all bullets is
      * returned, not just visible ones. */
-    virtual std::set< Bullet* >& getBullets() = 0;
+    virtual const Bulletset& getBullets() const = 0;
 
    /** Returns all visible nuke dots. If Flag::CompleteMapInformation is enabled, the set of all nuke dots
      * is returned, not just visible ones. */
-    virtual std::set< Position >& getNukeDots() = 0;
+    virtual const Position::set& getNukeDots() const = 0;
 
     /** Returns the list of events */
-    virtual std::list< Event >& getEvents() = 0;
+    virtual const std::list< Event >& getEvents() const = 0;
 
-    /** Returns the force with the given ID, or NULL if no force has the given ID */
-    virtual Force* getForce(int forceID) = 0;
+    /** Returns the force with the given ID, or nullptr if no force has the given ID */
+    virtual Force* getForce(int forceID) const = 0;
 
-    /** Returns the player with the given ID, or NULL if no player has the given ID */
-    virtual Player* getPlayer(int playerID) = 0;
+    /** Returns the player with the given ID, or nullptr if no player has the given ID */
+    virtual Player* getPlayer(int playerID) const = 0;
 
-    /** Returns the unit with the given ID, or NULL if no unit has the given ID */
-    virtual Unit* getUnit(int unitID) = 0;
+    /** Returns the unit with the given ID, or nullptr if no unit has the given ID */
+    virtual Unit* getUnit(int unitID) const = 0;
 
     /** Returns a pointer to a Unit given an index. */
-    virtual Unit* indexToUnit(int unitIndex) = 0;
+    virtual Unit* indexToUnit(int unitIndex) const = 0;
 
-    /** Returns the Region with the given ID, or NULL if no region has the given ID */
-    virtual Region* getRegion(int regionID) = 0;
+    /** Returns the Region with the given ID, or nullptr if no region has the given ID */
+    virtual Region* getRegion(int regionID) const = 0;
 
     /** Returns the game type */
-    virtual GameType getGameType() = 0;
+    virtual GameType getGameType() const = 0;
 
     /** Returns the amount of latency the current game has. Currently only returns Latency::SinglePlayer,
      * Latency::LanLow, Latency::LanMedium, or Latency::LanHigh. */
-    virtual int getLatency() = 0;
+    virtual int getLatency() const = 0;
 
     /** Returns the number of logical frames since the match started. If the game is paused,
      * Game::getFrameCount will not increase however AIModule::onFrame will still be called while paused.
      * On Fastest, there are about 23.8 - 24 frames per second. */
-    virtual int getFrameCount() = 0;
+    virtual int getFrameCount() const = 0;
+
+    /** Retrieves the number of frames in the replay */
+    virtual int getReplayFrameCount() const = 0;
 
     /** Returns the Frames Per Second (FPS) that the game is currently running at */
-    virtual int getFPS() = 0;
-    virtual double getAverageFPS() = 0;
+    virtual int getFPS() const = 0;
+    virtual double getAverageFPS() const = 0;
 
     /** Returns the position of the mouse on the screen. Returns Positions::Unknown if Flag::UserInput is
      * disabled. */
-    virtual BWAPI::Position getMousePosition() = 0;
+    virtual Position getMousePosition() const = 0;
 
     /** Returns true if the specified mouse button is pressed. Returns false if Flag::UserInput is
      * disabled. */
-    virtual bool getMouseState(MouseButton button) = 0;
-
-    /** \copydoc getMouseState(MouseButton) */
-    virtual bool getMouseState(int button) = 0;
+    virtual bool getMouseState(MouseButton button) const = 0;
+    virtual bool getMouseState(int button) const = 0;
 
     /** Returns true if the specified key is pressed. Returns false if Flag::UserInput is disabled.
      * Unfortunately this does not read the raw keyboard input yet - when you hold down a key, the
      * getKeyState function is true for a frame, then false for a few frames, and then alternates between
      * true and false (as if you were holding down the key in a text box). Hopefully this will be fixed in
      * a later version. */
-    virtual bool getKeyState(Key key) = 0;
-
-    /** \copydoc getKeyState(Key) */
-    virtual bool getKeyState(int key) = 0;
+    virtual bool getKeyState(Key key) const = 0;
+    virtual bool getKeyState(int key) const = 0;
 
     /** Returns the position of the top left corner of the screen on the map. Returns Positions::Unknown if
      * Flag::UserInput is disabled. */
-    virtual BWAPI::Position getScreenPosition() = 0;
+    virtual BWAPI::Position getScreenPosition() const = 0;
 
     /** Moves the screen to the given position on the map. The position specified where the top left corner
      * of the screen will be. */
     virtual void setScreenPosition(int x, int y) = 0;
-
-    /** \copydoc setScreenPosition(int, int) */
-    virtual void setScreenPosition(BWAPI::Position p) = 0;
+    void setScreenPosition(BWAPI::Position p);
 
     /** Pings the given position on the minimap. */
     virtual void pingMinimap(int x, int y) = 0;
-
-    /** \copydoc pingMinimap(int, int) */
-    virtual void pingMinimap(BWAPI::Position p) = 0;
+    void pingMinimap(BWAPI::Position p);
 
     /** Returns true if the given flag has been enabled. Note that flags can only be enabled at the
      * beginning of a match, during the AIModule::onStart callback. */
-    virtual bool isFlagEnabled(int flag) = 0;
+    virtual bool isFlagEnabled(int flag) const = 0;
 
     /** Enables the specified flag. Note that flags can only be enabled at the beginning of a match, during
      * the AIModule::onStart callback. */
     virtual void enableFlag(int flag) = 0;
 
     /** Returns the set of accessible units that are on the given build tile. */
-    virtual std::set<Unit*>& getUnitsOnTile(int tileX, int tileY) = 0;
+    Unitset getUnitsOnTile(int tileX, int tileY, const UnitFilter &pred = nullptr) const;
+    Unitset getUnitsOnTile(BWAPI::TilePosition tile, const UnitFilter &pred = nullptr) const;
 
     /** Returns the set of accessible units that are in or overlapping the given rectangle. */
-    virtual std::set<Unit*>& getUnitsInRectangle(int left, int top, int right, int bottom) const = 0;
-    virtual std::set<Unit*>& getUnitsInRectangle(BWAPI::Position topLeft, BWAPI::Position bottomRight) const = 0;
+    virtual Unitset getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = nullptr) const = 0;
 
     /** Returns the set of accessible units within or overlapping a circle at the given point with the given radius. */
-    virtual std::set<Unit*>& getUnitsInRadius(BWAPI::Position center, int radius) const = 0;
+    Unitset getUnitsInRadius(BWAPI::Position center, int radius, const UnitFilter &pred = nullptr) const;
 
-    /** Returns the last error that was set. If you try to order enemy units around, or morph bunkers into
-     * lurkers, BWAPI will set error codes, which can be retrieved using this function. */
+    /// @~English
+    /// Retrieves the closest unit to center that
+    /// matches the criteria of pred within a radius.
+    ///
+    /// @param center The position to start searching
+    /// for the closest unit.
+    /// @param pred The predicate to use to determine
+    /// which unit is acceptable.
+    /// @param radius The radius to search in.
+    ///
+    /// @returns The desired unit that is closest
+    /// to center.
+    /// @retval nullptr If a suitable unit was not found.
+    /// @~
+    /// @see getBestUnit
+    Unit *getClosestUnit(Position center, const UnitFilter &pred = nullptr, int radius = 999999) const;
+    virtual Unit *getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
+
+    /// @~English
+    /// Compares all units with pred to determine
+    /// which of them is the best. All units are
+    /// checked. If center and radius are specified,
+    /// then it will check all units that are within
+    /// the radius of the position.
+    ///
+    /// @param pred @TODO cannot be UnitFilter to determine "best"
+    /// @param center The position to use in the search.
+    /// @param radius The distance from \p center to search
+    /// for units.
+    /// 
+    /// @returns The desired unit that best matches
+    /// the given criteria.
+    /// @retval nullptr if a suitable unit was not found.
+    /// @~
+    /// @see getClosestUnit
+    virtual Unit *getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::None, int radius = 999999) const = 0;
+
+    /// @~English
+    /// Returns the last error that was set using setLastError.
+    /// If a function call in BWAPI has failed, you can use
+    /// this function to retrieve the reason it failed.
+    ///
+    /// @returns Error type containing the reason for failure.
+    /// @~
+    /// @see setLastError, Errors
     virtual Error getLastError() const = 0;
 
-    /** Sets the last error code. */
-    virtual bool setLastError(BWAPI::Error e) = 0;
+    /// @~English
+    /// Sets the last error so that future calls to 
+    /// getLastError will return the value that was set.
+    ///
+    /// @param e The error code to set.
+    ///
+    /// @retval true If the type passed was Errors::None.
+    /// @retval false If any other error type was passed.
+    /// @~
+    /// @see getLastError, Errors
+    virtual bool setLastError(BWAPI::Error e = Errors::None) = 0;
 
     /** Returns the width of the current map, in build tile units. To get the width of the current map in
      * walk tile units, multiply by 4. To get the width of the current map in Position units, multiply by
      * TILE_SIZE (which is 32). */
-    virtual int mapWidth() = 0;
+    virtual int mapWidth() const = 0;
 
     /** Returns the height of the current map, in build tile units. To get the height of the current map in
      * walk tile units, multiply by 4. To get the height of the current map in Position units, multiply by
      * TILE_SIZE (which is 32). */
-    virtual int mapHeight() = 0;
+    virtual int mapHeight() const = 0;
 
     /** Returns the file name of the current map. */
-    virtual std::string mapFileName() = 0;
+    virtual std::string mapFileName() const = 0;
 
     /** Returns the full path name of the current map. */
-    virtual std::string mapPathName() = 0;
+    virtual std::string mapPathName() const = 0;
 
     /** Returns the name/title of the current map. */
-    virtual std::string mapName() = 0;
+    virtual std::string mapName() const = 0;
 
     /** Returns the SHA-1 hash of the map file. */
-    virtual std::string mapHash() = 0;
+    virtual std::string mapHash() const = 0;
 
     /** Returns true if the specified walk tile is walkable. The values of x and y are in walk tile
      * coordinates (different from build tile coordinates). Note that this just uses the static map data.
      * You will also need to make sure no ground units are on the coresponding build tile to see if its
      * currently walkable. To do this, see unitsOnTile. */
-    virtual bool isWalkable(int walkX, int walkY) = 0;
+    virtual bool isWalkable(int walkX, int walkY) const = 0;
+    bool isWalkable(BWAPI::WalkPosition position) const;
 
     /** Returns the ground height of the given build tile. 0 = normal, 1 = high ground.  2 = very high ground. */
-    virtual int  getGroundHeight(int tileX, int tileY) = 0;
-    /** Returns the ground height of the given build tile. 0 = normal, 1 = high ground. 2 = very high ground. */
-    virtual int  getGroundHeight(TilePosition position) = 0;
+    virtual int  getGroundHeight(int tileX, int tileY) const = 0;
+    int  getGroundHeight(TilePosition position) const;
 
     /** Returns true if the specified build tile is buildable. Note that this just uses the static map data.
      * You will also need to make sure no ground units on the tile to see if its currently buildable. To do
      * this, see unitsOnTile. */
-    virtual bool isBuildable(int tileX, int tileY, bool includeBuildings = false) = 0;
-    /** \copydoc isBuildable(int, int) */
-    virtual bool isBuildable(TilePosition position, bool includeBuildings = false) = 0;
+    virtual bool isBuildable(int tileX, int tileY, bool includeBuildings = false) const = 0;
+    bool isBuildable(TilePosition position, bool includeBuildings = false) const;
 
     /** Returns true if the specified build tile is visible. If the tile is concealed by fog of war, the
      * function will return false. */
-    virtual bool isVisible(int tileX, int tileY) = 0;
-    /** \copydoc isVisible(int, int) */
-    virtual bool isVisible(TilePosition position) = 0;
+    virtual bool isVisible(int tileX, int tileY) const = 0;
+    bool isVisible(TilePosition position) const;
 
     /** Returns true if the specified build tile has been explored (i.e. was visible at some point in the
      * match). */
-    virtual bool isExplored(int tileX, int tileY) = 0;
-    /** \copydoc isExplored(int, int) */
-    virtual bool isExplored(TilePosition position) = 0;
+    virtual bool isExplored(int tileX, int tileY) const = 0;
+    bool isExplored(TilePosition position) const;
 
     /** Returns true if the specified build tile has zerg creep on it. If the tile is concealed by fog of
      * war, the function will return false. */
-    virtual bool hasCreep(int tileX, int tileY) = 0;
-    /** \copydoc hasCreep(int, int) */
-    virtual bool hasCreep(TilePosition position) = 0;
+    virtual bool hasCreep(int tileX, int tileY) const = 0;
+    bool hasCreep(TilePosition position) const;
 
     /** Returns true if the given build location is powered by a nearby friendly pylon. */
     virtual bool hasPower(int tileX, int tileY, UnitType unitType = UnitTypes::None) const = 0;
@@ -245,25 +292,25 @@ namespace BWAPI
     /** Returns true if the given unit type can be built at the given build tile position. Note the tile
      * position specifies the top left tile of the building. If builder is not null, the unit will be
      * discarded when determining whether or not any ground units are blocking the build location. */
-    virtual bool canBuildHere(const Unit *builder, TilePosition position, UnitType type, bool checkExplored = false) = 0;
+    virtual bool canBuildHere(TilePosition position, UnitType type, const Unit *builder = nullptr, bool checkExplored = false) = 0;
 
     /** Returns true if the AI player has enough resources, supply, tech, and required units in order to
      * make the given unit type. If builder is not null, canMake will return true only if the builder unit
      * can build the given unit type. */
-    virtual bool canMake(const Unit *builder, UnitType type) = 0;
+    virtual bool canMake(UnitType type, const Unit *builder = nullptr) = 0;
 
     /** Returns true if the AI player has enough resources required to research the given tech type. If unit
      * is not null, canResearch will return true only if the given unit can research the given tech type. */
-    virtual bool canResearch(const Unit *unit, TechType type) = 0;
+    virtual bool canResearch(TechType type, const Unit *unit = nullptr) = 0;
 
     /** Returns true if the AI player has enough resources required to upgrade the given upgrade type. If
      * unit is not null, canUpgrade will return true only if the given unit can upgrade the given upgrade
      * type. */
-    virtual bool canUpgrade(const Unit *unit, UpgradeType type) = 0;
+    virtual bool canUpgrade(UpgradeType type, const Unit *unit = nullptr) = 0;
 
     /** Returns the set of starting locations for the given map. To determine the starting location for the
      * players in the current match, see Player::getStartLocation. */
-    virtual std::set< TilePosition >& getStartLocations() = 0;
+    virtual const TilePosition::set& getStartLocations() const = 0;
 
     /** Prints text on the screen. Text is not sent to other players in multiplayer games. */
     virtual void printf(const char *format, ...) = 0;
@@ -279,22 +326,22 @@ namespace BWAPI
     virtual void changeRace(Race race) = 0;
 
     /** Returns true if Broodwar is in a game. Returns false for lobby and menu screens */
-    virtual bool isInGame() = 0;
+    virtual bool isInGame() const = 0;
 
     /** Returns true if Broodwar is in a multiplayer game. Returns false for single player games and
      * replays. */
-    virtual bool isMultiplayer() = 0;
+    virtual bool isMultiplayer() const = 0;
 
     /** Returns true if Broodwar is in a BNet multiplayer game.
     */
-    virtual bool isBattleNet() = 0;
+    virtual bool isBattleNet() const = 0;
 
     /** Returns true if Broodwar is paused. If the game is paused, Game::getFrameCount will continue to
      * increase and AIModule::onFrame will still be called while paused. */
-    virtual bool isPaused() = 0;
+    virtual bool isPaused() const = 0;
 
     /** Returns true if Broodwar is in a replay. */
-    virtual bool isReplay() = 0;
+    virtual bool isReplay() const = 0;
 
     /** Used to start the game while in a lobby. Note that there is no onLobbyEnter callback yet, so this
      * function cannot be used at this time. */
@@ -320,31 +367,31 @@ namespace BWAPI
     virtual void setLocalSpeed(int speed = -1) = 0;
 
     /** Issues a command to a group of units */
-    virtual bool issueCommand(const std::set<BWAPI::Unit*>& units, UnitCommand command) = 0;
+    virtual bool issueCommand(const Unitset& units, UnitCommand command) = 0;
 
     /** Returns the set of units currently selected by the user in the GUI. If Flag?::UserInput? was not
      * enabled during the AIModule::onStart callback, this function will always return an empty set. */
-    virtual std::set<Unit*>& getSelectedUnits() = 0;
+    virtual const Unitset& getSelectedUnits() = 0;
 
     /** Returns a pointer to the player that BWAPI controls. In replays this will return null. */
     virtual Player* self() = 0;
 
     /** Returns a pointer to the enemy player. If there is more than one enemy, this returns a pointer to
      * just one enemy (see enemies to get all enemies still in game). In replays this will
-     * return NULL. */
+     * return nullptr. */
     virtual Player* enemy() = 0;
 
     /** Returns a pointer to the neutral player. */
     virtual Player* neutral() = 0;
 
     /** Returns a set of all the ally players that have not left or been defeated. Does not include self. */
-    virtual std::set<BWAPI::Player*>& allies() = 0;
+    virtual Playerset& allies() = 0;
 
     /** Returns a set of all the enemy players that have not left or been defeated. */
-    virtual std::set<BWAPI::Player*>& enemies() = 0;
+    virtual Playerset& enemies() = 0;
 
     /** Returns a set of all the observer players that have not left. */
-    virtual std::set<BWAPI::Player*>& observers() = 0;
+    virtual Playerset& observers() = 0;
 
     virtual void setTextSize(int size = 1) = 0;
     /** Draws text on the screen at the given position. Text can be drawn in different colors by using the
@@ -357,42 +404,57 @@ namespace BWAPI
     /** Draws a box on the screen, with the given color. If isSolid is true, the entire box will be
      * rendered, otherwise just the outline will be drawn. */
     virtual void drawBox(int ctype, int left, int top, int right, int bottom, Color color, bool isSolid = false) = 0;
-    virtual void drawBoxMap(int left, int top, int right, int bottom, Color color, bool isSolid = false) = 0;
-    virtual void drawBoxMouse(int left, int top, int right, int bottom, Color color, bool isSolid = false) = 0;
-    virtual void drawBoxScreen(int left, int top, int right, int bottom, Color color, bool isSolid = false) = 0;
+    void drawBoxMap(int left, int top, int right, int bottom, Color color, bool isSolid = false);
+    void drawBoxMouse(int left, int top, int right, int bottom, Color color, bool isSolid = false);
+    void drawBoxScreen(int left, int top, int right, int bottom, Color color, bool isSolid = false);
 
     /** Draws a triangle on the screen. If isSolid is true, a solid triangle is drawn, otherwise just the
      * outline of the triangle will be drawn. */
     virtual void drawTriangle(int ctype, int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) = 0;
-    virtual void drawTriangleMap(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) = 0;
-    virtual void drawTriangleMouse(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) = 0;
-    virtual void drawTriangleScreen(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) = 0;
+    void drawTriangleMap(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false);
+    void drawTriangleMouse(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false);
+    void drawTriangleScreen(int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false);
+    void drawTriangleMap(Position a, Position b, Position c, Color color, bool isSolid = false);
+    void drawTriangleMouse(Position a, Position b, Position c, Color color, bool isSolid = false);
+    void drawTriangleScreen(Position a, Position b, Position c, Color color, bool isSolid = false);
 
     /** Draws a circle on the screen, with the given color. If isSolid is true, a solid circle is drawn,
      * otherwise just the outline of a circle will be drawn. */
     virtual void drawCircle(int ctype, int x, int y, int radius, Color color, bool isSolid = false) = 0;
-    virtual void drawCircleMap(int x, int y, int radius, Color color, bool isSolid = false) = 0;
-    virtual void drawCircleMouse(int x, int y, int radius, Color color, bool isSolid = false) = 0;
-    virtual void drawCircleScreen(int x, int y, int radius, Color color, bool isSolid = false) = 0;
+    void drawCircleMap(int x, int y, int radius, Color color, bool isSolid = false);
+    void drawCircleMouse(int x, int y, int radius, Color color, bool isSolid = false);
+    void drawCircleScreen(int x, int y, int radius, Color color, bool isSolid = false);
+    void drawCircleMap(Position p, int radius, Color color, bool isSolid = false);
+    void drawCircleMouse(Position p, int radius, Color color, bool isSolid = false);
+    void drawCircleScreen(Position p, int radius, Color color, bool isSolid = false);
 
     /** Draws an ellipse on the screen, with the given color. If isSolid is true, a solid ellipse is drawn,
      * otherwise just the outline of an ellipse will be drawn. */
     virtual void drawEllipse(int ctype, int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
-    virtual void drawEllipseMap(int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
-    virtual void drawEllipseMouse(int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
-    virtual void drawEllipseScreen(int x, int y, int xrad, int yrad, Color color, bool isSolid = false) = 0;
+    void drawEllipseMap(int x, int y, int xrad, int yrad, Color color, bool isSolid = false);
+    void drawEllipseMouse(int x, int y, int xrad, int yrad, Color color, bool isSolid = false);
+    void drawEllipseScreen(int x, int y, int xrad, int yrad, Color color, bool isSolid = false);
+    void drawEllipseMap(Position p, int xrad, int yrad, Color color, bool isSolid = false);
+    void drawEllipseMouse(Position p, int xrad, int yrad, Color color, bool isSolid = false);
+    void drawEllipseScreen(Position p, int xrad, int yrad, Color color, bool isSolid = false);
 
     /** Draws a dot on the screen at the given position with the given color. */
     virtual void drawDot(int ctype, int x, int y, Color color) = 0;
-    virtual void drawDotMap(int x, int y, Color color) = 0;
-    virtual void drawDotMouse(int x, int y, Color color) = 0;
-    virtual void drawDotScreen(int x, int y, Color color) = 0;
+    void drawDotMap(int x, int y, Color color);
+    void drawDotMouse(int x, int y, Color color);
+    void drawDotScreen(int x, int y, Color color);
+    void drawDotMap(Position p, Color color);
+    void drawDotMouse(Position p, Color color);
+    void drawDotScreen(Position p, Color color);
 
     /** Draws a line on the screen from (x1,y1) to (x2,y2) with the given color. */
     virtual void drawLine(int ctype, int x1, int y1, int x2, int y2, Color color) = 0;
-    virtual void drawLineMap(int x1, int y1, int x2, int y2, Color color) = 0;
-    virtual void drawLineMouse(int x1, int y1, int x2, int y2, Color color) = 0;
-    virtual void drawLineScreen(int x1, int y1, int x2, int y2, Color color) = 0;
+    void drawLineMap(int x1, int y1, int x2, int y2, Color color);
+    void drawLineMouse(int x1, int y1, int x2, int y2, Color color);
+    void drawLineScreen(int x1, int y1, int x2, int y2, Color color);
+    void drawLineMap(Position a, Position b, Color color);
+    void drawLineMouse(Position a, Position b, Color color);
+    void drawLineScreen(Position a, Position b, Color color);
 
     /** Retrieves the screen buffer for the game (excluding the HUD) */
     virtual void *getScreenBuffer() = 0;
@@ -414,9 +476,6 @@ namespace BWAPI
 
     /** Use to enable or disable latency compensation. Default: Enabled */
     virtual void setLatCom(bool isEnabled) = 0;
-
-    /** Retrieves the number of frames in the replay */
-    virtual int getReplayFrameCount() = 0;
 
     /** Sets the rendering state of the Starcraft GUI */
     virtual void setGUI(bool enabled = true) = 0;
@@ -450,17 +509,17 @@ namespace BWAPI
         1 = Some optimization    (Stop, Hold Position, Siege, Burrow, etc.).
         2 = More optimization    (Train, Set Rally, Lift, [multi-select buildings]).
         3 = Maximum optimization (Attack/Move to position, use ability at position, etc.).*/
-    virtual void setCommandOptimizationLevel(int level = 2) = 0;
+    virtual void setCommandOptimizationLevel(int level = 0) = 0;
 
     /** Returns the remaining countdown time in seconds. */
     virtual int  countdownTimer() const = 0;
 
     /** Returns the set of all map regions. */
-    virtual const std::set<BWAPI::Region*> &getAllRegions() const = 0;
+    virtual const Regionset &getAllRegions() const = 0;
 
     /** Returns the region at a position. */
     virtual BWAPI::Region *getRegionAt(int x, int y) const = 0;
-    virtual BWAPI::Region *getRegionAt(BWAPI::Position position) const = 0;
+    BWAPI::Region *getRegionAt(BWAPI::Position position) const;
 
     /** Returns the time taken to perform the previous event call. Used for tournament management. */
     virtual int getLastEventTime() const = 0;

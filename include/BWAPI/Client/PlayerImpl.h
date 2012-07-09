@@ -1,8 +1,9 @@
 #pragma once
 #include <BWAPI.h>
 #include "PlayerData.h"
-#include <set>
 #include <string>
+
+#include <BWAPI/Unitset.h>
 
 namespace BWAPI
 {
@@ -14,12 +15,12 @@ namespace BWAPI
       int id;
     public:
       PlayerData* self;
-      std::set<Unit*> units;
+      Unitset units;
       void clear();
       PlayerImpl(int id);
       virtual int getID() const;
       virtual std::string getName() const;
-      virtual const std::set<Unit*>& getUnits() const;
+      virtual const Unitset &getUnits() const;
       virtual Race getRace() const;
       virtual PlayerType getType() const;
       virtual Force* getForce() const;
@@ -42,10 +43,8 @@ namespace BWAPI
       virtual int spentMinerals() const;
       virtual int spentGas() const;
 
-      virtual int supplyTotal() const;
-      virtual int supplyUsed() const;
-      virtual int supplyTotal(Race race) const;
-      virtual int supplyUsed(Race race) const;
+      virtual int supplyTotal(Race race = Races::None) const;
+      virtual int supplyUsed(Race race = Races::None) const;
 
       virtual int allUnitCount(UnitType unit) const;
       virtual int visibleUnitCount(UnitType unit) const;
@@ -64,8 +63,6 @@ namespace BWAPI
 
       virtual int maxEnergy(UnitType unit) const;
       virtual double topSpeed(UnitType unit) const;
-      virtual int groundWeaponMaxRange(UnitType unit) const;
-      virtual int airWeaponMaxRange(UnitType unit) const;
       virtual int weaponMaxRange(WeaponType weapon) const;
       virtual int sightRange(UnitType unit) const;
       virtual int groundWeaponDamageCooldown(UnitType unit) const;

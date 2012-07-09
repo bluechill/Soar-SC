@@ -1,18 +1,42 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
+#include <BWAPI/Type.h>
+
 namespace BWAPI
 {
-  class PlayerType : public Type
+  namespace PlayerTypes
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        None = 0,
+        Computer,
+        Player,
+        RescuePassive,
+        RescueActive,
+        EitherPreferComputer,
+        EitherPreferHuman,
+        Neutral,
+        Closed,
+        Observer,
+        PlayerLeft,
+        ComputerLeft,
+        Unknown,
+        MAX
+      };
+    };
+  };
+  class PlayerType : public Type<PlayerType, PlayerTypes::Enum::Unknown>
   {
     public:
-      PlayerType();
-      PlayerType(int id);
+      PlayerType(int id = PlayerTypes::Enum::None);
       /** Returns the name of the player type. For example PlayerTypes::Computer.getName() will return an
        * std::string object containing "Computer". */
       const std::string &getName() const;
       const char *c_str() const;
+
+      bool isLobbyType() const;
+      bool isGameType() const;
   };
   namespace PlayerTypes
   {
@@ -21,8 +45,8 @@ namespace BWAPI
     PlayerType getPlayerType(std::string name);
 
     /** Returns the set of all the PlayerTypes. */
-    const std::set<PlayerType>& allPlayerTypes();
-    void init();
+    const PlayerType::const_set& allPlayerTypes();
+    
     extern const PlayerType None;
     extern const PlayerType Computer;
     extern const PlayerType Player;

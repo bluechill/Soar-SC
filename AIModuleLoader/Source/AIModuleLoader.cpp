@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include <BWAPI.h>
 #include <BWAPI/Client.h>
+#include <BWAPI.h>
 
 #include <windows.h>
 
@@ -19,14 +19,14 @@ void reconnect()
 int main(int argc, const char* argv[])
 {
   const char* szDllPath = "";
+  char buffer[1024] = { 0 };
   if (argc>=2)
     szDllPath = argv[1];
   else
   {
-    char buffer[1024];
-    szDllPath = buffer;
     printf("Enter path name to AI DLL:");
-    scanf("%s",buffer);
+    scanf("%1024s", buffer);
+    szDllPath = buffer;
   }
   BWAPI::BWAPI_init();
   printf("Connecting...");
@@ -58,65 +58,68 @@ int main(int argc, const char* argv[])
       client = newAIModule(Broodwar);
     }
     printf("starting match!\n");
-    while(Broodwar->isInGame())
+    while ( Broodwar->isInGame() )
     {
-      for(std::list<Event>::iterator e=Broodwar->getEvents().begin();e!=Broodwar->getEvents().end();e++)
+      for ( std::list<Event>::const_iterator e = Broodwar->getEvents().begin(); e != Broodwar->getEvents().end(); ++e )
       {
         EventType::Enum et=e->getType();
         switch (et)
         {
           case EventType::MatchStart:
             client->onStart();
-          break;
+            break;
           case EventType::MatchEnd:
             client->onEnd(e->isWinner());
-          break;
+            break;
           case EventType::MatchFrame:
             client->onFrame();
-          break;
+            break;
           case EventType::MenuFrame:
-          break;
+            break;
           case EventType::SendText:
             client->onSendText(e->getText());
-          break;
+            break;
           case EventType::ReceiveText:
             client->onReceiveText(e->getPlayer(), e->getText());
-          break;
+            break;
           case EventType::PlayerLeft:
             client->onPlayerLeft(e->getPlayer());
-          break;
+            break;
           case EventType::NukeDetect:
             client->onNukeDetect(e->getPosition());
-          break;
+            break;
           case EventType::UnitDiscover:
             client->onUnitDiscover(e->getUnit());
-          break;
+            break;
           case EventType::UnitEvade:
             client->onUnitEvade(e->getUnit());
-          break;
+            break;
           case EventType::UnitShow:
             client->onUnitShow(e->getUnit());
-          break;
+            break;
           case EventType::UnitHide:
             client->onUnitHide(e->getUnit());
-          break;
+            break;
           case EventType::UnitCreate:
             client->onUnitCreate(e->getUnit());
-          break;
+            break;
           case EventType::UnitDestroy:
             client->onUnitDestroy(e->getUnit());
-          break;
+            break;
           case EventType::UnitMorph:
             client->onUnitMorph(e->getUnit());
-          break;
+            break;
           case EventType::UnitRenegade:
             client->onUnitRenegade(e->getUnit());
-          break;
+            break;
           case EventType::SaveGame:
             client->onSaveGame(e->getText());
-          break;
+            break;
+          case EventType::UnitComplete:
+            client->onUnitComplete(e->getUnit());
+            break;
           default:
-          break;
+            break;
         }
       }
       BWAPI::BWAPIClient.update();

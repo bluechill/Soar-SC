@@ -1,14 +1,29 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
+#include <BWAPI/Type.h>
+
 namespace BWAPI
 {
-  class DamageType : public Type
+  namespace DamageTypes
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        Independent = 0,
+        Explosive,
+        Concussive,
+        Normal,
+        Ignore_Armor,
+        None,
+        Unknown,
+        MAX
+      };
+    }
+  }
+  class DamageType : public Type<DamageType, DamageTypes::Enum::Unknown>
   {
     public:
-      DamageType();
-      DamageType(int id);
+      DamageType(int id = DamageTypes::Enum::None);
 
       /** Returns the name of this damage type. For example DamageTypes::Explosive.getName() will return
        * std::string("Explosive"). */
@@ -22,9 +37,8 @@ namespace BWAPI
     DamageType getDamageType(std::string name);
 
     /** Returns the set of all the DamageTypes. */
-    const std::set<DamageType>& allDamageTypes();
+    const DamageType::const_set& allDamageTypes();
 
-    void init();
     extern const DamageType Independent;
     extern const DamageType Explosive;
     extern const DamageType Concussive;

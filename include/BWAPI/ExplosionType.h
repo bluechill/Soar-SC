@@ -1,14 +1,48 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
+#include <BWAPI/Type.h>
+
 namespace BWAPI
 {
-  class ExplosionType : public Type
+  namespace ExplosionTypes
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        None = 0,
+        Normal,
+        Radial_Splash,
+        Enemy_Splash,
+        Lockdown,
+        Nuclear_Missile,
+        Parasite,
+        Broodlings,
+        EMP_Shockwave,
+        Irradiate,
+        Ensnare,
+        Plague,
+        Stasis_Field,
+        Dark_Swarm,
+        Consume,
+        Yamato_Gun,
+        Restoration,
+        Disruption_Web,
+        Corrosive_Acid,
+        Mind_Control,
+        Feedback,
+        Optical_Flare,
+        Maelstrom,
+        Unused,
+        Air_Splash,
+        Unknown,
+        MAX
+      };
+    };
+  };
+  class ExplosionType : public Type<ExplosionType, ExplosionTypes::Enum::Unknown>
   {
     public:
-      ExplosionType();
-      ExplosionType(int id);
+      ExplosionType(int id = ExplosionTypes::Enum::None);
 
       /** Returns the name of this explosion type. */
       const std::string &getName() const;
@@ -20,9 +54,8 @@ namespace BWAPI
     ExplosionType getExplosionType(std::string name);
 
     /** Returns the set of all ExplosionTypes. */
-    const std::set<ExplosionType>& allExplosionTypes();
+    const ExplosionType::const_set& allExplosionTypes();
 
-    void init();
     extern const ExplosionType None;
     extern const ExplosionType Normal;
     extern const ExplosionType Radial_Splash;

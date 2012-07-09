@@ -1,16 +1,68 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
-#define BWAPI_UNIT_COMMAND_TYPE_COUNT 46
+#include <BWAPI/Type.h>
 
 namespace BWAPI
 {
-  class UnitCommandType : public Type
+  namespace UnitCommandTypes
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        Attack_Move = 0,
+        Attack_Unit,
+        Build,
+        Build_Addon,
+        Train,
+        Morph,
+        Research,
+        Upgrade,
+        Set_Rally_Position,
+        Set_Rally_Unit,
+        Move,
+        Patrol,
+        Hold_Position,
+        Stop,
+        Follow,
+        Gather,
+        Return_Cargo,
+        Repair,
+        Burrow,
+        Unburrow,
+        Cloak,
+        Decloak,
+        Siege,
+        Unsiege,
+        Lift,
+        Land,
+        Load,
+        Unload,
+        Unload_All,
+        Unload_All_Position,
+        Right_Click_Position,
+        Right_Click_Unit,
+        Halt_Construction,
+        Cancel_Construction,
+        Cancel_Addon,
+        Cancel_Train,
+        Cancel_Train_Slot,
+        Cancel_Morph,
+        Cancel_Research,
+        Cancel_Upgrade,
+        Use_Tech,
+        Use_Tech_Position,
+        Use_Tech_Unit,
+        Place_COP,
+        None,
+        Unknown,
+        MAX
+      };
+    };
+  };
+  class UnitCommandType : public Type<UnitCommandType, UnitCommandTypes::Enum::Unknown>
   {
   public:
-    UnitCommandType();
-    UnitCommandType(int id);
+    UnitCommandType(int id = UnitCommandTypes::Enum::None);
     /** Returns the string corresponding to the UnitCommandType object. For example,
      * UnitCommandTypes::Set_Rally_Position.getName() returns std::string("Set Rally Position")*/
     const std::string &getName() const;
@@ -23,8 +75,8 @@ namespace BWAPI
     UnitCommandType getUnitCommandType(std::string name);
 
     /** Returns the set of all the sizes, which are listed below: */
-    const std::set<UnitCommandType>& allUnitCommandTypes();
-    void init();
+    const UnitCommandType::const_set& allUnitCommandTypes();
+    
     extern const UnitCommandType Attack_Move;
     extern const UnitCommandType Attack_Unit;
     extern const UnitCommandType Build;

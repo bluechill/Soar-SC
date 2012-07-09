@@ -1,18 +1,20 @@
 #pragma once
-#include <string>
 #include <BWAPI/Position.h>
-#include <BWAPI/Color.h>
+#include <string>
+
 namespace BWAPI
 {
+  // Forward declarations
   class Unit;
   class Player;
+  class Color;
 
-  /** AIModule is a virtual class that is intended to be implemented or inherited by a custom AI class.
-   *
-   * \note
-   * Using BWAPI in a different thread than the default one will produce unexpected results and possibly crash
-   * the program. Multi-threaded AIs are possible so long as all BWAPI interaction is limited to the default
-   * thread (during one of the call-backs). */
+  /// AIModule is a virtual class that is intended to be implemented or inherited by a custom AI class.
+  ///
+  /// @note
+  /// Using BWAPI in a different thread than the default one will produce unexpected results and possibly crash
+  /// the program. Multi-threaded AIs are possible so long as all BWAPI interaction is limited to the default
+  /// thread (during one of the call-backs).
   class AIModule
   {
     public:
@@ -89,8 +91,6 @@ namespace BWAPI
 
       /** */
       virtual void onUnitComplete(Unit *unit);
-
-      virtual void onPlayerDropped(Player *player);
   };
   class TournamentModule
   {
@@ -101,7 +101,7 @@ namespace BWAPI
       /** BWAPI calls this any time some Game-related functions are called.
           Return true to allow them, or false to disallow them.
           This includes functions like Game::pauseGame and Game::enableFlag. */
-      virtual bool onAction(int actionType, void *parameter = NULL);
+      virtual bool onAction(int actionType, void *parameter = nullptr);
 
       /** BWAPI calls this when this module was the first to send out its 
           tournament advertisement. It can prevent both modules from performing

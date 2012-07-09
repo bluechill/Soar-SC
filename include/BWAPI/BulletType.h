@@ -1,15 +1,66 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
+#include <BWAPI/Type.h>
 
 namespace BWAPI
 {
-  class BulletType : public Type
+  namespace BulletTypes
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        Melee = 0,
+
+        Fusion_Cutter_Hit = 141,
+        Gauss_Rifle_Hit,
+        C_10_Canister_Rifle_Hit,
+        Gemini_Missiles,
+        Fragmentation_Grenade,
+        Longbolt_Missile,
+        Unused_Lockdown,
+        ATS_ATA_Laser_Battery,
+        Burst_Lasers,
+        Arclite_Shock_Cannon_Hit,
+        EMP_Missile,
+        Dual_Photon_Blasters_Hit,
+        Particle_Beam_Hit,
+        Anti_Matter_Missile,
+        Pulse_Cannon,
+        Psionic_Shockwave_Hit,
+        Psionic_Storm,
+        Yamato_Gun,
+        Phase_Disruptor,
+        STA_STS_Cannon_Overlay,
+        Sunken_Colony_Tentacle,
+        Venom_Unused,
+        Acid_Spore,
+        Plasma_Drip_Unused,
+        Glave_Wurm,
+        Seeker_Spores,
+        Queen_Spell_Carrier,
+        Plague_Cloud,
+        Consume,
+        Ensnare,
+        Needle_Spine_Hit,
+        Invisible,
+
+        Optical_Flare_Grenade = 201,
+        Halo_Rockets,
+        Subterranean_Spines,
+        Corrosive_Acid_Shot,
+        Corrosive_Acid_Hit,
+        Neutron_Flare,
+
+        None = 209,
+        Unknown,
+        MAX
+      };
+    }
+  }
+  class BulletType : public Type<BulletType, BulletTypes::Enum::Unknown>
   {
     public:
-      BulletType();
-      BulletType(int id);
+      BulletType(int id = BulletTypes::Enum::None);
 
       /** Returns the name of this bullet type. */
       const std::string &getName() const;
@@ -22,8 +73,8 @@ namespace BWAPI
     BulletType getBulletType(std::string name);
 
     /** Returns the set of all the BulletTypes. */
-    const std::set<BulletType>& allBulletTypes();
-    void init();
+    const BulletType::const_set& allBulletTypes();
+
     extern const BulletType Melee;
     extern const BulletType Fusion_Cutter_Hit;
     extern const BulletType Gauss_Rifle_Hit;

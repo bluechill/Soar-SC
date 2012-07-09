@@ -2,13 +2,14 @@
 
 #include <set>
 #include <vector>
+#include <sstream>
 
 using namespace BWAPI;
 using namespace sml;
 using namespace std;
 
 Soar_Link::Soar_Link()
-: cout_redirect("bwapi-data/logs/stdout.txt")
+	: cout_redirect("bwapi-data/logs/stdout.txt")
 {
 	if (!cout_redirect)
 		Broodwar->printf("Unable to redirect output!");
@@ -16,8 +17,8 @@ Soar_Link::Soar_Link()
 	cout_orig_buffer = cout.rdbuf();
 	cout.rdbuf(cout_redirect.rdbuf());
 
-	////kernel = Kernel::CreateKernelInNewThread();
-	kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
+	kernel = Kernel::CreateKernelInNewThread();
+	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
 }
 
 Soar_Link::~Soar_Link()
@@ -29,6 +30,8 @@ Soar_Link::~Soar_Link()
 
 void Soar_Link::onStart()
 {
+	Broodwar->setGUI(false);
+
 	if (kernel->HadError())
 	{
 		const char* msg = kernel->GetLastErrorDescription();
@@ -50,9 +53,11 @@ void Soar_Link::onStart()
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
 
-	const char* result = agent->ExecuteCommandLine("print s1");
-	cout << "Soar: " << result << endl;
-	Broodwar->printf("Soar: %s", result);
+	//const char* result = agent->ExecuteCommandLine("print s1");
+	//cout << "Soar: " << result << endl;
+	//Broodwar->printf("Soar: %s", result);
+
+	update_map();
 }
 
 void Soar_Link::onEnd(bool isWinner)
@@ -64,20 +69,111 @@ void Soar_Link::onEnd(bool isWinner)
 	}
 }
 
+void Soar_Link::update_map()
+{
+	set<vector<string> > polygons;
+
+	vector<vector<bool> > walkable;
+
+	for (int x = 0;x < Broodwar->mapWidth()*4;x++)
+	{
+		vector<bool> y_array;
+
+		for (int y = 0;y < Broodwar->mapHeight()*4;y++)
+			y_array.push_back(Broodwar->isWalkable(x,y));
+
+		walkable.push_back(y_array);
+	}
+
+	//TODO: combine polygons
+	for (unsigned int x = 0;x < walkable.size();x++)
+	{
+		for (unsigned int y = 0;y < walkable[x].size();y++)
+		{
+			stringstream ss;
+			ss << x << " " << y << " 1";
+			string vertex1 = ss.str();
+			ss.str("");
+
+			ss << x + 1 << " " << y << " 1";
+			string vertex2 = ss.str();
+			ss.str("");
+
+			ss << x + 1 << " " << y + 1 << " 1";
+			string vertex3 = ss.str();
+			ss.str("");
+
+			ss << x << " " << y + 1 << " 1";
+			string vertex4 = ss.str();
+			ss.str("");
+
+			ss << x << " " << y << " 0";
+			string vertex5 = ss.str();
+			ss.str("");
+
+			ss << x + 1 << " " << y << " 0";
+			string vertex6 = ss.str();
+			ss.str("");
+
+			ss << x + 1 << " " << y + 1 << " 0";
+			string vertex7 = ss.str();
+			ss.str("");
+
+			ss << x << " " << y + 1 << " 0";
+			string vertex8 = ss.str();
+			ss.str("");
+
+			vector<string> polygon;
+			polygon.push_back(vertex1);
+			polygon.push_back(vertex2);
+			polygon.push_back(vertex3);
+			polygon.push_back(vertex4);
+			polygon.push_back(vertex5);
+			polygon.push_back(vertex6);
+			polygon.push_back(vertex7);
+			polygon.push_back(vertex8);
+
+			polygons.insert(polygon);
+		}
+	}
+
+	for (set<vector<string> >::iterator it = polygons.begin();it != polygons.end();it++)
+	{
+		string svs_string = "a ";
+		svs_string += "barrier";
+
+		stringstream ss;
+		ss << (*it)[0][0] << (*it)[1][0];
+		svs_string += ss.str();
+		ss.str("");
+
+		svs_string += " world v ";
+
+		for (vector<string>::const_iterator p_it = it->begin();p_it != it->end();p_it++)
+		{
+			svs_string += (*p_it);
+			svs_string += " ";
+		}
+
+		svs_string += "p 0 0 0";
+
+		cout << svs_string << endl;
+
+		agent->SendSVSInput(svs_string);
+	}
+}
+
 void Soar_Link::onFrame()
 {
 	// Called once every game frame
-
 
 	// Display the game frame rate as text in the upper left area of the screen
 	Broodwar->drawTextScreen(200, 0,  "FPS: %d", Broodwar->getFPS() );
 	Broodwar->drawTextScreen(200, 20, "Average FPS: %f", Broodwar->getAverageFPS() );
 
-
 	// Return if the game is a replay or is paused
 	if ( Broodwar->isReplay() || Broodwar->isPaused() )
 		return;
-
 
 	// Prevent spamming by only running our onFrame once every number of latency frames.
 	// Latency frames are the number of frames before commands are processed.
@@ -105,32 +201,32 @@ void Soar_Link::onReceiveText(BWAPI::Player* player, std::string text)
 
 void Soar_Link::onPlayerLeft(BWAPI::Player* player)
 {
-	
+
 }
 
 void Soar_Link::onNukeDetect(BWAPI::Position target)
 {
-	
+
 }
 
 void Soar_Link::onUnitDiscover(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onUnitEvade(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onUnitShow(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onUnitHide(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onUnitCreate(BWAPI::Unit* unit)
@@ -140,7 +236,7 @@ void Soar_Link::onUnitCreate(BWAPI::Unit* unit)
 
 void Soar_Link::onUnitDestroy(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onUnitMorph(BWAPI::Unit* unit)
@@ -150,7 +246,7 @@ void Soar_Link::onUnitMorph(BWAPI::Unit* unit)
 
 void Soar_Link::onUnitRenegade(BWAPI::Unit* unit)
 {
-	
+
 }
 
 void Soar_Link::onSaveGame(std::string gameName)
@@ -161,5 +257,5 @@ void Soar_Link::onSaveGame(std::string gameName)
 
 void Soar_Link::onUnitComplete(BWAPI::Unit *unit)
 {
-	
+
 }

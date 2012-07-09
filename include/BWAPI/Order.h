@@ -1,19 +1,218 @@
 #pragma once
-#include <string>
-#include <set>
-#include "Type.h"
+#include <BWAPI/Type.h>
+
 namespace BWAPI
 {
+  namespace Orders
+  {
+    namespace Enum
+    {
+      enum Enum
+      {
+        Die,
+        Stop,
+        Guard,
+        PlayerGuard,
+        TurretGuard,
+        BunkerGuard,
+        Move,
+        ReaverStop,
+        Attack1,
+        Attack2,
+        AttackUnit,
+        AttackFixedRange,
+        AttackTile,
+        Hover,
+        AttackMove,
+        InfestedCommandCenter,
+        UnusedNothing,
+        UnusedPowerup,
+        TowerGuard,
+        TowerAttack,
+        VultureMine,
+        StayInRange,
+        TurretAttack,
+        Nothing,
+        Unused_24,
+        DroneStartBuild,
+        DroneBuild,
+        CastInfestation,
+        MoveToInfest,
+        InfestingCommandCenter,
+        PlaceBuilding,
+        PlaceProtossBuilding,
+        CreateProtossBuilding,
+        ConstructingBuilding,
+        Repair,
+        MoveToRepair,
+        PlaceAddon,
+        BuildAddon,
+        Train,
+        RallyPointUnit,
+        RallyPointTile,
+        ZergBirth,
+        ZergUnitMorph,
+        ZergBuildingMorph,
+        IncompleteBuilding,
+        IncompleteMorphing,
+        BuildNydusExit,
+        EnterNydusCanal,
+        IncompleteWarping,
+        Follow,
+        Carrier,
+        ReaverCarrierMove,
+        CarrierStop,
+        CarrierAttack,
+        CarrierMoveToAttack,
+        CarrierIgnore2,
+        CarrierFight,
+        CarrierHoldPosition,
+        Reaver,
+        ReaverAttack,
+        ReaverMoveToAttack,
+        ReaverFight,
+        ReaverHoldPosition,
+        TrainFighter,
+        InterceptorAttack,
+        ScarabAttack,
+        RechargeShieldsUnit,
+        RechargeShieldsBattery,
+        ShieldBattery,
+        InterceptorReturn,
+        DroneLand,
+        BuildingLand,
+        BuildingLiftOff,
+        DroneLiftOff,
+        LiftingOff,
+        ResearchTech,
+        Upgrade,
+        Larva,
+        SpawningLarva,
+        Harvest1,
+        Harvest2,
+        MoveToGas,
+        WaitForGas,
+        HarvestGas,
+        ReturnGas,
+        MoveToMinerals,
+        WaitForMinerals,
+        MiningMinerals,
+        Harvest3,
+        Harvest4,
+        ReturnMinerals,
+        Interrupted,
+        EnterTransport,
+        PickupIdle,
+        PickupTransport,
+        PickupBunker,
+        Pickup4,
+        PowerupIdle,
+        Sieging,
+        Unsieging,
+        WatchTarget,
+        InitCreepGrowth,
+        SpreadCreep,
+        StoppingCreepGrowth,
+        GuardianAspect,
+        ArchonWarp,
+        CompletingArchonSummon,
+        HoldPosition,
+        QueenHoldPosition,
+        Cloak,
+        Decloak,
+        Unload,
+        MoveUnload,
+        FireYamatoGun,
+        MoveToFireYamatoGun,
+        CastLockdown,
+        Burrowing,
+        Burrowed,
+        Unburrowing,
+        CastDarkSwarm,
+        CastParasite,
+        CastSpawnBroodlings,
+        CastEMPShockwave,
+        NukeWait,
+        NukeTrain,
+        NukeLaunch,
+        NukePaint,
+        NukeUnit,
+        CastNuclearStrike,
+        NukeTrack,
+        InitializeArbiter,
+        CloakNearbyUnits,
+        PlaceMine,
+        RightClickAction,
+        SuicideUnit,
+        SuicideLocation,
+        SuicideHoldPosition,
+        CastRecall,
+        Teleport,
+        CastScannerSweep,
+        Scanner,
+        CastDefensiveMatrix,
+        CastPsionicStorm,
+        CastIrradiate,
+        CastPlague,
+        CastConsume,
+        CastEnsnare,
+        CastStasisField,
+        CastHallucination,
+        Hallucination2,
+        ResetCollision,
+        ResetHarvestCollision,
+        Patrol,
+        CTFCOPInit,
+        CTFCOPStarted,
+        CTFCOP2,
+        ComputerAI,
+        AtkMoveEP,
+        HarassMove,
+        AIPatrol,
+        GuardPost,
+        RescuePassive,
+        Neutral,
+        ComputerReturn,
+        InitializePsiProvider,
+        SelfDestructing,
+        Critter,
+        HiddenGun,
+        OpenDoor,
+        CloseDoor,
+        HideTrap,
+        RevealTrap,
+        EnableDoodad,
+        DisableDoodad,
+        WarpIn,
+        Medic,
+        MedicHeal,
+        HealMove,
+        MedicHoldPosition,
+        MedicHealToIdle,
+        CastRestoration,
+        CastDisruptionWeb,
+        CastMindControl,
+        DarkArchonMeld,
+        CastFeedback,
+        CastOpticalFlare,
+        CastMaelstrom,
+        JunkYardDog,
+        Fatal,
+        None,
+        Unknown,
+        MAX
+      };
+    }
+  }
   /** To get detailed information about what a unit is doing, you can use the Unit::getOrder method, which
    * will return an Order object. Note that a single command, like gather minerals, can consist of several
    * orders ( MoveToMinerals, HarvestMinerals2, MiningMinerals, ReturnMinerals, etc) which will indicate what
    * state the unit is in while executing the command. For information about how to issue commands to units,
    * go to Unit. */
-  class Order : public Type
+  class Order : public Type<Order, Orders::Enum::Unknown>
   {
     public:
-      Order();
-      Order(int id);
+      Order(int id = Orders::Enum::None);
 
       /** Returns the name of this order. */
       const std::string &getName() const;
@@ -25,9 +224,8 @@ namespace BWAPI
     Order getOrder(std::string name);
 
     /** Returns the set of all the Orders. */
-    const std::set<Order>& allOrders();
+    const Order::const_set& allOrders();
 
-    void init();
     extern const Order Die;
     extern const Order Stop;
     extern const Order Guard;
@@ -45,11 +243,10 @@ namespace BWAPI
     extern const Order TowerGuard;
     extern const Order VultureMine;
     extern const Order Nothing;
-    extern const Order Nothing3;
     extern const Order CastInfestation;
     extern const Order InfestingCommandCenter;
     extern const Order PlaceBuilding;
-    extern const Order BuildProtoss2;
+    extern const Order CreateProtossBuilding;
     extern const Order ConstructingBuilding;
     extern const Order Repair;
     extern const Order PlaceAddon;
@@ -109,7 +306,7 @@ namespace BWAPI
     extern const Order StoppingCreepGrowth;
     extern const Order GuardianAspect;
     extern const Order ArchonWarp;
-    extern const Order CompletingArchonsummon;
+    extern const Order CompletingArchonSummon;
     extern const Order HoldPosition;
     extern const Order Cloak;
     extern const Order Decloak;
@@ -135,7 +332,7 @@ namespace BWAPI
     extern const Order PlaceMine;
     extern const Order RightClickAction;
     extern const Order CastRecall;
-    extern const Order TeleporttoLocation;
+    extern const Order Teleport;
     extern const Order CastScannerSweep;
     extern const Order Scanner;
     extern const Order CastDefensiveMatrix;
@@ -160,20 +357,20 @@ namespace BWAPI
     extern const Order RescuePassive;
     extern const Order Neutral;
     extern const Order ComputerReturn;
-    extern const Order SelfDestrucing;
+    extern const Order SelfDestructing;
     extern const Order Critter;
     extern const Order HiddenGun;
     extern const Order OpenDoor;
     extern const Order CloseDoor;
     extern const Order HideTrap;
     extern const Order RevealTrap;
-    extern const Order Enabledoodad;
-    extern const Order Disabledoodad;
-    extern const Order Warpin;
+    extern const Order EnableDoodad;
+    extern const Order DisableDoodad;
+    extern const Order WarpIn;
     extern const Order Medic;
-    extern const Order MedicHeal1;
+    extern const Order MedicHeal;
     extern const Order HealMove;
-    extern const Order MedicHeal2;
+    extern const Order MedicHealToIdle;
     extern const Order CastRestoration;
     extern const Order CastDisruptionWeb;
     extern const Order CastMindControl;

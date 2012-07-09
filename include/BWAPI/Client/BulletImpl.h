@@ -1,7 +1,6 @@
 #pragma once
 #include <BWAPI.h>
 #include "BulletData.h"
-#include <set>
 #include <string>
 
 namespace BWAPI
@@ -17,6 +16,7 @@ namespace BWAPI
 
       BulletImpl(int index);
       virtual int getID() const;
+      virtual bool exists() const;
       virtual Player* getPlayer() const;
       virtual BulletType getType() const;
       virtual Unit* getSource() const;
@@ -27,8 +27,6 @@ namespace BWAPI
       virtual Unit* getTarget() const;
       virtual Position getTargetPosition() const;
       virtual int getRemoveTimer() const;
-      virtual bool exists() const;
-      virtual bool isVisible() const;
-      virtual bool isVisible(Player* player) const;
+      virtual bool isVisible(Player* player = nullptr) const;
   };
 }

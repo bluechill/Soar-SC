@@ -1,21 +1,74 @@
 #pragma once
+#include <BWAPI/Type.h>
 #include <string>
-#include <set>
-#include "Type.h"
+
 namespace BWAPI
 {
   class UnitType;
 
-  /** Functions in BWAPI may set an error code. To retrieve the error code, call Game::getLastError. */
-  class Error : public Type
+  namespace Errors
+  {
+    /// Enumeration of Error types
+    namespace Enum
+    {
+      enum Enum
+      {
+        Unit_Does_Not_Exist = 0,
+        Unit_Not_Visible,
+        Unit_Not_Owned,
+        Unit_Busy,
+        Incompatible_UnitType,
+        Incompatible_TechType,
+        Incompatible_State,
+        Already_Researched,
+        Fully_Upgraded,
+        Currently_Researching,
+        Currently_Upgrading,
+        Insufficient_Minerals,
+        Insufficient_Gas,
+        Insufficient_Supply,
+        Insufficient_Energy,
+        Insufficient_Tech,
+        Insufficient_Ammo,
+        Insufficient_Space,
+        Invalid_Tile_Position,
+        Unbuildable_Location,
+        Unreachable_Location,
+        Out_Of_Range,
+        Unable_To_Hit,
+        Access_Denied,
+        File_Not_Found,
+        Invalid_Parameter,
+        None,
+        Unknown,
+        MAX
+      };
+    };
+  };
+  /// @~English
+  /// The Error object is generally used to determine
+  /// why certain functions in BWAPI have failed.
+  ///
+  /// For example, you may not have enough resources
+  /// to construct a unit.
+  /// @~
+  /// @see Game::getLastError, Game::setLastError
+  class Error : public Type<Error, Errors::Enum::Unknown>
   {
   public:
-    Error();
-    Error(int id);
+    Error(int id = Errors::Enum::None);
 
-    /** Returns the name of the error. For example Errors::Insufficient_Minerals?.toString() will return a
-     * std::string object containing "Insufficient Minerals". */
-    std::string toString() const;
+    /// @~English
+    /// Retrieves the name of the error.
+    ///
+    /// @returns std::string object containing the name.
+    /// @~
+    const std::string &toString() const;
+
+    /// @copydoc getName
+    /// @~English
+    /// @returns Pointer to c-style string.
+    /// @~
     const char *c_str() const;
   };
   namespace Errors
@@ -25,9 +78,7 @@ namespace BWAPI
     Error getError(std::string name);
 
     /** The set of all the error codes. */
-    const std::set<Error>& allErrors();
-
-    void init();
+    const Error::const_set& allErrors();
 
     /** Returned if you try to order a unit or get information from a unit that no longer exists. */
     extern const Error Unit_Does_Not_Exist;
@@ -36,7 +87,7 @@ namespace BWAPI
     extern const Error Unit_Not_Visible;
 
     /** Returned when attempting to order a unit that BWAPI does not own (i.e. can't order enemy army to go
-     *  away) */
+     *  away */
     extern const Error Unit_Not_Owned;
 
     /** Returned when trying to order a unit to do something when it is performing another order or is in a
