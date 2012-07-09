@@ -4,6 +4,10 @@
 #include <vector>
 #include <sstream>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 using namespace BWAPI;
 using namespace sml;
 using namespace std;
@@ -19,10 +23,20 @@ Soar_Link::Soar_Link()
 
 	kernel = Kernel::CreateKernelInNewThread();
 	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
+
+	mutex = CreateMutex(NULL, FALSE, NULL);
+	if (!mutex)
+	{
+		cerr << "Unable to create mutex." << endl;
+		ExitProcess(7);
+	}
 }
 
 Soar_Link::~Soar_Link()
 {
+	if (WaitForSingleObject(thread_handle, 1000) != WAIT_OBJECT_0)
+		TerminateThread(thread_handle, 3);
+
 	cout.rdbuf(cout_orig_buffer);
 	kernel->DestroyAgent(agent);
 	kernel->Shutdown();
@@ -57,7 +71,13 @@ void Soar_Link::onStart()
 	//cout << "Soar: " << result << endl;
 	//Broodwar->printf("Soar: %s", result);
 
-	update_map();
+	thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
+
+	if (!thread_handle)
+	{
+		cerr << "Unable to create thread!" << endl;
+		ExitProcess(3);
+	}
 }
 
 void Soar_Link::onEnd(bool isWinner)
@@ -75,6 +95,10 @@ void Soar_Link::update_map()
 
 	vector<vector<bool> > walkable;
 
+	cout << "Map width: " << Broodwar->mapWidth() << endl << "Map Height: " << Broodwar->mapHeight() << endl;
+
+	cout << "Time: " << time(NULL) << endl;
+
 	for (int x = 0;x < Broodwar->mapWidth()*4;x++)
 	{
 		vector<bool> y_array;
@@ -85,11 +109,16 @@ void Soar_Link::update_map()
 		walkable.push_back(y_array);
 	}
 
+	cout << "Walkable: " << walkable.size() << " " << walkable[0].size() << endl;
+
 	//TODO: combine polygons
 	for (unsigned int x = 0;x < walkable.size();x++)
 	{
 		for (unsigned int y = 0;y < walkable[x].size();y++)
 		{
+			if (walkable[x][y])
+				continue;
+
 			stringstream ss;
 			ss << x << " " << y << " 1";
 			string vertex1 = ss.str();
@@ -137,6 +166,8 @@ void Soar_Link::update_map()
 		}
 	}
 
+	cout << "Done creating polygons: " << polygons.size() << endl;
+
 	for (set<vector<string> >::iterator it = polygons.begin();it != polygons.end();it++)
 	{
 		string svs_string = "a ";
@@ -157,9 +188,33 @@ void Soar_Link::update_map()
 
 		svs_string += "p 0 0 0";
 
-		cout << svs_string << endl;
-
 		agent->SendSVSInput(svs_string);
+	}
+
+	cout << "Time: " << time(NULL) << endl;
+
+	cout << "Done updating map" << endl;
+
+	DWORD result = WaitForSingleObject(mutex, INFINITE);
+
+	switch (result)
+	{
+		case WAIT_OBJECT_0:
+		{
+			done_updating = true;
+			
+			if (!ReleaseMutex(mutex))
+			{
+				cerr << "Unable to release mutex" << endl;
+				ExitProcess(9);
+			}
+		}
+
+		case WAIT_ABANDONED:
+		{
+			cerr << "Abandoned after infinte time! Error on mutex!" << endl;
+			ExitProcess(9999);
+		}
 	}
 }
 
@@ -179,6 +234,35 @@ void Soar_Link::onFrame()
 	// Latency frames are the number of frames before commands are processed.
 	if ( Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0 )
 		return;
+
+	DWORD result = WaitForSingleObject(mutex, 10);
+
+	switch (result)
+	{
+		case WAIT_OBJECT_0:
+		{
+			__try
+			{
+				if (!done_updating)
+					return;
+			}
+
+			__finally
+			{
+				if (!ReleaseMutex(mutex))
+				{
+					cerr << "Unable to release mutex" << endl;
+					ExitProcess(9);
+				}
+			}
+		}
+
+		case WAIT_ABANDONED:
+		{
+			cerr << "Abandoned after 10 miliseconds (mutex)" << endl;
+			return;
+		}
+	}
 }
 
 void Soar_Link::onSendText(std::string text)

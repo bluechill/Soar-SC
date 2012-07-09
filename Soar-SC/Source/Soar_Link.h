@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#include <windows.h>
+
 // Remember not to use "Broodwar" in any global class constructor!
 
 class Soar_Link : public BWAPI::AIModule
@@ -21,6 +23,12 @@ private:
 	std::streambuf* cout_orig_buffer;
 	
 	std::set<std::vector<std::string> > unwalkable_polygons;
+
+	DWORD thread_id;
+	HANDLE thread_handle;
+	HANDLE mutex;
+
+	bool done_updating;
 
 public:
 	// Virtual functions for callbacks, leave these as they are.
@@ -46,7 +54,12 @@ public:
 	Soar_Link();
 	~Soar_Link();
 
-	void extract_polygons();
-
 	void update_map();
+
+	static DWORD WINAPI thread_runner(void* param)
+	{
+		Soar_Link* This = (Soar_Link*)param;
+		This->update_map();
+		return 0;
+	}
 };
