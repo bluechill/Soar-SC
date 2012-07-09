@@ -1,0 +1,3 @@
+Soar-SC
+
+Soar-SC stands for Soar Starcraft.  It is a Soar Agent which can play against other players in Starcraft.  It uses the Broodwar API specifically the Broodwar API 4 branch as of July 8th 2012.  It also heavily uses SVS including a custom viewer rewritten by yours truly.  Since this was done on windows, SVS was also ported to windows by yours truly.  Soar-SC is in it's early stages but it will eventually be able to play against the built in Starcrat AI and win; even learn over time.
