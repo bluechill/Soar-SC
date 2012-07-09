@@ -29,11 +29,17 @@ Soar_Link::Soar_Link()
 	mutex = CreateMutex(NULL, FALSE, NULL);
 	if (!mutex)
 	{
+<<<<<<< HEAD
 		cout << "Unable to create mutex." << endl;
 		ExitProcess(7);
 	}
 
 	done_updating = false;
+=======
+		cerr << "Unable to create mutex." << endl;
+		ExitProcess(7);
+	}
+>>>>>>> be07288... Threading for map processing
 }
 
 Soar_Link::~Soar_Link()
@@ -73,6 +79,7 @@ void Soar_Link::onStart()
 	//cout << "Soar: " << result << endl;
 	//Broodwar->printf("Soar: %s", result);
 
+<<<<<<< HEAD
 	//Uncomment for dealing with barriers within Soar
 	/*thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
 
@@ -81,6 +88,15 @@ void Soar_Link::onStart()
 	cout << "Unable to create thread!" << endl;
 	ExitProcess(3);
 	}*/
+=======
+	thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
+
+	if (!thread_handle)
+	{
+		cerr << "Unable to create thread!" << endl;
+		ExitProcess(3);
+	}
+>>>>>>> be07288... Threading for map processing
 }
 
 void Soar_Link::onEnd(bool isWinner)
@@ -202,6 +218,7 @@ void Soar_Link::update_map()
 
 	switch (result)
 	{
+<<<<<<< HEAD
 	case WAIT_OBJECT_0:
 		{
 			done_updating = true;
@@ -353,6 +370,25 @@ void Soar_Link::update_units()
 	}
 
 	my_units = final_units;
+=======
+		case WAIT_OBJECT_0:
+		{
+			done_updating = true;
+			
+			if (!ReleaseMutex(mutex))
+			{
+				cerr << "Unable to release mutex" << endl;
+				ExitProcess(9);
+			}
+		}
+
+		case WAIT_ABANDONED:
+		{
+			cerr << "Abandoned after infinte time! Error on mutex!" << endl;
+			ExitProcess(9999);
+		}
+	}
+>>>>>>> be07288... Threading for map processing
 }
 
 void Soar_Link::onFrame()
@@ -372,6 +408,7 @@ void Soar_Link::onFrame()
 	if ( Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0 )
 		return;
 
+<<<<<<< HEAD
 	//Uncomment for dealing with barriers within Soar
 	/*DWORD result = WaitForSingleObject(mutex, 10);
 
@@ -403,6 +440,36 @@ void Soar_Link::onFrame()
 	}*/
 
 	update_units();
+=======
+	DWORD result = WaitForSingleObject(mutex, 10);
+
+	switch (result)
+	{
+		case WAIT_OBJECT_0:
+		{
+			__try
+			{
+				if (!done_updating)
+					return;
+			}
+
+			__finally
+			{
+				if (!ReleaseMutex(mutex))
+				{
+					cerr << "Unable to release mutex" << endl;
+					ExitProcess(9);
+				}
+			}
+		}
+
+		case WAIT_ABANDONED:
+		{
+			cerr << "Abandoned after 10 miliseconds (mutex)" << endl;
+			return;
+		}
+	}
+>>>>>>> be07288... Threading for map processing
 }
 
 void Soar_Link::onSendText(std::string text)
