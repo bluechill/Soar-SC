@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -94,14 +94,6 @@
     <ClCompile Include="Source\ExampleAIClient.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BWAPIClient\BWAPIClient.vcxproj">
-      <Project>{c99abf61-6716-4fc0-aa77-9a136ea61680}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\BWAPILIB\BWAPILIB.vcxproj">
-      <Project>{843656fd-9bfd-47bf-8460-7bfe9710ea2c}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
