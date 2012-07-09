@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Soar Headers">
+      <UniqueIdentifier>{05e3db61-ba2e-4679-9193-b2d3479d83e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BWAPI">
+      <UniqueIdentifier>{d651e4f2-603d-4f69-907a-c10473a674e4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Dll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Soar_Link.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Soar_Link.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\EmbeddedSMLInterface.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\Export.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\misc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ParseXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ParseXMLFile.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ParseXMLString.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\pcreposix.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\portability.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\portability_posix.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\portability_windows.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_AnalyzeXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ArgMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Client.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientAgent.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientAnalyzedXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientDirect.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientErrors.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientEvents.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientFloatElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientIdentifier.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientIntElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientKernel.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientStringElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientTraceXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientWMElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientWorkingMemory.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ClientXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Connection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_DeltaList.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_EmbeddedConnection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_EmbeddedConnectionAsynch.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_EmbeddedConnectionSynch.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Errors.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Events.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_EventThread.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Handles.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ListMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_MessageSML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Names.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_ObjectMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_OutputDeltaList.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_RemoteConnection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_StringOps.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagArg.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagCommand.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagError.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagFilter.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagName.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagResult.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_TagWme.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sml_Utils.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\soar_TraceNames.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\soarversion.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_ClientNamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_ClientSocket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_DataSender.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_ListenerNamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_ListenerSocket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_NamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_OSspecific.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_Socket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\sock_SocketLib.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\thread_Event.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\thread_Lock.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\thread_OSspecific.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\thread_Thread.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\tokenizer.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\XMLTrace.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\msvc\inttypes.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\msvc\stdint.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\_undefs.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\borland.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\como.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\dmc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\gcc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\intel.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\msvc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\mwerks.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\obsolete.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\sunpro.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\unknown.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\vectorc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\watcom.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\internal\safestr.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\performance\performance_counter_init.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\performance\performance_counter_scope.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\stlsoft.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\64bit_integers.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\argument_proxies.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\compiler_optimisation_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\constraints.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\exception_string.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\forward_enums.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\inert.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\integral_printf_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\limit_traits.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\minmax.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\must_init.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\null.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\nulldef.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\operator_bool.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\operator_bool_adaptor.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\options_verifier.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\pair.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\placement_aid.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\pod_veneer.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\printf_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\remove_from_scope.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\sign_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\size_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\static_initialisers.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\algorithm.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\dinkumware_iterator_traits.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_category_limiters.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_generators.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_helper.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\library_discriminator.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\stdio_overload_detectors.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std\utility.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\std_swap.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\trip_bool.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\true_typedef.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\unused_return_value_monitor.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\zero.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\stlsoft\util\zerodef.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\unixstl\performance\performance_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\unixstl\performance\processtimes_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\unixstl\unixstl.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\highperformance_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\multimedia_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\performance_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\processtimes_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\systemtime_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\threadtimes_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\performance\tick_counter.hpp">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\winstl\winstl.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ElementXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ElementXMLHandle.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ElementXMLImpl.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar\include\ElementXMLInterface.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\AIModule.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\ArithmaticFilter.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\BestFilter.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Bullet.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Bulletset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\BulletType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\BulletData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\BulletImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\Client.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\Command.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\CommandType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\Event.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\ForceData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\ForceImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\GameData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\GameImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\GameTable.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\PlayerData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\PlayerImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\RegionData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\RegionImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\Shape.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\ShapeType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\UnitCommand.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\UnitData.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client\UnitImpl.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Client.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Color.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\ComparisonFilter.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Constants.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\ConstVectorset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\CoordinateType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\DamageType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Error.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Event.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\EventType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\ExplosionType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Filters.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Flag.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Force.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Forceset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Game.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\GameType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Input.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Latency.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Order.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Player.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Playerset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\PlayerType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Position.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\PositionUnit.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Race.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Region.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Regionset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\TechType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\TournamentAction.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Type.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UnaryFilter.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Unit.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UnitCommand.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UnitCommandType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Unitset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UnitSizeType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UnitType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\UpgradeType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Vectorset.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\Vectorset_iterator.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI\WeaponType.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BWAPI.h">
+      <Filter>BWAPI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

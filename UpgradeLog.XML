@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Projects">
+</Property><Property Name="Solution File" Value="Z:\Developer\BWAPI\Soar-SC\Projects.sln">
+</Property><Property Name="Date" Value="Sunday, July 08, 2012">
+</Property><Property Name="Time" Value="23:10:11 PM">
+</Property></Properties><Event ErrorLevel="0" Project="AIModuleLoader" Source="AIModuleLoader\AIModuleLoader.vcproj" Description="Converting project file 'Z:\Developer\BWAPI\Soar-SC\AIModuleLoader\AIModuleLoader.vcproj'.">
+</Event><Event ErrorLevel="1" Project="AIModuleLoader" Source="AIModuleLoader\AIModuleLoader.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="AIModuleLoader" Source="AIModuleLoader\AIModuleLoader.vcproj" Description="Done converting to new project file 'Z:\Developer\BWAPI\Soar-SC\AIModuleLoader\AIModuleLoader.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="AIModuleLoader" Source="AIModuleLoader\AIModuleLoader.vcproj" Description="Converted">
+</Event></UpgradeLog>

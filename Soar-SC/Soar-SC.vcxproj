@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{88F37AD3-7BC9-4202-B132-0F546EF424C7}</ProjectGuid>
+    <RootNamespace>ExampleAIModule</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../include;Soar/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SOARMODULE_EXPORTS;_SECURE_SCL 0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>Soar/Soar.lib;../lib/BWAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Soar;../lib;../lib/boost;../Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(OutDir)..\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt);
+copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>../include;Soar/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SOARMODULE_EXPORTS;_SECURE_SCL 0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>Soar/Soar.lib;../lib/BWAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Soar;../Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(OutDir)..\Starcraft\bwapi-data\AI\$(TargetName)$(TargetExt);
+copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)$(TargetExt)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Dll.cpp" />
+    <ClCompile Include="Source\Soar_Link.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\BWAPI.h" />
+    <ClInclude Include="..\include\BWAPI\AIModule.h" />
+    <ClInclude Include="..\include\BWAPI\ArithmaticFilter.h" />
+    <ClInclude Include="..\include\BWAPI\BestFilter.h" />
+    <ClInclude Include="..\include\BWAPI\Bullet.h" />
+    <ClInclude Include="..\include\BWAPI\Bulletset.h" />
+    <ClInclude Include="..\include\BWAPI\BulletType.h" />
+    <ClInclude Include="..\include\BWAPI\Client.h" />
+    <ClInclude Include="..\include\BWAPI\Client\BulletData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\BulletImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Client\Client.h" />
+    <ClInclude Include="..\include\BWAPI\Client\Command.h" />
+    <ClInclude Include="..\include\BWAPI\Client\CommandType.h" />
+    <ClInclude Include="..\include\BWAPI\Client\Event.h" />
+    <ClInclude Include="..\include\BWAPI\Client\ForceData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\ForceImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Client\GameData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\GameImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Client\GameTable.h" />
+    <ClInclude Include="..\include\BWAPI\Client\PlayerData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\PlayerImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Client\RegionData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\RegionImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Client\Shape.h" />
+    <ClInclude Include="..\include\BWAPI\Client\ShapeType.h" />
+    <ClInclude Include="..\include\BWAPI\Client\UnitCommand.h" />
+    <ClInclude Include="..\include\BWAPI\Client\UnitData.h" />
+    <ClInclude Include="..\include\BWAPI\Client\UnitImpl.h" />
+    <ClInclude Include="..\include\BWAPI\Color.h" />
+    <ClInclude Include="..\include\BWAPI\ComparisonFilter.h" />
+    <ClInclude Include="..\include\BWAPI\Constants.h" />
+    <ClInclude Include="..\include\BWAPI\ConstVectorset.h" />
+    <ClInclude Include="..\include\BWAPI\CoordinateType.h" />
+    <ClInclude Include="..\include\BWAPI\DamageType.h" />
+    <ClInclude Include="..\include\BWAPI\Error.h" />
+    <ClInclude Include="..\include\BWAPI\Event.h" />
+    <ClInclude Include="..\include\BWAPI\EventType.h" />
+    <ClInclude Include="..\include\BWAPI\ExplosionType.h" />
+    <ClInclude Include="..\include\BWAPI\Filters.h" />
+    <ClInclude Include="..\include\BWAPI\Flag.h" />
+    <ClInclude Include="..\include\BWAPI\Force.h" />
+    <ClInclude Include="..\include\BWAPI\Forceset.h" />
+    <ClInclude Include="..\include\BWAPI\Game.h" />
+    <ClInclude Include="..\include\BWAPI\GameType.h" />
+    <ClInclude Include="..\include\BWAPI\Input.h" />
+    <ClInclude Include="..\include\BWAPI\Latency.h" />
+    <ClInclude Include="..\include\BWAPI\Order.h" />
+    <ClInclude Include="..\include\BWAPI\Player.h" />
+    <ClInclude Include="..\include\BWAPI\Playerset.h" />
+    <ClInclude Include="..\include\BWAPI\PlayerType.h" />
+    <ClInclude Include="..\include\BWAPI\Position.h" />
+    <ClInclude Include="..\include\BWAPI\PositionUnit.h" />
+    <ClInclude Include="..\include\BWAPI\Race.h" />
+    <ClInclude Include="..\include\BWAPI\Region.h" />
+    <ClInclude Include="..\include\BWAPI\Regionset.h" />
+    <ClInclude Include="..\include\BWAPI\TechType.h" />
+    <ClInclude Include="..\include\BWAPI\TournamentAction.h" />
+    <ClInclude Include="..\include\BWAPI\Type.h" />
+    <ClInclude Include="..\include\BWAPI\UnaryFilter.h" />
+    <ClInclude Include="..\include\BWAPI\Unit.h" />
+    <ClInclude Include="..\include\BWAPI\UnitCommand.h" />
+    <ClInclude Include="..\include\BWAPI\UnitCommandType.h" />
+    <ClInclude Include="..\include\BWAPI\Unitset.h" />
+    <ClInclude Include="..\include\BWAPI\UnitSizeType.h" />
+    <ClInclude Include="..\include\BWAPI\UnitType.h" />
+    <ClInclude Include="..\include\BWAPI\UpgradeType.h" />
+    <ClInclude Include="..\include\BWAPI\Vectorset.h" />
+    <ClInclude Include="..\include\BWAPI\Vectorset_iterator.h" />
+    <ClInclude Include="..\include\BWAPI\WeaponType.h" />
+    <ClInclude Include="Soar\include\ElementXML.h" />
+    <ClInclude Include="Soar\include\ElementXMLHandle.h" />
+    <ClInclude Include="Soar\include\ElementXMLImpl.h" />
+    <ClInclude Include="Soar\include\ElementXMLInterface.h" />
+    <ClInclude Include="Soar\include\EmbeddedSMLInterface.h" />
+    <ClInclude Include="Soar\include\Export.h" />
+    <ClInclude Include="Soar\include\misc.h" />
+    <ClInclude Include="Soar\include\msvc\inttypes.h" />
+    <ClInclude Include="Soar\include\msvc\stdint.h" />
+    <ClInclude Include="Soar\include\ParseXML.h" />
+    <ClInclude Include="Soar\include\ParseXMLFile.h" />
+    <ClInclude Include="Soar\include\ParseXMLString.h" />
+    <ClInclude Include="Soar\include\pcreposix.h" />
+    <ClInclude Include="Soar\include\portability.h" />
+    <ClInclude Include="Soar\include\portability_posix.h" />
+    <ClInclude Include="Soar\include\portability_windows.h" />
+    <ClInclude Include="Soar\include\sml_AnalyzeXML.h" />
+    <ClInclude Include="Soar\include\sml_ArgMap.h" />
+    <ClInclude Include="Soar\include\sml_Client.h" />
+    <ClInclude Include="Soar\include\sml_ClientAgent.h" />
+    <ClInclude Include="Soar\include\sml_ClientAnalyzedXML.h" />
+    <ClInclude Include="Soar\include\sml_ClientDirect.h" />
+    <ClInclude Include="Soar\include\sml_ClientErrors.h" />
+    <ClInclude Include="Soar\include\sml_ClientEvents.h" />
+    <ClInclude Include="Soar\include\sml_ClientFloatElement.h" />
+    <ClInclude Include="Soar\include\sml_ClientIdentifier.h" />
+    <ClInclude Include="Soar\include\sml_ClientIntElement.h" />
+    <ClInclude Include="Soar\include\sml_ClientKernel.h" />
+    <ClInclude Include="Soar\include\sml_ClientStringElement.h" />
+    <ClInclude Include="Soar\include\sml_ClientTraceXML.h" />
+    <ClInclude Include="Soar\include\sml_ClientWMElement.h" />
+    <ClInclude Include="Soar\include\sml_ClientWorkingMemory.h" />
+    <ClInclude Include="Soar\include\sml_ClientXML.h" />
+    <ClInclude Include="Soar\include\sml_Connection.h" />
+    <ClInclude Include="Soar\include\sml_DeltaList.h" />
+    <ClInclude Include="Soar\include\sml_EmbeddedConnection.h" />
+    <ClInclude Include="Soar\include\sml_EmbeddedConnectionAsynch.h" />
+    <ClInclude Include="Soar\include\sml_EmbeddedConnectionSynch.h" />
+    <ClInclude Include="Soar\include\sml_Errors.h" />
+    <ClInclude Include="Soar\include\sml_Events.h" />
+    <ClInclude Include="Soar\include\sml_EventThread.h" />
+    <ClInclude Include="Soar\include\sml_Handles.h" />
+    <ClInclude Include="Soar\include\sml_ListMap.h" />
+    <ClInclude Include="Soar\include\sml_MessageSML.h" />
+    <ClInclude Include="Soar\include\sml_Names.h" />
+    <ClInclude Include="Soar\include\sml_ObjectMap.h" />
+    <ClInclude Include="Soar\include\sml_OutputDeltaList.h" />
+    <ClInclude Include="Soar\include\sml_RemoteConnection.h" />
+    <ClInclude Include="Soar\include\sml_StringOps.h" />
+    <ClInclude Include="Soar\include\sml_TagArg.h" />
+    <ClInclude Include="Soar\include\sml_TagCommand.h" />
+    <ClInclude Include="Soar\include\sml_TagError.h" />
+    <ClInclude Include="Soar\include\sml_TagFilter.h" />
+    <ClInclude Include="Soar\include\sml_TagName.h" />
+    <ClInclude Include="Soar\include\sml_TagResult.h" />
+    <ClInclude Include="Soar\include\sml_TagWme.h" />
+    <ClInclude Include="Soar\include\sml_Utils.h" />
+    <ClInclude Include="Soar\include\soarversion.h" />
+    <ClInclude Include="Soar\include\soar_TraceNames.h" />
+    <ClInclude Include="Soar\include\sock_ClientNamedPipe.h" />
+    <ClInclude Include="Soar\include\sock_ClientSocket.h" />
+    <ClInclude Include="Soar\include\sock_DataSender.h" />
+    <ClInclude Include="Soar\include\sock_ListenerNamedPipe.h" />
+    <ClInclude Include="Soar\include\sock_ListenerSocket.h" />
+    <ClInclude Include="Soar\include\sock_NamedPipe.h" />
+    <ClInclude Include="Soar\include\sock_OSspecific.h" />
+    <ClInclude Include="Soar\include\sock_Socket.h" />
+    <ClInclude Include="Soar\include\sock_SocketLib.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\borland.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\como.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\dmc.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\gcc.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\intel.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\msvc.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\mwerks.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\obsolete.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\sunpro.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\unknown.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\vectorc.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\cccap\watcom.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\safestr.h" />
+    <ClInclude Include="Soar\include\stlsoft\internal\_undefs.h" />
+    <ClInclude Include="Soar\include\stlsoft\performance\performance_counter_init.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\performance\performance_counter_scope.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\stlsoft.h" />
+    <ClInclude Include="Soar\include\stlsoft\util\64bit_integers.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\argument_proxies.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\compiler_optimisation_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\constraints.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\exception_string.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\forward_enums.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\inert.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\integral_printf_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\limit_traits.h" />
+    <ClInclude Include="Soar\include\stlsoft\util\minmax.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\must_init.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\null.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\nulldef.h" />
+    <ClInclude Include="Soar\include\stlsoft\util\operator_bool.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\operator_bool_adaptor.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\options_verifier.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\pair.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\placement_aid.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\pod_veneer.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\printf_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\remove_from_scope.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\sign_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\size_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\static_initialisers.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\algorithm.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\dinkumware_iterator_traits.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_category_limiters.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_generators.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\iterator_helper.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\library_discriminator.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\stdio_overload_detectors.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std\utility.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\std_swap.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\trip_bool.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\true_typedef.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\unused_return_value_monitor.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\zero.hpp" />
+    <ClInclude Include="Soar\include\stlsoft\util\zerodef.h" />
+    <ClInclude Include="Soar\include\thread_Event.h" />
+    <ClInclude Include="Soar\include\thread_Lock.h" />
+    <ClInclude Include="Soar\include\thread_OSspecific.h" />
+    <ClInclude Include="Soar\include\thread_Thread.h" />
+    <ClInclude Include="Soar\include\tokenizer.h" />
+    <ClInclude Include="Soar\include\unixstl\performance\performance_counter.hpp" />
+    <ClInclude Include="Soar\include\unixstl\performance\processtimes_counter.hpp" />
+    <ClInclude Include="Soar\include\unixstl\unixstl.h" />
+    <ClInclude Include="Soar\include\winstl\performance\highperformance_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\multimedia_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\performance_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\processtimes_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\systemtime_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\threadtimes_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\performance\tick_counter.hpp" />
+    <ClInclude Include="Soar\include\winstl\winstl.h" />
+    <ClInclude Include="Soar\include\XMLTrace.h" />
+    <ClInclude Include="Source\Soar_Link.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
