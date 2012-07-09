@@ -31,7 +31,6 @@ public:
 	} socket_type;
 	
 	SVSSocket(const char* path = ""); //Initializes SVSSocket with a path to the Unix Socket, however, on windows the path argument is ignored because on windows it uses pipes.  Ideally you should just leave this to the default which will be set if you leave it to nothing ie. SVSSocket();
-	SVSSocket(const char* path = "");
 	SVSSocket(bool standard_input); //Used for standard input
 	SVSSocket(socket_type type);
 	

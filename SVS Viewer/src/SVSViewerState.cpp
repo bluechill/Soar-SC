@@ -50,6 +50,8 @@ max_time_steps(10.0f)
 	
 	grid = true;
 	wireframe = true;
+
+	button1_down = false;
 }
 
 SVSViewerState::~SVSViewerState()
@@ -217,19 +219,19 @@ bool SVSViewerState::parse_command(std::string command)
 }
 
 void SVSViewerState::on_push() {
-	Zeni::get_Window().mouse_hide(true);
-	Zeni::get_Window().mouse_grab(true);
+	/*Zeni::get_Window().mouse_hide(true);
+	Zeni::get_Window().mouse_grab(true);*/
 	
 	set_pausable(false);
 	
-	mouse_grabbed = true;
+	//mouse_grabbed = true;
 }
 
 void SVSViewerState::on_pop() {
-	Zeni::get_Window().mouse_grab(false);
+	/*Zeni::get_Window().mouse_grab(false);
 	Zeni::get_Window().mouse_hide(false);
 	
-	mouse_grabbed = false;
+	mouse_grabbed = false;*/
 }
 
 void SVSViewerState::on_key(const SDL_KeyboardEvent &event)
@@ -298,7 +300,7 @@ void SVSViewerState::on_key(const SDL_KeyboardEvent &event)
 			exit(1);
 			break;
 		}
-		case SDLK_u:
+		/*case SDLK_u:
 		{
 			if (mouse_grabbed)
 			{
@@ -311,14 +313,24 @@ void SVSViewerState::on_key(const SDL_KeyboardEvent &event)
 				Zeni::get_Window().mouse_hide(true);
 			}
 			break;
-		}
+		}*/
 			
 		default:
 			Gamestate_Base::on_key(event);
 	}
 }
 
-void SVSViewerState::on_mouse_motion(const SDL_MouseMotionEvent &event) {	
+void SVSViewerState::on_mouse_button(const SDL_MouseButtonEvent &event)
+{
+	if (event.button == SDL_BUTTON_LEFT)
+		button1_down = event.type == SDL_MOUSEBUTTONDOWN;
+}
+
+void SVSViewerState::on_mouse_motion(const SDL_MouseMotionEvent &event)
+{
+	if (!button1_down)
+		return;
+
 	camera.turn_left_xy(-event.xrel / 100.0f);
 	
 	// Back up a couple vectors
@@ -337,7 +349,7 @@ void SVSViewerState::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 		camera.orientation = prev_orientation;
 }
 
-void SVSViewerState::draw_grid(float xstart, float ystart, int rows, int columns, int distance)
+void SVSViewerState::draw_grid(float xstart, float ystart, int rows, int columns, float distance)
 {
 	int extra_lines_x = (int) xstart/distance;
 	int extra_lines_y = (int) ystart/distance;

@@ -12,6 +12,8 @@ using namespace BWAPI;
 using namespace sml;
 using namespace std;
 
+const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1";
+
 Soar_Link::Soar_Link()
 	: cout_redirect("bwapi-data/logs/stdout.txt")
 {
@@ -27,9 +29,11 @@ Soar_Link::Soar_Link()
 	mutex = CreateMutex(NULL, FALSE, NULL);
 	if (!mutex)
 	{
-		cerr << "Unable to create mutex." << endl;
+		cout << "Unable to create mutex." << endl;
 		ExitProcess(7);
 	}
+
+	done_updating = false;
 }
 
 Soar_Link::~Soar_Link()
@@ -71,13 +75,14 @@ void Soar_Link::onStart()
 	//cout << "Soar: " << result << endl;
 	//Broodwar->printf("Soar: %s", result);
 
-	thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
+	//Uncomment for dealing with barriers within Soar
+	/*thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
 
 	if (!thread_handle)
 	{
-		cerr << "Unable to create thread!" << endl;
-		ExitProcess(3);
-	}
+	cout << "Unable to create thread!" << endl;
+	ExitProcess(3);
+	}*/
 }
 
 void Soar_Link::onEnd(bool isWinner)
@@ -199,21 +204,145 @@ void Soar_Link::update_map()
 
 	switch (result)
 	{
-		case WAIT_OBJECT_0:
+	case WAIT_OBJECT_0:
 		{
 			done_updating = true;
-			
+
 			if (!ReleaseMutex(mutex))
 			{
-				cerr << "Unable to release mutex" << endl;
+				cout << "Unable to release mutex" << endl;
 				ExitProcess(9);
 			}
+			break;
 		}
 
-		case WAIT_ABANDONED:
+	case WAIT_ABANDONED:
 		{
-			cerr << "Abandoned after infinte time! Error on mutex!" << endl;
+			cout << "Abandoned after infinte time! Error on mutex!" << endl;
 			ExitProcess(9999);
+			break;
+		}
+	}
+
+	cout << "Done!" << endl;
+}
+
+void Soar_Link::update_resources()
+{
+
+}
+
+void Soar_Link::update_units()
+{
+	Unitset my_units_new = Broodwar->self()->getUnits();
+
+	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
+	{
+		if (my_units.find(*it) == my_units.end())
+		{
+			Unit* bw_unit = (*it);
+
+			if (!bw_unit->getType().isBuilding())
+			{
+				Identifier* input_link = agent->GetInputLink();
+
+				Identifier* id;
+				if (!input_link->FindByAttribute("units", 0))
+				{
+					cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+					id = input_link->CreateIdWME("units");
+				}
+				else
+					id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+				Identifier* unit = id->CreateIdWME("unit");
+				unit->CreateIntWME("id", bw_unit->getID());
+				bool worker = bw_unit->getType().isWorker();
+				unit->CreateIntWME("worker", worker);
+				if (worker)
+				{
+					unit->CreateIntWME("idle", bw_unit->isIdle());
+					unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
+
+					if (bw_unit->isCarryingGas())
+						unit->CreateStringWME("carrying", "gas");
+					else if (bw_unit->isCarryingMinerals())
+						unit->CreateStringWME("carring", "minerals");
+					else if (bw_unit->getPowerUp())
+						unit->CreateStringWME("carrying", "powerup");
+				}
+				else
+				{
+					//TODO handle units other than workers
+				}
+
+				string svs_object_id = bw_unit->getType().getName();
+				stringstream ss;
+				ss << bw_unit->getID();
+				svs_object_id += ss.str();
+				ss.str("");
+				ss << bw_unit->getPosition().x/4 << " " << bw_unit->getPosition().y/4 << " 0";
+				string position = ss.str();
+				ss.str("");
+				
+				ss << bw_unit->getType().tileWidth() << " " << bw_unit->getType().tileHeight() << " 1";
+				string size = ss.str();
+				ss.str("");
+
+				ss << bw_unit->getAngle();
+				string rotation = ss.str();
+
+				string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
+
+				agent->SendSVSInput(svs_command);
+				
+				unit->CreateStringWME("svsobject", svs_object_id.c_str());
+			}
+		}
+	}
+
+	for (Unitset::iterator it = my_units_new.begin(), it_next = it;it != my_units_new.end();it = it_next)
+	{
+		++it_next;
+
+		if (it == my_units_new.end())
+			break;
+
+		Identifier* input_link = agent->GetInputLink();
+
+		if (!(*it)->exists() || (*it)->getType().isBuilding())
+		{
+			Identifier* id;
+			if (!input_link->FindByAttribute("units", 0))
+			{
+				cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
+
+				id = input_link->CreateIdWME("units");
+			}
+			else
+				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+			if (id->GetParameterValue("name") == "units")
+			{
+				for (int j = 0;j < id->GetNumberChildren();j++)
+				{
+					Identifier* unit;
+					if (!id->GetChild(j)->IsIdentifier())
+						continue;
+					else
+						unit = id->GetChild(j)->ConvertToIdentifier();
+
+					if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == (*it)->getID())
+					{
+						id->GetChild(j)->DestroyWME();
+
+						break;
+					}
+				}
+			}
+
+			my_units_new.erase(it);
 		}
 	}
 }
@@ -235,34 +364,37 @@ void Soar_Link::onFrame()
 	if ( Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0 )
 		return;
 
-	DWORD result = WaitForSingleObject(mutex, 10);
+	//Uncomment for dealing with barriers within Soar
+	/*DWORD result = WaitForSingleObject(mutex, 10);
 
 	switch (result)
 	{
-		case WAIT_OBJECT_0:
-		{
-			__try
-			{
-				if (!done_updating)
-					return;
-			}
-
-			__finally
-			{
-				if (!ReleaseMutex(mutex))
-				{
-					cerr << "Unable to release mutex" << endl;
-					ExitProcess(9);
-				}
-			}
-		}
-
-		case WAIT_ABANDONED:
-		{
-			cerr << "Abandoned after 10 miliseconds (mutex)" << endl;
-			return;
-		}
+	case WAIT_OBJECT_0:
+	{
+	__try
+	{
+	if (!done_updating)
+	return;
 	}
+
+	__finally
+	{
+	if (!ReleaseMutex(mutex))
+	{
+	cout << "Unable to release mutex" << endl;
+	ExitProcess(9);
+	}
+	}
+	}
+
+	case WAIT_ABANDONED:
+	{
+	cout << "Abandoned after 10 miliseconds (mutex)" << endl;
+	return;
+	}
+	}*/
+
+	update_units();
 }
 
 void Soar_Link::onSendText(std::string text)

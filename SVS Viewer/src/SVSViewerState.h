@@ -37,9 +37,12 @@ public:
 	void on_key(const SDL_KeyboardEvent &event);
 	
 	void on_mouse_motion(const SDL_MouseMotionEvent &event);
+	void on_mouse_button(const SDL_MouseButtonEvent &event);
 	
 	void on_push();
 	void on_pop();
+
+	bool button1_down;
 	
 private:
 	std::vector<std::string> reader_buffer;

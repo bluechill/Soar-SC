@@ -24,6 +24,12 @@ private:
 	
 	std::set<std::vector<std::string> > unwalkable_polygons;
 
+	BWAPI::Unitset my_units;
+	BWAPI::Unitset enemy_units;
+
+	BWAPI::Unitset minerals;
+	BWAPI::Unitset vesp_gas;
+
 	DWORD thread_id;
 	HANDLE thread_handle;
 	HANDLE mutex;
@@ -54,7 +60,12 @@ public:
 	Soar_Link();
 	~Soar_Link();
 
+	std::set<std::vector<BWAPI::Position> > find_connected_tiles(const std::vector<std::vector<bool> > &walkable_tiles);
 	void update_map();
+
+	//Sends all the resources to Soar.
+	void update_resources();
+	void update_units();
 
 	static DWORD WINAPI thread_runner(void* param)
 	{
@@ -62,4 +73,6 @@ public:
 		This->update_map();
 		return 0;
 	}
+
+	const static std::string unit_box_verts;
 };
