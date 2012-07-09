@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
-<Properties><Property Name="Solution" Value="Soar-SC">
-</Property><Property Name="Solution File" Value="Z:\Developer\BWAPI\Soar-SC\Soar-SC\Soar-SC.sln">
-</Property><Property Name="Date" Value="Thursday, July 05, 2012">
-</Property><Property Name="Time" Value="17:06:58 PM">
-</Property><Property Name="Log Number" Value="2">
-</Property></Properties><Event ErrorLevel="3" Project="Soar-SC" Source="Soar-SC.vcproj" Description="No Conversion Required">
-</Event><Event ErrorLevel="2" Project="" Source="Soar-SC.vcxproj" Description="">
-</Event></UpgradeLog>
