@@ -24,8 +24,6 @@ public:
 	SVSViewerState(SVSSocket::socket_type type);
 	~SVSViewerState();
 	
-	static int inputAvailible();
-	
 	bool reader_function();
 	
 	bool parse_command(std::string command);

@@ -99,7 +99,7 @@ bool SVSParser::parse_mods(std::vector<std::string> &parts, SVSScene &scene, par
 				
 				Zeni::Quaternion* temp_quaternion;
 				
-				temp_quaternion = new Zeni::Quaternion(temp_rotation.x, temp_rotation.y, temp_rotation.z);
+				temp_quaternion = new Zeni::Quaternion(temp_rotation.y, temp_rotation.x, temp_rotation.z);
 				
 				rotation = (*temp_quaternion);
 				

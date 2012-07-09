@@ -71,10 +71,12 @@ SVSSocket::SVSSocket(const char *path)
 
 	if (pipe == INVALID_HANDLE_VALUE) //Make sure it's valid
 	{
-		std::cout << "sock::sock invalid pipe" << std::endl; //Not valid so output it
+		std::cout << "Error creating pipe: " << GetLastError() << std::endl; //Not valid so output it
 		exit(1); //Then exit
 	}
 #endif
+
+	RedirectIOToConsole();
 }
 
 #ifdef _WIN32
@@ -213,6 +215,7 @@ bool SVSSocket::listen()
 	BOOL success = ConnectNamedPipe(pipe, NULL); //Connect to the pipe
 	if (!success) //But if we had an error
 	{
+		std::cout << "Error waiting for connection pipe: " << GetLastError() << std::endl;
 		CloseHandle(pipe); //Close the pipe
 		return false; //Then return that we had an error
 	}
@@ -221,11 +224,35 @@ bool SVSSocket::listen()
 	return true; //Otherwise return success
 }
 
+#ifdef _WIN32
+#include <conio.h>
+#endif
+
+int SVSSocket::inputAvailible()
+{
+#ifdef _WIN32
+	return _kbhit();
+#else
+	struct timeval tv;
+	fd_set fds;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&fds);
+	FD_SET(STDIN_FILENO, &fds);
+	select(STDIN_FILENO+1, &fds, NULL, NULL, &tv);
+	return (FD_ISSET(0, &fds));
+#endif
+}
+
 //Recieve a line from the socket/pipe
 bool SVSSocket::recieve_line(std::string &line)
 {
+	std::cout << line << std::endl;
+
 	if (standard_input) //Are we using stdin or an actual socket?
 	{
+		while (!inputAvailible());
+
 		getline(std::cin, line); //Get one line
 
 		//We have no use for recieve_buffer here since we're using getline and only get one line at a time.  getline handles the rest for us along with cin.
@@ -266,4 +293,6 @@ bool SVSSocket::recieve_line(std::string &line)
 		buffer[n] = '\0'; //Make sure our buffer is null terminated
 		recieve_buffer += buffer; //Add the recieved buffer to our storing string
 	}
+
+	return true;
 }

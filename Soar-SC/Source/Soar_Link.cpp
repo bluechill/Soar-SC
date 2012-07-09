@@ -48,8 +48,6 @@ Soar_Link::~Soar_Link()
 
 void Soar_Link::onStart()
 {
-	Broodwar->setGUI(false);
-
 	if (kernel->HadError())
 	{
 		const char* msg = kernel->GetLastErrorDescription();
@@ -249,6 +247,7 @@ void Soar_Link::update_units()
 				Identifier* id;
 				if (!input_link->FindByAttribute("units", 0))
 				{
+					Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
 					cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
 
 					id = input_link->CreateIdWME("units");
@@ -278,6 +277,8 @@ void Soar_Link::update_units()
 				}
 
 				string svs_object_id = bw_unit->getType().getName();
+				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
 				stringstream ss;
 				ss << bw_unit->getID();
 				svs_object_id += ss.str();
@@ -294,6 +295,8 @@ void Soar_Link::update_units()
 				string rotation = ss.str();
 
 				string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
+				Broodwar->printf("%s", svs_command.c_str());
+				cout << svs_command << endl;
 
 				agent->SendSVSInput(svs_command);
 				
@@ -302,13 +305,10 @@ void Soar_Link::update_units()
 		}
 	}
 
-	for (Unitset::iterator it = my_units_new.begin(), it_next = it;it != my_units_new.end();it = it_next)
+	Unitset final_units;
+
+	for (Unitset::iterator it = my_units_new.begin(), it_next = it;it != my_units_new.end();it++)
 	{
-		++it_next;
-
-		if (it == my_units_new.end())
-			break;
-
 		Identifier* input_link = agent->GetInputLink();
 
 		if (!(*it)->exists() || (*it)->getType().isBuilding())
@@ -335,16 +335,24 @@ void Soar_Link::update_units()
 
 					if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == (*it)->getID())
 					{
+						string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
+
+						string svs_command = "d " + svs_object_id;
+
+						agent->SendSVSInput(svs_command);
+
 						id->GetChild(j)->DestroyWME();
 
 						break;
 					}
 				}
 			}
-
-			my_units_new.erase(it);
 		}
+		else
+			final_units.insert(*it);
 	}
+
+	my_units = final_units;
 }
 
 void Soar_Link::onFrame()

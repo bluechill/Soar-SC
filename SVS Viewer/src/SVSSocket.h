@@ -39,6 +39,8 @@ public:
 	bool listen(); //Accept a connection.  Warning, this is a *blocking* call which means it won't return until it has a connection
 	bool recieve_line(std::string &line); //Read a line from the buffer.  Again, Warning, this is a *blocking* call which means it won't return until it has something to return
 	
+	bool is_standard_input() { return standard_input; }
+
 private:
 	std::string recieve_buffer; //Buffer to handle input
 	
@@ -62,7 +64,7 @@ private:
 	void initialize_socket(const char* path);
 	void initialize_file(const char* path);
 	
-	std::string hello_world;
+	static int inputAvailible();
 };
 
 #endif
