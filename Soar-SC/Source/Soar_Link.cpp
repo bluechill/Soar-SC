@@ -72,6 +72,36 @@ void Soar_Link::onStart()
 		return;
 	}
 
+	/*stringstream ss;
+	for (int x = 0;x < Broodwar->mapWidth();x++)
+	{
+		ss << x;
+
+		string x_str = ss.str();
+
+		agent->SendSVSInput("a world v " + unit_box_verts + " p " + x_str + " -1 0");
+
+		ss << Broodwar->mapHeight();
+
+		agent->SendSVSInput("a world v " + unit_box_verts + " p " + x_str + " " + ss.str() + " 0");
+		ss.str("");
+	}
+
+	for (int y = 0;y < Broodwar->mapWidth();y++)
+	{
+		ss << y;
+
+		string y_str = ss.str();
+
+		agent->SendSVSInput("a world v " + unit_box_verts + " p -1 " + y_str + " 0");
+		ss.str("");
+
+		ss << Broodwar->mapHeight();
+
+		agent->SendSVSInput("a world v " + unit_box_verts + " p " + ss.str() + " " + y_str + " 0");
+		ss.str("");
+	}*/
+
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
 
@@ -410,6 +440,8 @@ void Soar_Link::onFrame()
 	}*/
 
 	update_units();
+
+	agent->ExecuteCommandLine("run -d 1");
 }
 
 void Soar_Link::onSendText(std::string text)
