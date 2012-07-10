@@ -15,13 +15,17 @@ using namespace std;
 const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1";
 
 Soar_Link::Soar_Link()
-	: cout_redirect("bwapi-data/logs/stdout.txt")
+	: cout_redirect("bwapi-data/logs/stdout.txt"),
+	cerr_redirect("bwapi-data/logs/stderr.txt")
 {
-	if (!cout_redirect)
+	if (!cout_redirect || !cerr_redirect)
 		Broodwar->printf("Unable to redirect output!");
 
 	cout_orig_buffer = cout.rdbuf();
 	cout.rdbuf(cout_redirect.rdbuf());
+
+	cerr_orig_buffer = cerr.rdbuf();
+	cerr.rdbuf(cerr_redirect.rdbuf());
 
 	kernel = Kernel::CreateKernelInNewThread();
 	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
@@ -38,10 +42,12 @@ Soar_Link::Soar_Link()
 
 Soar_Link::~Soar_Link()
 {
-	if (WaitForSingleObject(thread_handle, 1000) != WAIT_OBJECT_0)
-		TerminateThread(thread_handle, 3);
+	/*if (WaitForSingleObject(thread_handle, 1000) != WAIT_OBJECT_0)
+		TerminateThread(thread_handle, 3);*/
 
 	cout.rdbuf(cout_orig_buffer);
+	cerr.rdbuf(cerr_orig_buffer);
+
 	kernel->DestroyAgent(agent);
 	kernel->Shutdown();
 }
@@ -259,6 +265,7 @@ void Soar_Link::update_units()
 				unit->CreateIntWME("id", bw_unit->getID());
 				bool worker = bw_unit->getType().isWorker();
 				unit->CreateIntWME("worker", worker);
+
 				if (worker)
 				{
 					unit->CreateIntWME("idle", bw_unit->isIdle());

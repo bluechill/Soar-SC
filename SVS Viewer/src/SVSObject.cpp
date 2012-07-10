@@ -12,6 +12,8 @@
 
 #include <fstream>
 
+const float SVSObject::global_scale = 25.0f;
+
 SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale, SVSObject* parent)
 {	
 	this->name = name;
@@ -27,6 +29,10 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 		std::cout << "ERROR: Tried to inherit from geo object not group!" << std::endl;
 		exit(1);
 	}
+
+	position.x *= global_scale;
+	position.y *= global_scale;
+	position.z *= global_scale;
 	
 	if (verts.size() == 0)
 	{

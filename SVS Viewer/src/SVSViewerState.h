@@ -73,7 +73,7 @@ private:
 	float max_time_steps;
 	Zeni::Vector3f max_velo;
 	
-	void draw_grid(float xstart, float ystart, int rows, int columns, float distance = 12.5f);
+	void draw_grid(float xstart, float ystart, int rows, int columns, float distance);
 	
 	bool grid;
 	bool wireframe;

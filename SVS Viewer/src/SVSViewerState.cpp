@@ -68,7 +68,9 @@ bool SVSViewerState::reader_function()
 
 		while (!should_die)
 		{
-			reader_socket.recieve_line(line);			
+			reader_socket.recieve_line(line);	
+			std::cout << "Recieved: '" << line << "'" << std::endl;
+
 			if (line.find_first_not_of("\t\n ") != std::string::npos)
 			{
 				SDL_mutexP(mu);
@@ -352,7 +354,7 @@ void SVSViewerState::render()
 	if (grid)
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
-		draw_grid(0.0f, 0.0f, 256, 256, 50);
+		draw_grid(0.0f, 0.0f, 256, 256, SVSObject::global_scale);
 	}
 
 	if (wireframe)

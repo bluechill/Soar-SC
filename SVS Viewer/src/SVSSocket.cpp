@@ -247,8 +247,6 @@ int SVSSocket::inputAvailible()
 //Recieve a line from the socket/pipe
 bool SVSSocket::recieve_line(std::string &line)
 {
-	std::cout << line << std::endl;
-
 	if (standard_input) //Are we using stdin or an actual socket?
 	{
 		while (!inputAvailible());

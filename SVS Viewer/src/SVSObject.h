@@ -43,6 +43,8 @@ public:
 	
 	Zeni::Matrix4f get_transformation_matrix() { return transformation_matrix; }
 	
+	static const float global_scale;
+
 private:
 	static std::vector<std::vector<int> > verts_for_faces(const std::vector<Zeni::Point3f> verts);
 	
