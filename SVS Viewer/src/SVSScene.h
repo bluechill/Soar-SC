@@ -38,6 +38,8 @@ public:
 	
 	void render();
 	void render_wireframe();
+
+	void clear_objects();
 	
 private:
 	std::string scene_name;

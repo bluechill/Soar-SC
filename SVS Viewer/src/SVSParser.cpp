@@ -47,9 +47,15 @@ bool SVSParser::parse_mods(std::vector<std::string> &parts, SVSScene &scene, par
 	
 	if (parts.size() < 1) // Must have at least a name
 		return false;
-		
+	
 	std::string name = parts[0];
 	std::string parent_name;
+
+	if (parts.size() == 1 && name == "clear")
+	{
+		scene.clear_objects();
+		return true;
+	}
 	
 	if (parts.size() > 1)
 		parent_name = parts[1];
@@ -65,7 +71,7 @@ bool SVSParser::parse_mods(std::vector<std::string> &parts, SVSScene &scene, par
 		
 		if (i == parts.size())
 			break;
-		
+
 		char character = parts[i][0];
 		
 		switch (character) {

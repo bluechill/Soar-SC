@@ -22,8 +22,7 @@ int thread_runner(void* viewer)
 }
 
 SVSViewerState::SVSViewerState(SVSSocket::socket_type type)
-	: reader_socket(type),
-	max_velo(500.0f, 500.0f, 500.0f),
+	: max_velo(SVSObject::global_scale * 5, SVSObject::global_scale * 5, SVSObject::global_scale * 5),
 	max_time_step(1.0f / 20.0f),
 	max_time_steps(10.0f)
 {
@@ -32,6 +31,16 @@ SVSViewerState::SVSViewerState(SVSSocket::socket_type type)
 	should_die = false;
 
 	mu = SDL_CreateMutex();
+
+	if (type == SVSSocket::STDIN)
+		reader_socket = new SVSSocket(true);
+	else if (type == SVSSocket::SOCKET)
+		reader_socket = new SVSSocket();
+	else
+	{
+		std::cout << "Invalid type: " << type << std::endl;
+		exit(1);
+	}
 
 	reader_thread = SDL_CreateThread(thread_runner, this);
 
@@ -42,7 +51,8 @@ SVSViewerState::SVSViewerState(SVSSocket::socket_type type)
 	movement.plus = false;
 	movement.minus = false;
 
-	camera.far_clip = 5000.0f;
+	camera.far_clip = 15000.0f;
+	camera.near_clip = 1.0f;
 
 	grid = true;
 	wireframe = true;
@@ -62,25 +72,59 @@ bool SVSViewerState::reader_function()
 {
 	std::string line;
 
-	while (reader_socket.listen() && !should_die)
+	while (!should_die)
 	{
-		std::cout << "Got a connection" << std::endl;
 
+		bool reopened_pipe = false;
+
+		SDL_mutexP(mu);
+		if (scenes.size() > 0)
+		{
+#ifdef _WIN32
+			reader_socket->reopen_pipe();
+#endif
+
+			reopened_pipe = true;
+		}
+		SDL_mutexV(mu);
+
+		if (!reader_socket->listen())
+			return false;
+
+		if (reopened_pipe && scenes.size() > 0)
+		{
+			SDL_mutexP(mu);
+			scenes[0].clear_objects();
+			SDL_mutexV(mu);
+		}
+
+		SDL_mutexP(mu);
+		std::cout << "Got a connection" << std::endl;
+		SDL_mutexV(mu);
+		
 		while (!should_die)
 		{
-			reader_socket.recieve_line(line);	
-			std::cout << "Recieved: '" << line << "'" << std::endl;
+			reader_socket->recieve_line(line);
+			if (reader_socket->client_disconnected())
+				break;
 
-			if (line.find_first_not_of("\t\n ") != std::string::npos)
+			SDL_mutexP(mu);
+			std::cout << "Recieved: '" << line << "'" << std::endl;
+			SDL_mutexV(mu);
+
+			if (line.find_first_not_of("\t\n ") != std::string::npos && line.size() != 0)
 			{
 				SDL_mutexP(mu);
 				reader_buffer.push_back(line);
+				line = "";
 				SDL_mutexV(mu);
 			}
-
 		}
 
+		SDL_mutexP(mu);
 		std::cout << "Client (SVS) disconnected" << std::endl;
+		SDL_mutexV(mu);
+
 	}
 
 	return true;
@@ -124,7 +168,11 @@ void SVSViewerState::perform_logic()
 	if (reader_buffer.size() > 0)
 	{
 		if (!parse_command(reader_buffer[0]))
+		{
+			SDL_mutexP(mu);
 			std::cout << "Invalid command: '" << reader_buffer[0] << "'" << std::endl;
+			SDL_mutexV(mu);
+		}
 
 		reader_buffer.erase(reader_buffer.begin());
 	}
@@ -141,6 +189,9 @@ bool SVSViewerState::parse_command(std::string command)
 	copy(std::istream_iterator<std::string>(iss),
 		std::istream_iterator<std::string>(),
 		std::back_inserter<std::vector<std::string> >(parts));
+
+	if (parts.size() == 1 && parts[0] == "clear")
+		return true;
 
 	if (parts.size() < 3)
 		return false;
@@ -168,7 +219,9 @@ bool SVSViewerState::parse_command(std::string command)
 		scenes.push_back(new_scene);
 		scene_number = scenes.size()-1;
 
+		SDL_mutexP(mu);
 		std::cout << "Warning: Created new scene: '" << scene_name << "'" << std::endl;
+		SDL_mutexV(mu);
 	}
 
 	std::vector<std::string> subvector(parts.begin()+2, parts.end());
@@ -280,6 +333,68 @@ void SVSViewerState::on_key(const SDL_KeyboardEvent &event)
 			exit(1);
 			break;
 		}
+	case SDLK_PERIOD:
+		{
+			if (event.type != SDL_KEYDOWN)
+				break;
+
+			if (max_velo.x >= SVSObject::global_scale * 10)
+				break;
+
+			max_velo.x += SVSObject::global_scale;
+			max_velo.y += SVSObject::global_scale;
+			max_velo.z += SVSObject::global_scale;
+
+			break;
+		}
+	case SDLK_COMMA:
+		{
+			if (event.type != SDL_KEYDOWN)
+				break;
+
+			if (max_velo.x <= SVSObject::global_scale)
+				break;
+
+			max_velo.x -= SVSObject::global_scale;
+			max_velo.y -= SVSObject::global_scale;
+			max_velo.z -= SVSObject::global_scale;
+
+			break;
+		}
+	case SDLK_LSHIFT:
+	case SDLK_RSHIFT:
+	case SDLK_SLASH:
+		{
+			if (max_velo.x >= SVSObject::global_scale * 20)
+			{
+				max_velo = backup_speed;
+			}
+			else
+			{
+				backup_speed = max_velo;
+
+				max_velo.x = SVSObject::global_scale * 20;
+				max_velo.y = SVSObject::global_scale * 20;
+				max_velo.z = SVSObject::global_scale * 20;
+			}
+			break;
+		}
+	case SDLK_SPACE:
+		{
+			if (max_velo.x <= SVSObject::global_scale / 10.0f)
+			{
+				max_velo = backup_speed;
+			}
+			else
+			{
+				backup_speed = max_velo;
+
+				max_velo.x = SVSObject::global_scale / 10.0f;
+				max_velo.y = SVSObject::global_scale / 10.0f;
+				max_velo.z = SVSObject::global_scale / 10.0f;
+			}
+			break;
+		}
 		/*case SDLK_u:
 		{
 		if (mouse_grabbed)
@@ -364,19 +479,31 @@ void SVSViewerState::render()
 		glPolygonOffset(1, 1);
 
 		if (scenes.size() > 0)
+		{
+			SDL_mutexP(mu);
 			scenes[0].render();
+			SDL_mutexV(mu);
+		}
 
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		if (scenes.size() > 0)
+		{
+			SDL_mutexP(mu);
 			scenes[0].render_wireframe();
+			SDL_mutexV(mu);
+		}
 	}
 	else
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		if (scenes.size() > 0)
+		{
+			SDL_mutexP(mu);
 			scenes[0].render();
+			SDL_mutexV(mu);
+		}
 	}
 }

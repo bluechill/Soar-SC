@@ -41,6 +41,12 @@ public:
 	
 	bool is_standard_input() { return standard_input; }
 
+	bool client_disconnected() { return GetLastError() == ERROR_BROKEN_PIPE; }
+
+#ifdef _WIN32
+	void reopen_pipe();
+#endif
+
 private:
 	std::string recieve_buffer; //Buffer to handle input
 	
@@ -58,6 +64,9 @@ private:
 
 #ifdef _WIN32
 	void RedirectIOToConsole();
+
+	std::streambuf* cout_bak;
+	std::streambuf* cerr_bak;
 #endif
 	
 	void initialize_stdin();

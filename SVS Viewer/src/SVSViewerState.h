@@ -41,13 +41,14 @@ public:
 	void on_pop();
 
 	bool button1_down;
+
+	SDL_mutex *mu;
 	
 private:
 	std::vector<std::string> reader_buffer;
 	
-	SVSSocket reader_socket;
+	SVSSocket *reader_socket;
 	
-	SDL_mutex *mu;
 	SDL_Thread* reader_thread;
 	
 	std::vector<SVSScene> scenes;
@@ -79,6 +80,8 @@ private:
 	bool wireframe;
 	
 	bool mouse_grabbed;
+
+	Zeni::Point3f backup_speed;
 };
 
 #endif

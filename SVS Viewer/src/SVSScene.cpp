@@ -48,6 +48,15 @@ SVSScene::~SVSScene()
 		delete objects[i];
 }
 
+void SVSScene::clear_objects()
+{
+	
+	 objects.clear();
+	 
+	 float scale = SVSObject::global_scale / 4;
+	 add_object("world", "", std::vector<Zeni::Point3f>(), Zeni::Point3f(), Zeni::Quaternion(), Zeni::Point3f(scale,scale,scale)); 
+}
+
 bool SVSScene::add_object(std::string name, std::string parent, std::vector<Zeni::Point3f> vertices, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale)
 {
 	for (unsigned int i = 0;i < objects.size();i++)
