@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Soar Headers">
+      <UniqueIdentifier>{6bed2734-2ac7-4a8c-8578-289b2ba999b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -23,6 +26,222 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLHandle.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLImpl.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLInterface.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\EmbeddedSMLInterface.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\Export.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\misc.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXMLFile.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXMLString.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\pcreposix.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\portability.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\portability_posix.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\portability_windows.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_AnalyzeXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ArgMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Client.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientAgent.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientAnalyzedXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientDirect.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientErrors.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientEvents.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientFloatElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientIdentifier.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientIntElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientKernel.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientStringElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientTraceXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientWMElement.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientWorkingMemory.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientXML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Connection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_DeltaList.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnectionAsynch.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnectionSynch.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Errors.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Events.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EventThread.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Handles.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ListMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_MessageSML.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Names.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ObjectMap.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_OutputDeltaList.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_RemoteConnection.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_StringOps.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagArg.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagCommand.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagError.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagFilter.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagName.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagResult.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagWme.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Utils.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\soar_TraceNames.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\soarversion.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ClientNamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ClientSocket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_DataSender.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ListenerNamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ListenerSocket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_NamedPipe.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_OSspecific.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_Socket.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_SocketLib.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Event.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Lock.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_OSspecific.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Thread.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\tokenizer.h">
+      <Filter>Soar Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Soar-SC\Soar\include\XMLTrace.h">
+      <Filter>Soar Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

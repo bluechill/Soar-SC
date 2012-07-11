@@ -48,12 +48,18 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;STATIC_LINKED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Z:\Developer\BWAPI\Soar-SC\Soar-SC\Soar\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Soar.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\Soar-SC\Soar;$(ProjectDir)..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /Y /B $(ProjectDir)..\Soar-SC\Soar\Soar.dll  $(OutDir)Soar.dll</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -63,18 +69,96 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Z:\Developer\BWAPI\Soar-SC\Soar-SC\Soar\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>Z:\Developer\BWAPI\Soar-SC\Soar-SC\Soar;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Soar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY /Y /B $(ProjectDir)..\Soar-SC\Soar\Soar.dll  $(OutDir)Soar.dll</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLHandle.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLImpl.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ElementXMLInterface.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\EmbeddedSMLInterface.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\Export.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\misc.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXMLFile.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\ParseXMLString.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\pcreposix.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\portability.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\portability_posix.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\portability_windows.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_AnalyzeXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ArgMap.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Client.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientAgent.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientAnalyzedXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientDirect.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientErrors.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientEvents.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientFloatElement.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientIdentifier.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientIntElement.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientKernel.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientStringElement.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientTraceXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientWMElement.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientWorkingMemory.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ClientXML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Connection.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_DeltaList.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnection.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnectionAsynch.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EmbeddedConnectionSynch.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Errors.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Events.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_EventThread.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Handles.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ListMap.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_MessageSML.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Names.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_ObjectMap.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_OutputDeltaList.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_RemoteConnection.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_StringOps.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagArg.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagCommand.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagError.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagFilter.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagName.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagResult.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_TagWme.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sml_Utils.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\soarversion.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\soar_TraceNames.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ClientNamedPipe.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ClientSocket.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_DataSender.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ListenerNamedPipe.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_ListenerSocket.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_NamedPipe.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_OSspecific.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_Socket.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\sock_SocketLib.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Event.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Lock.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_OSspecific.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\thread_Thread.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\tokenizer.h" />
+    <ClInclude Include="..\Soar-SC\Soar\include\XMLTrace.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

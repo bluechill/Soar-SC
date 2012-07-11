@@ -24,6 +24,8 @@ private:
 
 	std::ofstream cerr_redirect;
 	std::streambuf* cerr_orig_buffer;
+
+	std::ofstream test_input_file;
 	
 	std::set<std::vector<std::string> > unwalkable_polygons;
 

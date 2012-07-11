@@ -16,7 +16,8 @@ const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0
 
 Soar_Link::Soar_Link()
 	: cout_redirect("bwapi-data/logs/stdout.txt"),
-	cerr_redirect("bwapi-data/logs/stderr.txt")
+	cerr_redirect("bwapi-data/logs/stderr.txt"),
+	test_input_file("bwapi-data/logs/test_input.txt")
 {
 	if (!cout_redirect || !cerr_redirect)
 		Broodwar->printf("Unable to redirect output!");
@@ -72,19 +73,32 @@ void Soar_Link::onStart()
 		return;
 	}
 
-	/*stringstream ss;
+	stringstream ss;
+	ss << Broodwar->mapWidth()+1;
+	string map_width_as_string = ss.str();
+	ss.str("");
+	ss << Broodwar->mapHeight()+1;
+	string map_height_as_string = ss.str();
+	ss.str("");
+
 	for (int x = 0;x < Broodwar->mapWidth();x++)
 	{
 		ss << x;
 
 		string x_str = ss.str();
-
-		agent->SendSVSInput("a world v " + unit_box_verts + " p " + x_str + " -1 0");
-
-		ss << Broodwar->mapHeight();
-
-		agent->SendSVSInput("a world v " + unit_box_verts + " p " + x_str + " " + ss.str() + " 0");
 		ss.str("");
+
+		string svs_command_1 = " a -x" + x_str + " world v " + unit_box_verts + " p " + x_str + " -1 0";
+
+		test_input_file << "SVS-Actual:" << svs_command_1 << endl;
+
+		agent->SendSVSInput(svs_command_1);
+
+		string svs_command_2 = " a x" + x_str + " world v " + unit_box_verts + " p " + x_str + " " + map_height_as_string + " 0";
+
+		test_input_file << "SVS-Actual:" << svs_command_2 << endl;
+
+		agent->SendSVSInput(svs_command_2);
 	}
 
 	for (int y = 0;y < Broodwar->mapWidth();y++)
@@ -92,15 +106,20 @@ void Soar_Link::onStart()
 		ss << y;
 
 		string y_str = ss.str();
-
-		agent->SendSVSInput("a world v " + unit_box_verts + " p -1 " + y_str + " 0");
 		ss.str("");
 
-		ss << Broodwar->mapHeight();
+		string svs_command_1 = " a -y" + y_str + " world v " + unit_box_verts + " p -1 " + y_str + " 0";
 
-		agent->SendSVSInput("a world v " + unit_box_verts + " p " + ss.str() + " " + y_str + " 0");
-		ss.str("");
-	}*/
+		test_input_file << "SVS-Actual:" << svs_command_1 << endl;
+
+		agent->SendSVSInput(svs_command_1);
+
+		string svs_command_2 = " a y" + y_str + " world v " + unit_box_verts + " p " + map_width_as_string + " " + y_str + " 0";
+
+		test_input_file << "SVS-Actual:" << svs_command_2 << endl;
+
+		agent->SendSVSInput(svs_command_2);
+	}
 
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
@@ -227,6 +246,8 @@ void Soar_Link::update_map()
 
 		svs_string += "p 0 0 0";
 
+		test_input_file << "SVS-Actual: " << svs_string << endl;
+
 		agent->SendSVSInput(svs_string);
 	}
 
@@ -292,21 +313,39 @@ void Soar_Link::update_units()
 					id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
 
 				Identifier* unit = id->CreateIdWME("unit");
+				
+				test_input_file << "I-units-unit:";
+
 				unit->CreateIntWME("id", bw_unit->getID());
+				test_input_file << " ^id " << bw_unit->getID();
+
 				bool worker = bw_unit->getType().isWorker();
 				unit->CreateIntWME("worker", worker);
+				test_input_file << " ^worker " << worker;
 
 				if (worker)
 				{
 					unit->CreateIntWME("idle", bw_unit->isIdle());
+					test_input_file << " ^idle " << bw_unit->isIdle();
+
 					unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
+					test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
 
 					if (bw_unit->isCarryingGas())
+					{
 						unit->CreateStringWME("carrying", "gas");
+						test_input_file << " ^carring gas";
+					}
 					else if (bw_unit->isCarryingMinerals())
+					{
 						unit->CreateStringWME("carring", "minerals");
+						test_input_file << " ^carrying minerals";
+					}
 					else if (bw_unit->getPowerUp())
+					{
 						unit->CreateStringWME("carrying", "powerup");
+						test_input_file << " ^carrying powerup";
+					}
 				}
 				else
 				{
@@ -338,6 +377,10 @@ void Soar_Link::update_units()
 				agent->SendSVSInput(svs_command);
 				
 				unit->CreateStringWME("svsobject", svs_object_id.c_str());
+
+				test_input_file << " ^svsobject " << svs_object_id << endl;
+
+				test_input_file << "SVS-Actual: " << svs_command << endl;
 			}
 		}
 	}
@@ -375,6 +418,8 @@ void Soar_Link::update_units()
 						string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
 
 						string svs_command = "d " + svs_object_id;
+
+						test_input_file << "SVS-Actual: " << svs_command << endl;
 
 						agent->SendSVSInput(svs_command);
 
