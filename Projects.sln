@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-SC", "Soar-SC\Soar-SC.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AIModuleLoader", "AIModuleLoader\AIModuleLoader.vcxproj", "{2E81042D-3CDC-45E0-9F3C-0AC5F435E126}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-SC-No-Dependencies", "Soar-SC-No-Dependencies\Soar-SC-No-Dependencies.vcxproj", "{404B71ED-DA14-4651-A136-849091695669}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,10 @@ Global
 		{2E81042D-3CDC-45E0-9F3C-0AC5F435E126}.Debug|Win32.Build.0 = Debug|Win32
 		{2E81042D-3CDC-45E0-9F3C-0AC5F435E126}.Release|Win32.ActiveCfg = Release|Win32
 		{2E81042D-3CDC-45E0-9F3C-0AC5F435E126}.Release|Win32.Build.0 = Release|Win32
+		{404B71ED-DA14-4651-A136-849091695669}.Debug|Win32.ActiveCfg = Debug|Win32
+		{404B71ED-DA14-4651-A136-849091695669}.Debug|Win32.Build.0 = Debug|Win32
+		{404B71ED-DA14-4651-A136-849091695669}.Release|Win32.ActiveCfg = Release|Win32
+		{404B71ED-DA14-4651-A136-849091695669}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
