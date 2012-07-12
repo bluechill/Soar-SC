@@ -12,6 +12,12 @@ using namespace BWAPI;
 using namespace sml;
 using namespace std;
 
+//Threading stuff
+int thread_runner_soar(void* link)
+{
+	return reinterpret_cast<Soar_Link*>(link)->soar_agent_thread();
+}
+
 const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1";
 
 Soar_Link::Soar_Link()
@@ -31,20 +37,20 @@ Soar_Link::Soar_Link()
 	kernel = Kernel::CreateKernelInNewThread();
 	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
 
-	mutex = CreateMutex(NULL, FALSE, NULL);
-	if (!mutex)
-	{
-		cout << "Unable to create mutex." << endl;
-		ExitProcess(7);
-	}
+	mu = SDL_CreateMutex();
 
 	done_updating = false;
+	done_updating_agent = true;
+
+	should_die = false;
 }
 
 Soar_Link::~Soar_Link()
 {
-	/*if (WaitForSingleObject(thread_handle, 1000) != WAIT_OBJECT_0)
-		TerminateThread(thread_handle, 3);*/
+	should_die = true;
+
+	SDL_WaitThread(soar_thread, NULL);
+	SDL_DestroyMutex(mu);
 
 	cout.rdbuf(cout_orig_buffer);
 	cerr.rdbuf(cerr_orig_buffer);
@@ -81,61 +87,43 @@ void Soar_Link::onStart()
 	string map_height_as_string = ss.str();
 	ss.str("");
 
-	for (int x = 0;x < Broodwar->mapWidth();x++)
-	{
-		ss << x;
+	//Bottom barrier
+	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
 
-		string x_str = ss.str();
-		ss.str("");
+	test_input_file << "SVS-Actual: " << svs_command_1 << endl;
 
-		string svs_command_1 = " a -x" + x_str + " world v " + unit_box_verts + " p " + x_str + " -1 0";
+	agent->SendSVSInput(svs_command_1);
 
-		test_input_file << "SVS-Actual:" << svs_command_1 << endl;
+	//Top barrier
+	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
 
-		agent->SendSVSInput(svs_command_1);
+	test_input_file << "SVS-Actual: " << svs_command_2 << endl;
 
-		string svs_command_2 = " a x" + x_str + " world v " + unit_box_verts + " p " + x_str + " " + map_height_as_string + " 0";
+	agent->SendSVSInput(svs_command_2);
 
-		test_input_file << "SVS-Actual:" << svs_command_2 << endl;
+	//Left barrier
+	string svs_command_3 = "a -y0 world v " + unit_box_verts + " p -1 0 0 s 1 " + map_height_as_string + " 1";
 
-		agent->SendSVSInput(svs_command_2);
-	}
+	test_input_file << "SVS-Actual: " << svs_command_3 << endl;
 
-	for (int y = 0;y < Broodwar->mapWidth();y++)
-	{
-		ss << y;
+	agent->SendSVSInput(svs_command_3);
 
-		string y_str = ss.str();
-		ss.str("");
+	//Right barrier
+	string svs_command_4 = "a y0 world v " + unit_box_verts + " p " + map_width_as_string + " 0 0 s 1 " + map_height_as_string + " 1";
 
-		string svs_command_1 = " a -y" + y_str + " world v " + unit_box_verts + " p -1 " + y_str + " 0";
+	test_input_file << "SVS-Actual: " << svs_command_4 << endl;
 
-		test_input_file << "SVS-Actual:" << svs_command_1 << endl;
-
-		agent->SendSVSInput(svs_command_1);
-
-		string svs_command_2 = " a y" + y_str + " world v " + unit_box_verts + " p " + map_width_as_string + " " + y_str + " 0";
-
-		test_input_file << "SVS-Actual:" << svs_command_2 << endl;
-
-		agent->SendSVSInput(svs_command_2);
-	}
+	agent->SendSVSInput(svs_command_4);
 
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
 
-	//const char* result = agent->ExecuteCommandLine("print s1");
-	//cout << "Soar: " << result << endl;
-	//Broodwar->printf("Soar: %s", result);
-
-	//Uncomment for dealing with barriers within Soar
-	/*thread_handle = CreateThread(NULL, 0, thread_runner, (void*) this, 0, &thread_id);
-
-	if (!thread_handle)
+	soar_thread = SDL_CreateThread(thread_runner_soar, this);
+	if (!soar_thread)
 	{
-	cout << "Unable to create thread!" << endl;
-	ExitProcess(3);
-	}*/
+		Broodwar->printf("Soar: Unable to create soar thread!");
+		cout << "Soar: Unable to create soar thread!" << endl;
+	}
 }
 
 void Soar_Link::onEnd(bool isWinner)
@@ -255,30 +243,6 @@ void Soar_Link::update_map()
 
 	cout << "Done updating map" << endl;
 
-	DWORD result = WaitForSingleObject(mutex, INFINITE);
-
-	switch (result)
-	{
-	case WAIT_OBJECT_0:
-		{
-			done_updating = true;
-
-			if (!ReleaseMutex(mutex))
-			{
-				cout << "Unable to release mutex" << endl;
-				ExitProcess(9);
-			}
-			break;
-		}
-
-	case WAIT_ABANDONED:
-		{
-			cout << "Abandoned after infinte time! Error on mutex!" << endl;
-			ExitProcess(9999);
-			break;
-		}
-	}
-
 	cout << "Done!" << endl;
 }
 
@@ -359,7 +323,7 @@ void Soar_Link::update_units()
 				ss << bw_unit->getID();
 				svs_object_id += ss.str();
 				ss.str("");
-				ss << bw_unit->getPosition().x/4 << " " << bw_unit->getPosition().y/4 << " 0";
+				ss << bw_unit->getTilePosition().x << " " << bw_unit->getTilePosition().y << " 0";
 				string position = ss.str();
 				ss.str("");
 				
@@ -455,38 +419,11 @@ void Soar_Link::onFrame()
 		return;
 
 	//Uncomment for dealing with barriers within Soar
-	/*DWORD result = WaitForSingleObject(mutex, 10);
 
-	switch (result)
-	{
-	case WAIT_OBJECT_0:
-	{
-	__try
-	{
-	if (!done_updating)
-	return;
-	}
-
-	__finally
-	{
-	if (!ReleaseMutex(mutex))
-	{
-	cout << "Unable to release mutex" << endl;
-	ExitProcess(9);
-	}
-	}
-	}
-
-	case WAIT_ABANDONED:
-	{
-	cout << "Abandoned after 10 miliseconds (mutex)" << endl;
-	return;
-	}
-	}*/
-
-	update_units();
-
-	agent->ExecuteCommandLine("run -d 1");
+	SDL_mutexP(mu);
+	if (done_updating_agent)
+		done_updating_agent = false;
+	SDL_mutexV(mu);
 }
 
 void Soar_Link::onSendText(std::string text)
@@ -566,4 +503,29 @@ void Soar_Link::onSaveGame(std::string gameName)
 void Soar_Link::onUnitComplete(BWAPI::Unit *unit)
 {
 
+}
+
+int Soar_Link::soar_agent_thread()
+{
+	while (!should_die)
+	{
+		SDL_mutexP(mu);
+		if (done_updating_agent)
+		{
+			SDL_mutexV(mu);
+			Sleep(10);
+			continue;
+		}
+		SDL_mutexV(mu);
+
+		update_units();
+
+		agent->ExecuteCommandLine("run -d 1");
+
+		SDL_mutexP(mu);
+		done_updating_agent = true;
+		SDL_mutexV(mu);
+	}
+
+	return 0;
 }

@@ -24,7 +24,8 @@
     <LocalDebuggerCommand>$(SolutionDir)..\bin\$(ProjectName)_d.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>..\bin</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>-s</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommand>$(SolutionDir)..\bin\x64\$(ProjectName)_d.exe</LocalDebuggerCommand>

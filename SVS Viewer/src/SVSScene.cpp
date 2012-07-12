@@ -13,7 +13,7 @@
 SVSScene::SVSScene(std::string name)
 {
 	scene_name = name;
-	const float scale = SVSObject::global_scale / 4; //Specific to starcraft (walkable tile vs build tile)
+	const float scale = SVSObject::global_scale;
 	this->add_object("world", "", std::vector<Zeni::Point3f>(), Zeni::Point3f(), Zeni::Quaternion(), Zeni::Point3f(scale,scale,scale));
 }
 
@@ -53,7 +53,7 @@ void SVSScene::clear_objects()
 	
 	 objects.clear();
 	 
-	 float scale = SVSObject::global_scale / 4;
+	 float scale = SVSObject::global_scale;
 	 add_object("world", "", std::vector<Zeni::Point3f>(), Zeni::Point3f(), Zeni::Quaternion(), Zeni::Point3f(scale,scale,scale)); 
 }
 

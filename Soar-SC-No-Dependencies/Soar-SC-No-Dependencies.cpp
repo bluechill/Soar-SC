@@ -381,7 +381,7 @@ int main(int argc, char* argv[])
 	vector<vector<string> > lines;
 
 	string line;
-	while (getline(file, line).good())
+	while (getline(file, line))
 	{
 		if (!parse_line(line, lines))
 		{

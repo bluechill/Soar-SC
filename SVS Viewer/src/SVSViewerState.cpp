@@ -110,15 +110,13 @@ bool SVSViewerState::reader_function()
 
 			SDL_mutexP(mu);
 			std::cout << "Recieved: '" << line << "'" << std::endl;
-			SDL_mutexV(mu);
-
+			
 			if (line.find_first_not_of("\t\n ") != std::string::npos && line.size() != 0)
 			{
-				SDL_mutexP(mu);
 				reader_buffer.push_back(line);
 				line = "";
-				SDL_mutexV(mu);
 			}
+			SDL_mutexV(mu);
 		}
 
 		SDL_mutexP(mu);
@@ -168,11 +166,7 @@ void SVSViewerState::perform_logic()
 	if (reader_buffer.size() > 0)
 	{
 		if (!parse_command(reader_buffer[0]))
-		{
-			SDL_mutexP(mu);
 			std::cout << "Invalid command: '" << reader_buffer[0] << "'" << std::endl;
-			SDL_mutexV(mu);
-		}
 
 		reader_buffer.erase(reader_buffer.begin());
 	}
@@ -444,17 +438,17 @@ void SVSViewerState::on_mouse_motion(const SDL_MouseMotionEvent &event)
 		camera.orientation = prev_orientation;
 }
 
-void SVSViewerState::draw_grid(float xstart, float ystart, int rows, int columns, float distance)
+void SVSViewerState::draw_grid(float xstart, float ystart, int rows, int columns, float distance_x, float distance_y)
 {
 	glBegin(GL_LINES);
 	for (int i = 0; i <= rows; i++) {
-		glVertex2f(xstart, i * distance);
-		glVertex2f(xstart + columns * distance, i * distance);
+		glVertex2f(xstart, i * distance_y);
+		glVertex2f(xstart + columns * distance_x, i * distance_y);
 	}
 
 	for (int i= 0; i <= columns; i++) {
-		glVertex2f(i * distance, ystart);
-		glVertex2f(i * distance, ystart + rows * distance);
+		glVertex2f(i * distance_x, ystart);
+		glVertex2f(i * distance_x, ystart + rows * distance_y);
 	}
 	glEnd();
 }
@@ -469,7 +463,7 @@ void SVSViewerState::render()
 	if (grid)
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
-		draw_grid(0.0f, 0.0f, 256, 256, SVSObject::global_scale);
+		draw_grid(0.0f, 0.0f, 256, 256, SVSObject::global_scale, SVSObject::global_scale * -1);
 	}
 
 	if (wireframe)

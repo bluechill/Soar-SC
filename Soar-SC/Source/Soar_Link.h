@@ -10,6 +10,9 @@
 
 #include <windows.h>
 
+#include "SDL/SDL_thread.h"
+#include "SDL/SDL_mutex.h"
+
 // Remember not to use "Broodwar" in any global class constructor!
 
 class Soar_Link : public BWAPI::AIModule
@@ -35,11 +38,10 @@ private:
 	BWAPI::Unitset minerals;
 	BWAPI::Unitset vesp_gas;
 
-	DWORD thread_id;
-	HANDLE thread_handle;
-	HANDLE mutex;
-
+	SDL_Thread* soar_thread;
 	bool done_updating;
+
+	SDL_mutex* mu;
 
 public:
 	// Virtual functions for callbacks, leave these as they are.
@@ -72,12 +74,11 @@ public:
 	void update_resources();
 	void update_units();
 
-	static DWORD WINAPI thread_runner(void* param)
-	{
-		Soar_Link* This = (Soar_Link*)param;
-		This->update_map();
-		return 0;
-	}
+	//To get around an issue related to slow starcraft
+	bool should_die;
+
+	bool done_updating_agent;
+	int soar_agent_thread();
 
 	const static std::string unit_box_verts;
 };

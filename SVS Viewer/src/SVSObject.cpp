@@ -11,8 +11,9 @@
 #include "SVSObject.h"
 
 #include <fstream>
+#include <sstream>
 
-const float SVSObject::global_scale = 25.0f;
+const float SVSObject::global_scale = 50.0f;
 
 SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale, SVSObject* parent)
 {	
@@ -30,9 +31,12 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 		exit(1);
 	}
 
-	position.x *= global_scale;
-	position.y *= global_scale;
-	position.z *= global_scale;
+	if (parent)
+	{
+		position.x *= parent->get_scale().x;
+		position.y *= parent->get_scale().x;
+		position.z *= parent->get_scale().x;
+	}
 	
 	if (verts.size() == 0)
 	{
@@ -57,6 +61,10 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	this->buffer = new Zeni::Vertex_Buffer();
 	
 	std::vector<std::vector<int> > faces = verts_for_faces(verts);
+
+	//WARNING Starcraft Specific
+	position.y *= -1;
+	scale.y *= -1;
 	
 	Zeni::Matrix4f local_transformation_matrix = Zeni::Matrix4f::Translate(position) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
 	
@@ -355,20 +363,22 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 {
 	std::vector<std::vector<int> > faces;
 	
-#ifdef _WIN32
-	char* temp_folder = new char[MAX_PATH+1];
-	GetTempPath(MAX_PATH+1, temp_folder);
-#else
-	std::string temp_folder = "/tmp/";
-#endif
-	
-	std::string path = temp_folder;
-	path += "qhull";
+//#ifdef _WIN32
+//	char* temp_folder = new char[MAX_PATH+1];
+//	GetTempPath(MAX_PATH+1, temp_folder);
+//#else
+//	std::string temp_folder = "/tmp/";
+//#endif
+//	
+//	std::string path = temp_folder;
+//	path += "qhull";
+
+	std::string path = "C:\\qhull";
 	
 	std::ofstream to_output(path.c_str(), std::ofstream::out | std::ofstream::trunc);
 	
 	if (!to_output.is_open())
-		return faces;
+		throw Zeni::Error(("Unable to open qhull file: " + path).c_str());
 	
 	to_output << "3" << std::endl << pts.size() << std::endl;
 	
@@ -400,8 +410,10 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 	if (!CreateProcess(NULL, command_line_char, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &start_info, &process_info))
 	{
 		std::cout << "Could not spawn qhull process!" << std::endl;
-		return faces;
+		throw Zeni::Error(("Unable spawn qhull at " + command_line).c_str());
 	}
+
+	DWORD exit_code = WaitForSingleObject(process_info.hProcess, INFINITE);
 #else
 	std::string command = "qhull ";
 	command += command_line;
@@ -418,30 +430,40 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 	std::ifstream output(output_path.c_str(), std::ifstream::in);
 	
 	if (!output.is_open())
-		return faces;
+		throw Zeni::Error(("Unable to open qhull file: " + output_path).c_str());
 	
 	std::string line;
-	getline(output, line);
-	unsigned int nfacets = strtol(line.c_str(), &end, 10);
-	if (*end != '\0') {
-		return faces;
-	}
 
-	bool should_not_break = false;
+	if (!getline(output, line))
+		throw Zeni::Error("getline failed to get the first line of the file!");
+
+	unsigned int nfacets = strtol(line.c_str(), &end, 10);
+	if (*end != '\0' && *end != '\n') {
+		throw Zeni::Error("File line doesn't contain null character");
+	}
 	
-	while (getline(output, line)) {
-		const char *start = line.c_str();
+	while (getline(output, line))
+	{
 		std::vector<int> facet;
-		while (!should_not_break) {
-			int x = strtol(start, &end, 10);
-			if (end == start) {
+
+		std::istringstream iss(line, std::istringstream::in);
+
+		std::string number;
+		while (iss >> number)
+		{
+			int x = strtol(number.c_str(), &end, 10);
+			if (*end != '\0') {
 				break;
 			}
 			facet.push_back(x);
-			start = end;
 		}
+		
 		faces.push_back(facet);
 	}
 	assert (faces.size() == nfacets);
+
+	if (faces.size() == 0)
+		throw Zeni::Error("Zero faces for a non-group!");
+
 	return faces;
 }
