@@ -71,6 +71,9 @@ public:
 	void update_map();
 
 	//Sends all the resources to Soar.
+	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type, float angle);
+	void delete_resource(int id);
+
 	void update_resources();
 	void update_units();
 
@@ -81,4 +84,6 @@ public:
 	int soar_agent_thread();
 
 	const static std::string unit_box_verts;
+
+	static float flip_one_d_point(const float &point, const bool &x_axis);
 };

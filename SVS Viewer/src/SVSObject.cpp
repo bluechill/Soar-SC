@@ -13,7 +13,7 @@
 #include <fstream>
 #include <sstream>
 
-const float SVSObject::global_scale = 50.0f;
+const float SVSObject::global_scale = 25.0f;
 
 SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale, SVSObject* parent)
 {	
@@ -61,10 +61,6 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	this->buffer = new Zeni::Vertex_Buffer();
 	
 	std::vector<std::vector<int> > faces = verts_for_faces(verts);
-
-	//WARNING Starcraft Specific
-	position.y *= -1;
-	scale.y *= -1;
 	
 	Zeni::Matrix4f local_transformation_matrix = Zeni::Matrix4f::Translate(position) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
 	

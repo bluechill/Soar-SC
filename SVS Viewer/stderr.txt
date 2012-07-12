@@ -1,2 +1,9 @@
 User-specific config file loaded from 'C:\Users\Administrator\AppData\Roaming\zenilib\config/zenilib.xml'.
 Performance Warning: Texture 'textures/logo.png' width or height not a power of two.  Scaling up now.
+Printing all possible error strings:
+SDL       : no error
+SDL_image : no error
+SDL_net   : no error
+SDL_ttf   : no error
+OpenGL    : no error
+OpenAL    : AL_NO_ERROR

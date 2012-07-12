@@ -20,6 +20,31 @@ int thread_runner_soar(void* link)
 
 const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1";
 
+float Soar_Link::flip_one_d_point(const float &point, const bool &x_axis)
+{
+	int map;
+
+	if (x_axis)
+		map = Broodwar->mapWidth();
+	else
+		map = Broodwar->mapHeight();
+
+	float flipped_point = point;
+	//Convert the point to be bewtween 0 and 1
+	flipped_point /= map;
+	//Subtract 0.5 so 0.5 in the point becomes 0
+	flipped_point -= 0.5f;
+	//Multiply by -1 to flip it around the axis
+	flipped_point *= -1;
+	//Add 0.5 again so it's from 0 to 1 again
+	flipped_point += 0.5f;
+	//Multiple by the map size in the axis to convert back to the point
+	flipped_point *= map;
+
+	//Return it
+	return flipped_point;
+}
+
 Soar_Link::Soar_Link()
 	: cout_redirect("bwapi-data/logs/stdout.txt"),
 	cerr_redirect("bwapi-data/logs/stderr.txt"),
@@ -239,16 +264,159 @@ void Soar_Link::update_map()
 		agent->SendSVSInput(svs_string);
 	}
 
-	cout << "Time: " << time(NULL) << endl;
-
 	cout << "Done updating map" << endl;
+}
 
-	cout << "Done!" << endl;
+void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type, float angle)
+{
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* id;
+	if (!input_link->FindByAttribute("resources", 0))
+	{
+		Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+
+	Identifier* resource = id->CreateIdWME(type.getName().c_str());
+
+	resource->CreateIntWME("id", bw_id);
+	resource->CreateIntWME("count", count);
+
+	string svs_object_id = type.getName();
+	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+	stringstream ss;
+	ss << bw_id;
+	svs_object_id += ss.str();
+	ss.str("");
+	//Flip the point so "north" isn't negative y
+	ss << ((float)position.x)/32.0f << " " << flip_one_d_point(((float)position.y)/32.0f, false) << " 0";
+	string position_svs = ss.str();
+	ss.str("");
+
+	ss << ((float)type.dimensionLeft())*2.0f/32.0f << " " << ((float)type.dimensionUp())*2.0f/32.0f << " 1";
+	string size = ss.str();
+	ss.str("");
+
+	ss << angle;
+	string rotation = ss.str();
+
+	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position_svs + " s " + size + " r 0 " + rotation + " 0";
+	//Broodwar->printf("%s", svs_command.c_str());
+	cout << svs_command << endl;
+
+	agent->SendSVSInput(svs_command);
+
+	resource->CreateStringWME("svsobject", svs_object_id.c_str());
+
+	test_input_file << " ^svsobject " << svs_object_id << endl;
+
+	test_input_file << "SVS-Actual: " << svs_command << endl;
+}
+
+void Soar_Link::delete_resource(int bw_id)
+{
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* id;
+
+	if (!input_link->FindByAttribute("resources", 0))
+	{
+		cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+
+	for (int j = 0;j < id->GetNumberChildren();j++)
+	{
+		Identifier* unit;
+		if (!id->GetChild(j)->IsIdentifier())
+			continue;
+		else
+			unit = id->GetChild(j)->ConvertToIdentifier();
+
+		if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == bw_id)
+		{
+			string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
+
+			string svs_command = "d " + svs_object_id;
+
+			test_input_file << "SVS-Actual: " << svs_command << endl;
+
+			agent->SendSVSInput(svs_command);
+
+			id->GetChild(j)->DestroyWME();
+
+			break;
+		}
+	}
 }
 
 void Soar_Link::update_resources()
 {
+	Unitset visible_minerals = Broodwar->getMinerals();
+	Unitset visible_vesp_gas = Broodwar->getGeysers();
 
+	Unitset new_minerals;
+	Unitset new_vesp_gas;
+
+	for (Unitset::iterator it = visible_minerals.begin();it != visible_minerals.end();it++)
+	{
+		if (minerals.find(*it) == minerals.end())
+		{
+			//Doesn't exist in my current list of visible minerals
+
+			Unit* bw_unit = (*it);
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
+
+			new_minerals.push_back(bw_unit);
+		}
+	}
+
+	for (Unitset::iterator it = visible_vesp_gas.begin();it != visible_vesp_gas.end();it++)
+	{
+		if (vesp_gas.find(*it) == vesp_gas.end())
+		{
+			//Doesn't exist in my current list of visible minerals
+
+			Unit* bw_unit = (*it);
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
+
+			new_vesp_gas.push_back(bw_unit);
+		}
+	}
+
+	Unitset final_minerals;
+
+	for (Unitset::iterator it = new_minerals.begin();it != new_minerals.end();it++)
+	{
+		if (!(*it)->exists())
+			delete_resource((*it)->getID());
+		else
+			final_minerals.insert(*it);
+	}
+
+	Unitset final_vesp_gas;
+
+	for (Unitset::iterator it = new_vesp_gas.begin();it != new_vesp_gas.end();it++)
+	{
+		if (!(*it)->exists())
+			delete_resource((*it)->getID());
+		else
+			final_vesp_gas.insert(*it);
+	}
+
+	minerals = final_minerals;
+	vesp_gas = final_vesp_gas;
 }
 
 void Soar_Link::update_units()
@@ -261,23 +429,25 @@ void Soar_Link::update_units()
 		{
 			Unit* bw_unit = (*it);
 
+			Identifier* input_link = agent->GetInputLink();
+
+			Identifier* id;
+			if (!input_link->FindByAttribute("units", 0))
+			{
+				Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+				cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+				id = input_link->CreateIdWME("units");
+			}
+			else
+				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+			Identifier* unit;
+
 			if (!bw_unit->getType().isBuilding())
 			{
-				Identifier* input_link = agent->GetInputLink();
+				unit = id->CreateIdWME("unit");
 
-				Identifier* id;
-				if (!input_link->FindByAttribute("units", 0))
-				{
-					Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
-					cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
-
-					id = input_link->CreateIdWME("units");
-				}
-				else
-					id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-				Identifier* unit = id->CreateIdWME("unit");
-				
 				test_input_file << "I-units-unit:";
 
 				unit->CreateIntWME("id", bw_unit->getID());
@@ -315,37 +485,49 @@ void Soar_Link::update_units()
 				{
 					//TODO handle units other than workers
 				}
-
-				string svs_object_id = bw_unit->getType().getName();
-				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
-
-				stringstream ss;
-				ss << bw_unit->getID();
-				svs_object_id += ss.str();
-				ss.str("");
-				ss << bw_unit->getTilePosition().x << " " << bw_unit->getTilePosition().y << " 0";
-				string position = ss.str();
-				ss.str("");
-				
-				ss << bw_unit->getType().tileWidth() << " " << bw_unit->getType().tileHeight() << " 1";
-				string size = ss.str();
-				ss.str("");
-
-				ss << bw_unit->getAngle();
-				string rotation = ss.str();
-
-				string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
-				Broodwar->printf("%s", svs_command.c_str());
-				cout << svs_command << endl;
-
-				agent->SendSVSInput(svs_command);
-				
-				unit->CreateStringWME("svsobject", svs_object_id.c_str());
-
-				test_input_file << " ^svsobject " << svs_object_id << endl;
-
-				test_input_file << "SVS-Actual: " << svs_command << endl;
 			}
+			else
+			{
+				unit = id->CreateIdWME("building");
+
+				test_input_file << "I-units-building:";
+
+				unit->CreateIntWME("id", bw_unit->getID());
+				test_input_file << " ^id " << bw_unit->getID();
+			}
+
+			string svs_object_id = bw_unit->getType().getName();
+			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+			stringstream ss;
+			ss << bw_unit->getID();
+			svs_object_id += ss.str();
+			ss.str("");
+			//Flip the point so "north" isn't negative y
+			ss << ((float)bw_unit->getPosition().x)/32.0f << " " << flip_one_d_point(((float)bw_unit->getPosition().y)/32.0f, false) << " 0";
+			string position = ss.str();
+			ss.str("");
+
+			ss << ((float)bw_unit->getType().dimensionLeft())*2.0f/32.0f << " " << ((float)bw_unit->getType().dimensionUp())*2.0f/32.0f << " 1";
+			string size = ss.str();
+			ss.str("");
+
+			ss << bw_unit->getAngle();
+			string rotation = ss.str();
+
+			string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
+			Broodwar->printf("%s", svs_command.c_str());
+			cout << svs_command << endl;
+
+			agent->SendSVSInput(svs_command);
+
+			unit->CreateStringWME("svsobject", svs_object_id.c_str());
+
+			test_input_file << " ^svsobject " << svs_object_id << endl;
+
+			test_input_file << "SVS-Actual: " << svs_command << endl;
+
+			my_units_new.push_back(bw_unit);
 		}
 	}
 
@@ -355,9 +537,10 @@ void Soar_Link::update_units()
 	{
 		Identifier* input_link = agent->GetInputLink();
 
-		if (!(*it)->exists() || (*it)->getType().isBuilding())
+		if (!(*it)->exists())
 		{
 			Identifier* id;
+
 			if (!input_link->FindByAttribute("units", 0))
 			{
 				cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
@@ -367,8 +550,6 @@ void Soar_Link::update_units()
 			else
 				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
 
-			if (id->GetParameterValue("name") == "units")
-			{
 				for (int j = 0;j < id->GetNumberChildren();j++)
 				{
 					Identifier* unit;
@@ -392,7 +573,6 @@ void Soar_Link::update_units()
 						break;
 					}
 				}
-			}
 		}
 		else
 			final_units.insert(*it);
@@ -519,6 +699,7 @@ int Soar_Link::soar_agent_thread()
 		SDL_mutexV(mu);
 
 		update_units();
+		update_resources();
 
 		agent->ExecuteCommandLine("run -d 1");
 
