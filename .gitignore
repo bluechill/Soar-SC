@@ -25,6 +25,10 @@
 # Logs and databases #
 ######################
 *.log
+*.tlog
+*stdout.txt
+*stderr.txt
+*test_input.txt
 *.sql
 *.sqlite
 

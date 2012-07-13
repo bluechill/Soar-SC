@@ -22,6 +22,9 @@
     <Filter Include="SDL">
       <UniqueIdentifier>{5470acaf-efcb-4d2b-a945-831f10309919}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Soar Files">
+      <UniqueIdentifier>{d019e73b-6040-4864-9e8b-978f5b66e047}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp">

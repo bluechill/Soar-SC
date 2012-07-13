@@ -113,28 +113,28 @@ void Soar_Link::onStart()
 	ss.str("");
 
 	//Bottom barrier
-	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
+	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s 1 " + map_height_as_string + " 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_1 << endl;
 
 	agent->SendSVSInput(svs_command_1);
 
 	//Top barrier
-	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
+	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s 1 " + map_height_as_string + " 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_2 << endl;
 
 	agent->SendSVSInput(svs_command_2);
 
 	//Left barrier
-	string svs_command_3 = "a -y0 world v " + unit_box_verts + " p -1 0 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_3 = "a -y0 world v " + unit_box_verts + " p -1 0 0 s " + map_width_as_string + " 1 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_3 << endl;
 
 	agent->SendSVSInput(svs_command_3);
 
 	//Right barrier
-	string svs_command_4 = "a y0 world v " + unit_box_verts + " p " + map_width_as_string + " 0 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_4 = "a y0 world v " + unit_box_verts + " p " + map_width_as_string + " 0 0 s " + map_width_as_string + " 1 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_4 << endl;
 
@@ -282,7 +282,14 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	else
 		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
 
-	Identifier* resource = id->CreateIdWME(type.getName().c_str());
+	string name;
+
+	if (type.getName().find("Mineral") != string::npos)
+		name = "mineral";
+	else
+		name = "vesp-gas";
+
+	Identifier* resource = id->CreateIdWME(name.c_str());
 
 	resource->CreateIntWME("id", bw_id);
 	resource->CreateIntWME("count", count);
@@ -303,6 +310,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	string size = ss.str();
 	ss.str("");
 
+
 	ss << angle;
 	string rotation = ss.str();
 
@@ -314,7 +322,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 
 	resource->CreateStringWME("svsobject", svs_object_id.c_str());
 
-	test_input_file << " ^svsobject " << svs_object_id << endl;
+	test_input_file << "I-resources-" << name << ": ^svsobject " << svs_object_id << endl;
 
 	test_input_file << "SVS-Actual: " << svs_command << endl;
 }
@@ -327,7 +335,7 @@ void Soar_Link::delete_resource(int bw_id)
 
 	if (!input_link->FindByAttribute("resources", 0))
 	{
-		cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
+		cout << "ERROR: No 'resources' identifier on the input link! Creating...." << endl;
 
 		id = input_link->CreateIdWME("resources");
 	}
@@ -376,23 +384,23 @@ void Soar_Link::update_resources()
 			Unit* bw_unit = (*it);
 
 			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
-
-			new_minerals.push_back(bw_unit);
 		}
+		
+		new_minerals.push_back(*it);
 	}
 
 	for (Unitset::iterator it = visible_vesp_gas.begin();it != visible_vesp_gas.end();it++)
 	{
 		if (vesp_gas.find(*it) == vesp_gas.end())
 		{
-			//Doesn't exist in my current list of visible minerals
+			//Doesn't exist in my current list of visible vespian gas
 
 			Unit* bw_unit = (*it);
 
 			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
-
-			new_vesp_gas.push_back(bw_unit);
 		}
+
+		new_vesp_gas.push_back(*it);
 	}
 
 	Unitset final_minerals;
@@ -504,7 +512,7 @@ void Soar_Link::update_units()
 			svs_object_id += ss.str();
 			ss.str("");
 			//Flip the point so "north" isn't negative y
-			ss << ((float)bw_unit->getPosition().x)/32.0f << " " << flip_one_d_point(((float)bw_unit->getPosition().y)/32.0f, false) << " 0";
+			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop())/32.0f, false) << " 0";
 			string position = ss.str();
 			ss.str("");
 
@@ -526,9 +534,48 @@ void Soar_Link::update_units()
 			test_input_file << " ^svsobject " << svs_object_id << endl;
 
 			test_input_file << "SVS-Actual: " << svs_command << endl;
-
-			my_units_new.push_back(bw_unit);
 		}
+		else
+		{
+			Unit* orig = *my_units.find(*it);
+			Unit* new_unit = *it;
+
+			string svs_object_id = new_unit->getType().getName();
+			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+			stringstream ss;
+			ss << new_unit->getID();
+			svs_object_id += ss.str();
+			ss.str("");
+
+			string svs_command = "c " + svs_object_id;
+
+			if (orig->getLeft() != new_unit->getLeft() ||
+				orig->getTop() != new_unit->getTop())
+			{
+				ss << ((float)new_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)new_unit->getTop())/32.0f, false) << " 0";
+				string position = ss.str();
+				ss.str("");
+
+				svs_command += " " + position;
+			}
+
+			if (orig->getAngle() != new_unit->getAngle())
+			{
+				ss << new_unit->getAngle();
+				string rotation = ss.str();
+
+				svs_command += " 0 " + rotation + " 0";
+			}
+
+			if (svs_command != ("c " + svs_object_id))
+			{
+				agent->SendSVSInput(svs_command);
+				test_input_file << "SVSAction: " << svs_command << endl;
+			}
+		}
+
+		my_units_new.insert(*it);
 	}
 
 	Unitset final_units;

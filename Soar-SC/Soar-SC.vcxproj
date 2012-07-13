@@ -73,7 +73,8 @@
     </Link>
     <PostBuildEvent>
       <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(OutDir)..\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt);
-copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"</Command>
+copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
+copy /Y $(OutDir)..\Soar-SC\Soar\Soar.dll "C:\Program Files\Starcraft\Soar.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

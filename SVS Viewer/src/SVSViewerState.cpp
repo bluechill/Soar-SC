@@ -220,21 +220,21 @@ bool SVSViewerState::parse_command(std::string command)
 
 	std::vector<std::string> subvector(parts.begin()+2, parts.end());
 
-	if (command_char == "a")
+	if (command_char == "a" || command_char == "A")
 	{
 		if (!SVSParser::parse_add(subvector, scenes[scene_number]))
 			return false;
 
 		return true;
 	}
-	else if (command_char == "c")
+	else if (command_char == "c" || command_char == "C")
 	{
 		if (!SVSParser::parse_change(subvector, scenes[scene_number]))
 			return false;
 
 		return true;
 	}
-	else if (command_char == "d")
+	else if (command_char == "d" || command_char == "D")
 	{
 		if (!SVSParser::parse_delete(subvector, scenes[scene_number]))
 			return false;

@@ -79,9 +79,9 @@ bool parse_command(std::vector<std::string> &command, sml::Agent *agent)
 	using namespace std;
 	using namespace sml;
 
-	if (command.size() < 4)
+	if (command.size() < 3)
 	{
-		cerr << "Command must be in the format of 'Type: identifier ^param value'" << endl;
+		cerr << "Command must be in the format of 'Type-identifier-...-identifier: ^param value'" << endl;
 		return false;
 	}
 
@@ -140,9 +140,10 @@ bool parse_command(std::vector<std::string> &command, sml::Agent *agent)
 
 			for (int i = 0;i < location_id->GetNumberChildren();i++)
 			{
-				if (location_id->FindByAttribute(it->c_str(), i)->IsIdentifier())
+				WMElement* potential_id = location_id->FindByAttribute(it->c_str(), i);
+				if (potential_id && potential_id->IsIdentifier())
 				{
-					new_location_id = location_id->FindByAttribute(it->c_str(), i)->ConvertToIdentifier();
+					new_location_id = potential_id->ConvertToIdentifier();
 					break;
 				}
 			}

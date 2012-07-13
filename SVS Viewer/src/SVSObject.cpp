@@ -34,9 +34,13 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	if (parent)
 	{
 		position.x *= parent->get_scale().x;
-		position.y *= parent->get_scale().x;
-		position.z *= parent->get_scale().x;
+		position.y *= parent->get_scale().y;
+		position.z *= parent->get_scale().z;
 	}
+
+	Zeni::Point3f temp_scale = scale;
+	scale.x = temp_scale.y;
+	scale.y = temp_scale.x;
 	
 	if (verts.size() == 0)
 	{
