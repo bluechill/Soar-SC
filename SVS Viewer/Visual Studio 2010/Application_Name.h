@@ -1,1 +1,1 @@
-#define APPLICATION_NAME viewer.exe
+#define APPLICATION_NAME "Application" 

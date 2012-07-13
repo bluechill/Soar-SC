@@ -15,81 +15,44 @@
 
 const float SVSObject::global_scale = 25.0f;
 
-SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale, SVSObject* parent)
+SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale)
 {	
+	using namespace Zeni;
+
 	this->name = name;
 	
-	if (!parent && name != "world")
-	{
-		std::cout << "ERROR: Must inherit from a parent *always*!" << std::endl;
-		exit(1);
-	}
-	
-	if (parent && !parent->is_a_group())
-	{
-		std::cout << "ERROR: Tried to inherit from geo object not group!" << std::endl;
-		exit(1);
-	}
+	transformation_matrix = Matrix4f::Translate(position) /**  Matrix4f::Translate(Vector3f(scale)/2) Matrix4f::Rotate(rotation * -1) * Matrix4f::Translate(Vector3f(scale)/-2)*/ * Matrix4f::Scale(scale);
+	//transformation_matrix = Zeni::Matrix4f::Scale(scale) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Translate(position);
 
-	if (parent)
-	{
-		position.x *= parent->get_scale().x;
-		position.y *= parent->get_scale().y;
-		position.z *= parent->get_scale().z;
-	}
-
-	Zeni::Point3f temp_scale = scale;
-	scale.x = temp_scale.y;
-	scale.y = temp_scale.x;
-	
 	if (verts.size() == 0)
 	{
 		is_group = true;
 				
 		this->center = position;
-		this->parent = parent;
 		
 		this->scale = scale;
 		this->rotation = rotation;
-		
-		Zeni::Matrix4f local_transformation_matrix = Zeni::Matrix4f::Translate(position) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
-		
-		transformation_matrix = local_transformation_matrix;
-		
-		if (parent != NULL)
-			transformation_matrix *= parent->get_transformation_matrix();			
 		
 		return;
 	}
 	
 	this->buffer = new Zeni::Vertex_Buffer();
+	this->wireframe_buffer = new Zeni::Vertex_Buffer();
 	
 	std::vector<std::vector<int> > faces = verts_for_faces(verts);
 	
-	Zeni::Matrix4f local_transformation_matrix = Zeni::Matrix4f::Translate(position) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
-	
-	std::cout << "Position: " << position.x << "," << position.y << "," << position.z << std::endl;
+	/*std::cout << "Position: " << position.x << "," << position.y << "," << position.z << std::endl;
 	std::cout << "Scale: " << scale.x << "," << scale.y << "," << scale.z << std::endl;
 	
 	std::cout << "Local Matrix: " << std::endl;
-	std::cout << local_transformation_matrix[0][0] << " " << local_transformation_matrix[0][1] << " " << local_transformation_matrix[0][2] << " " << local_transformation_matrix[0][3] << std::endl;
-	
-	std::cout << local_transformation_matrix[1][0] << " " << local_transformation_matrix[1][1] << " " << local_transformation_matrix[1][2] << " " << local_transformation_matrix[1][3] << std::endl;
-	
-	std::cout << local_transformation_matrix[2][0] << " " << local_transformation_matrix[2][1] << " " << local_transformation_matrix[2][2] << " " << local_transformation_matrix[2][3] << std::endl;
-	
-	std::cout << local_transformation_matrix[3][0] << " " << local_transformation_matrix[3][1] << " " << local_transformation_matrix[3][2] << " " << local_transformation_matrix[3][3] << std::endl;
-	
-	transformation_matrix = local_transformation_matrix * parent->get_transformation_matrix();
-	
-	std::cout << "Final Matrix: " << std::endl;
 	std::cout << transformation_matrix[0][0] << " " << transformation_matrix[0][1] << " " << transformation_matrix[0][2] << " " << transformation_matrix[0][3] << std::endl;
 	
 	std::cout << transformation_matrix[1][0] << " " << transformation_matrix[1][1] << " " << transformation_matrix[1][2] << " " << transformation_matrix[1][3] << std::endl;
 	
 	std::cout << transformation_matrix[2][0] << " " << transformation_matrix[2][1] << " " << transformation_matrix[2][2] << " " << transformation_matrix[2][3] << std::endl;
 	
-	std::cout << transformation_matrix[3][0] << " " << transformation_matrix[3][1] << " " << transformation_matrix[3][2] << " " << transformation_matrix[3][3] << std::endl;	
+	std::cout << transformation_matrix[3][0] << " " << transformation_matrix[3][1] << " " << transformation_matrix[3][2] << " " << transformation_matrix[3][3] << std::endl;
+	*/
 	
 	int i = 0;
 	
@@ -102,41 +65,44 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 			//Triangle
 			Zeni::Color color = Zeni::get_Colors()["magenta"];
 			
-			Zeni::Point3f position1 = verts.at(it->at(0)) + parent->get_center_position();
-			Zeni::Point3f position2 = verts.at(it->at(1)) + parent->get_center_position();
-			Zeni::Point3f position3 = verts.at(it->at(2)) + parent->get_center_position();
-			
-			position1 = transformation_matrix * position1;
-			position2 = transformation_matrix * position2;
-			position3 = transformation_matrix * position3;
+			Zeni::Point3f position1 = verts.at(it->at(0));
+			Zeni::Point3f position2 = verts.at(it->at(1));
+			Zeni::Point3f position3 = verts.at(it->at(2));
 						
 			Zeni::Vertex3f_Color vert1(position1, color);
 			Zeni::Vertex3f_Color vert2(position2, color);
 			Zeni::Vertex3f_Color vert3(position3, color);
 			
 			Zeni::Triangle<Zeni::Vertex3f_Color> *triag = new Zeni::Triangle<Zeni::Vertex3f_Color>(vert1, vert2, vert3);
+			triag->give_Material(new Material());
 			triangles.push_back(triag);
 			buffer->fax_Triangle(triag);
+
+			Zeni::Triangle<Zeni::Vertex3f_Color> *wireframe_triag = new Zeni::Triangle<Zeni::Vertex3f_Color>(*triag);
+			color = Zeni::get_Colors()["white"];
+
+			wireframe_triag->a.set_Color(color);
+			wireframe_triag->b.set_Color(color);
+			wireframe_triag->c.set_Color(color);
+
+			wireframe_triag->give_Material(new Material());
+			wireframe_triangles.push_back(wireframe_triag);
+			wireframe_buffer->fax_Triangle(wireframe_triag);
 		}
 		else if (it->size() == 4)
 		{
 			//Quad
 			Zeni::Color color = Zeni::get_Colors()["magenta"];
 			
-			Zeni::Point3f position1 = verts.at(it->at(0)) + parent->get_center_position();
-			Zeni::Point3f position2 = verts.at(it->at(1)) + parent->get_center_position();
-			Zeni::Point3f position3 = verts.at(it->at(2)) + parent->get_center_position();
-			Zeni::Point3f position4 = verts.at(it->at(3)) + parent->get_center_position();
+			Zeni::Point3f position1 = verts.at(it->at(0));
+			Zeni::Point3f position2 = verts.at(it->at(1));
+			Zeni::Point3f position3 = verts.at(it->at(2));
+			Zeni::Point3f position4 = verts.at(it->at(3));
 			
-			position1 = transformation_matrix * position1;
-			position2 = transformation_matrix * position2;
-			position3 = transformation_matrix * position3;
-			position4 = transformation_matrix * position4;
-			
-			std::cout << "Corner (" << i << "): " << position1.x << "," << position1.y << "," << position1.z << std::endl;
+			/*std::cout << "Corner (" << i << "): " << position1.x << "," << position1.y << "," << position1.z << std::endl;
 			std::cout << "Corner (" << i << "): " << position2.x << "," << position2.y << "," << position2.z << std::endl;
 			std::cout << "Corner (" << i << "): " << position3.x << "," << position3.y << "," << position3.z << std::endl;
-			std::cout << "Corner (" << i << "): " << position4.x << "," << position4.y << "," << position4.z << std::endl;
+			std::cout << "Corner (" << i << "): " << position4.x << "," << position4.y << "," << position4.z << std::endl;*/
 			
 			Zeni::Vertex3f_Color vert1(position1, color);
 			Zeni::Vertex3f_Color vert2(position2, color);
@@ -144,8 +110,21 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 			Zeni::Vertex3f_Color vert4(position4, color);
 						
 			Zeni::Quadrilateral<Zeni::Vertex3f_Color> *quad = new Zeni::Quadrilateral<Zeni::Vertex3f_Color>(vert1, vert2, vert3, vert4);
+			quad->give_Material(new Material());
 			quadrilaterals.push_back(quad);
 			buffer->fax_Quadrilateral(quad);
+
+			color = Zeni::get_Colors()["white"];
+
+			Zeni::Quadrilateral<Zeni::Vertex3f_Color> *wireframe_quad = new Zeni::Quadrilateral<Zeni::Vertex3f_Color>(*quad);
+			wireframe_quad->a.set_Color(color);
+			wireframe_quad->b.set_Color(color);
+			wireframe_quad->c.set_Color(color);
+			wireframe_quad->d.set_Color(color);
+
+			wireframe_quad->give_Material(new Material());
+			wireframe_quadrilaterals.push_back(wireframe_quad);
+			wireframe_buffer->fax_Quadrilateral(wireframe_quad);
 		}
 		else
 		{
@@ -156,8 +135,8 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	}
 	
 	this->center = position;
-	
-	mu = SDL_CreateMutex();
+
+	is_group = false;
 }
 
 SVSObject::SVSObject(const SVSObject& source)
@@ -167,9 +146,14 @@ SVSObject::SVSObject(const SVSObject& source)
 	
 	for (unsigned int i = 0;i < source.triangles.size();i++)
 		triangles.push_back(new Zeni::Triangle<Zeni::Vertex3f_Color>(*source.triangles[i]));
+
+	for (unsigned int i = 0;i < source.wireframe_quadrilaterals.size();i++)
+		wireframe_quadrilaterals.push_back(new Zeni::Quadrilateral<Zeni::Vertex3f_Color>(*source.wireframe_quadrilaterals[i]));
+	
+	for (unsigned int i = 0;i < source.wireframe_triangles.size();i++)
+		wireframe_triangles.push_back(new Zeni::Triangle<Zeni::Vertex3f_Color>(*source.wireframe_triangles[i]));
 	
 	this->name = source.name;
-	this->parent = source.parent;
 	
 	this->center = source.center;
 	this->scale = source.scale;
@@ -178,15 +162,20 @@ SVSObject::SVSObject(const SVSObject& source)
 	this->transformation_matrix = source.transformation_matrix;
 	
 	this->buffer = new Zeni::Vertex_Buffer();
+	this->wireframe_buffer = new Zeni::Vertex_Buffer();
 	
 	for (unsigned int i = 0;i < this->triangles.size();i++)
 		buffer->fax_Triangle(this->triangles[i]);
 	
 	for (unsigned int i = 0;i < this->quadrilaterals.size();i++)
 		buffer->fax_Quadrilateral(this->quadrilaterals[i]);
+
+	for (unsigned int i = 0;i < this->wireframe_triangles.size();i++)
+		wireframe_buffer->fax_Triangle(this->wireframe_triangles[i]);
 	
-	this->mu = SDL_CreateMutex();
-	
+	for (unsigned int i = 0;i < this->wireframe_quadrilaterals.size();i++)
+		wireframe_buffer->fax_Quadrilateral(this->wireframe_quadrilaterals[i]);
+
 	this->is_group = source.is_group;
 }
 
@@ -200,9 +189,14 @@ SVSObject& SVSObject::operator=(const SVSObject &source)
 	
 	for (unsigned int i = 0;i < source.triangles.size();i++)
 		triangles.push_back(new Zeni::Triangle<Zeni::Vertex3f_Color>(*source.triangles[i]));
+
+	for (unsigned int i = 0;i < source.wireframe_quadrilaterals.size();i++)
+		wireframe_quadrilaterals.push_back(new Zeni::Quadrilateral<Zeni::Vertex3f_Color>(*source.wireframe_quadrilaterals[i]));
+	
+	for (unsigned int i = 0;i < source.wireframe_triangles.size();i++)
+		wireframe_triangles.push_back(new Zeni::Triangle<Zeni::Vertex3f_Color>(*source.wireframe_triangles[i]));
 	
 	this->name = source.name;
-	this->parent = source.parent;
 	
 	this->center = source.center;
 	this->scale = source.scale;
@@ -211,14 +205,19 @@ SVSObject& SVSObject::operator=(const SVSObject &source)
 	this->transformation_matrix = source.transformation_matrix;
 	
 	this->buffer = new Zeni::Vertex_Buffer();
+	this->wireframe_buffer = new Zeni::Vertex_Buffer();
 	
 	for (unsigned int i = 0;i < this->triangles.size();i++)
 		buffer->fax_Triangle(this->triangles[i]);
 	
 	for (unsigned int i = 0;i < this->quadrilaterals.size();i++)
 		buffer->fax_Quadrilateral(this->quadrilaterals[i]);
+
+	for (unsigned int i = 0;i < this->wireframe_triangles.size();i++)
+		wireframe_buffer->fax_Triangle(this->wireframe_triangles[i]);
 	
-	this->mu = SDL_CreateMutex();
+	for (unsigned int i = 0;i < this->wireframe_quadrilaterals.size();i++)
+		wireframe_buffer->fax_Quadrilateral(this->wireframe_quadrilaterals[i]);
 	
 	this->is_group = source.is_group;
 	
@@ -228,134 +227,83 @@ SVSObject& SVSObject::operator=(const SVSObject &source)
 SVSObject::~SVSObject()
 {
 	if (!is_group)
+	{
 		delete buffer;
-	
-	//SDL_DestroyMutex(mu);
+		delete wireframe_buffer;
+
+		for (std::vector<Zeni::Quadrilateral<Zeni::Vertex3f_Color>*>::iterator it = quadrilaterals.begin();it != quadrilaterals.end();it++)
+			delete *it;
+
+		for (std::vector<Zeni::Quadrilateral<Zeni::Vertex3f_Color>*>::iterator it = wireframe_quadrilaterals.begin();it != wireframe_quadrilaterals.end();it++)
+			delete *it;
+
+		for (std::vector<Zeni::Triangle<Zeni::Vertex3f_Color>*>::iterator it = triangles.begin();it != triangles.end();it++)
+			delete *it;
+
+		for (std::vector<Zeni::Triangle<Zeni::Vertex3f_Color>*>::iterator it = wireframe_triangles.begin();it != wireframe_triangles.end();it++)
+			delete *it;
+	}
+	else
+	{
+		for (std::vector<SVSObject*>::iterator it = children.begin();it != children.end();it++)
+			delete *it;
+	}
 }
 
 void SVSObject::transform_position(Zeni::Point3f amount)
 {	
-	Zeni::Matrix4f matrix;
-	matrix.Translate(amount);
-	
-	this->transform(matrix);
+	transformation_matrix *= Zeni::Matrix4f::Translate(amount);
 }
 
 void SVSObject::transform_scale(Zeni::Point3f amount)
 {
-	Zeni::Matrix4f matrix;
-	matrix.Scale(amount);
-	
-	this->transform(matrix);
+	transformation_matrix *= Zeni::Matrix4f::Scale(amount);
 }
 
 void SVSObject::transform_rotation(Zeni::Quaternion amount)
 {
-	Zeni::Matrix4f matrix;
-	matrix.Rotate(amount);
-	
-	this->transform(matrix);
+	transformation_matrix *= Zeni::Matrix4f::Rotate(amount);
 }
 
-void SVSObject::transform(Zeni::Matrix4f transformation_matrix)
+void SVSObject::transform(Zeni::Matrix4f matrix)
 {
-	for (std::vector<Zeni::Triangle<Zeni::Vertex3f_Color>* >::iterator it = triangles.begin();it != triangles.end();++it)
-	{
-		(*it)->a.position = transformation_matrix * (*it)->a.position;
-		(*it)->b.position = transformation_matrix * (*it)->b.position;
-		(*it)->c.position = transformation_matrix * (*it)->c.position;
-	}
-	
-	for (std::vector<Zeni::Quadrilateral<Zeni::Vertex3f_Color>* >::iterator it = quadrilaterals.begin();it != quadrilaterals.end();++it)
-	{
-		(*it)->a.position = transformation_matrix * (*it)->a.position;
-		(*it)->b.position = transformation_matrix * (*it)->b.position;
-		(*it)->c.position = transformation_matrix * (*it)->c.position;
-		(*it)->d.position = transformation_matrix * (*it)->d.position;
-	}
-	
-	this->center = transformation_matrix * this->center;
-	
-	SDL_mutexP(mu);
-	
-	delete buffer;
-	
-	buffer = new Zeni::Vertex_Buffer;
-	
-	for (unsigned int i = 0;i < triangles.size();i++)
-		buffer->fax_Triangle(triangles[i]);
-	
-	for (unsigned int i = 0;i < quadrilaterals.size();i++)
-		buffer->fax_Quadrilateral(quadrilaterals[i]);
-	
-	SDL_mutexV(mu);
+	transformation_matrix *= matrix;
 }
 
 void SVSObject::render()
 {
-	if (quadrilaterals.size() == 0 && triangles.size() == 0)
-		return;
-	
-	SDL_mutexP(mu);
-//	buffer->render();
-	
-	for (unsigned int i = 0;i < triangles.size();i++)
-		Zeni::get_Video().render(*triangles[i]);
-	
-	for (unsigned int i = 0;i < quadrilaterals.size();i++)
-	{
-		Zeni::Video &vr = Zeni::get_Video();
-		Zeni::Quadrilateral<Zeni::Vertex3f_Color>* quad_2 = quadrilaterals[i];
-		Zeni::Quadrilateral<Zeni::Vertex3f_Color> quad = *quad_2;
-		
-		vr.render(quad);
-	}
-	
-	SDL_mutexV(mu);
+	Zeni::Video &vr = Zeni::get_Video();
+
+	vr.select_world_matrix();
+	vr.push_world_stack();
+
+	vr.transform_scene(transformation_matrix);
+
+	if (!is_group)
+		buffer->render();
+
+	for (std::vector<SVSObject*>::iterator it = children.begin();it != children.end();it++)
+		(*it)->render();
+
+	vr.pop_world_stack();
 }
 
 void SVSObject::render_wireframe()
 {
-	if (quadrilaterals.size() == 0 && triangles.size() == 0)
-		return;
-	
-	SDL_mutexP(mu);
-	//	buffer->render();
-	
-	for (unsigned int i = 0;i < triangles.size();i++)
-	{
-		triangles[i]->a.set_Color(Zeni::get_Colors()["white"]);
-		triangles[i]->b.set_Color(Zeni::get_Colors()["white"]);
-		triangles[i]->c.set_Color(Zeni::get_Colors()["white"]);
-		
-		Zeni::get_Video().render(*triangles[i]);
-		
-		triangles[i]->a.set_Color(Zeni::get_Colors()["magenta"]);
-		triangles[i]->b.set_Color(Zeni::get_Colors()["magenta"]);
-		triangles[i]->c.set_Color(Zeni::get_Colors()["magenta"]);
-	}
-	
-	for (unsigned int i = 0;i < quadrilaterals.size();i++)
-	{
-		Zeni::Color original = quadrilaterals[i]->a.get_Color();
-		quadrilaterals[i]->a.set_Color(Zeni::get_Colors()["white"]);
-		quadrilaterals[i]->b.set_Color(Zeni::get_Colors()["white"]);
-		quadrilaterals[i]->c.set_Color(Zeni::get_Colors()["white"]);
-		quadrilaterals[i]->d.set_Color(Zeni::get_Colors()["white"]);
-		
-		Zeni::Video &vr = Zeni::get_Video();
-		Zeni::Quadrilateral<Zeni::Vertex3f_Color>* quad_2 = quadrilaterals[i];
-		Zeni::Quadrilateral<Zeni::Vertex3f_Color> quad = *quad_2;
-		
-		vr.render(quad);
-		
-		quadrilaterals[i]->a.set_Color(Zeni::get_Colors()["magenta"]);
-		quadrilaterals[i]->b.set_Color(Zeni::get_Colors()["magenta"]);
-		quadrilaterals[i]->c.set_Color(Zeni::get_Colors()["magenta"]);
-		quadrilaterals[i]->d.set_Color(Zeni::get_Colors()["magenta"]);
-	}
-	
-	SDL_mutexV(mu);
+	Zeni::Video &vr = Zeni::get_Video();
+
+	vr.select_world_matrix();
+	vr.push_world_stack();
+
+	vr.transform_scene(transformation_matrix);
+
+	if (!is_group)
+		wireframe_buffer->render();
+
+	for (std::vector<SVSObject*>::iterator it = children.begin();it != children.end();it++)
+		(*it)->render_wireframe();
+
+	vr.pop_world_stack();
 }
 
 
@@ -363,17 +311,15 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 {
 	std::vector<std::vector<int> > faces;
 	
-//#ifdef _WIN32
-//	char* temp_folder = new char[MAX_PATH+1];
-//	GetTempPath(MAX_PATH+1, temp_folder);
-//#else
-//	std::string temp_folder = "/tmp/";
-//#endif
-//	
-//	std::string path = temp_folder;
-//	path += "qhull";
-
-	std::string path = "C:\\qhull";
+#ifdef _WIN32
+	char* temp_folder = new char[MAX_PATH+1];
+	GetTempPath(MAX_PATH+1, temp_folder);
+#else
+	std::string temp_folder = "/tmp/";
+#endif
+	
+	std::string path = temp_folder;
+	path += "qhull";
 	
 	std::ofstream to_output(path.c_str(), std::ofstream::out | std::ofstream::trunc);
 	
@@ -466,4 +412,17 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 		throw Zeni::Error("Zero faces for a non-group!");
 
 	return faces;
+}
+
+bool SVSObject::addChild(SVSObject* object)
+{
+	if (!is_group)
+	{
+		throw Zeni::Error("ERROR: Tried to add object to geo-object!");
+		return false;
+	}
+
+	children.push_back(object);
+
+	return true;
 }

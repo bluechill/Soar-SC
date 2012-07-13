@@ -1,0 +1,15 @@
+sp {propose*gather-minerals
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^resources <r>)
+-->
+   (<s> ^operator <o> +,=)
+   (<o> ^name gather-minerals)
+}
+
+sp {apply*gather-minerals
+   (state <s> ^name Soar-SC
+              ^operator.name gather-minerals)
+-->
+   
+}

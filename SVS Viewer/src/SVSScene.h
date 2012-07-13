@@ -27,7 +27,7 @@ public:
 	~SVSScene();
 	
 	bool add_object(std::string name, std::string parent, std::vector<Zeni::Point3f> vertices, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale);
-		
+	
 	bool update_object(std::string name, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale);
 	
 	bool delete_object(std::string name);
@@ -45,6 +45,8 @@ private:
 	std::string scene_name;
 	
 	std::vector<SVSObject*> objects;
+
+	SVSObject* find_object_in_objects(std::vector<SVSObject*> objects, std::string name);
 };
 
 #endif

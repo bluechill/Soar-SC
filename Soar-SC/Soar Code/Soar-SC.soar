@@ -1,0 +1,5 @@
+pushd Basic-Actions
+source actions.soar
+popd
+
+source intialize-soar-sc.soar

@@ -113,28 +113,28 @@ void Soar_Link::onStart()
 	ss.str("");
 
 	//Bottom barrier
-	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_1 << endl;
 
 	agent->SendSVSInput(svs_command_1);
 
 	//Top barrier
-	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_2 << endl;
 
 	agent->SendSVSInput(svs_command_2);
 
 	//Left barrier
-	string svs_command_3 = "a -y0 world v " + unit_box_verts + " p -1 0 0 s " + map_width_as_string + " 1 1";
+	string svs_command_3 = "a -y0 world v " + unit_box_verts + " p -1 0 0 s 1 " + map_height_as_string + " 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_3 << endl;
 
 	agent->SendSVSInput(svs_command_3);
 
 	//Right barrier
-	string svs_command_4 = "a y0 world v " + unit_box_verts + " p " + map_width_as_string + " 0 0 s " + map_width_as_string + " 1 1";
+	string svs_command_4 = "a y0 world v " + unit_box_verts + " p " + map_width_as_string + " 0 0 s 1 " + map_height_as_string + " 1";
 
 	test_input_file << "SVS-Actual: " << svs_command_4 << endl;
 
@@ -306,7 +306,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	string position_svs = ss.str();
 	ss.str("");
 
-	ss << ((float)type.dimensionLeft())*2.0f/32.0f << " " << ((float)type.dimensionUp())*2.0f/32.0f << " 1";
+	ss << ((float)(type.dimensionLeft() + type.dimensionRight() + 1))/32.0f << " " << ((float)(type.dimensionUp() + type.dimensionDown() + 1))/32.0f << " 1";
 	string size = ss.str();
 	ss.str("");
 
@@ -383,7 +383,7 @@ void Soar_Link::update_resources()
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
 		}
 		
 		new_minerals.push_back(*it);
@@ -397,7 +397,7 @@ void Soar_Link::update_resources()
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), bw_unit->getPosition(), bw_unit->getType(), (float)bw_unit->getAngle());
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
 		}
 
 		new_vesp_gas.push_back(*it);
@@ -512,11 +512,11 @@ void Soar_Link::update_units()
 			svs_object_id += ss.str();
 			ss.str("");
 			//Flip the point so "north" isn't negative y
-			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop())/32.0f, false) << " 0";
+			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getBottom())/32.0f, false) << " 0";
 			string position = ss.str();
 			ss.str("");
 
-			ss << ((float)bw_unit->getType().dimensionLeft())*2.0f/32.0f << " " << ((float)bw_unit->getType().dimensionUp())*2.0f/32.0f << " 1";
+			ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1))/32.0f << " 1";
 			string size = ss.str();
 			ss.str("");
 
