@@ -1,9 +1,10 @@
 // Soar-SC-Rectilinear.cpp : Defines the entry point for the console application.
 //
 
+#ifdef _WIN32
 #include "stdafx.h"
-
 #include <windows.h>
+#endif
 
 #include <iostream>
 
@@ -167,11 +168,13 @@ int main(int argc, const char * argv[])
 	
 	clock_t start = clock();
 	
-	for (int y = 0;y < file_lines.size();y++)
+	string* start_y = &file_lines[0];
+	for (int y = 0;y < file_lines.size();y++,start_y++)
 	{
-		for (int x = 0;x < file_lines[y].size();x++)
+		char* start_x = &(*start_y)[0];
+		for (int x = 0;x < (*start_y).size();x++,start_x++)
 		{
-			if (isWalkable(file_lines[y][x]) || rectangle_contains(x, y, rectangles))
+			if (isWalkable(*start_x) || rectangle_contains(x, y, rectangles))
 				continue;
 
 			generate_rectangle(x,y,file_lines,rectangles);

@@ -149,6 +149,25 @@ void Soar_Link::onStart()
 		Broodwar->printf("Soar: Unable to create soar thread!");
 		cout << "Soar: Unable to create soar thread!" << endl;
 	}
+
+	/*ofstream ifs("bwapi-data/logs/map-3.txt", ios::out);
+
+	if (!ifs.is_open())
+		return;
+
+	for (int y = 0;y < Broodwar->mapHeight()*4;y++)
+	{
+		for (int x = 0;x < Broodwar->mapWidth()*4;x++)
+		{
+			string c = ".";
+			if (!Broodwar->isWalkable(x,y))
+				c = "A";
+
+			ifs << c;
+		}
+
+		ifs << endl;
+	}*/
 }
 
 void Soar_Link::onEnd(bool isWinner)
