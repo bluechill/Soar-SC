@@ -26,6 +26,7 @@
 ######################
 *.log
 *.tlog
+*.ilk
 *stdout.txt
 *stderr.txt
 *test_input.txt
