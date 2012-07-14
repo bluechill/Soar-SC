@@ -5,9 +5,14 @@
 *.dll
 *.exe
 *.o
+*.obj
+*.exp
+*.manifest
+*.idb
 *.so
 *.lib
 *.pdb
+*.lastbuildstate
 
 # Packages #
 ############
