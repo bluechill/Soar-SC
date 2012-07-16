@@ -95,8 +95,8 @@ copy /Y $(OutDir)..\Soar-SC\Soar\Soar.dll "C:\Program Files\Starcraft\Soar.dll"<
       </Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>Soar/Soar.lib;../lib/BWAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Soar;../Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Soar/Soar.lib;SDL.lib;../lib/BWAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Soar;../lib;../Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -112,6 +112,7 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="Source\Soar_Link.cpp" />
+    <ClCompile Include="Source\Terrain-Analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\BWAPI.h" />
@@ -357,6 +358,7 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClInclude Include="Soar\include\winstl\winstl.h" />
     <ClInclude Include="Soar\include\XMLTrace.h" />
     <ClInclude Include="Source\Soar_Link.h" />
+    <ClInclude Include="Source\Terrain-Analyzer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

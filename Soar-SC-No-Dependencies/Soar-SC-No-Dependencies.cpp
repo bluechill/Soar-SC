@@ -316,7 +316,7 @@ bool parse_command(std::vector<std::string> &command, sml::Agent *agent)
 	}
 	else
 	{
-		cerr << "Invalid command: '" << command_type << "'.  Must be either I-C: (minimum) or SVS:" << endl;
+		cerr << "Invalid command: '" << command_type << "'.  Must be either I-C: (minimum) or SVS: or SVS-Actual:" << endl;
 		return false;
 	}
 

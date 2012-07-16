@@ -150,6 +150,23 @@ void Soar_Link::onStart()
 		cout << "Soar: Unable to create soar thread!" << endl;
 	}
 
+	/*vector<vector<bool> > map;
+	int map_size_x = Broodwar->mapWidth() * 4;
+	int map_size_y = Broodwar->mapHeight() * 4;
+
+	for (int y = 0;y < map_size_y;y++)
+	{
+		vector<bool> map_y;
+
+		for (int x = 0;x < map_size_x;x++)
+			map_y.push_back(Broodwar->isWalkable(x,y));
+
+		map.push_back(map_y);
+	}
+
+	analyzer = new TerrainAnalyzer(map, agent, mu);
+	analyzer->analyze();*/
+
 	/*ofstream ifs("bwapi-data/logs/map-3.txt", ios::out);
 
 	if (!ifs.is_open())
@@ -177,113 +194,6 @@ void Soar_Link::onEnd(bool isWinner)
 	{
 		// Log your win here!
 	}
-}
-
-void Soar_Link::update_map()
-{
-	set<vector<string> > polygons;
-
-	vector<vector<bool> > walkable;
-
-	cout << "Map width: " << Broodwar->mapWidth() << endl << "Map Height: " << Broodwar->mapHeight() << endl;
-
-	cout << "Time: " << time(NULL) << endl;
-
-	for (int x = 0;x < Broodwar->mapWidth()*4;x++)
-	{
-		vector<bool> y_array;
-
-		for (int y = 0;y < Broodwar->mapHeight()*4;y++)
-			y_array.push_back(Broodwar->isWalkable(x,y));
-
-		walkable.push_back(y_array);
-	}
-
-	cout << "Walkable: " << walkable.size() << " " << walkable[0].size() << endl;
-
-	//TODO: combine polygons
-	for (unsigned int x = 0;x < walkable.size();x++)
-	{
-		for (unsigned int y = 0;y < walkable[x].size();y++)
-		{
-			if (walkable[x][y])
-				continue;
-
-			stringstream ss;
-			ss << x << " " << y << " 1";
-			string vertex1 = ss.str();
-			ss.str("");
-
-			ss << x + 1 << " " << y << " 1";
-			string vertex2 = ss.str();
-			ss.str("");
-
-			ss << x + 1 << " " << y + 1 << " 1";
-			string vertex3 = ss.str();
-			ss.str("");
-
-			ss << x << " " << y + 1 << " 1";
-			string vertex4 = ss.str();
-			ss.str("");
-
-			ss << x << " " << y << " 0";
-			string vertex5 = ss.str();
-			ss.str("");
-
-			ss << x + 1 << " " << y << " 0";
-			string vertex6 = ss.str();
-			ss.str("");
-
-			ss << x + 1 << " " << y + 1 << " 0";
-			string vertex7 = ss.str();
-			ss.str("");
-
-			ss << x << " " << y + 1 << " 0";
-			string vertex8 = ss.str();
-			ss.str("");
-
-			vector<string> polygon;
-			polygon.push_back(vertex1);
-			polygon.push_back(vertex2);
-			polygon.push_back(vertex3);
-			polygon.push_back(vertex4);
-			polygon.push_back(vertex5);
-			polygon.push_back(vertex6);
-			polygon.push_back(vertex7);
-			polygon.push_back(vertex8);
-
-			polygons.insert(polygon);
-		}
-	}
-
-	cout << "Done creating polygons: " << polygons.size() << endl;
-
-	for (set<vector<string> >::iterator it = polygons.begin();it != polygons.end();it++)
-	{
-		string svs_string = "a ";
-		svs_string += "barrier";
-
-		stringstream ss;
-		ss << (*it)[0][0] << (*it)[1][0];
-		svs_string += ss.str();
-		ss.str("");
-
-		svs_string += " world v ";
-
-		for (vector<string>::const_iterator p_it = it->begin();p_it != it->end();p_it++)
-		{
-			svs_string += (*p_it);
-			svs_string += " ";
-		}
-
-		svs_string += "p 0 0 0";
-
-		test_input_file << "SVS-Actual: " << svs_string << endl;
-
-		agent->SendSVSInput(svs_string);
-	}
-
-	cout << "Done updating map" << endl;
 }
 
 void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type, float angle)
@@ -337,7 +247,9 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	//Broodwar->printf("%s", svs_command.c_str());
 	cout << svs_command << endl;
 
+	SDL_mutexP(mu);
 	agent->SendSVSInput(svs_command);
+	SDL_mutexV(mu);
 
 	resource->CreateStringWME("svsobject", svs_object_id.c_str());
 
@@ -377,7 +289,9 @@ void Soar_Link::delete_resource(int bw_id)
 
 			test_input_file << "SVS-Actual: " << svs_command << endl;
 
+			SDL_mutexP(mu);
 			agent->SendSVSInput(svs_command);
+			SDL_mutexV(mu);
 
 			id->GetChild(j)->DestroyWME();
 
@@ -546,7 +460,9 @@ void Soar_Link::update_units()
 			Broodwar->printf("%s", svs_command.c_str());
 			cout << svs_command << endl;
 
+			SDL_mutexP(mu);
 			agent->SendSVSInput(svs_command);
+			SDL_mutexV(mu);
 
 			unit->CreateStringWME("svsobject", svs_object_id.c_str());
 
@@ -589,7 +505,9 @@ void Soar_Link::update_units()
 
 			if (svs_command != ("c " + svs_object_id))
 			{
+				SDL_mutexP(mu);
 				agent->SendSVSInput(svs_command);
+				SDL_mutexV(mu);
 				test_input_file << "SVSAction: " << svs_command << endl;
 			}
 		}
@@ -632,7 +550,9 @@ void Soar_Link::update_units()
 
 						test_input_file << "SVS-Actual: " << svs_command << endl;
 
+						SDL_mutexP(mu);
 						agent->SendSVSInput(svs_command);
+						SDL_mutexV(mu);
 
 						id->GetChild(j)->DestroyWME();
 
@@ -767,7 +687,9 @@ int Soar_Link::soar_agent_thread()
 		update_units();
 		update_resources();
 
+		SDL_mutexP(mu);
 		agent->ExecuteCommandLine("run -d 1");
+		SDL_mutexV(mu);
 
 		SDL_mutexP(mu);
 		done_updating_agent = true;

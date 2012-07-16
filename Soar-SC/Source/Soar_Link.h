@@ -13,6 +13,8 @@
 #include "SDL/SDL_thread.h"
 #include "SDL/SDL_mutex.h"
 
+#include "Terrain-Analyzer.h"
+
 // Remember not to use "Broodwar" in any global class constructor!
 
 class Soar_Link : public BWAPI::AIModule
@@ -42,6 +44,8 @@ private:
 	bool done_updating;
 
 	SDL_mutex* mu;
+
+	TerrainAnalyzer* analyzer;
 
 public:
 	// Virtual functions for callbacks, leave these as they are.

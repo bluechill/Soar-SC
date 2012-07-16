@@ -33,6 +33,9 @@
     <ClCompile Include="Source\Soar_Link.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Terrain-Analyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Soar_Link.h">
@@ -763,6 +766,9 @@
     </ClInclude>
     <ClInclude Include="..\include\SDL\SDL_video.h">
       <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Terrain-Analyzer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
