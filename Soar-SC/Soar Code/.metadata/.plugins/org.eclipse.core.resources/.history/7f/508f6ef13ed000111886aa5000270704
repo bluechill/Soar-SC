@@ -1,6 +1,5 @@
 sp {propose*gather-minerals
-   (state <s> ^name Soar-SC
-              ^io.input-link <i>)
+   (state <s> ^name Soar-SC ^io.input-link <i>)
    (<i> ^resources.mineral <r>
         ^units.unit <u>)
    (<r> ^id <id>)
@@ -26,3 +25,11 @@ sp {apply*gather-minerals
    (<m> ^object <id-o>
         ^dest <id>)
 }
+
+sp {propose*mineral-impasse
+   (state <s> ^impasse tie
+              ^superstate.last-operator <o>)
+   (<o> ^name gather-minerals
+        ^object
+        ^dest)
+-->

@@ -26,3 +26,11 @@ sp {apply*gather-minerals
    (<m> ^object <id-o>
         ^dest <id>)
 }
+
+sp {propose*mineral-impasse
+   (state <s> ^impasse tie
+              ^superstate.last-operator <o>)
+   (<o> ^name gather-minerals
+        ^object
+        ^dest)
+-->

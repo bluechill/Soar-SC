@@ -100,4 +100,17 @@ public:
 
 	void console_function();
 	void print_soar(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
+
+	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
 };
+
+//Global stuff
+extern void output_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
+extern void printcb(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
+
+//Thread globals
+extern int thread_runner_soar(void* link);
+extern int thread_runner_console(void *link);
+
+//Misc globals
+extern std::string strip(std::string s, std::string lc, std::string rc);

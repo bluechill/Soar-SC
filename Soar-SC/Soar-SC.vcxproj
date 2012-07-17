@@ -74,7 +74,8 @@
     <PostBuildEvent>
       <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(OutDir)..\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt);
 copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
-copy /Y $(OutDir)..\Soar-SC\Soar\Soar.dll "C:\Program Files\Starcraft\Soar.dll"</Command>
+copy /Y $(OutDir)..\Soar-SC\Soar\Soar.dll "C:\Program Files\Starcraft\Soar.dll"
+xcopy /Y "$(ProjectDir)Soar Code\Soar-SC" "C:\Program Files\Starcraft\Soar-SC\" /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,6 +113,10 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="Source\Soar_Link.cpp" />
+    <ClCompile Include="Source\Soar_Link_BWAPI.cpp" />
+    <ClCompile Include="Source\Soar_Link_Global.cpp" />
+    <ClCompile Include="Source\Soar_Link_Misc.cpp" />
+    <ClCompile Include="Source\Soar_Link_Soar.cpp" />
     <ClCompile Include="Source\Terrain-Analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>

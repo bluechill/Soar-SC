@@ -26,3 +26,4 @@ sp {apply*gather-minerals
    (<m> ^object <id-o>
         ^dest <id>)
 }
+  

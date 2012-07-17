@@ -87,11 +87,8 @@ TerrainAnalyzer::SVS_Rectangle TerrainAnalyzer::get_rectangle(const int x, const
 
 void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vector<vector<bool> > &map, vector<SVS_Rectangle> &rectangles)
 {
-	vector<int> xs;
-	vector<int> ys;
-
-	/*if (x_start == 253 && y_start == 248)
-		cout << "TEST!" << endl;*/
+	vector<size_t> xs;
+	vector<size_t> ys;
 
 	for (size_t y = y_start;y < map.size();y++)
 	{
@@ -111,7 +108,7 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 	size_t min_x = map[0].size()-x_start;
 	for (size_t i = 0;i < xs.size();i++)
 	{
-		if (xs[i] < min_x/* || min_x == 0*/)
+		if (xs[i] < min_x)
 			min_x = xs[i];
 	}
 	
@@ -130,10 +127,10 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 		}
 	}
 
-	int min_y = map.size()-y_start;
+	size_t min_y = map.size()-y_start;
 	for (size_t i = 0;i < ys.size();i++)
 	{
-		if (ys[i] < min_y/* || min_y == 0*/)
+		if (ys[i] < min_y)
 			min_y = ys[i];
 	}
 	
