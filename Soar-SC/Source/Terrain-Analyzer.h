@@ -4,6 +4,12 @@
 #include "sml_Client.h"
 #include "SDL/SDL_Thread.h"
 
+#include <iostream>
+
+#include <fstream>
+
+#include <vector>
+
 class TerrainAnalyzer
 {
 public:
@@ -15,6 +21,8 @@ public:
 	void mapping_function();
 
 private:
+	std::ofstream out;
+
 	std::vector<std::vector<bool> > map;
 
 	SDL_Thread *thread;

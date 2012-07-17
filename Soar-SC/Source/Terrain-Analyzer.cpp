@@ -16,7 +16,11 @@ int thread_runner(void* data)
 }
 
 TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml::Agent* agent, SDL_mutex* mu)
+	: out("bwapi-data/logs/test_input-terrain.txt")
 {
+	if (!out.is_open())
+		return;
+
 	this->map = map;
 
 	this->agent = agent;
@@ -29,6 +33,9 @@ TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml
 
 TerrainAnalyzer::~TerrainAnalyzer()
 {
+	if (!out.is_open())
+		return;
+
 	if (thread)
 	{
 		SDL_WaitThread(thread,NULL);
@@ -44,6 +51,9 @@ TerrainAnalyzer::~TerrainAnalyzer()
 
 void TerrainAnalyzer::analyze()
 {
+	if (!out.is_open())
+		return;
+
 	thread = SDL_CreateThread(thread_runner, this);
 }
 
@@ -79,7 +89,10 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 {
 	vector<int> xs;
 	vector<int> ys;
-	
+
+	/*if (x_start == 253 && y_start == 248)
+		cout << "TEST!" << endl;*/
+
 	for (size_t y = y_start;y < map.size();y++)
 	{
 		if (map[y][x_start] || rectangle_contains(x_start, y, rectangles))
@@ -95,10 +108,10 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 		}
 	}
 	
-	size_t min_x = map[0].size() + 1;
+	size_t min_x = map[0].size()-x_start;
 	for (size_t i = 0;i < xs.size();i++)
 	{
-		if (xs[i] < min_x)
+		if (xs[i] < min_x/* || min_x == 0*/)
 			min_x = xs[i];
 	}
 	
@@ -117,25 +130,22 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 		}
 	}
 
-	int min_y = map.size() + 1;
+	int min_y = map.size()-y_start;
 	for (size_t i = 0;i < ys.size();i++)
 	{
-		if (ys[i] < min_y)
+		if (ys[i] < min_y/* || min_y == 0*/)
 			min_y = ys[i];
 	}
 	
 	SVS_Rectangle rect;
 	rect.x = x_start;
 	rect.y = y_start;
-	rect.size_x = min_x;
-	rect.size_y = min_y;
-	
-	if (rect.size_x > 10)
-		cout << "Invalid rect!" << endl;
+	rect.size_x = min_x ? min_x : 1;
+	rect.size_y = min_y ? min_y : 1;
 
 	rectangles.push_back(rect);
 }
-	
+
 void TerrainAnalyzer::mapping_function()
 {
 	vector<SVS_Rectangle> rectangles;
@@ -175,8 +185,9 @@ void TerrainAnalyzer::mapping_function()
 		ss.str("");
 
 		SVS_Rectangle rect = *it;
+		
+		ss << ((float)rect.x + 2.0f)/4.0f << " " << Soar_Link::flip_one_d_point(((float)rect.y + (float)rect.size_y)/4.0f, false);
 
-		ss << (float)rect.x/4.0f << " " << Soar_Link::flip_one_d_point((float)rect.y/4.0f, false);
 		string pos = ss.str();
 		ss.str("");
 		
@@ -185,7 +196,7 @@ void TerrainAnalyzer::mapping_function()
 		ss.str("");
 
 		string svs_command = "a rect" + id + " world v " + Soar_Link::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
-		cout << "SVS-Actual: " << svs_command << endl;
+		out << "SVS-Actual: " << svs_command << endl;
 
 		SDL_mutexP(mu);
 		agent->SendSVSInput(svs_command);
@@ -194,4 +205,6 @@ void TerrainAnalyzer::mapping_function()
 		SDL_mutexP(terrain_mu);
 	}
 	SDL_mutexV(terrain_mu);
+
+	cout << "Rectangles: " << rectangles.size() << endl;
 }

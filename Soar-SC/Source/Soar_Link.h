@@ -47,6 +47,13 @@ private:
 
 	TerrainAnalyzer* analyzer;
 
+	SDL_Thread* console_thread;
+	std::vector<std::string> console_buffer;
+
+	void RedirectIO();
+
+	bool console;
+
 public:
 	// Virtual functions for callbacks, leave these as they are.
 	virtual void onStart();
@@ -90,4 +97,7 @@ public:
 	const static std::string unit_box_verts;
 
 	static float flip_one_d_point(const float &point, const bool &x_axis);
+
+	void console_function();
+	void print_soar(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
 };
