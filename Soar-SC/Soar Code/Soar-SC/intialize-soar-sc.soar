@@ -1,0 +1,13 @@
+sp {propose*intialize-soar-sc
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> >)
+   (<o> ^name intialize-soar-sc)
+}
+
+sp {apply*initialize-soar-sc
+   (state <s> ^operator.name intialize-soar-sc)
+-->
+   (<s> ^name Soar-SC)
+}
