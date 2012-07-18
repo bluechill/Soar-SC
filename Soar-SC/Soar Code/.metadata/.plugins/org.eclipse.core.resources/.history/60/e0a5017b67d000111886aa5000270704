@@ -2,7 +2,7 @@ sp {propose*initialize-soar-sc
    (state <s> ^superstate nil
              -^name)
 -->
-   (<s> ^operator <o> +,>)
+   (<s> ^operator <o> >)
    (<o> ^name initialize-soar-sc)
 }
 

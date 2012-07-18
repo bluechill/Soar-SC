@@ -2,12 +2,13 @@ sp {propose*initialize-soar-sc
    (state <s> ^superstate nil
              -^name)
 -->
-   (<s> ^operator <o> +,>)
-   (<o> ^name initialize-soar-sc)
+   (<s> ^operator <o> +)
+   (<o> ^name init-sc)
 }
 
 sp {apply*initialize-soar-sc
-   (state <s> ^operator.name initialize-soar-sc)
+   (state <s> ^operator.name init-sc)
 -->
    (<s> ^name Soar-SC)
+   (write |Initialized Soar|)
 }

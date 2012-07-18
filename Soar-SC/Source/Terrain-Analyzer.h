@@ -20,6 +20,8 @@ public:
 
 	void mapping_function();
 
+	bool done_sending_svs();
+
 private:
 	std::ofstream out;
 
@@ -44,6 +46,8 @@ private:
 	bool rectangle_contains(const int x,const int y,std::vector<SVS_Rectangle> &rectangles);
 	SVS_Rectangle get_rectangle(const int x, const int y,std::vector<SVS_Rectangle> &rectangles);
 	void generate_rectangle(const int x_start,const int y_start,std::vector<std::vector<bool> > &map, std::vector<SVS_Rectangle> &rectangles);
+
+	bool done_svs;
 };
 
 #endif

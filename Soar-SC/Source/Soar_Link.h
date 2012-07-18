@@ -54,6 +54,9 @@ private:
 
 	bool console;
 
+	BWAPI::Unit* getUnitFromID(std::string id);
+	BWAPI::Unit* getUnitFromID(int id);
+
 public:
 	// Virtual functions for callbacks, leave these as they are.
 	virtual void onStart();

@@ -67,11 +67,7 @@ bool SVSParser::parse_mods(std::vector<std::string> &parts, SVSScene &scene, par
 	
 	for (unsigned int i = start;i < parts.size();i++)
 	{
-		for (;i < parts.size();i++)
-		{
-			if (parts[i].size() == 1 || isdigit(parts[i].c_str()))
-				break;
-		}
+		for (;);
 		
 		if (i == parts.size())
 			break;

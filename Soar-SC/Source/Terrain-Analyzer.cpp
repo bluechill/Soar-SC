@@ -29,6 +29,7 @@ TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml
 	this->terrain_mu = SDL_CreateMutex();
 
 	this->should_die = false;
+	this->done_svs = false;
 }
 
 TerrainAnalyzer::~TerrainAnalyzer()
@@ -204,4 +205,19 @@ void TerrainAnalyzer::mapping_function()
 	SDL_mutexV(terrain_mu);
 
 	cout << "Rectangles: " << rectangles.size() << endl;
+
+	SDL_mutexP(mu);
+	done_svs = true;
+	SDL_mutexV(mu);
+}
+
+bool TerrainAnalyzer::done_sending_svs()
+{
+	if (should_die)
+		return true;
+
+	SDL_mutexP(mu);
+	bool done = done_svs;
+	SDL_mutexV(mu);
+	return done;
 }

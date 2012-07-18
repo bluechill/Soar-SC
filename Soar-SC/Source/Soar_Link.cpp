@@ -36,7 +36,7 @@ Soar_Link::~Soar_Link()
 {
 	should_die = true;
 
-	agent->ExecuteCommandLine("halt");
+	kernel->DestroyAgent(agent);
 
 	SDL_WaitThread(soar_thread, NULL);
 	SDL_DestroyMutex(mu);
@@ -46,7 +46,6 @@ Soar_Link::~Soar_Link()
 		cout.rdbuf(cout_orig_buffer);
 		cerr.rdbuf(cerr_orig_buffer);
 	}
-
-	kernel->DestroyAgent(agent);
+	
 	kernel->Shutdown();
 }

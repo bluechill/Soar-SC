@@ -32,9 +32,11 @@ void Soar_Link::onStart()
 		return;
 	}
 
-	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
+	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this);
 
-	agent->ExecuteCommandLine("waitsnc -e");
+	agent->SpawnDebugger();
+
+	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
 
 	stringstream ss;
 	ss << Broodwar->mapWidth();
@@ -75,13 +77,6 @@ void Soar_Link::onStart()
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
 
-	soar_thread = SDL_CreateThread(thread_runner_soar, this);
-	if (!soar_thread)
-	{
-		Broodwar->printf("Soar: Unable to create soar thread!");
-		cout << "Soar: Unable to create soar thread!" << endl;
-	}
-
 	if (console)
 		console_thread = SDL_CreateThread(thread_runner_console, this);
 
@@ -91,12 +86,12 @@ void Soar_Link::onStart()
 
 	vector<vector<bool> > build_tiles_map;
 	
-	for (size_t y = 0;y < map_size_y;y++)
+	for (int y = 0;y < int(map_size_y);y++)
 	{
 		vector<bool> map_y;
 
 		int last_16 = 0;
-		for (size_t x = 0;x < map_size_x;x++)
+		for (int x = 0;x < int(map_size_x);x++)
 		{
 			if (x == 88)
 				cout << "80!" << endl;
@@ -181,9 +176,9 @@ void Soar_Link::onStart()
 
 	//Clean up the map even more
 
-	for (size_t y = 0;y < map_size_y;y += 4)
+	for (int y = 0;y < int(map_size_y);y += 4)
 	{
-		for (size_t x = 0;x < map_size_x;x += 4)
+		for (int x = 0;x < int(map_size_x);x += 4)
 		{
 			if (map[y][x])
 			{
@@ -191,9 +186,9 @@ void Soar_Link::onStart()
 				
 				int distance = 5;
 
-				if (y + distance < map.size() && !map[y+distance][x])
+				if (y + distance < int(map.size()) && !map[y+distance][x])
 					surrounding++;
-				else if (y + distance - 1 < map.size() && !map[y+distance-1][x])
+				else if (y + distance - 1 < int(map.size()) && !map[y+distance-1][x])
 					surrounding++;
 
 				if (y - distance >= 0 && !map[y-distance][x])
@@ -201,9 +196,9 @@ void Soar_Link::onStart()
 				else if (y - distance + 1 >= 0 && !map[y-distance+1][x])
 					surrounding++;
 
-				if (x + distance < map[y].size() && !map[y][x+distance])
+				if (x + distance < int(map[y].size()) && !map[y][x+distance])
 					surrounding++;
-				else if (x + distance - 1 < map[y].size() && !map[y][x+distance-1])
+				else if (x + distance - 1 < int(map[y].size()) && !map[y][x+distance-1])
 					surrounding++;
 
 				if (x - distance >= 0 && !map[y][x-distance])
@@ -213,31 +208,31 @@ void Soar_Link::onStart()
 
 				//Diagonals
 
-				if (y + distance < map.size() && x + distance < map[y+distance].size() && !map[y+distance][x+distance])
+				if (y + distance < int(map.size()) && x + distance < int(map[y+distance].size()) && !map[y+distance][x+distance])
 					surrounding++;
-				else if (y + distance - 1 < map.size() && x + distance < map[y+distance-1].size() && !map[y+distance-1][x+distance])
+				else if (y + distance - 1 < int(map.size()) && x + distance < int(map[y+distance-1].size()) && !map[y+distance-1][x+distance])
 					surrounding++;
-				else if (y + distance - 1 < map.size() && x + distance - 1 < map[y+distance-1].size() && !map[y+distance-1][x+distance-1])
+				else if (y + distance - 1 < int(map.size()) && x + distance - 1 < int(map[y+distance-1].size()) && !map[y+distance-1][x+distance-1])
 					surrounding++;
-				else if (y + distance < map.size() && x + distance - 1 < map[y+distance].size() && !map[y+distance][x+distance-1])
-					surrounding++;
-
-				if (y + distance < map.size() && x - distance >= 0 && !map[y+distance][x-distance])
-					surrounding++;
-				else if (y + distance - 1 < map.size() && x - distance >= 0 && !map[y+distance-1][x-distance])
-					surrounding++;
-				else if (y + distance - 1 < map.size() && x - distance + 1 >= 0 && !map[y+distance-1][x-distance+1])
-					surrounding++;
-				else if (y + distance < map.size() && x - distance + 1 >= 0 && !map[y+distance][x-distance+1])
+				else if (y + distance < int(map.size()) && x + distance - 1 < int(map[y+distance].size()) && !map[y+distance][x+distance-1])
 					surrounding++;
 
-				if (y - distance >= 0 && x + distance < map[y-distance].size() && !map[y-distance][x+distance])
+				if (y + distance < int(map.size()) && x - distance >= 0 && !map[y+distance][x-distance])
 					surrounding++;
-				else if (y - distance + 1 >= 0 && x + distance < map[y-distance+1].size() && !map[y-distance+1][x+distance])
+				else if (y + distance - 1 < int(map.size()) && x - distance >= 0 && !map[y+distance-1][x-distance])
 					surrounding++;
-				else if (y - distance + 1 >= 0 && x + distance - 1 < map[y-distance+1].size() && !map[y-distance+1][x+distance-1])
+				else if (y + distance - 1 < int(map.size()) && x - distance + 1 >= 0 && !map[y+distance-1][x-distance+1])
 					surrounding++;
-				else if (y - distance >= 0 && x + distance - 1 < map[y-distance].size() && !map[y-distance][x+distance-1])
+				else if (y + distance < int(map.size()) && x - distance + 1 >= 0 && !map[y+distance][x-distance+1])
+					surrounding++;
+
+				if (y - distance >= 0 && x + distance < int(map[y-distance].size()) && !map[y-distance][x+distance])
+					surrounding++;
+				else if (y - distance + 1 >= 0 && x + distance < int(map[y-distance+1].size()) && !map[y-distance+1][x+distance])
+					surrounding++;
+				else if (y - distance + 1 >= 0 && x + distance - 1 < int(map[y-distance+1].size()) && !map[y-distance+1][x+distance-1])
+					surrounding++;
+				else if (y - distance >= 0 && x + distance - 1 < int(map[y-distance].size()) && !map[y-distance][x+distance-1])
 					surrounding++;
 
 				if (y - distance >= 0 && x - distance >= 0 && !map[y-distance][x-distance])
@@ -267,6 +262,13 @@ void Soar_Link::onStart()
 
 	analyzer = new TerrainAnalyzer(map, agent, mu);
 	analyzer->analyze();
+
+	soar_thread = SDL_CreateThread(thread_runner_soar, this);
+	if (!soar_thread)
+	{
+		Broodwar->printf("Soar: Unable to create soar thread!");
+		cout << "Soar: Unable to create soar thread!" << endl;
+	}
 
 	/*ofstream ifs("bwapi-data/logs/map-3.txt", ios::out);
 
@@ -394,4 +396,423 @@ void Soar_Link::onSaveGame(std::string gameName)
 void Soar_Link::onUnitComplete(BWAPI::Unit *unit)
 {
 
+}
+
+void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type, float angle)
+{
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* id;
+	if (!input_link->FindByAttribute("resources", 0))
+	{
+		Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+
+	string name;
+
+	if (type.getName().find("Mineral") != string::npos)
+		name = "mineral";
+	else
+		name = "vesp-gas";
+
+	Identifier* resource = id->CreateIdWME(name.c_str());
+
+	resource->CreateIntWME("id", bw_id);
+	resource->CreateIntWME("count", count);
+
+	string svs_object_id = type.getName();
+	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+	stringstream ss;
+	ss << bw_id;
+	svs_object_id += ss.str();
+	ss.str("");
+	//Flip the point so "north" isn't negative y
+	ss << ((float)position.x)/32.0f << " " << flip_one_d_point(((float)position.y)/32.0f, false) << " 0";
+	string position_svs = ss.str();
+	ss.str("");
+
+	ss << ((float)(type.dimensionLeft() + type.dimensionRight() + 1))/32.0f << " " << ((float)(type.dimensionUp() + type.dimensionDown() + 1))/32.0f << " 1";
+	string size = ss.str();
+	ss.str("");
+
+
+	ss << angle;
+	string rotation = ss.str();
+
+	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position_svs + " s " + size + " r 0 " + rotation + " 0";
+	//Broodwar->printf("%s", svs_command.c_str());
+	cout << svs_command << endl;
+
+	SDL_mutexP(mu);
+	agent->SendSVSInput(svs_command);
+	SDL_mutexV(mu);
+
+	resource->CreateStringWME("svsobject", svs_object_id.c_str());
+
+	test_input_file << "I-resources-" << name << ": ^svsobject " << svs_object_id << endl;
+
+	test_input_file << "SVS-Actual: " << svs_command << endl;
+}
+
+void Soar_Link::delete_resource(int bw_id)
+{
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* id;
+
+	if (!input_link->FindByAttribute("resources", 0))
+	{
+		cout << "ERROR: No 'resources' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+
+	for (int j = 0;j < id->GetNumberChildren();j++)
+	{
+		Identifier* unit;
+		if (!id->GetChild(j)->IsIdentifier())
+			continue;
+		else
+			unit = id->GetChild(j)->ConvertToIdentifier();
+
+		if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == bw_id)
+		{
+			string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
+
+			string svs_command = "d " + svs_object_id;
+
+			test_input_file << "SVS-Actual: " << svs_command << endl;
+
+			SDL_mutexP(mu);
+			agent->SendSVSInput(svs_command);
+			SDL_mutexV(mu);
+
+			id->GetChild(j)->DestroyWME();
+
+			break;
+		}
+	}
+}
+
+void Soar_Link::update_resources()
+{
+	Unitset visible_minerals = Broodwar->getMinerals();
+	Unitset visible_vesp_gas = Broodwar->getGeysers();
+
+	Unitset new_minerals;
+	Unitset new_vesp_gas;
+
+	for (Unitset::iterator it = visible_minerals.begin();it != visible_minerals.end();it++)
+	{
+		if (minerals.find(*it) == minerals.end())
+		{
+			//Doesn't exist in my current list of visible minerals
+
+			Unit* bw_unit = (*it);
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
+		}
+		else
+		{
+			Unitset::iterator old = minerals.find(*it);
+			if ((*it)->getPosition() != (*old)->getPosition())
+			{
+				Position pos((*it)->getLeft(), (*it)->getTop());
+				
+				stringstream ss;
+				ss << ((float)pos.x)/32.0f << " " << flip_one_d_point(((float)pos.y)/32.0f, false) << " 0";
+				string position = ss.str();
+				ss.str("");
+
+				string svs_object_id = (*it)->getType().getName();
+				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+				ss.str("");
+				ss << (*it)->getID();
+				svs_object_id += ss.str();
+				ss.str("");
+
+				string svs_command = "c " + svs_object_id + " p " + position;
+
+				SDL_mutexP(mu);
+				agent->SendSVSInput(svs_command);
+				SDL_mutexV(mu);
+			}
+		}
+
+		new_minerals.push_back(*it);
+	}
+
+	for (Unitset::iterator it = visible_vesp_gas.begin();it != visible_vesp_gas.end();it++)
+	{
+		if (vesp_gas.find(*it) == vesp_gas.end())
+		{
+			//Doesn't exist in my current list of visible vespian gas
+
+			Unit* bw_unit = (*it);
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
+		}
+		else
+		{
+			Unitset::iterator old = vesp_gas.find(*it);
+			if ((*it)->getPosition() != (*old)->getPosition())
+			{
+				Position pos((*it)->getLeft(), (*it)->getTop());
+				
+				stringstream ss;
+				ss << ((float)pos.x)/32.0f << " " << flip_one_d_point(((float)pos.y)/32.0f, false) << " 0";
+				string position = ss.str();
+				ss.str("");
+
+				string svs_object_id = (*it)->getType().getName();
+				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+				ss.str("");
+				ss << (*it)->getID();
+				svs_object_id += ss.str();
+				ss.str("");
+
+				string svs_command = "c " + svs_object_id + " p " + position;
+
+				SDL_mutexP(mu);
+				agent->SendSVSInput(svs_command);
+				SDL_mutexV(mu);
+			}
+		}
+
+		new_vesp_gas.push_back(*it);
+	}
+
+	Unitset final_minerals;
+
+	for (Unitset::iterator it = new_minerals.begin();it != new_minerals.end();it++)
+	{
+		if (!(*it)->exists())
+			delete_resource((*it)->getID());
+		else
+			final_minerals.insert(*it);
+	}
+
+	Unitset final_vesp_gas;
+
+	for (Unitset::iterator it = new_vesp_gas.begin();it != new_vesp_gas.end();it++)
+	{
+		if (!(*it)->exists())
+			delete_resource((*it)->getID());
+		else
+			final_vesp_gas.insert(*it);
+	}
+
+	minerals = final_minerals;
+	vesp_gas = final_vesp_gas;
+}
+
+void Soar_Link::update_units()
+{
+	Unitset my_units_new = Broodwar->self()->getUnits();
+
+	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
+	{
+		if (my_units.find(*it) == my_units.end())
+		{
+			Unit* bw_unit = (*it);
+
+			Identifier* input_link = agent->GetInputLink();
+
+			Identifier* id;
+			if (!input_link->FindByAttribute("units", 0))
+			{
+				//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+				cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+				id = input_link->CreateIdWME("units");
+			}
+			else
+				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+			Identifier* unit;
+
+			if (!bw_unit->getType().isBuilding())
+			{
+				unit = id->CreateIdWME("unit");
+
+				test_input_file << "I-units-unit:";
+
+				unit->CreateIntWME("id", bw_unit->getID());
+				test_input_file << " ^id " << bw_unit->getID();
+
+				bool worker = bw_unit->getType().isWorker();
+				unit->CreateIntWME("worker", worker);
+				test_input_file << " ^worker " << worker;
+
+				if (worker)
+				{
+					unit->CreateIntWME("idle", bw_unit->isIdle());
+					test_input_file << " ^idle " << bw_unit->isIdle();
+
+					unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
+					test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
+
+					if (bw_unit->isCarryingGas())
+					{
+						unit->CreateStringWME("carrying", "gas");
+						test_input_file << " ^carring gas";
+					}
+					else if (bw_unit->isCarryingMinerals())
+					{
+						unit->CreateStringWME("carring", "minerals");
+						test_input_file << " ^carrying minerals";
+					}
+					else if (bw_unit->getPowerUp())
+					{
+						unit->CreateStringWME("carrying", "powerup");
+						test_input_file << " ^carrying powerup";
+					}
+				}
+				else
+				{
+					//TODO handle units other than workers
+				}
+			}
+			else
+			{
+				unit = id->CreateIdWME("building");
+
+				test_input_file << "I-units-building:";
+
+				unit->CreateIntWME("id", bw_unit->getID());
+				test_input_file << " ^id " << bw_unit->getID();
+			}
+
+			string svs_object_id = bw_unit->getType().getName();
+			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+			stringstream ss;
+			ss << bw_unit->getID();
+			svs_object_id += ss.str();
+			ss.str("");
+			//Flip the point so "north" isn't negative y
+			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getBottom())/32.0f, false) << " 0";
+			string position = ss.str();
+			ss.str("");
+
+			ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1))/32.0f << " 1";
+			string size = ss.str();
+			ss.str("");
+
+			ss << bw_unit->getAngle();
+			string rotation = ss.str();
+
+			string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
+			//Broodwar->printf("%s", svs_command.c_str());
+			cout << svs_command << endl;
+
+			SDL_mutexP(mu);
+			agent->SendSVSInput(svs_command);
+			SDL_mutexV(mu);
+
+			unit->CreateStringWME("svsobject", svs_object_id.c_str());
+
+			test_input_file << " ^svsobject " << svs_object_id << endl;
+
+			test_input_file << "SVS-Actual: " << svs_command << endl;
+		}
+		else
+		{
+			stringstream ss;
+			ss << ((float)(*it)->getLeft()/32.0f) << " " << flip_one_d_point(((float)(*it)->getBottom())/32.0f, false) << " 0";
+			string position = ss.str();
+			ss.str("");
+
+			string svs_object_id = (*it)->getType().getName();
+			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+			ss.str("");
+			ss << (*it)->getID();
+			svs_object_id += ss.str();
+			ss.str("");
+
+			string svs_command = "c " + svs_object_id + " p " + position;
+
+			SDL_mutexP(mu);
+			agent->SendSVSInput(svs_command);
+			SDL_mutexV(mu);
+		}
+
+		my_units_new.insert(*it);
+	}
+
+	Unitset final_units;
+
+	for (Unitset::iterator it = my_units_new.begin(), it_next = it;it != my_units_new.end();it++)
+	{
+		Identifier* input_link = agent->GetInputLink();
+
+		if (!(*it)->exists())
+		{
+			Identifier* id;
+
+			if (!input_link->FindByAttribute("units", 0))
+			{
+				cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
+
+				id = input_link->CreateIdWME("units");
+			}
+			else
+				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+			for (int j = 0;j < id->GetNumberChildren();j++)
+			{
+				Identifier* unit;
+				if (!id->GetChild(j)->IsIdentifier())
+					continue;
+				else
+					unit = id->GetChild(j)->ConvertToIdentifier();
+
+				if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == (*it)->getID())
+				{
+					string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
+
+					string svs_command = "d " + svs_object_id;
+
+					test_input_file << "SVS-Actual: " << svs_command << endl;
+
+					SDL_mutexP(mu);
+					agent->SendSVSInput(svs_command);
+					SDL_mutexV(mu);
+
+					id->GetChild(j)->DestroyWME();
+
+					break;
+				}
+			}
+		}
+		else
+			final_units.insert(*it);
+	}
+
+	my_units = final_units;
+}
+
+Unit* Soar_Link::getUnitFromID(string id_string)
+{
+	int id;
+	stringstream ss(id_string);
+	ss >> id;
+
+	return getUnitFromID(id);
+}
+
+Unit* Soar_Link::getUnitFromID(int id)
+{
+	return Broodwar->getUnit(id);
 }
