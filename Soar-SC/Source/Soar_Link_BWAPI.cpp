@@ -719,16 +719,21 @@ void Soar_Link::update_units()
 		}
 		else
 		{
+			Unitset::iterator old_it = my_units.find(*it);
+
+			Unit* new_unit = *it;
+			Unit* old_unit = *old_it;
+
 			stringstream ss;
-			ss << ((float)(*it)->getLeft()/32.0f) << " " << flip_one_d_point(((float)(*it)->getBottom())/32.0f, false) << " 0";
+			ss << ((float)new_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)new_unit->getBottom())/32.0f, false) << " 0";
 			string position = ss.str();
 			ss.str("");
 
-			string svs_object_id = (*it)->getType().getName();
+			string svs_object_id = new_unit->getType().getName();
 			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
 
 			ss.str("");
-			ss << (*it)->getID();
+			ss << new_unit->getID();
 			svs_object_id += ss.str();
 			ss.str("");
 
@@ -737,6 +742,32 @@ void Soar_Link::update_units()
 			SDL_mutexP(mu);
 			agent->SendSVSInput(svs_command);
 			SDL_mutexV(mu);
+
+			if (!new_unit->getType().isBuilding())
+			{
+				Identifier* input_link = agent->GetInputLink();
+				Identifier* units = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+				for (int i = 0;i < units->GetNumberChildren();i++)
+				{
+					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
+
+					WMElement* id = unit->FindByAttribute("id", 0);
+					IntElement* id_int = id->ConvertToIntElement();
+
+					int unit_id = id_int->GetValue();
+					int to_change_id = new_unit->getID();
+
+					if (unit_id == to_change_id)
+					{
+						WMElement* idle = unit->FindByAttribute("idle", 0);
+						IntElement* idle_int = idle->ConvertToIntElement();
+
+						idle_int->Update(new_unit->isIdle());
+						break;
+					}
+				}
+			}
 		}
 
 		my_units_new.insert(*it);

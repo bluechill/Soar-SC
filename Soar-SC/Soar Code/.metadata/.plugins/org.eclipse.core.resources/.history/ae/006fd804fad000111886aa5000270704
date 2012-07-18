@@ -48,6 +48,8 @@ sp {apply*query-svs-scv
    (<u> ^svsobject <id-unit>)
    (<m> ^svsobject <id-mineral>)
 -->
+   (<ss> ^extract-info <i>)
+   (<i> ^cmd <node1> ^count 1 ^expected-params <p>)
    (<c> ^extract <cmd>)
    (<cmd> ^type closet ^a <node1> ^b <node2>)
    (<node1> ^type combine ^<id-unit> <unit>)
@@ -62,29 +64,14 @@ sp {propose*result-of-query-to-svs-scv
          ^impasse tie
          ^svs.command.extract <e>)
    (<o> ^name gather-minerals)
-   (<e> ^status success
-        ^result.record.params <p>)
-   (<p> ^a <object>
-        ^b <destination>)
+   (<e> ^status success)
 -->
    (<s> ^operator <op>)
-   (<op> ^name result-svs-scv
-         ^object <object>
-         ^dest <destination>)
+   (<op> ^name result-svs-scv)
 }
 
 sp {apply*result-of-query-to-svs-scv
-   (state <s> ^superstate <ss>
-              ^operator <op>)
-   (<op> ^name result-svs-scv
-         ^a <object>
-         ^b <destination>)
-   (<ss> ^operator <o>)
-   (<o> ^id-object <object>
-        ^id-dest <destination>)
--->
-   (<ss> ^operator <o> >)
-}
+   (state <s> ^ 
    
    
    
