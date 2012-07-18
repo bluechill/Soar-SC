@@ -98,9 +98,12 @@ bool SVSScene::update_object(std::string name, Zeni::Point3f position, Zeni::Qua
 {
 	SVSObject* object = get_object_by_name(name);
 
+	if (object == NULL)
+		return false;
+
 	Zeni::Matrix4f transformation = Zeni::Matrix4f::Translate(position) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
 
-	object->transform(transformation);
+	object->transform(transformation, position, rotation, scale);
 
 	return true;
 }
@@ -126,15 +129,24 @@ bool SVSScene::delete_object(std::string name)
 	return deleted;
 }
 
-SVSObject* SVSScene::get_object_by_name(std::string name)
+SVSObject* SVSScene::get_object_in_vector(std::string name, std::vector<SVSObject*> objects)
 {
 	for (std::vector<SVSObject*>::iterator it = objects.begin();it != objects.end();++it)
 	{
 		if ((*it)->get_name() == name)
 			return (*it);
+
+		SVSObject* object = get_object_in_vector(name, (*it)->getChildren());
+		if (object != NULL)
+			return object;
 	}
 
 	return NULL;
+}
+
+SVSObject* SVSScene::get_object_by_name(std::string name)
+{
+	return get_object_in_vector(name, objects);
 }
 
 std::string SVSScene::get_scene_name()

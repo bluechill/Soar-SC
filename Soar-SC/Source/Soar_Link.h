@@ -85,7 +85,7 @@ public:
 	void update_map();
 
 	//Sends all the resources to Soar.
-	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type, float angle);
+	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type);
 	void delete_resource(int id);
 
 	void update_resources();

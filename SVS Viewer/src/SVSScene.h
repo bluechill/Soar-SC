@@ -32,6 +32,7 @@ public:
 	
 	bool delete_object(std::string name);
 	
+	SVSObject* get_object_in_vector(std::string name, std::vector<SVSObject*> objects);
 	SVSObject* get_object_by_name(std::string name);
 	
 	std::string get_scene_name();

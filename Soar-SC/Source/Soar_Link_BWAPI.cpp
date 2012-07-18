@@ -34,8 +34,6 @@ void Soar_Link::onStart()
 
 	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this);
 
-	agent->SpawnDebugger();
-
 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
 
 	stringstream ss;
@@ -398,7 +396,7 @@ void Soar_Link::onUnitComplete(BWAPI::Unit *unit)
 
 }
 
-void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type, float angle)
+void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type)
 {
 	Identifier* input_link = agent->GetInputLink();
 
@@ -441,11 +439,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	string size = ss.str();
 	ss.str("");
 
-
-	ss << angle;
-	string rotation = ss.str();
-
-	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position_svs + " s " + size + " r 0 " + rotation + " 0";
+	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position_svs + " s " + size + " r 0 0 0";
 	//Broodwar->printf("%s", svs_command.c_str());
 	cout << svs_command << endl;
 
@@ -518,7 +512,7 @@ void Soar_Link::update_resources()
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType());
 		}
 		else
 		{
@@ -559,7 +553,7 @@ void Soar_Link::update_resources()
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType(), (float)bw_unit->getAngle());
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType());
 		}
 		else
 		{
@@ -709,10 +703,7 @@ void Soar_Link::update_units()
 			string size = ss.str();
 			ss.str("");
 
-			ss << bw_unit->getAngle();
-			string rotation = ss.str();
-
-			string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 " + rotation + " 0";
+			string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 0 0";
 			//Broodwar->printf("%s", svs_command.c_str());
 			cout << svs_command << endl;
 

@@ -1,0 +1,57 @@
+sp {propose*gather-minerals
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^resources.mineral <r>
+        ^units.unit <u>)
+   (<r> ^id <id>)
+   (<u> ^worker 1
+        ^idle 1
+        ^id <id-o>)
+-->
+   (<s> ^operator <o> +,=)
+   (<o> ^name gather-minerals
+        ^id-dest <id>
+        ^id-object <id-o>)
+}
+
+sp {apply*gather-minerals
+   (state <s> ^name Soar-SC
+              ^operator <op>
+              ^io.output-link <o>)
+   (<op> ^name gather-minerals
+         ^id-dest <id>
+         ^id-object <id-o>)
+-->
+   (<o> ^move <m>)
+   (<m> ^object <id-o>
+        ^dest <id>)
+}
+
+
+sp {propose*query-svs-scv
+   (state <s> ^superstate <ss>)
+   (<ss> ^last-operator <o>
+         ^impasse tie)
+   (<o> ^name gather-minerals)
+-->
+   (<s> ^operator <op> +)
+   (<op> ^name query-svs)
+}
+
+sp {apply*query-svs-scv
+   (state <s> ^superstate <ss>)
+   (<ss. ^io.input-link <i>)
+   (<i> ^resources.mineral <m>
+        ^units.unit <u>)
+   (<ss> ^svs.command <c>)
+   (<u> ^svsobject <id>)
+-->
+   (<c> ^extract <cmd>)
+   (<cmd> ^type closet ^a <node1> ^b <node2>)
+   (<node1> ^type node ^id 
+   
+   
+   
+   
+   
+  

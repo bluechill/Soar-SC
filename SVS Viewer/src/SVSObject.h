@@ -33,7 +33,7 @@ public:
 	void transform_scale(Zeni::Point3f amount);
 	void transform_rotation(Zeni::Quaternion amount);
 	
-	void transform(Zeni::Matrix4f transformation_matrix);
+	void transform(Zeni::Matrix4f transformation_matrix, Zeni::Point3f pos, Zeni::Quaternion rotation, Zeni::Point3f scale);
 	
 	void render();
 	void render_wireframe();

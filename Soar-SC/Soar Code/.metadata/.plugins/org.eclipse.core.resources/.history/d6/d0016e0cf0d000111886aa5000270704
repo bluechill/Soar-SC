@@ -1,0 +1,22 @@
+sp {propose*wait-action
+   (state <s> ^name Soar-SC)
+-->
+   (<s> ^operator <o> +,<)
+   (<o> ^name wait-action)
+}
+
+sp {apply*wait-action
+   (state <s> ^operator.name wait-action
+              ^io.output-link <o>)
+   (<o> ^wait wait)
+-->
+   (<o> -^wait)
+   (<o> ^wait wait)
+}
+
+sp {apply*wait-action
+   (state <s> ^operator.name wait-action
+              ^io.output-link <o>)
+-->
+   (<o> ^wait wait)
+}

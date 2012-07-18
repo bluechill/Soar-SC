@@ -1,0 +1,37 @@
+sp {propose*gather-minerals
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^resources.mineral <r>
+        ^units.unit <u>)
+   (<r> ^id <id>)
+   (<u> ^worker 1
+        ^idle 1
+        ^id <id-o>)
+-->
+   (<s> ^operator <o> +,=)
+   (<o> ^name gather-minerals
+        ^id-dest <id>
+        ^id-object <id-o>)
+}
+
+sp {apply*gather-minerals
+   (state <s> ^name Soar-SC
+              ^operator <op>
+              ^io.output-link <o>)
+   (<op> ^name gather-minerals
+         ^id-dest <id>
+         ^id-object <id-o>)
+-->
+   (<o> ^move <m>)
+   (<m> ^object <id-o>
+        ^dest <id>)
+}
+
+
+sp {propose*query-svs
+   (state <s> ^superstate.last-operator <o>)
+   (<o> ^name gather-minerals)
+-->
+   (<s> ^operator <op> +)
+   (<op> ^name query-svs)
+}

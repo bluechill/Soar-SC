@@ -21,8 +21,7 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 
 	this->name = name;
 	
-	transformation_matrix = Matrix4f::Translate(position) /**  Matrix4f::Translate(Vector3f(scale)/2) Matrix4f::Rotate(rotation * -1) * Matrix4f::Translate(Vector3f(scale)/-2)*/ * Matrix4f::Scale(scale);
-	//transformation_matrix = Zeni::Matrix4f::Scale(scale) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Translate(position);
+	transformation_matrix = Matrix4f::Translate(position) * Matrix4f::Rotate(rotation) * Matrix4f::Scale(scale);
 
 	if (verts.size() == 0)
 	{
@@ -40,19 +39,6 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	this->wireframe_buffer = new Zeni::Vertex_Buffer();
 	
 	std::vector<std::vector<int> > faces = verts_for_faces(verts);
-	
-	/*std::cout << "Position: " << position.x << "," << position.y << "," << position.z << std::endl;
-	std::cout << "Scale: " << scale.x << "," << scale.y << "," << scale.z << std::endl;
-	
-	std::cout << "Local Matrix: " << std::endl;
-	std::cout << transformation_matrix[0][0] << " " << transformation_matrix[0][1] << " " << transformation_matrix[0][2] << " " << transformation_matrix[0][3] << std::endl;
-	
-	std::cout << transformation_matrix[1][0] << " " << transformation_matrix[1][1] << " " << transformation_matrix[1][2] << " " << transformation_matrix[1][3] << std::endl;
-	
-	std::cout << transformation_matrix[2][0] << " " << transformation_matrix[2][1] << " " << transformation_matrix[2][2] << " " << transformation_matrix[2][3] << std::endl;
-	
-	std::cout << transformation_matrix[3][0] << " " << transformation_matrix[3][1] << " " << transformation_matrix[3][2] << " " << transformation_matrix[3][3] << std::endl;
-	*/
 	
 	int i = 0;
 	
@@ -98,11 +84,6 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 			Zeni::Point3f position2 = verts.at(it->at(1));
 			Zeni::Point3f position3 = verts.at(it->at(2));
 			Zeni::Point3f position4 = verts.at(it->at(3));
-			
-			/*std::cout << "Corner (" << i << "): " << position1.x << "," << position1.y << "," << position1.z << std::endl;
-			std::cout << "Corner (" << i << "): " << position2.x << "," << position2.y << "," << position2.z << std::endl;
-			std::cout << "Corner (" << i << "): " << position3.x << "," << position3.y << "," << position3.z << std::endl;
-			std::cout << "Corner (" << i << "): " << position4.x << "," << position4.y << "," << position4.z << std::endl;*/
 			
 			Zeni::Vertex3f_Color vert1(position1, color);
 			Zeni::Vertex3f_Color vert2(position2, color);
@@ -252,22 +233,28 @@ SVSObject::~SVSObject()
 
 void SVSObject::transform_position(Zeni::Point3f amount)
 {	
-	transformation_matrix *= Zeni::Matrix4f::Translate(amount);
+	transformation_matrix = Zeni::Matrix4f::Translate(amount) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(scale);
+	center = amount;
 }
 
 void SVSObject::transform_scale(Zeni::Point3f amount)
 {
-	transformation_matrix *= Zeni::Matrix4f::Scale(amount);
+	transformation_matrix = Zeni::Matrix4f::Translate(center) * Zeni::Matrix4f::Rotate(rotation) * Zeni::Matrix4f::Scale(amount);
+	scale = amount;
 }
 
 void SVSObject::transform_rotation(Zeni::Quaternion amount)
 {
-	transformation_matrix *= Zeni::Matrix4f::Rotate(amount);
+	transformation_matrix = Zeni::Matrix4f::Translate(center) * Zeni::Matrix4f::Rotate(amount) * Zeni::Matrix4f::Scale(scale);
+	rotation = amount;
 }
 
-void SVSObject::transform(Zeni::Matrix4f matrix)
+void SVSObject::transform(Zeni::Matrix4f matrix, Zeni::Point3f pos, Zeni::Quaternion rot, Zeni::Point3f scale)
 {
-	transformation_matrix *= matrix;
+	transformation_matrix = matrix;
+	this->center = pos;
+	this->rotation = rot;
+	this->scale = scale;
 }
 
 void SVSObject::render()
@@ -360,6 +347,7 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 	}
 
 	DWORD exit_code = WaitForSingleObject(process_info.hProcess, INFINITE);
+	exit_code;
 #else
 	std::string command = "qhull ";
 	command += command_line;
@@ -417,10 +405,7 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 bool SVSObject::addChild(SVSObject* object)
 {
 	if (!is_group)
-	{
 		throw Zeni::Error("ERROR: Tried to add object to geo-object!");
-		return false;
-	}
 
 	children.push_back(object);
 
