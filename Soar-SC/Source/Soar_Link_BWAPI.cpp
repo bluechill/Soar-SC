@@ -751,10 +751,10 @@ void Soar_Link::update_units()
 				for (int i = 0;i < units->GetNumberChildren();i++)
 				{
 					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
-
+					
 					WMElement* id = unit->FindByAttribute("id", 0);
 					IntElement* id_int = id->ConvertToIntElement();
-
+					
 					int unit_id = id_int->GetValue();
 					int to_change_id = new_unit->getID();
 

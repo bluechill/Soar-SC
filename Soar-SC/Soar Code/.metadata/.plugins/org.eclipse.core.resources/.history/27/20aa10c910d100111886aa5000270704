@@ -42,7 +42,7 @@ sp {apply*query-svs-scv-create-objects
    (<ss> ^svs.command <c>)
 -->
    (<c> ^extract <cmd>)
-   (<cmd> ^type closest ^a <node1> ^b <node2>)
+   (<cmd> ^type closet ^a <node1> ^b <node2>)
    (<node1> ^type combine)
    (<node2> ^type combine)
 }
@@ -65,11 +65,11 @@ sp {apply*query-svs-scv-create-minerals
               ^operator.name query-svs)
    (<ss> ^svs.command.extract <c>
          ^io.input-link <i>)
-   (<c> ^b <node1>)
+   (<c> ^a <node1>)
    (<i> ^resources.mineral <m>)
    (<m> ^svsobject <id-mineral>)
 -->
-   (<node1> ^<id-mineral> <mineral>)
+   (<node1> ^<id-unit> <mineral>)
    (<mineral> ^type node ^id <id-mineral>)
 }
 
@@ -77,17 +77,13 @@ sp {propose*result-of-query-to-svs-scv
    (state <s> ^impasse tie
               ^superstate <ss>)
    (<ss> ^svs.command.extract <e>
-         ^operator <o> +)
+         ^operator <o>)
    (<e> ^status success
         ^result.record.params <p>)
    (<p> ^a <object>
         ^b <destination>)
-   (<ss> ^io.input-link.resources.mineral <mm>
-         ^io.input-link.units.unit <uu>)
-   (<mm> ^svsobject <destination> ^id <mineral-id>)
-   (<uu> ^svsobject <object> ^id <unit-id>)
-   (<o> ^id-object <unit-id>
-        ^id-dest <mineral-id>)
+   (<o> ^id-object <object>
+        ^id-dest <destination>)
 -->
    (<ss> ^operator <o> >)
 }
