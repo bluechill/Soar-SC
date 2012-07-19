@@ -32,7 +32,7 @@ public:
 	
 	bool delete_object(std::string name);
 	
-	SVSObject* get_object_in_vector(std::string name, std::vector<SVSObject*> objects);
+	SVSObject* get_object_in_vector(std::string name, std::vector<SVSObject*> &objects);
 	SVSObject* get_object_by_name(std::string name);
 	
 	std::string get_scene_name();
@@ -47,7 +47,8 @@ private:
 	
 	std::vector<SVSObject*> objects;
 
-	SVSObject* find_object_in_objects(std::vector<SVSObject*> objects, std::string name);
+	SVSObject* find_object_in_objects(std::vector<SVSObject*> &objects, std::string name);
+	bool delete_object_recursive(std::string name, std::vector<SVSObject*> &objects);
 };
 
 #endif

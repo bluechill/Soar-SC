@@ -39,7 +39,7 @@ public:
 	void render_wireframe();
 	
 	const bool is_a_group() { return is_group; }
-	const std::vector<SVSObject*> getChildren() { return children; }
+	std::vector<SVSObject*> &getChildren() { return children; }
 	bool addChild(SVSObject* object);
 	
 	Zeni::Matrix4f get_transformation_matrix() { return transformation_matrix; }

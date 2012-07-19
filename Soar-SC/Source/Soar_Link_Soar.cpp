@@ -46,6 +46,19 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		}
 	}
 
+	SDL_mutexP(mu);
 	update_units();
 	update_resources();
+
+	for (set<string>::iterator it = svs_command_queue.begin();it != svs_command_queue.end();it++)
+		agent->SendSVSInput(*it);
+
+	svs_command_queue.clear();
+
+	for (set<WMElement*>::iterator it = to_destroy_queue.begin();it != to_destroy_queue.end();it++)
+		(*it)->DestroyWME();
+
+	to_destroy_queue.clear();
+
+	SDL_mutexV(mu);
 }

@@ -83,7 +83,7 @@ void Soar_Link::onStart()
 	size_t map_size_y = Broodwar->mapHeight() * 4;
 
 	vector<vector<bool> > build_tiles_map;
-	
+
 	for (int y = 0;y < int(map_size_y);y++)
 	{
 		vector<bool> map_y;
@@ -91,9 +91,6 @@ void Soar_Link::onStart()
 		int last_16 = 0;
 		for (int x = 0;x < int(map_size_x);x++)
 		{
-			if (x == 88)
-				cout << "80!" << endl;
-
 			map_y.push_back(Broodwar->isWalkable(x,y));
 			if (x % 4 == 0)
 			{
@@ -181,7 +178,7 @@ void Soar_Link::onStart()
 			if (map[y][x])
 			{
 				int surrounding = 0;
-				
+
 				int distance = 5;
 
 				if (y + distance < int(map.size()) && !map[y+distance][x])
@@ -251,9 +248,6 @@ void Soar_Link::onStart()
 					}
 					continue;
 				}
-
-				if (surrounding > 2 && x == 96  && y > 100)
-					cout << "TEST!" << endl;
 			}
 		}
 	}
@@ -275,17 +269,17 @@ void Soar_Link::onStart()
 
 	for (int y = 0;y < map.size();y++)
 	{
-		for (int x = 0;x < map[y].size();x++)
-		{
-			string c = ".";
-		
-			if (!map[y][x])
-				c = "A";
+	for (int x = 0;x < map[y].size();x++)
+	{
+	string c = ".";
 
-			ifs << c;
-		}
+	if (!map[y][x])
+	c = "A";
 
-		ifs << endl;
+	ifs << c;
+	}
+
+	ifs << endl;
 	}*/
 }
 
@@ -372,7 +366,24 @@ void Soar_Link::onUnitCreate(BWAPI::Unit* unit)
 
 void Soar_Link::onUnitDestroy(BWAPI::Unit* unit)
 {
+	Unitset::iterator it;
+	if ((it = minerals.find(unit)) != minerals.end())
+	{
+		delete_resource(unit->getID());
+		return;
+	}
 
+	if ((it = vesp_gas.find(unit)) != vesp_gas.end())
+	{
+		delete_resource(unit->getID());
+		return;
+	}
+
+	if ((it = my_units.find(unit)) != my_units.end())
+	{
+		delete_unit(unit->getID());
+		return;
+	}
 }
 
 void Soar_Link::onUnitMorph(BWAPI::Unit* unit)
@@ -486,14 +497,21 @@ void Soar_Link::delete_resource(int bw_id)
 			test_input_file << "SVS-Actual: " << svs_command << endl;
 
 			SDL_mutexP(mu);
-			agent->SendSVSInput(svs_command);
+			svs_command_queue.insert(svs_command);
+			to_destroy_queue.insert(id->GetChild(j));
 			SDL_mutexV(mu);
-
-			id->GetChild(j)->DestroyWME();
 
 			break;
 		}
 	}
+
+	SDL_mutexP(mu);
+	Unitset::iterator it;
+	if ((it = minerals.find(getUnitFromID(bw_id))) != minerals.end())
+		minerals.erase(it);
+	else if ((it = vesp_gas.find(getUnitFromID(bw_id))) != vesp_gas.end())
+		vesp_gas.erase(it);
+	SDL_mutexV(mu);
 }
 
 void Soar_Link::update_resources()
@@ -501,126 +519,94 @@ void Soar_Link::update_resources()
 	Unitset visible_minerals = Broodwar->getMinerals();
 	Unitset visible_vesp_gas = Broodwar->getGeysers();
 
-	Unitset new_minerals;
-	Unitset new_vesp_gas;
-
 	for (Unitset::iterator it = visible_minerals.begin();it != visible_minerals.end();it++)
 	{
-		if (minerals.find(*it) == minerals.end())
+		if (minerals.find(*it) == minerals.end() && (*it)->getResources() != 0)
 		{
 			//Doesn't exist in my current list of visible minerals
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType());
+			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop() + size_y), bw_unit->getType());
+			minerals.insert(bw_unit);
 		}
-		else
-		{
-			Unitset::iterator old = minerals.find(*it);
-			if ((*it)->getPosition() != (*old)->getPosition())
-			{
-				Position pos((*it)->getLeft(), (*it)->getTop());
-				
-				stringstream ss;
-				ss << ((float)pos.x)/32.0f << " " << flip_one_d_point(((float)pos.y)/32.0f, false) << " 0";
-				string position = ss.str();
-				ss.str("");
-
-				string svs_object_id = (*it)->getType().getName();
-				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
-
-				ss.str("");
-				ss << (*it)->getID();
-				svs_object_id += ss.str();
-				ss.str("");
-
-				string svs_command = "c " + svs_object_id + " p " + position;
-
-				SDL_mutexP(mu);
-				agent->SendSVSInput(svs_command);
-				SDL_mutexV(mu);
-			}
-		}
-
-		new_minerals.push_back(*it);
 	}
 
 	for (Unitset::iterator it = visible_vesp_gas.begin();it != visible_vesp_gas.end();it++)
 	{
-		if (vesp_gas.find(*it) == vesp_gas.end())
+		if (vesp_gas.find(*it) == vesp_gas.end() && (*it)->getResources() != 0)
 		{
 			//Doesn't exist in my current list of visible vespian gas
 
 			Unit* bw_unit = (*it);
 
-			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop()), bw_unit->getType());
+			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
+
+			add_resource(bw_unit->getID(), bw_unit->getResources(), Position(bw_unit->getLeft(), bw_unit->getTop() + size_y), bw_unit->getType());
+			vesp_gas.insert(bw_unit);
 		}
-		else
+	}
+}
+
+void Soar_Link::delete_unit(int uid)
+{
+	Identifier* input_link = agent->GetInputLink();
+	Identifier* id;
+
+	if (!input_link->FindByAttribute("units", 0))
+	{
+		cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("units");
+	}
+	else
+	{
+		id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+		for (int j = 0;j < id->GetNumberChildren();j++)
 		{
-			Unitset::iterator old = vesp_gas.find(*it);
-			if ((*it)->getPosition() != (*old)->getPosition())
+			Identifier* unit;
+			if (!id->GetChild(j)->IsIdentifier())
+				continue;
+			else
+				unit = id->GetChild(j)->ConvertToIdentifier();
+
+			if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == uid)
 			{
-				Position pos((*it)->getLeft(), (*it)->getTop());
-				
-				stringstream ss;
-				ss << ((float)pos.x)/32.0f << " " << flip_one_d_point(((float)pos.y)/32.0f, false) << " 0";
-				string position = ss.str();
-				ss.str("");
+				string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
 
-				string svs_object_id = (*it)->getType().getName();
-				svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+				string svs_command = "d " + svs_object_id;
 
-				ss.str("");
-				ss << (*it)->getID();
-				svs_object_id += ss.str();
-				ss.str("");
-
-				string svs_command = "c " + svs_object_id + " p " + position;
+				test_input_file << "SVS-Actual: " << svs_command << endl;
 
 				SDL_mutexP(mu);
-				agent->SendSVSInput(svs_command);
+				svs_command_queue.insert(svs_command);
+				to_destroy_queue.insert(id->GetChild(j));
 				SDL_mutexV(mu);
+
+				break;
 			}
 		}
-
-		new_vesp_gas.push_back(*it);
 	}
-
-	Unitset final_minerals;
-
-	for (Unitset::iterator it = new_minerals.begin();it != new_minerals.end();it++)
-	{
-		if (!(*it)->exists())
-			delete_resource((*it)->getID());
-		else
-			final_minerals.insert(*it);
-	}
-
-	Unitset final_vesp_gas;
-
-	for (Unitset::iterator it = new_vesp_gas.begin();it != new_vesp_gas.end();it++)
-	{
-		if (!(*it)->exists())
-			delete_resource((*it)->getID());
-		else
-			final_vesp_gas.insert(*it);
-	}
-
-	minerals = final_minerals;
-	vesp_gas = final_vesp_gas;
+	
+	SDL_mutexP(mu);
+	my_units.erase(my_units.find(getUnitFromID(uid)));
+	SDL_mutexV(mu);
 }
 
 void Soar_Link::update_units()
 {
 	Unitset my_units_new = Broodwar->self()->getUnits();
 
+	Identifier* input_link = agent->GetInputLink();
+
 	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
 	{
 		if (my_units.find(*it) == my_units.end())
 		{
 			Unit* bw_unit = (*it);
-
-			Identifier* input_link = agent->GetInputLink();
 
 			Identifier* id;
 			if (!input_link->FindByAttribute("units", 0))
@@ -694,12 +680,15 @@ void Soar_Link::update_units()
 			ss << bw_unit->getID();
 			svs_object_id += ss.str();
 			ss.str("");
+
+			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
+
 			//Flip the point so "north" isn't negative y
-			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getBottom())/32.0f, false) << " 0";
+			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop() + size_y)/32.0f, false) << " 0";
 			string position = ss.str();
 			ss.str("");
 
-			ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1))/32.0f << " 1";
+			ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(size_y))/32.0f << " 1";
 			string size = ss.str();
 			ss.str("");
 
@@ -716,6 +705,8 @@ void Soar_Link::update_units()
 			test_input_file << " ^svsobject " << svs_object_id << endl;
 
 			test_input_file << "SVS-Actual: " << svs_command << endl;
+
+			my_units.insert((*it));
 		}
 		else
 		{
@@ -724,8 +715,10 @@ void Soar_Link::update_units()
 			Unit* new_unit = *it;
 			Unit* old_unit = *old_it;
 
+			int size_y = new_unit->getType().dimensionUp() + new_unit->getType().dimensionDown() + 1;
+
 			stringstream ss;
-			ss << ((float)new_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)new_unit->getBottom())/32.0f, false) << " 0";
+			ss << ((float)new_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)new_unit->getTop() + size_y)/32.0f, false) << " 0";
 			string position = ss.str();
 			ss.str("");
 
@@ -751,11 +744,11 @@ void Soar_Link::update_units()
 				for (int i = 0;i < units->GetNumberChildren();i++)
 				{
 					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
-					
+
 					WMElement* id = unit->FindByAttribute("id", 0);
 					IntElement* id_int = id->ConvertToIntElement();
-					
-					int unit_id = id_int->GetValue();
+
+					int unit_id = int(id_int->GetValue());
 					int to_change_id = new_unit->getID();
 
 					if (unit_id == to_change_id)
@@ -769,60 +762,7 @@ void Soar_Link::update_units()
 				}
 			}
 		}
-
-		my_units_new.insert(*it);
 	}
-
-	Unitset final_units;
-
-	for (Unitset::iterator it = my_units_new.begin(), it_next = it;it != my_units_new.end();it++)
-	{
-		Identifier* input_link = agent->GetInputLink();
-
-		if (!(*it)->exists())
-		{
-			Identifier* id;
-
-			if (!input_link->FindByAttribute("units", 0))
-			{
-				cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
-
-				id = input_link->CreateIdWME("units");
-			}
-			else
-				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-			for (int j = 0;j < id->GetNumberChildren();j++)
-			{
-				Identifier* unit;
-				if (!id->GetChild(j)->IsIdentifier())
-					continue;
-				else
-					unit = id->GetChild(j)->ConvertToIdentifier();
-
-				if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == (*it)->getID())
-				{
-					string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
-
-					string svs_command = "d " + svs_object_id;
-
-					test_input_file << "SVS-Actual: " << svs_command << endl;
-
-					SDL_mutexP(mu);
-					agent->SendSVSInput(svs_command);
-					SDL_mutexV(mu);
-
-					id->GetChild(j)->DestroyWME();
-
-					break;
-				}
-			}
-		}
-		else
-			final_units.insert(*it);
-	}
-
-	my_units = final_units;
 }
 
 Unit* Soar_Link::getUnitFromID(string id_string)

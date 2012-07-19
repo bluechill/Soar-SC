@@ -45,6 +45,9 @@ private:
 
 	SDL_mutex* mu;
 
+	std::set<std::string> svs_command_queue;
+	std::set<sml::WMElement*> to_destroy_queue; 
+
 	TerrainAnalyzer* analyzer;
 
 	SDL_Thread* console_thread;
@@ -56,6 +59,8 @@ private:
 
 	BWAPI::Unit* getUnitFromID(std::string id);
 	BWAPI::Unit* getUnitFromID(int id);
+
+	bool contains_id(int id, BWAPI::Unitset units);
 
 public:
 	// Virtual functions for callbacks, leave these as they are.
@@ -87,6 +92,8 @@ public:
 	//Sends all the resources to Soar.
 	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type);
 	void delete_resource(int id);
+
+	void delete_unit(int id);
 
 	void update_resources();
 	void update_units();
