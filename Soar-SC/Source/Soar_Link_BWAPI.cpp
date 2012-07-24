@@ -731,6 +731,7 @@ void Soar_Link::update_units()
 			ss.str("");
 
 			string svs_command = "c " + svs_object_id + " p " + position;
+			test_input_file << "SVS-Actual: " << svs_command << endl;
 
 			SDL_mutexP(mu);
 			agent->SendSVSInput(svs_command);

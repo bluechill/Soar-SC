@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-SC-No-Dependencies", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-SC-Rectilinear", "Soar-SC-Rectilinear\Soar-SC-Rectilinear.vcxproj", "{1633B4D4-45A7-4442-9FE3-1571B0CBD165}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-Console-Input", "Soar-Console-Input\Soar-Console-Input.vcxproj", "{3821F76E-686D-4547-9EF8-AA17D257C07B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,6 +47,10 @@ Global
 		{1633B4D4-45A7-4442-9FE3-1571B0CBD165}.Debug|Win32.Build.0 = Debug|Win32
 		{1633B4D4-45A7-4442-9FE3-1571B0CBD165}.Release|Win32.ActiveCfg = Release|Win32
 		{1633B4D4-45A7-4442-9FE3-1571B0CBD165}.Release|Win32.Build.0 = Release|Win32
+		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Debug|Win32.Build.0 = Debug|Win32
+		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Release|Win32.ActiveCfg = Release|Win32
+		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

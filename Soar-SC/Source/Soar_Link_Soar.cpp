@@ -18,6 +18,8 @@ int Soar_Link::soar_agent_thread()
 	while(!analyzer->done_sending_svs())
 		Sleep(10);
 
+	test_input_file << "--------------------------------------------------" << endl;
+
 	agent->RunSelfForever();
 
 	return 0;
@@ -61,4 +63,6 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	to_destroy_queue.clear();
 
 	SDL_mutexV(mu);
+
+	test_input_file << "--------------------------------------------------" << endl;
 }

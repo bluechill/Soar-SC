@@ -48,6 +48,9 @@
     <ClCompile Include="Source\Soar_Link_Global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Soar_Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Soar_Link.h">
@@ -780,6 +783,9 @@
       <Filter>SDL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Terrain-Analyzer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Soar_Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

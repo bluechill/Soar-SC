@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbench progressCount="15" version="2.0">
 <workbenchAdvisor/>
-<window height="857" maximized="true" width="1371" x="0" y="23">
+<window height="874" maximized="true" width="1427" x="0" y="22">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -10,6 +10,8 @@
 <coolItem id="group.file" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="106" y="22"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="edu.umich.soar.editor.editors.SoarEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="edu.umich.soar.editor.editors.datamap.DatamapEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="100" y="22"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="62" y="22"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="62" y="22"/>
@@ -18,8 +20,6 @@
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="152" y="22"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
-<coolItem id="edu.umich.soar.editor.editors.datamap.DatamapEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
-<coolItem id="edu.umich.soar.editor.editors.SoarEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
@@ -33,16 +33,11 @@
 <part id="1"/>
 <part id="2"/>
 <part id="3"/>
-<part id="4"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="edu.umich.soar.editor.editors.SoarEditor" name="gather-minerals.soar" partName="gather-minerals.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar" title="gather-minerals.soar" tooltip="Soar-SC/Basic-Actions/gather-minerals.soar" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/gather-minerals.soar"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2214" selectionTopPixel="824"/>
-</editor>
-<editor id="edu.umich.soar.editor.editors.SoarEditor" name="Soar-SC.soar" partName="Soar-SC.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Soar-SC.soar" title="Soar-SC.soar" tooltip="Soar-SC/Soar-SC.soar" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="edu.umich.soar.editor.editors.SoarEditor" name="Soar-SC.soar" partName="Soar-SC.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Soar-SC.soar" title="Soar-SC.soar" tooltip="Soar-SC/Soar-SC.soar" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Soar-SC.soar"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="75" selectionTopPixel="0"/>
 </editor>
@@ -61,10 +56,6 @@
 <views>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
-<expanded>
-<category IMemento.internal.id="Errors"/>
-<category IMemento.internal.id="Warnings (12 items)"/>
-</expanded>
 <columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="120" org.eclipse.ui.ide.resourceField="90" org.eclipse.ui.ide.severityAndDescriptionField="300"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
@@ -179,16 +170,15 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@34bdb859" ratio="0.75" ratioLeft="762" ratioRight="254" relationship="2" relative="left">
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="1074" ratioRight="358" relationship="2" relative="left">
 <folder appearance="2" expanded="2">
 <page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.25" ratioLeft="254" ratioRight="762" relationship="2" relative="left"/>
-<info folder="true" part="bottom" ratio="0.74963397" ratioLeft="512" ratioRight="171" relationship="4" relative="org.eclipse.ui.editorss">
+<info part="org.eclipse.ui.editorss" ratio="0.20013995" ratioLeft="286" ratioRight="1143" relationship="2" relative="left"/>
+<info folder="true" part="bottom" ratio="0.7490494" ratioLeft="591" ratioRight="198" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ProblemView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.jdt.ui.JavadocView" label="Javadoc"/>
@@ -204,7 +194,7 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="right" ratio="0.7493438" ratioLeft="571" ratioRight="191" relationship="2" relative="org.eclipse.ui.editorss">
+<info folder="true" part="right" ratio="0.7495344" ratioLeft="805" ratioRight="269" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
 <page content="org.eclipse.ui.texteditor.TemplatesView" label="LabelNotFound"/>
@@ -214,7 +204,7 @@
 </presentation>
 </folder>
 </info>
-<info part="org.eclipse.egit.ui.RepositoriesView" ratio="0.5988287" ratioLeft="409" ratioRight="274" relationship="4" relative="left"/>
+<info part="org.eclipse.egit.ui.RepositoriesView" ratio="0.599493" ratioLeft="473" ratioRight="316" relationship="4" relative="left"/>
 </mainWindow>
 </layout>
 </perspective>
@@ -230,6 +220,7 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" path="/Soar-SC/Datamap.dm"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/wait.soar"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/actions.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Soar-SC.soar"/>
 </editors>
 <item historyLabel="gather-minerals.soar" index="0">
 <position info="not_deleted" x="106" y="0"/>
@@ -344,8 +335,11 @@
 <item historyLabel="wait.soar" index="6">
 <position info="not_deleted" x="148" y="0"/>
 </item>
-<item active="true" historyLabel="gather-minerals.soar" index="0">
-<position/>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="2434" y="0"/>
+</item>
+<item active="true" historyLabel="Soar-SC.soar" index="8">
+<position info="not_deleted" x="75" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

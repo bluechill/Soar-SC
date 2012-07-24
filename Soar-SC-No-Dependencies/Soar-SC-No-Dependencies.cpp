@@ -397,9 +397,18 @@ int main(int argc, char* argv[])
 	Kernel* kernel = Kernel::CreateKernelInNewThread();
 	Agent* agent = kernel->CreateAgent("Soar-SC");
 
+	agent->ExecuteCommandLine("waitsnc -e");
+
 	for (vector<vector<string> >::iterator it = lines.begin();it != lines.end();it++)
 	{
-		if (!parse_command((*it), agent))
+		if (it->at(0)[0] == '-')
+		{
+			if (verbose)
+				cout << "dashes, executing agent" << endl;
+
+			agent->ExecuteCommandLine("run -d 1");
+		}
+		else if (!parse_command((*it), agent))
 		{
 			cerr << "Error parsing command: '";
 			for (vector<string>::iterator jt = it->begin();jt != it->end();jt++)
@@ -410,11 +419,6 @@ int main(int argc, char* argv[])
 			return 5;
 		}
 	}
-
-	if (verbose)
-		cout << "Done sending input to Soar.  Executing command: 'run -d 1'" << endl;
-
-	agent->ExecuteCommandLine("run -d 1");
 	
 	cout << "Done." << endl;
 

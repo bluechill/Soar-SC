@@ -489,6 +489,7 @@ void SVSViewerState::render()
 			scenes[0].render_wireframe();
 			SDL_mutexV(mu);
 		}
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else
 	{
@@ -500,4 +501,9 @@ void SVSViewerState::render()
 			SDL_mutexV(mu);
 		}
 	}
+
+	Zeni::get_Video().set_2d(std::make_pair(Zeni::Point2f(0.0f,0.0f), Zeni::Point2f(800.0f, 600.0f)));
+
+	Zeni::Game &game = Zeni::get_Game();
+	Zeni::get_Fonts()["system_36_800x600"].render_text(Zeni::itoa(game.get_fps()), Zeni::Point2f(800.0f, 0.0f), Zeni::get_Colors()["cyan"], Zeni::ZENI_RIGHT);
 }

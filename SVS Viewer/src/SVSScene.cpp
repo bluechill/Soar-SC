@@ -79,6 +79,7 @@ bool SVSScene::add_object(std::string name, std::string parent, std::vector<Zeni
 {
 	if (parent != "")
 	{
+
 		if (find_object_in_objects(objects, name))
 			throw Zeni::Error(("ERROR: Object already exists with the name '" + name + "'").c_str());
 

@@ -1,5 +1,6 @@
 sp {propose*gather-minerals
    (state <s> ^name Soar-SC
+              ^superstate nil
               ^io.input-link <i>)
    (<i> ^resources.mineral <r>
         ^units.unit <u>)
@@ -34,6 +35,7 @@ sp {propose*query-svs-scv
 -->
    (<s> ^operator <op> + =)
    (<op> ^name query-svs)
+   (interrupt)
 }
 
 sp {apply*query-svs-scv-create-objects
@@ -73,7 +75,7 @@ sp {apply*query-svs-scv-create-minerals
    (<mineral> ^type node ^id <id-mineral>)
 }
 
-sp {propose*result-of-query-to-svs-scv
+sp {act-on*result-of-query-to-svs-scv
    (state <s> ^impasse tie
               ^superstate <ss>)
    (<ss> ^svs.command.extract <e>
@@ -91,8 +93,12 @@ sp {propose*result-of-query-to-svs-scv
 -->
    (<ss> ^operator <o> >)
 }
-   
-   
-   
-   
   
+sp {apply*best-svs-operator
+   (state <s> ^superstate nil
+              ^operator.name gather-minerals)
+-->
+   (<s> ^svs.command.extract <e> -)
+}
+   
+ 
