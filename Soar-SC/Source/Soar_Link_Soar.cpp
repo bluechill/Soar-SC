@@ -52,17 +52,57 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	update_units();
 	update_resources();
 
-	for (set<string>::iterator it = svs_command_queue.begin();it != svs_command_queue.end();it++)
-		agent->SendSVSInput(*it);
+	event_queue.update();
 
-	svs_command_queue.clear();
+	/*SDL_cond* output_condition = event_queue.get_output_condition();
+	SDL_mutex* event_mu = event_queue.get_mutex();
 
-	for (set<WMElement*>::iterator it = to_destroy_queue.begin();it != to_destroy_queue.end();it++)
-		(*it)->DestroyWME();
+	event_queue.update_forever();
 
-	to_destroy_queue.clear();
+	SDL_mutexP(event_mu);
+	SDL_CondWait(output_condition, event_mu);
+	SDL_mutexV(event_mu);
 
+	event_queue.update_only_on_calls();
+*/
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
+}
+
+void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m)
+{
+	string output(m);
+
+	size_t result = output.find('\n');
+	if (result == string::npos)
+		output += "\r\n";
+	else
+		output.insert(output.begin(), '\r');
+
+	console->recieve_input(output);
+}
+
+void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase)
+{
+	switch (id)
+	{
+		case smlEVENT_AFTER_INTERRUPT:
+		{
+			event_queue.update_forever();
+			had_interrupt = true;
+			break;
+		}
+		case smlEVENT_BEFORE_RUNNING:
+		{
+			if (had_interrupt)
+			{
+				event_queue.update_only_on_calls();
+				had_interrupt = false;
+			}
+			break;
+		}
+		default:
+			break;
+	}
 }

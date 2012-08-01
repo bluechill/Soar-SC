@@ -15,17 +15,15 @@ void printcb(smlPrintEventId id, void *d, Agent *a, char const *m)
 	reinterpret_cast<Soar_Link*>(d)->print_soar(id, d, a, m);
 }
 
+void misc_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase)
+{
+	reinterpret_cast<Soar_Link*>(d)->misc_handler(id, d, a, phase);
+}
+
 //Thread globals
 int thread_runner_soar(void* link)
 {
 	return reinterpret_cast<Soar_Link*>(link)->soar_agent_thread();
-}
-
-int thread_runner_console(void *link)
-{
-	reinterpret_cast<Soar_Link*>(link)->console_function();
-
-	return 0;
 }
 
 //Misc globals

@@ -35,6 +35,7 @@ LRESULT CALLBACK edit_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 				message += string(msg.begin(), msg.end());
 
 				MessageBoxA(ghwnd, message.c_str(), "", MB_OK);
+				SetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), L"");
 			}
 			else
 				return CallWindowProc((WNDPROC)edit_oldproc, hwnd, message, wParam, lParam);

@@ -63,7 +63,7 @@
       </Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>Soar/Soar.lib;Soar/LinearMath_Debug.lib;Soar/BulletCollision_Debug.lib;SDL.lib;../lib/BWAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Soar/Soar.lib;Soar/LinearMath_Debug.lib;Soar/BulletCollision_Debug.lib;SDL.lib;../lib/BWAPId.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>Soar;../lib;../lib/boost;../Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -111,8 +111,10 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Soar_Console.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
+    <ClCompile Include="Source\Event.cpp" />
+    <ClCompile Include="Source\Events.cpp" />
+    <ClCompile Include="Source\Soar_Console.cpp" />
     <ClCompile Include="Source\Soar_Link.cpp" />
     <ClCompile Include="Source\Soar_Link_BWAPI.cpp" />
     <ClCompile Include="Source\Soar_Link_Global.cpp" />
@@ -363,7 +365,9 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClInclude Include="Soar\include\winstl\performance\tick_counter.hpp" />
     <ClInclude Include="Soar\include\winstl\winstl.h" />
     <ClInclude Include="Soar\include\XMLTrace.h" />
-    <ClInclude Include="Soar_Console.h" />
+    <ClInclude Include="Source\Event.h" />
+    <ClInclude Include="Source\Events.h" />
+    <ClInclude Include="Source\Soar_Console.h" />
     <ClInclude Include="Source\Soar_Link.h" />
     <ClInclude Include="Source\Terrain-Analyzer.h" />
   </ItemGroup>

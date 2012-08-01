@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SOAR_LINK_H
+#define SOAR_LINK_H 1
+
 #include <BWAPI.h>
 
 #include "sml_Client.h"
@@ -14,6 +16,9 @@
 #include "SDL/SDL_mutex.h"
 
 #include "Terrain-Analyzer.h"
+#include "Soar_Console.h"
+
+#include "Events.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -45,22 +50,19 @@ private:
 
 	SDL_mutex* mu;
 
-	std::set<std::string> svs_command_queue;
-	std::set<sml::WMElement*> to_destroy_queue; 
+	Events event_queue;
+	bool had_interrupt;
 
 	TerrainAnalyzer* analyzer;
 
-	SDL_Thread* console_thread;
-	std::vector<std::string> console_buffer;
-
 	void RedirectIO();
-
-	bool console;
 
 	BWAPI::Unit* getUnitFromID(std::string id);
 	BWAPI::Unit* getUnitFromID(int id);
 
 	bool contains_id(int id, BWAPI::Unitset units);
+
+	Soar_Console* console;
 
 public:
 	// Virtual functions for callbacks, leave these as they are.
@@ -108,19 +110,20 @@ public:
 
 	static float flip_one_d_point(const float &point, const bool &x_axis);
 
-	void console_function();
 	void print_soar(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
 
 	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
+	void misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
 };
 
 //Global stuff
 extern void output_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
 extern void printcb(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
+extern void misc_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
 
 //Thread globals
 extern int thread_runner_soar(void* link);
-extern int thread_runner_console(void *link);
 
 //Misc globals
 extern std::string strip(std::string s, std::string lc, std::string rc);
+#endif

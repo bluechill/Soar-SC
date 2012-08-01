@@ -9,27 +9,24 @@ Soar_Link::Soar_Link()
 	cerr_redirect("bwapi-data/logs/stderr.txt"),
 	test_input_file("bwapi-data/logs/test_input.txt")
 {
-	//Set to false if you don't want to pop up the console
-	console = false;
+	if (!cout_redirect || !cerr_redirect)
+		Broodwar->printf("Unable to redirect output!");
 
-	if (!console)
-	{
-		if (!cout_redirect || !cerr_redirect)
-			Broodwar->printf("Unable to redirect output!");
+	cout_orig_buffer = cout.rdbuf();
+	cout.rdbuf(cout_redirect.rdbuf());
 
-		cout_orig_buffer = cout.rdbuf();
-		cout.rdbuf(cout_redirect.rdbuf());
-
-		cerr_orig_buffer = cerr.rdbuf();
-		cerr.rdbuf(cerr_redirect.rdbuf());
-	}
+	cerr_orig_buffer = cerr.rdbuf();
+	cerr.rdbuf(cerr_redirect.rdbuf());
 
 	kernel = Kernel::CreateKernelInNewThread();
 	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
 
 	mu = SDL_CreateMutex();
 
+	console = new Soar_Console(&event_queue);
+
 	should_die = false;
+	had_interrupt = false;
 }
 
 Soar_Link::~Soar_Link()
@@ -38,15 +35,14 @@ Soar_Link::~Soar_Link()
 
 	agent->ExecuteCommandLine("stop");
 
-	kernel->DestroyAgent(agent);
-	kernel->Shutdown();
-
 	SDL_WaitThread(soar_thread, NULL);
 	SDL_DestroyMutex(mu);
 
-	if (!console)
-	{
-		cout.rdbuf(cout_orig_buffer);
-		cerr.rdbuf(cerr_orig_buffer);
-	}
+	kernel->DestroyAgent(agent);
+	kernel->Shutdown();
+
+	cout.rdbuf(cout_orig_buffer);
+	cerr.rdbuf(cerr_orig_buffer);
+
+	delete console;
 }

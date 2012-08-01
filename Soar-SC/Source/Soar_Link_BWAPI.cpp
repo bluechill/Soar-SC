@@ -33,8 +33,13 @@ void Soar_Link::onStart()
 	}
 
 	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this);
+	agent->RegisterForRunEvent(smlEVENT_AFTER_INTERRUPT, misc_global_handler, this);
+	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUNNING, misc_global_handler, this);
+
+	agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this);
 
 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
+	event_queue.set_agent(agent);
 
 	stringstream ss;
 	ss << Broodwar->mapWidth();
@@ -74,9 +79,6 @@ void Soar_Link::onStart()
 
 	cout << "Soar-SC is running." << endl;
 	Broodwar->printf("Soar-SC is running.");
-
-	if (console)
-		console_thread = SDL_CreateThread(thread_runner_console, this);
 
 	vector<vector<bool> > map;
 	size_t map_size_x = Broodwar->mapWidth() * 4;
@@ -496,10 +498,8 @@ void Soar_Link::delete_resource(int bw_id)
 
 			test_input_file << "SVS-Actual: " << svs_command << endl;
 
-			SDL_mutexP(mu);
-			svs_command_queue.insert(svs_command);
-			to_destroy_queue.insert(id->GetChild(j));
-			SDL_mutexV(mu);
+			event_queue.add_event(Soar_Event(svs_command, true));
+			event_queue.add_event(Soar_Event(id->GetChild(j)));
 
 			break;
 		}
@@ -581,10 +581,8 @@ void Soar_Link::delete_unit(int uid)
 
 				test_input_file << "SVS-Actual: " << svs_command << endl;
 
-				SDL_mutexP(mu);
-				svs_command_queue.insert(svs_command);
-				to_destroy_queue.insert(id->GetChild(j));
-				SDL_mutexV(mu);
+				event_queue.add_event(Soar_Event(svs_command, true));
+				event_queue.add_event(Soar_Event(id->GetChild(j)));
 
 				break;
 			}
