@@ -16,6 +16,8 @@ HWND editable_text_box;
 HWND static_text_box;
 HWND ghwnd;
 
+TRACKMOUSEEVENT tme;
+
 HINSTANCE ghInst;
 const char* lpClassName = "WinApp";
 
@@ -28,11 +30,17 @@ LRESULT CALLBACK edit_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (wParam == VK_RETURN)
 			{
 				std::cout << "VK_RETURN" << std::endl;
+
+				int iLength = GetWindowTextLength(static_text_box);
+
 				TCHAR buffer[1024];
 				GetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), buffer, 1024);
 
 				tstring msg(buffer);
 				string message(msg.c_str());
+
+				if (message.size() <= 0)
+					break;
 
 				console->send_input(message);
 				SetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), "");
@@ -173,6 +181,10 @@ Soar_Console::Soar_Console(Events* event_queue)
 
 	ShowWindow(ghwnd, 1);
 
+	ShowCursor(true);
+
+	lines = 0;
+
 	console_thread = SDL_CreateThread(console_thread_function, NULL);
 }
 
@@ -184,8 +196,23 @@ Soar_Console::~Soar_Console()
 
 void Soar_Console::send_input(std::string &input)
 {
-	std::cout << "SEND_INPUT" << std::endl;
-	event_queue->add_event(Soar_Event(input, false));
+	if (input.find("clear") == 0)
+	{
+		int iLength = GetWindowTextLength(static_text_box);
+
+		SendMessage(static_text_box, EM_SETSEL, 0, iLength);
+
+		string line = "";
+
+		SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) line.c_str());
+
+		lines = 0;
+	}
+	else
+	{
+		std::cout << "SEND_INPUT" << std::endl;
+		event_queue->add_event(Soar_Event(input, false));
+	}
 }
 
 void  Soar_Console::recieve_input(std::string &input)
@@ -201,4 +228,18 @@ void  Soar_Console::recieve_input(std::string &input)
 	int iLength = GetWindowTextLength(static_text_box);
 	SendMessage(static_text_box, EM_SETSEL, iLength, iLength);
 	SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) result.c_str());
+
+	lines++;
+
+	if (lines >= 1000)
+	{
+		int line_length = SendMessage(static_text_box, EM_LINELENGTH, 0, NULL);
+
+		SendMessage(static_text_box, EM_SETSEL, 0, line_length+1);
+
+		string line = "";
+
+		SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) line.c_str());
+		SendMessage(static_text_box, WM_VSCROLL, SB_BOTTOM, NULL);
+	}
 }

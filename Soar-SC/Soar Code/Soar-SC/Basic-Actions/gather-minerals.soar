@@ -94,7 +94,7 @@ sp {act-on*result-of-query-to-svs-scv
 -->
    (<ss> ^operator <o> >)
 }
-  
+
 sp {apply*best-svs-operator
    (state <s> ^superstate nil
               ^operator.name gather-minerals

@@ -25,6 +25,8 @@ private:
 	Events* event_queue;
 
 	SDL_Thread *console_thread;
+
+	int lines;
 };
 
 #endif
