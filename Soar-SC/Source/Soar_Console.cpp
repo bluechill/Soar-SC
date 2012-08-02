@@ -59,14 +59,20 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 	case WM_CREATE:
 		{
+			RECT size;
+			GetWindowRect(ghwnd, &size);
+
+			int width = size.right - size.left;
+			int height = size.top - size.bottom;
+
 			CreateWindowA("BUTTON", "Send", WS_CHILD | WS_VISIBLE,
-				410, 425, 75, 25, hwnd, (HMENU)IDC_BUTTON1, ghInst, NULL);
+				width - 90, height - 25, 75, 25, hwnd, (HMENU)IDC_BUTTON1, ghInst, NULL);
 
 			static_text_box = CreateWindowA("EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_READONLY, 
-				10, 10, 475, 400, hwnd, (HMENU)IDC_TEXT_AREA, ghInst, NULL);
+				10, 10, width - 25, height - 50, hwnd, (HMENU)IDC_TEXT_AREA, ghInst, NULL);
 
 			editable_text_box = CreateWindowA("EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | WS_HSCROLL,
-				10, 425, 385, 40, hwnd, (HMENU)IDC_TEXT_EDIT, ghInst, NULL);
+				10, height - 25, width - 115, 40, hwnd, (HMENU)IDC_TEXT_EDIT, ghInst, NULL);
 
 			edit_oldproc = GetWindowLong(editable_text_box, GWL_WNDPROC);
 			SetWindowLong(editable_text_box, GWL_WNDPROC, (long)edit_proc);
@@ -96,6 +102,21 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_DESTROY:
 		{
 			PostQuitMessage(0);
+			break;
+		}
+	case WM_SIZE:
+		{
+			int width = LOWORD(lparam);
+			int height = HIWORD(lparam);
+
+			HWND button = GetDlgItem(hwnd, IDC_BUTTON1);
+			HWND area = GetDlgItem(hwnd, IDC_TEXT_AREA);
+			HWND edit = GetDlgItem(hwnd, IDC_TEXT_EDIT);
+			
+			MoveWindow(button, width - 90, height - 50, 75, 25, TRUE);
+			MoveWindow(area, 10, 10, width - 25, height - 75, TRUE);
+			MoveWindow(edit, 10, height - 50, width - 115, 40, TRUE);
+
 			break;
 		}
 	default:
@@ -147,8 +168,8 @@ Soar_Console::Soar_Console(Events* event_queue)
 	RegisterClassEx(&ex);
 
 	ghwnd = CreateWindowEx(NULL, lpClassName, "Starcraft Console", 
-		WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 500, 500, NULL, NULL, ghInst, NULL);
+		WS_OVERLAPPEDWINDOW,
+		10, 10, 1000, 750, NULL, NULL, ghInst, NULL);
 
 	ShowWindow(ghwnd, 1);
 
@@ -169,7 +190,15 @@ void Soar_Console::send_input(std::string &input)
 
 void  Soar_Console::recieve_input(std::string &input)
 {
+	string result;
+
+	for (size_t last = 0, prev = 0;prev = last, (last = input.find("\n", last+1)) != string::npos;)
+		result += string(input.begin()+prev, input.begin()+last) + "\r\n";
+
+	if (result.empty())
+		result += input + "\r\n";
+
 	int iLength = GetWindowTextLength(static_text_box);
 	SendMessage(static_text_box, EM_SETSEL, iLength, iLength);
-	SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) input.c_str());
+	SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) result.c_str());
 }

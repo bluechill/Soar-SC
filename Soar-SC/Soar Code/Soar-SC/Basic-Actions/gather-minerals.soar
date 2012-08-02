@@ -56,7 +56,8 @@ sp {apply*query-svs-scv-create-units
          ^io.input-link <i>)
    (<c> ^a <node1>)
    (<i> ^units.unit <u>)
-   (<u> ^svsobject <id-unit>)
+   (<u> ^svsobject <id-unit>
+        ^idle 1)
 -->
    (<node1> ^<id-unit> <unit>)
    (<unit> ^type node ^id <id-unit>)
@@ -96,9 +97,11 @@ sp {act-on*result-of-query-to-svs-scv
   
 sp {apply*best-svs-operator
    (state <s> ^superstate nil
-              ^operator.name gather-minerals)
+              ^operator.name gather-minerals
+              ^svs.command <c>)
+   (<c> ^extract <e>)
 -->
-   (<s> ^svs.command.extract <e> -)
+   (<c> ^extract <e> -)
 }
    
  

@@ -53,18 +53,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	update_resources();
 
 	event_queue.update();
-
-	/*SDL_cond* output_condition = event_queue.get_output_condition();
-	SDL_mutex* event_mu = event_queue.get_mutex();
-
-	event_queue.update_forever();
-
-	SDL_mutexP(event_mu);
-	SDL_CondWait(output_condition, event_mu);
-	SDL_mutexV(event_mu);
-
-	event_queue.update_only_on_calls();
-*/
+	
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
@@ -73,13 +62,6 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m)
 {
 	string output(m);
-
-	size_t result = output.find('\n');
-	if (result == string::npos)
-		output += "\r\n";
-	else
-		output.insert(output.begin(), '\r');
-
 	console->recieve_input(output);
 }
 

@@ -2,7 +2,13 @@
 
 #include "Events.h"
 
-Events::Events()
+#include "Soar_Console.h"
+
+#include <string>
+
+using namespace std;
+
+Events::Events(Soar_Console* console)
 {
 	mu = SDL_CreateMutex();
 
@@ -29,6 +35,8 @@ Events::Events()
 	}
 
 	should_die = false;
+
+	this->console = console;
 
 	events_thread = SDL_CreateThread(events_global_thread, this);
 
@@ -79,7 +87,10 @@ void Events::update(bool lock)
 				else if (e.get_command()->find("stop") == 0)
 					agent->StopSelf();
 				else
-					agent->ExecuteCommandLine(e.get_command()->c_str());
+				{
+					string output = agent->ExecuteCommandLine(e.get_command()->c_str());
+					console->recieve_input(output);
+				}
 
 				break;
 			}

@@ -9,10 +9,12 @@
 
 #include "SDL/SDL.h"
 
+class Soar_Console;
+
 class Events
 {
 public:
-	Events();
+	Events(Soar_Console* console);
 	~Events();
 
 	void update(bool lock = true);
@@ -27,7 +29,6 @@ public:
 	SDL_cond* get_output_condition();
 	SDL_cond* get_condition();
 	SDL_mutex* get_mutex();
-
 	
 #ifdef EVENTS_PRIV
 	void update_thread();
@@ -47,6 +48,8 @@ private:
 	sml::Agent* agent;
 
 	std::deque<Soar_Event> event_queue;
+
+	Soar_Console* console;
 };
 
 #ifdef EVENTS_PRIV
