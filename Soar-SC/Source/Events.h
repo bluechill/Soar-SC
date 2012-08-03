@@ -17,6 +17,8 @@ public:
 	Events(Soar_Console* console);
 	~Events();
 
+	void set_console(Soar_Console* console) { this->console = console; }
+
 	void update(bool lock = true);
 
 	void add_event(Soar_Event event);
@@ -50,6 +52,8 @@ private:
 	std::deque<Soar_Event> event_queue;
 
 	Soar_Console* console;
+
+	SDL_Thread* run_thread;
 };
 
 #ifdef EVENTS_PRIV

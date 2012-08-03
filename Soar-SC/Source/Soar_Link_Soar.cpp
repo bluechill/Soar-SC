@@ -12,7 +12,7 @@ using namespace sml;
 
 int Soar_Link::soar_agent_thread()
 {
-	update_units();
+	update_units();	
 	update_resources();
 
 	while(!analyzer->done_sending_svs())
@@ -45,6 +45,22 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			if (unit != NULL && dest != NULL)
 				unit->rightClick(dest);
+		}
+		else if (name == "build")
+		{
+			string type = output_command->GetParameterValue("type");
+			string location = output_command->GetParameterValue("location");
+
+			Unit* unit_location = getUnitFromID(location);
+
+			stringstream ss(type);
+			int type_id;
+
+			ss >> type_id;
+
+			UnitType unit_type(type_id);
+
+			unit_location->train(unit_type);
 		}
 	}
 

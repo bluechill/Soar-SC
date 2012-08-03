@@ -1,0 +1,28 @@
+sp {propose*build-scv
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 99
+        ^units.building <b>
+        ^types.type <t>)
+   (<b> ^command-center 1
+        ^id <id>)
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name build-scv
+        ^location <id>
+        ^type <type-id>)
+}
+
+sp {apply*build-scv
+   (state <s> ^operator <op>
+              ^io.output-link <o>)
+   (<op> ^name build-scv
+         ^location <id>
+         ^type <type-id>)
+-->
+   (<o> ^build <b>)
+   (<b> ^type <type-id>
+        ^location <id>)
+}

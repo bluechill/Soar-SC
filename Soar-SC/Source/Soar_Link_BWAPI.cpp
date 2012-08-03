@@ -41,6 +41,22 @@ void Soar_Link::onStart()
 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
 	event_queue.set_agent(agent);
 
+	UnitType::set types = UnitTypes::allUnitTypes();
+
+	Identifier* input_link = agent->GetInputLink();
+	Identifier* types_id;
+	if (!input_link->FindByAttribute("types", 0))
+		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier();
+	else
+		types_id = input_link->FindByAttribute("types", 0)->ConvertToIdentifier();
+
+	for (UnitType::set::iterator it = types.begin();it != types.end();it++)
+	{
+		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier();
+		type->CreateStringWME("name", (*it).getName().c_str());
+		type->CreateIntWME("id", (*it).getID());
+	}
+
 	stringstream ss;
 	ss << Broodwar->mapWidth();
 	string map_width_as_string = ss.str();
@@ -548,6 +564,26 @@ void Soar_Link::update_resources()
 			vesp_gas.insert(bw_unit);
 		}
 	}
+
+	int minerals = Broodwar->self()->minerals();
+	int gas = Broodwar->self()->gas();
+
+	Identifier* input_link = agent->GetInputLink();
+
+	IntElement* minerals_id;
+	if (!input_link->FindByAttribute("minerals", 0))
+		minerals_id = input_link->CreateIntWME("minerals", 0)->ConvertToIntElement();
+	else
+		minerals_id = input_link->FindByAttribute("minerals", 0)->ConvertToIntElement();
+
+	IntElement* gas_id;
+	if (!input_link->FindByAttribute("gas", 0))
+		gas_id = input_link->CreateIntWME("gas", 0)->ConvertToIntElement();
+	else
+		gas_id = input_link->FindByAttribute("gas", 0)->ConvertToIntElement();
+
+	minerals_id->Update(minerals);
+	gas_id->Update(gas);
 }
 
 void Soar_Link::delete_unit(int uid)
@@ -669,6 +705,9 @@ void Soar_Link::update_units()
 
 				unit->CreateIntWME("id", bw_unit->getID());
 				test_input_file << " ^id " << bw_unit->getID();
+
+				if (bw_unit->getType() == UnitTypes::Terran_Command_Center)
+					unit->CreateIntWME("command-center", true);
 			}
 
 			string svs_object_id = bw_unit->getType().getName();

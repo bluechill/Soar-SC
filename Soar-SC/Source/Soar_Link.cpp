@@ -8,8 +8,7 @@ Soar_Link::Soar_Link()
 	: cout_redirect("bwapi-data/logs/stdout.txt"),
 	cerr_redirect("bwapi-data/logs/stderr.txt"),
 	test_input_file("bwapi-data/logs/test_input.txt"),
-	event_queue(console),
-	console(new Soar_Console(&event_queue))
+	event_queue(NULL)
 {
 	if (!cout_redirect || !cerr_redirect)
 		Broodwar->printf("Unable to redirect output!");
@@ -24,6 +23,10 @@ Soar_Link::Soar_Link()
 	//kernel = Kernel::CreateRemoteConnection(false, "35.0.136.73", 12121);
 
 	mu = SDL_CreateMutex();
+
+	console = new Soar_Console(&event_queue);
+
+	event_queue.set_console(console);
 
 	should_die = false;
 	had_interrupt = false;
