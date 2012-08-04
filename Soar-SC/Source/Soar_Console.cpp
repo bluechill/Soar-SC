@@ -156,7 +156,6 @@ Soar_Console::Soar_Console(Events* event_queue)
 	this->event_queue = event_queue;
 
 	ghInst = GetModuleHandle(NULL);
-
 	WNDCLASSEX ex;
 
 	ex.cbSize = sizeof(WNDCLASSEX);
@@ -220,16 +219,20 @@ void  Soar_Console::recieve_input(std::string &input)
 	string result;
 
 	for (size_t last = 0, prev = 0;prev = last, (last = input.find("\n", last+1)) != string::npos;)
+	{
 		result += string(input.begin()+prev, input.begin()+last) + "\r\n";
+		lines++;
+	}
 
 	if (result.empty())
+	{
 		result += input + "\r\n";
+		lines++;
+	}
 
 	int iLength = GetWindowTextLength(static_text_box);
 	SendMessage(static_text_box, EM_SETSEL, iLength, iLength);
 	SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) result.c_str());
-
-	lines++;
 
 	if (lines >= 1000)
 	{

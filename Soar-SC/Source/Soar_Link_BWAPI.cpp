@@ -33,11 +33,12 @@ void Soar_Link::onStart()
 	}
 
 	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this);
-	agent->RegisterForRunEvent(smlEVENT_AFTER_INTERRUPT, misc_global_handler, this);
-	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUNNING, misc_global_handler, this);
+	agent->RegisterForRunEvent(smlEVENT_AFTER_RUN_ENDS, misc_global_handler, this);
+	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUN_STARTS, misc_global_handler, this);
 
 	agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this);
 
+	agent->ExecuteCommandLine("watch 2");
 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
 	event_queue.set_agent(agent);
 
@@ -420,9 +421,9 @@ void Soar_Link::onSaveGame(std::string gameName)
 	Broodwar->printf("The game was saved to \"%s\".", gameName.c_str());
 }
 
-void Soar_Link::onUnitComplete(BWAPI::Unit *unit)
+void Soar_Link::onUnitComplete(BWAPI::Unit *bw_unit)
 {
-
+	
 }
 
 void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type)
@@ -586,6 +587,112 @@ void Soar_Link::update_resources()
 	gas_id->Update(gas);
 }
 
+void Soar_Link::add_unit(BWAPI::Unit* bw_unit)
+{
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* id;
+	if (!input_link->FindByAttribute("units", 0))
+	{
+		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("units");
+	}
+	else
+		id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
+	Identifier* unit;
+
+	if (!bw_unit->getType().isBuilding())
+	{
+		unit = id->CreateIdWME("unit");
+
+		test_input_file << "I-units-unit:";
+
+		unit->CreateIntWME("id", bw_unit->getID());
+		test_input_file << " ^id " << bw_unit->getID();
+
+		bool worker = bw_unit->getType().isWorker();
+		unit->CreateIntWME("worker", worker);
+		test_input_file << " ^worker " << worker;
+
+		if (worker)
+		{
+			unit->CreateIntWME("idle", bw_unit->isIdle());
+			test_input_file << " ^idle " << bw_unit->isIdle();
+
+			unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
+			test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
+
+			if (bw_unit->isCarryingGas())
+			{
+				unit->CreateStringWME("carrying", "gas");
+				test_input_file << " ^carring gas";
+			}
+			else if (bw_unit->isCarryingMinerals())
+			{
+				unit->CreateStringWME("carring", "minerals");
+				test_input_file << " ^carrying minerals";
+			}
+			else if (bw_unit->getPowerUp())
+			{
+				unit->CreateStringWME("carrying", "powerup");
+				test_input_file << " ^carrying powerup";
+			}
+		}
+		else
+		{
+			//TODO handle units other than workers
+		}
+	}
+	else
+	{
+		unit = id->CreateIdWME("building");
+
+		test_input_file << "I-units-building:";
+
+		unit->CreateIntWME("id", bw_unit->getID());
+		test_input_file << " ^id " << bw_unit->getID();
+
+		if (bw_unit->getType() == UnitTypes::Terran_Command_Center)
+			unit->CreateIntWME("command-center", true);
+	}
+
+	string svs_object_id = bw_unit->getType().getName();
+	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+
+	stringstream ss;
+	ss << bw_unit->getID();
+	svs_object_id += ss.str();
+	ss.str("");
+
+	int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
+
+	//Flip the point so "north" isn't negative y
+	ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop() + size_y)/32.0f, false) << " 0";
+	string position = ss.str();
+	ss.str("");
+
+	ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(size_y))/32.0f << " 1";
+	string size = ss.str();
+	ss.str("");
+
+	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 0 0";
+	//Broodwar->printf("%s", svs_command.c_str());
+	cout << svs_command << endl;
+
+	agent->SendSVSInput(svs_command);
+
+	unit->CreateStringWME("svsobject", svs_object_id.c_str());
+
+	test_input_file << " ^svsobject " << svs_object_id << endl;
+
+	test_input_file << "SVS-Actual: " << svs_command << endl;
+
+	my_units.insert(bw_unit);
+}
+
 void Soar_Link::delete_unit(int uid)
 {
 	Identifier* input_link = agent->GetInputLink();
@@ -636,115 +743,23 @@ void Soar_Link::update_units()
 
 	Identifier* input_link = agent->GetInputLink();
 
+	Identifier* units_id;
+	if (!input_link->FindByAttribute("units", 0))
+	{
+		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		units_id = input_link->CreateIdWME("units");
+	}
+	else
+		units_id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+
 	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
 	{
-		if (my_units.find(*it) == my_units.end())
-		{
-			Unit* bw_unit = (*it);
-
-			Identifier* id;
-			if (!input_link->FindByAttribute("units", 0))
-			{
-				//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
-				cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
-
-				id = input_link->CreateIdWME("units");
-			}
-			else
-				id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-			Identifier* unit;
-
-			if (!bw_unit->getType().isBuilding())
-			{
-				unit = id->CreateIdWME("unit");
-
-				test_input_file << "I-units-unit:";
-
-				unit->CreateIntWME("id", bw_unit->getID());
-				test_input_file << " ^id " << bw_unit->getID();
-
-				bool worker = bw_unit->getType().isWorker();
-				unit->CreateIntWME("worker", worker);
-				test_input_file << " ^worker " << worker;
-
-				if (worker)
-				{
-					unit->CreateIntWME("idle", bw_unit->isIdle());
-					test_input_file << " ^idle " << bw_unit->isIdle();
-
-					unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
-					test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
-
-					if (bw_unit->isCarryingGas())
-					{
-						unit->CreateStringWME("carrying", "gas");
-						test_input_file << " ^carring gas";
-					}
-					else if (bw_unit->isCarryingMinerals())
-					{
-						unit->CreateStringWME("carring", "minerals");
-						test_input_file << " ^carrying minerals";
-					}
-					else if (bw_unit->getPowerUp())
-					{
-						unit->CreateStringWME("carrying", "powerup");
-						test_input_file << " ^carrying powerup";
-					}
-				}
-				else
-				{
-					//TODO handle units other than workers
-				}
-			}
-			else
-			{
-				unit = id->CreateIdWME("building");
-
-				test_input_file << "I-units-building:";
-
-				unit->CreateIntWME("id", bw_unit->getID());
-				test_input_file << " ^id " << bw_unit->getID();
-
-				if (bw_unit->getType() == UnitTypes::Terran_Command_Center)
-					unit->CreateIntWME("command-center", true);
-			}
-
-			string svs_object_id = bw_unit->getType().getName();
-			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
-
-			stringstream ss;
-			ss << bw_unit->getID();
-			svs_object_id += ss.str();
-			ss.str("");
-
-			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
-
-			//Flip the point so "north" isn't negative y
-			ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop() + size_y)/32.0f, false) << " 0";
-			string position = ss.str();
-			ss.str("");
-
-			ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(size_y))/32.0f << " 1";
-			string size = ss.str();
-			ss.str("");
-
-			string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 0 0";
-			//Broodwar->printf("%s", svs_command.c_str());
-			cout << svs_command << endl;
-
-			SDL_mutexP(mu);
-			agent->SendSVSInput(svs_command);
-			SDL_mutexV(mu);
-
-			unit->CreateStringWME("svsobject", svs_object_id.c_str());
-
-			test_input_file << " ^svsobject " << svs_object_id << endl;
-
-			test_input_file << "SVS-Actual: " << svs_command << endl;
-
-			my_units.insert((*it));
-		}
+		if ((*it)->isTraining() || !(*it)->isCompleted())
+			continue;
+		else if (my_units.find(*it) == my_units.end())
+			add_unit(*it);
 		else
 		{
 			Unitset::iterator old_it = my_units.find(*it);
@@ -776,8 +791,7 @@ void Soar_Link::update_units()
 
 			if (!new_unit->getType().isBuilding())
 			{
-				Identifier* input_link = agent->GetInputLink();
-				Identifier* units = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+				Identifier* units = units_id;
 
 				for (int i = 0;i < units->GetNumberChildren();i++)
 				{

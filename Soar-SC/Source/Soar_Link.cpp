@@ -8,7 +8,7 @@ Soar_Link::Soar_Link()
 	: cout_redirect("bwapi-data/logs/stdout.txt"),
 	cerr_redirect("bwapi-data/logs/stderr.txt"),
 	test_input_file("bwapi-data/logs/test_input.txt"),
-	event_queue(NULL)
+	event_queue(NULL, this)
 {
 	if (!cout_redirect || !cerr_redirect)
 		Broodwar->printf("Unable to redirect output!");

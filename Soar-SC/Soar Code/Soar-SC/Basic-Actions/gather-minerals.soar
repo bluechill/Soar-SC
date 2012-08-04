@@ -35,7 +35,6 @@ sp {propose*query-svs-scv
 -->
    (<s> ^operator <op> + =)
    (<op> ^name query-svs)
-   (interrupt)
 }
 
 sp {apply*query-svs-scv-create-objects
@@ -53,14 +52,17 @@ sp {apply*query-svs-scv-create-units
    (state <s> ^superstate <ss>
               ^operator.name query-svs)
    (<ss> ^svs.command.extract <c>
-         ^io.input-link <i>)
+         ^io.input-link <i>
+         ^superstate nil)
    (<c> ^a <node1>)
    (<i> ^units.unit <u>)
    (<u> ^svsobject <id-unit>
-        ^idle 1)
+        ^idle 1
+        ^worker 1)
 -->
    (<node1> ^<id-unit> <unit>)
    (<unit> ^type node ^id <id-unit>)
+   (write |apply*query-svs-scv-create-units executed!: | <u> | : | <id-unit> (crlf) )
 }
 
 sp {apply*query-svs-scv-create-minerals

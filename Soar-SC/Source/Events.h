@@ -10,11 +10,12 @@
 #include "SDL/SDL.h"
 
 class Soar_Console;
+class Soar_Link;
 
 class Events
 {
 public:
-	Events(Soar_Console* console);
+	Events(Soar_Console* console, Soar_Link* link);
 	~Events();
 
 	void set_console(Soar_Console* console) { this->console = console; }
@@ -54,6 +55,7 @@ private:
 	Soar_Console* console;
 
 	SDL_Thread* run_thread;
+	Soar_Link* link;
 };
 
 #ifdef EVENTS_PRIV

@@ -95,6 +95,7 @@ public:
 	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type);
 	void delete_resource(int id);
 
+	void add_unit(BWAPI::Unit* unit);
 	void delete_unit(int id);
 
 	void update_resources();

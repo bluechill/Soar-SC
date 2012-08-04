@@ -14,7 +14,13 @@ Soar_Event::Soar_Event(sml::WMElement* element)
 	this->element = element;
 	type = WME_Destroy;
 }
-	
+
+Soar_Event::Soar_Event(BWAPI::Unit* unit)
+{
+	this->bw_unit = unit;
+	type = New_Unit;
+}
+
 std::string* Soar_Event::get_command()
 {
 	if (type == WME_Destroy)
@@ -29,6 +35,14 @@ sml::WMElement* Soar_Event::get_element()
 		return NULL;
 	else
 		return element;
+}
+
+BWAPI::Unit* Soar_Event::get_unit()
+{
+	if (type != New_Unit)
+		return NULL;
+	else
+		return bw_unit;
 }
 
 const Soar_Event::Event_Type Soar_Event::get_type()

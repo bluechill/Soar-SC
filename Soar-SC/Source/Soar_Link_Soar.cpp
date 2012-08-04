@@ -85,13 +85,16 @@ void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml:
 {
 	switch (id)
 	{
-		case smlEVENT_AFTER_INTERRUPT:
+		case smlEVENT_AFTER_RUN_ENDS:
 		{
-			event_queue.update_forever();
-			had_interrupt = true;
+			if (!had_interrupt)
+			{
+				event_queue.update_forever();
+				had_interrupt = true;
+			}
 			break;
 		}
-		case smlEVENT_BEFORE_RUNNING:
+		case smlEVENT_BEFORE_RUN_STARTS:
 		{
 			if (had_interrupt)
 			{

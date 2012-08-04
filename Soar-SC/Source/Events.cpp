@@ -3,12 +3,13 @@
 #include "Events.h"
 
 #include "Soar_Console.h"
+#include "Soar_Link.h"
 
 #include <string>
 
 using namespace std;
 
-Events::Events(Soar_Console* console)
+Events::Events(Soar_Console* console, Soar_Link* link)
 {
 	mu = SDL_CreateMutex();
 
@@ -37,6 +38,9 @@ Events::Events(Soar_Console* console)
 	should_die = false;
 
 	this->console = console;
+	this->link = link;
+
+	interrupted = false;
 
 	events_thread = SDL_CreateThread(events_global_thread, this);
 
@@ -82,13 +86,14 @@ void Events::update(bool lock)
 					cmd->a = agent;
 					cmd->command = *e.get_command();
 
+					console->recieve_input(*e.get_command());
+
 					SDL_CreateThread(soar_command_thread, cmd);
 				}
-				else if (e.get_command()->find("stop") == 0)
-					agent->StopSelf();
 				else
 				{
 					string output = agent->ExecuteCommandLine(e.get_command()->c_str());
+					console->recieve_input(*e.get_command());
 					console->recieve_input(output);
 				}
 
@@ -97,6 +102,12 @@ void Events::update(bool lock)
 		case Soar_Event::WME_Destroy:
 			{
 				e.get_element()->DestroyWME();
+				break;
+			}
+		case Soar_Event::New_Unit:
+			{
+				BWAPI::Unit* unit = e.get_unit();
+				link->add_unit(unit);
 				break;
 			}
 		default:

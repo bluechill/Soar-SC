@@ -1,0 +1,789 @@
+diff --git a/Maps/Soar-SC/Simple-1.5.scx b/Maps/Soar-SC/Simple-1.5.scx
+index c633fbf..97244f9 100644
+Binary files a/Maps/Soar-SC/Simple-1.5.scx and b/Maps/Soar-SC/Simple-1.5.scx differ
+diff --git a/Maps/Soar-SC/Simple-1.scx b/Maps/Soar-SC/Simple-1.scx
+index 8600896..5e55b24 100644
+Binary files a/Maps/Soar-SC/Simple-1.scx and b/Maps/Soar-SC/Simple-1.scx differ
+diff --git a/Maps/Soar-SC/Simple-2.scx b/Maps/Soar-SC/Simple-2.scx
+index 509f5e5..7f9e2a2 100644
+Binary files a/Maps/Soar-SC/Simple-2.scx and b/Maps/Soar-SC/Simple-2.scx differ
+diff --git a/Maps/Soar-SC/Simple-3.scx b/Maps/Soar-SC/Simple-3.scx
+index b6aa255..7897c52 100644
+Binary files a/Maps/Soar-SC/Simple-3.scx and b/Maps/Soar-SC/Simple-3.scx differ
+diff --git a/Maps/Soar-SC/Simple-4.scx b/Maps/Soar-SC/Simple-4.scx
+index 6e9bc09..1375901 100644
+Binary files a/Maps/Soar-SC/Simple-4.scx and b/Maps/Soar-SC/Simple-4.scx differ
+diff --git a/Maps/Soar-SC/Simple-5.scx b/Maps/Soar-SC/Simple-5.scx
+index 340dac9..517b1cc 100644
+Binary files a/Maps/Soar-SC/Simple-5.scx and b/Maps/Soar-SC/Simple-5.scx differ
+diff --git a/Projects.suo b/Projects.suo
+index c99fc5f..efa77cf 100755
+Binary files a/Projects.suo and b/Projects.suo differ
+diff --git a/Soar-Console-Input/Debug/Soar-Console-Input.pch b/Soar-Console-Input/Debug/Soar-Console-Input.pch
+index 81ffcec..5e99617 100644
+Binary files a/Soar-Console-Input/Debug/Soar-Console-Input.pch and b/Soar-Console-Input/Debug/Soar-Console-Input.pch differ
+diff --git a/Soar-Console-Input/Soar-Console-Input.cpp b/Soar-Console-Input/Soar-Console-Input.cpp
+index f0bcea4..9bfdbee 100644
+--- a/Soar-Console-Input/Soar-Console-Input.cpp
++++ b/Soar-Console-Input/Soar-Console-Input.cpp
+@@ -3,11 +3,13 @@
+ #include <windows.h>
+ 
+ #include <string>
++#include <iostream>
+ 
+ using namespace std;
+ 
+-HINSTANCE ghInst;
+-const wchar_t* lpClassName = L"WinApp";
++typedef basic_string<TCHAR> tstring;
++
++//Soar_Console* console = NULL;
+ 
+ static LONG edit_oldproc;
+ 
+@@ -19,6 +21,11 @@ HWND editable_text_box;
+ HWND static_text_box;
+ HWND ghwnd;
+ 
++TRACKMOUSEEVENT tme;
++
++HINSTANCE ghInst;
++const char* lpClassName = "WinApp";
++
+ LRESULT CALLBACK edit_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+ {
+ 	switch (message)
+@@ -27,15 +34,21 @@ LRESULT CALLBACK edit_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
+ 		{
+ 			if (wParam == VK_RETURN)
+ 			{
++				std::cout << "VK_RETURN" << std::endl;
++
++				int iLength = GetWindowTextLength(static_text_box);
++
+ 				TCHAR buffer[1024];
+ 				GetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), buffer, 1024);
+ 
+-				string message = "Message: ";
+-				wstring msg(buffer);
+-				message += string(msg.begin(), msg.end());
++				tstring msg(buffer);
++				string message(msg.c_str());
++
++				if (message.size() <= 0)
++					break;
+ 
+-				MessageBoxA(ghwnd, message.c_str(), "", MB_OK);
+-				SetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), L"");
++				//console->send_input(message);
++				SetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), "");
+ 			}
+ 			else
+ 				return CallWindowProc((WNDPROC)edit_oldproc, hwnd, message, wParam, lParam);
+@@ -59,26 +72,37 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+ 	{
+ 	case WM_CREATE:
+ 		{
++			RECT size;
++			GetWindowRect(ghwnd, &size);
++
++			int width = size.right - size.left;
++			int height = size.top - size.bottom;
++
+ 			CreateWindowA("BUTTON", "Send", WS_CHILD | WS_VISIBLE,
+-				410, 425, 75, 25, hwnd, (HMENU)IDC_BUTTON1, ghInst, NULL);
++				width - 90, height - 25, 75, 25, hwnd, (HMENU)IDC_BUTTON1, ghInst, NULL);
+ 
+ 			static_text_box = CreateWindowA("EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_READONLY, 
+-				10, 10, 475, 400, hwnd, (HMENU)IDC_TEXT_AREA, ghInst, NULL);
++				10, 10, width - 25, height - 50, hwnd, (HMENU)IDC_TEXT_AREA, ghInst, NULL);
+ 
+-			editable_text_box = CreateWindowA("EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
+-				10, 425, 385, 25, hwnd, (HMENU)IDC_TEXT_EDIT, ghInst, NULL);
++			editable_text_box = CreateWindowA("EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | WS_HSCROLL,
++				10, height - 25, width - 115, 40, hwnd, (HMENU)IDC_TEXT_EDIT, ghInst, NULL);
+ 
+ 			edit_oldproc = GetWindowLong(editable_text_box, GWL_WNDPROC);
+ 			SetWindowLong(editable_text_box, GWL_WNDPROC, (long)edit_proc);
+ 
+-			SetFocus(editable_text_box);
+ 			break;
+ 		}
+ 	case WM_COMMAND:
+ 		{
+ 			if (LOWORD(wparam) == IDC_BUTTON1)
+ 			{
+-				MessageBoxA(ghwnd, "You clicked button1!", "button1", MB_OK);
++				TCHAR buffer[1024];
++				GetWindowText(GetDlgItem(ghwnd, IDC_TEXT_EDIT), buffer, 1024);
++
++				tstring msg(buffer);
++				string message(msg.c_str());
++
++				//console->send_input(message);
+ 			}
+ 
+ 			break;
+@@ -93,6 +117,21 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+ 			PostQuitMessage(0);
+ 			break;
+ 		}
++	case WM_SIZE:
++		{
++			int width = LOWORD(lparam);
++			int height = HIWORD(lparam);
++
++			HWND button = GetDlgItem(hwnd, IDC_BUTTON1);
++			HWND area = GetDlgItem(hwnd, IDC_TEXT_AREA);
++			HWND edit = GetDlgItem(hwnd, IDC_TEXT_EDIT);
++			
++			MoveWindow(button, width - 90, height - 50, 75, 25, TRUE);
++			MoveWindow(area, 10, 10, width - 25, height - 75, TRUE);
++			MoveWindow(edit, 10, height - 50, width - 115, 40, TRUE);
++
++			break;
++		}
+ 	default:
+ 		return DefWindowProc(hwnd, msg, wparam, lparam);
+ 	}
+@@ -100,10 +139,28 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+ 	return 0;
+ }
+ 
+-// Main entry point
+-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
++int console_thread_function(void* data)
++{
++	MSG msg;
++
++	while(GetMessage(&msg, NULL, 0, 0))
++	{
++		TranslateMessage(&msg);
++		DispatchMessage(&msg);
++	}
++
++	return msg.wParam;
++}
++
++int main(int argc, char *argv[])
+ {
+-	ghInst = hInstance;
++	//if (console != NULL)
++	//	return;
++
++	/*console = this;
++	this->event_queue = event_queue;*/
++
++	ghInst = GetModuleHandle(NULL);
+ 
+ 	WNDCLASSEX ex;
+ 
+@@ -123,19 +180,73 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
+ 
+ 	RegisterClassEx(&ex);
+ 
+-	ghwnd = CreateWindowEx(NULL, lpClassName, L"Starcraft Console", 
+-		WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
+-		200, 200, 500, 500, NULL, NULL, ghInst, NULL);
++	ghwnd = CreateWindowEx(NULL, lpClassName, "Starcraft Console", 
++		WS_OVERLAPPEDWINDOW,
++		10, 10, 1000, 750, NULL, NULL, ghInst, NULL);
+ 
+-	ShowWindow(ghwnd, nShowCmd);
++	ShowWindow(ghwnd, 1);
+ 
+-	MSG msg;
++	ShowCursor(true);
+ 
+-	while(GetMessage(&msg, NULL, 0, 0))
+-	{
+-		TranslateMessage(&msg);
+-		DispatchMessage(&msg);
+-	}
++	console_thread_function(NULL);
+ 
+-	return msg.wParam;
+-}
+\ No newline at end of file
++	//lines = 0;
++
++	//console_thread = SDL_CreateThread(console_thread_function, NULL);
++}
++//
++//Soar_Console::~Soar_Console()
++//{
++//	SDL_WaitThread(console_thread, NULL);
++//	console = NULL;
++//}
++//
++//void Soar_Console::send_input(std::string &input)
++//{
++//	if (input.find("clear") == 0)
++//	{
++//		int iLength = GetWindowTextLength(static_text_box);
++//
++//		SendMessage(static_text_box, EM_SETSEL, 0, iLength);
++//
++//		string line = "";
++//
++//		SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) line.c_str());
++//
++//		lines = 0;
++//	}
++//	else
++//	{
++//		std::cout << "SEND_INPUT" << std::endl;
++//		event_queue->add_event(Soar_Event(input, false));
++//	}
++//}
++//
++//void  Soar_Console::recieve_input(std::string &input)
++//{
++//	string result;
++//
++//	for (size_t last = 0, prev = 0;prev = last, (last = input.find("\n", last+1)) != string::npos;)
++//		result += string(input.begin()+prev, input.begin()+last) + "\r\n";
++//
++//	if (result.empty())
++//		result += input + "\r\n";
++//
++//	int iLength = GetWindowTextLength(static_text_box);
++//	SendMessage(static_text_box, EM_SETSEL, iLength, iLength);
++//	SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) result.c_str());
++//
++//	lines++;
++//
++//	if (lines >= 1000)
++//	{
++//		int line_length = SendMessage(static_text_box, EM_LINELENGTH, 0, NULL);
++//
++//		SendMessage(static_text_box, EM_SETSEL, 0, line_length+1);
++//
++//		string line = "";
++//
++//		SendMessage(static_text_box, EM_REPLACESEL, 0, (LPARAM) line.c_str());
++//		SendMessage(static_text_box, WM_VSCROLL, SB_BOTTOM, NULL);
++//	}
++//}
+\ No newline at end of file
+diff --git a/Soar-Console-Input/Soar-Console-Input.vcxproj b/Soar-Console-Input/Soar-Console-Input.vcxproj
+index 3abbca5..6f6511a 100644
+--- a/Soar-Console-Input/Soar-Console-Input.vcxproj
++++ b/Soar-Console-Input/Soar-Console-Input.vcxproj
+@@ -48,11 +48,12 @@
+       <PrecompiledHeader>Use</PrecompiledHeader>
+       <WarningLevel>Level3</WarningLevel>
+       <Optimization>Disabled</Optimization>
+-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
++      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
+     </ClCompile>
+     <Link>
+       <SubSystem>Windows</SubSystem>
+       <GenerateDebugInformation>true</GenerateDebugInformation>
++      <EntryPointSymbol>main</EntryPointSymbol>
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/11/f088411281dd0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/11/f088411281dd0011132eaa0a61c68102
+new file mode 100644
+index 0000000..9977343
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/11/f088411281dd0011132eaa0a61c68102	
+@@ -0,0 +1,2 @@
++source gather-minerals.soar
++source wait.soar
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/20/20e99e767add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/20/20e99e767add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..ab2c2cb
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/20/20e99e767add0011132eaa0a61c68102	
+@@ -0,0 +1,22 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m>
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++   (<m> >= 100)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator.name build-scv
++              ^io.output-link <o>)
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location 0)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/54/30e7667d7add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/54/30e7667d7add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..025cd64
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/54/30e7667d7add0011132eaa0a61c68102	
+@@ -0,0 +1,22 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m>
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++   (<m> > 99)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator.name build-scv
++              ^io.output-link <o>)
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location 0)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/59/402c47dd8add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/59/402c47dd8add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..e515e5d
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/59/402c47dd8add0011132eaa0a61c68102	
+@@ -0,0 +1,23 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator <op>
++              ^io.output-link <o>)
++   (<op> ^name build-scv
++         ^location <id>)
++-->
++   (<o> ^build <b>)
++   (<b> ^type scv
++        ^location <id>)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/61/c0b4003779dd0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/61/c0b4003779dd0011132eaa0a61c68102
+new file mode 100644
+index 0000000..d2ed4c6
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/61/c0b4003779dd0011132eaa0a61c68102	
+@@ -0,0 +1,18 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link.minerals <m>)
++   (<m> >= 100)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location 0)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator.name build-scv
++              ^io.output-link <o>)
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location 0)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/8f/80cbbfe07add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/8f/80cbbfe07add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..649f554
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/8f/80cbbfe07add0011132eaa0a61c68102	
+@@ -0,0 +1,21 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator.name build-scv
++              ^io.output-link <o>)
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location 0)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/b4/704446e27add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/b4/704446e27add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..de7176d
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/b4/704446e27add0011132eaa0a61c68102	
+@@ -0,0 +1,23 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator <op>
++              ^io.output-link <o>)
++   (<op> ^name build-scv
++         ^location <id>
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location <id>)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/bb/b0557d958add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/bb/b0557d958add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..92924d3
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/bb/b0557d958add0011132eaa0a61c68102	
+@@ -0,0 +1,23 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>)
++   (<b> ^command-center 1
++        ^id <id>)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator <op>
++              ^io.output-link <o>)
++   (<op> ^name build-scv
++         ^location <id>)
++-->
++   (<o> ^build <b>)
++   (<b> ^name scv
++        ^location <id>)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/c/d0ab07e08add0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/c/d0ab07e08add0011132eaa0a61c68102
+new file mode 100644
+index 0000000..0de9f08
+--- /dev/null
++++ b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/c/d0ab07e08add0011132eaa0a61c68102	
+@@ -0,0 +1,28 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>
++        ^types.type <t>)
++   (<b> ^command-center 1
++        ^id <id>)
++   (<t> ^name |Terran SCV|
++        ^id <type-id>
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>
++        ^type <type-id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator <op>
++              ^io.output-link <o>)
++   (<op> ^name build-scv
++         ^location <id>
++         ^type <type-id>)
++-->
++   (<o> ^build <b>)
++   (<b> ^type <type-id>
++        ^location <id>)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/d0/802f468406dd0011132eaa0a61c68102 b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.history/d0/802f468406dd0011132eaa0a61c68102
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.markers.snap b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.markers.snap
+index 60eb85c..421a3e6 100644
+Binary files a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.markers.snap and b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.markers.snap differ
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.syncinfo.snap b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.syncinfo.snap
+index 0b368ce..c8b1e33 100644
+Binary files a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.syncinfo.snap and b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.projects/Soar-SC/.syncinfo.snap differ
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap
+index 0b368ce..c8b1e33 100644
+Binary files a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap and b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.root/.markers.snap differ
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources
+index 03dbc27..0c9c7b7 100644
+Binary files a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources and b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources differ
+diff --git a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.snap b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.snap
+index 745897b..cc63de6 100644
+Binary files a/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.snap and b/Soar-SC/Soar Code/.metadata/.plugins/org.eclipse.core.resources/.snap differ
+diff --git a/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar
+index 9977343..7b8bac8 100644
+--- a/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar	
++++ b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar	
+@@ -1,2 +1,3 @@
+ source gather-minerals.soar
+-source wait.soar
+\ No newline at end of file
++source wait.soar
++source build-units.soar
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-units.soar b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-units.soar
+new file mode 100644
+index 0000000..ceb329d
+--- /dev/null
++++ b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-units.soar	
+@@ -0,0 +1,28 @@
++sp {propose*build-scv
++   (state <s> ^name Soar-SC
++              ^io.input-link <i>)
++   (<i> ^minerals <m> > 99
++        ^units.building <b>
++        ^types.type <t>)
++   (<b> ^command-center 1
++        ^id <id>)
++   (<t> ^name |Terran SCV|
++        ^id <type-id>)
++-->
++   (<s> ^operator <o> +)
++   (<o> ^name build-scv
++        ^location <id>
++        ^type <type-id>)
++}
++
++sp {apply*build-scv
++   (state <s> ^operator <op>
++              ^io.output-link <o>)
++   (<op> ^name build-scv
++         ^location <id>
++         ^type <type-id>)
++-->
++   (<o> ^build <b>)
++   (<b> ^type <type-id>
++        ^location <id>)
++}
+\ No newline at end of file
+diff --git a/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar
+index 1f90cef..ef408df 100644
+--- a/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar	
++++ b/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar	
+@@ -35,7 +35,6 @@ sp {propose*query-svs-scv
+ -->
+    (<s> ^operator <op> + =)
+    (<op> ^name query-svs)
+-   (interrupt)
+ }
+ 
+ sp {apply*query-svs-scv-create-objects
+diff --git a/Soar-SC/Source/Events.cpp b/Soar-SC/Source/Events.cpp
+index fa0c938..2038cee 100644
+--- a/Soar-SC/Source/Events.cpp
++++ b/Soar-SC/Source/Events.cpp
+@@ -84,8 +84,6 @@ void Events::update(bool lock)
+ 
+ 					SDL_CreateThread(soar_command_thread, cmd);
+ 				}
+-				else if (e.get_command()->find("stop") == 0)
+-					agent->StopSelf();
+ 				else
+ 				{
+ 					string output = agent->ExecuteCommandLine(e.get_command()->c_str());
+diff --git a/Soar-SC/Source/Events.h b/Soar-SC/Source/Events.h
+index d7c97d0..be52a67 100644
+--- a/Soar-SC/Source/Events.h
++++ b/Soar-SC/Source/Events.h
+@@ -17,6 +17,8 @@ public:
+ 	Events(Soar_Console* console);
+ 	~Events();
+ 
++	void set_console(Soar_Console* console) { this->console = console; }
++
+ 	void update(bool lock = true);
+ 
+ 	void add_event(Soar_Event event);
+@@ -50,6 +52,8 @@ private:
+ 	std::deque<Soar_Event> event_queue;
+ 
+ 	Soar_Console* console;
++
++	SDL_Thread* run_thread;
+ };
+ 
+ #ifdef EVENTS_PRIV
+diff --git a/Soar-SC/Source/Soar_Console.cpp b/Soar-SC/Source/Soar_Console.cpp
+index 1316e3b..85124a1 100644
+--- a/Soar-SC/Source/Soar_Console.cpp
++++ b/Soar-SC/Source/Soar_Console.cpp
+@@ -156,7 +156,6 @@ Soar_Console::Soar_Console(Events* event_queue)
+ 	this->event_queue = event_queue;
+ 
+ 	ghInst = GetModuleHandle(NULL);
+-
+ 	WNDCLASSEX ex;
+ 
+ 	ex.cbSize = sizeof(WNDCLASSEX);
+diff --git a/Soar-SC/Source/Soar_Link.cpp b/Soar-SC/Source/Soar_Link.cpp
+index f2032a0..b9bef06 100644
+--- a/Soar-SC/Source/Soar_Link.cpp
++++ b/Soar-SC/Source/Soar_Link.cpp
+@@ -8,8 +8,7 @@ Soar_Link::Soar_Link()
+ 	: cout_redirect("bwapi-data/logs/stdout.txt"),
+ 	cerr_redirect("bwapi-data/logs/stderr.txt"),
+ 	test_input_file("bwapi-data/logs/test_input.txt"),
+-	event_queue(console),
+-	console(new Soar_Console(&event_queue))
++	event_queue(NULL)
+ {
+ 	if (!cout_redirect || !cerr_redirect)
+ 		Broodwar->printf("Unable to redirect output!");
+@@ -25,6 +24,10 @@ Soar_Link::Soar_Link()
+ 
+ 	mu = SDL_CreateMutex();
+ 
++	console = new Soar_Console(&event_queue);
++
++	event_queue.set_console(console);
++
+ 	should_die = false;
+ 	had_interrupt = false;
+ }
+diff --git a/Soar-SC/Source/Soar_Link_BWAPI.cpp b/Soar-SC/Source/Soar_Link_BWAPI.cpp
+index aa43b67..e218bb5 100644
+--- a/Soar-SC/Source/Soar_Link_BWAPI.cpp
++++ b/Soar-SC/Source/Soar_Link_BWAPI.cpp
+@@ -41,6 +41,22 @@ void Soar_Link::onStart()
+ 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
+ 	event_queue.set_agent(agent);
+ 
++	UnitType::set types = UnitTypes::allUnitTypes();
++
++	Identifier* input_link = agent->GetInputLink();
++	Identifier* types_id;
++	if (!input_link->FindByAttribute("types", 0))
++		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier();
++	else
++		types_id = input_link->FindByAttribute("types", 0)->ConvertToIdentifier();
++
++	for (UnitType::set::iterator it = types.begin();it != types.end();it++)
++	{
++		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier();
++		type->CreateStringWME("name", (*it).getName().c_str());
++		type->CreateIntWME("id", (*it).getID());
++	}
++
+ 	stringstream ss;
+ 	ss << Broodwar->mapWidth();
+ 	string map_width_as_string = ss.str();
+@@ -548,6 +564,26 @@ void Soar_Link::update_resources()
+ 			vesp_gas.insert(bw_unit);
+ 		}
+ 	}
++
++	int minerals = Broodwar->self()->minerals();
++	int gas = Broodwar->self()->gas();
++
++	Identifier* input_link = agent->GetInputLink();
++
++	IntElement* minerals_id;
++	if (!input_link->FindByAttribute("minerals", 0))
++		minerals_id = input_link->CreateIntWME("minerals", 0)->ConvertToIntElement();
++	else
++		minerals_id = input_link->FindByAttribute("minerals", 0)->ConvertToIntElement();
++
++	IntElement* gas_id;
++	if (!input_link->FindByAttribute("gas", 0))
++		gas_id = input_link->CreateIntWME("gas", 0)->ConvertToIntElement();
++	else
++		gas_id = input_link->FindByAttribute("gas", 0)->ConvertToIntElement();
++
++	minerals_id->Update(minerals);
++	gas_id->Update(gas);
+ }
+ 
+ void Soar_Link::delete_unit(int uid)
+@@ -669,6 +705,9 @@ void Soar_Link::update_units()
+ 
+ 				unit->CreateIntWME("id", bw_unit->getID());
+ 				test_input_file << " ^id " << bw_unit->getID();
++
++				if (bw_unit->getType() == UnitTypes::Terran_Command_Center)
++					unit->CreateIntWME("command-center", true);
+ 			}
+ 
+ 			string svs_object_id = bw_unit->getType().getName();
+diff --git a/Soar-SC/Source/Soar_Link_Soar.cpp b/Soar-SC/Source/Soar_Link_Soar.cpp
+index 8fc7119..c2698f2 100644
+--- a/Soar-SC/Source/Soar_Link_Soar.cpp
++++ b/Soar-SC/Source/Soar_Link_Soar.cpp
+@@ -12,7 +12,7 @@ using namespace sml;
+ 
+ int Soar_Link::soar_agent_thread()
+ {
+-	update_units();
++	update_units();	
+ 	update_resources();
+ 
+ 	while(!analyzer->done_sending_svs())
+@@ -46,6 +46,22 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
+ 			if (unit != NULL && dest != NULL)
+ 				unit->rightClick(dest);
+ 		}
++		else if (name == "build")
++		{
++			string type = output_command->GetParameterValue("type");
++			string location = output_command->GetParameterValue("location");
++
++			Unit* unit_location = getUnitFromID(location);
++
++			stringstream ss(type);
++			int type_id;
++
++			ss >> type_id;
++
++			UnitType unit_type(type_id);
++
++			unit_location->train(unit_type);
++		}
+ 	}
+ 
+ 	SDL_mutexP(mu);
+diff --git a/Starcraft/bwapi-data/AI/Soar-SCd.dll b/Starcraft/bwapi-data/AI/Soar-SCd.dll
+index 196b371..b78b6c3 100644
+Binary files a/Starcraft/bwapi-data/AI/Soar-SCd.dll and b/Starcraft/bwapi-data/AI/Soar-SCd.dll differ
+diff --git a/Starcraft/bwapi-data/BWAPI.dll b/Starcraft/bwapi-data/BWAPI.dll
+index b545c81..9f0c3b3 100644
+Binary files a/Starcraft/bwapi-data/BWAPI.dll and b/Starcraft/bwapi-data/BWAPI.dll differ
+diff --git a/Starcraft/bwapi-data/BWAPId.dll b/Starcraft/bwapi-data/BWAPId.dll
+index 1db475d..0812867 100644
+Binary files a/Starcraft/bwapi-data/BWAPId.dll and b/Starcraft/bwapi-data/BWAPId.dll differ
