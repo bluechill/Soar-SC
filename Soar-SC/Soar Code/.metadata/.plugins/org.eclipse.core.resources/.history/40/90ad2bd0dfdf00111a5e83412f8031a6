@@ -1,0 +1,4 @@
+# Source child problem space "Soar-SC"
+pushd Soar-SC
+source Soar-SC_source.soar
+popd

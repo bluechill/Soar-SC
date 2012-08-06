@@ -74,7 +74,7 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 			{
 				console->recieve_input(*e.get_command()); //"echo" the command to the console
 
-				if (e.get_command()->find("run") == 0) //Check if it's a run command
+				if (e.get_command()->find("run") == 0 || e.get_command()->find("time") == 0) //Check if it's a run command or a time command
 				{
 					Soar_Command* cmd = new Soar_Command; //Since it is, create a new Soar_Command struct for the thread
 					cmd->a = agent; //Set the agent for the thread

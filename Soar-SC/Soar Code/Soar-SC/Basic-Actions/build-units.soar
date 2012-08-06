@@ -5,11 +5,14 @@ sp {propose*build-scv
         ^total-supplies <ts>
         ^used-supplies <us> < <ts>
         ^units.building <b>
-        ^types.type <t>)
-   (<b> ^command-center 1
+        ^types.type <scv-type>
+        ^types.type <command-center>)
+   (<command-center> ^name |Terran Command Center|
+                     ^id <command-center-id>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
+   (<b> ^type <command-center-id>
         ^id <id>)
-   (<t> ^name |Terran SCV|
-        ^id <type-id>)
 -->
    (<s> ^operator <o> +)
    (<o> ^name build-scv

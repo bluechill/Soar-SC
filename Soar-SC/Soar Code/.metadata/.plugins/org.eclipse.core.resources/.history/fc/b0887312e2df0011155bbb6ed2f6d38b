@@ -58,13 +58,10 @@ sp {apply*query-svs-scv-create-units
          ^io.input-link <i>
          ^superstate nil)
    (<c> ^a <node1>)
-   (<i> ^units.unit <u>
-        ^types.type <t>)
-   (<t> ^name |Terran SCV|
-        ^id <type-id>)
+   (<i> ^units.unit <u>)
    (<u> ^svsobject <id-unit>
         ^idle 1
-        ^type <type-id>)
+        ^worker 1)
 -->
    (<node1> ^<id-unit> <unit>)
    (<unit> ^type node ^id <id-unit>)

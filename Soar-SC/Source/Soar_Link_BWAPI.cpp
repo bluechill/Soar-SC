@@ -648,40 +648,26 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 
 		test_input_file << "I-units-unit:";
 
-		unit->CreateIntWME("id", bw_unit->getID());
-		test_input_file << " ^id " << bw_unit->getID();
+		unit->CreateIntWME("idle", bw_unit->isIdle());
+		test_input_file << " ^idle " << bw_unit->isIdle();
 
-		bool worker = bw_unit->getType().isWorker();
-		unit->CreateIntWME("worker", worker);
-		test_input_file << " ^worker " << worker;
+		unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
+		test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
 
-		if (worker)
+		if (bw_unit->isCarryingGas())
 		{
-			unit->CreateIntWME("idle", bw_unit->isIdle());
-			test_input_file << " ^idle " << bw_unit->isIdle();
-
-			unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
-			test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
-
-			if (bw_unit->isCarryingGas())
-			{
-				unit->CreateStringWME("carrying", "gas");
-				test_input_file << " ^carring gas";
-			}
-			else if (bw_unit->isCarryingMinerals())
-			{
-				unit->CreateStringWME("carring", "minerals");
-				test_input_file << " ^carrying minerals";
-			}
-			else if (bw_unit->getPowerUp())
-			{
-				unit->CreateStringWME("carrying", "powerup");
-				test_input_file << " ^carrying powerup";
-			}
+			unit->CreateStringWME("carrying", "gas");
+			test_input_file << " ^carring gas";
 		}
-		else
+		else if (bw_unit->isCarryingMinerals())
 		{
-			//TODO handle units other than workers
+			unit->CreateStringWME("carring", "minerals");
+			test_input_file << " ^carrying minerals";
+		}
+		else if (bw_unit->getPowerUp())
+		{
+			unit->CreateStringWME("carrying", "powerup");
+			test_input_file << " ^carrying powerup";
 		}
 	}
 	else
@@ -689,13 +675,13 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 		unit = id->CreateIdWME("building");
 
 		test_input_file << "I-units-building:";
-
-		unit->CreateIntWME("id", bw_unit->getID());
-		test_input_file << " ^id " << bw_unit->getID();
-
-		if (bw_unit->getType() == UnitTypes::Terran_Command_Center)
-			unit->CreateIntWME("command-center", true);
 	}
+
+	unit->CreateIntWME("id", bw_unit->getID());
+	test_input_file << " ^id " << bw_unit->getID();
+
+	unit->CreateIntWME("type", bw_unit->getType().getID());
+	test_input_file << " ^type " << bw_unit->getType().getID();
 
 	string svs_object_id = bw_unit->getType().getName();
 	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());

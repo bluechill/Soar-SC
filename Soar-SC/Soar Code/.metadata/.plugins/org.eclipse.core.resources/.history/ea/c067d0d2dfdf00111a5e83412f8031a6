@@ -1,0 +1,6 @@
+sp {test
+   (state <s> ^name |Soar-SC|
+              ^type 1)
+-->
+   (write (crlf))
+}
