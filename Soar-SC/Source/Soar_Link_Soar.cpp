@@ -1,16 +1,16 @@
-#include "Soar_Link.h"
+#include "Soar_Link.h" //Include the Soar Link class header
 
-#include <set>
-#include <vector>
-#include <sstream>
+#include <set> //for std::set
+#include <vector> //For std::vector
+#include <sstream> //For std::stringstream
 
-#include <windows.h>
+#include <windows.h> //For windows related functions
 
-using namespace BWAPI;
+using namespace BWAPI; //Use namespaces to allow the use of string instead of std::string for example
 using namespace std;
 using namespace sml;
 
-int Soar_Link::soar_agent_thread()
+int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
 	update_units();	
 	update_resources();
@@ -25,17 +25,17 @@ int Soar_Link::soar_agent_thread()
 	return 0;
 }
 
-void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase)
+void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
 	int commands = a->GetNumberCommands();
 
-	for (int i = 0;i < commands;i++)
+	for (int i = 0;i < commands;i++) //Parse all the agent's commands
 	{
 		Identifier* output_command = a->GetCommand(i);
 
         string name  = output_command->GetCommandName();
 
-		if (name == "move")
+		if (name == "move") //Move command
 		{
 			string object_to_move = output_command->GetParameterValue("object");
 			string destination = output_command->GetParameterValue("dest");
@@ -44,9 +44,9 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			Unit* dest = getUnitFromID(destination);
 
 			if (unit != NULL && dest != NULL)
-				unit->rightClick(dest);
+				unit->rightClick(dest); //Execute move command in starcraft
 		}
-		else if (name == "build")
+		else if (name == "build") //Build command
 		{
 			string type = output_command->GetParameterValue("type");
 			string location = output_command->GetParameterValue("location");
@@ -64,24 +64,25 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		}
 	}
 
+	//Update the units and resources
 	SDL_mutexP(mu);
 	update_units();
 	update_resources();
 
-	event_queue.update();
+	event_queue.update(); //Then have the events in the queue execute
 	
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
 }
 
-void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m)
+void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
 {
 	string output(m);
 	console->recieve_input(output);
 }
 
-void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase)
+void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase) //Handler for handling misc stuff, at this point handles run starts and stops
 {
 	switch (id)
 	{

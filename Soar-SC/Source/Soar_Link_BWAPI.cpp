@@ -1,77 +1,83 @@
-#include "Soar_Link.h"
+#include "Soar_Link.h" //Include the Soar Link class header
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <stdio.h> //Include the standard c io header
+#include <stdlib.h> //Also include the standard c library header
+#include <time.h> //Include the time header for time structs
 
-#include <vector>
-#include <set>
-#include <sstream>
+#include <vector> //For std::vector
+#include <set> //For std::set
+#include <sstream> //For std::stringstream
 
-using namespace BWAPI;
+using namespace BWAPI; //Use the namespaces BWAPI, std, sml to allow the use of string instead of std::string or Agent* instead of sml::Agent* etc.
 using namespace std;
 using namespace sml;
 
-void Soar_Link::onStart()
+void Soar_Link::onStart() //The "real" constructor in that this does the real work.  This is called when the game starts by BWAPI.
 {
-	if (kernel->HadError())
-	{
-		const char* msg = kernel->GetLastErrorDescription();
-		cout << "Soar: " << msg << endl;
-		Broodwar->printf("Soar: %s", msg);
-		return;
+	if (kernel->HadError()) //Check if the kernel had an error
+	{ //It did
+		const char* msg = kernel->GetLastErrorDescription(); //Get the description of the error
+		cout << "Soar: " << msg << endl; //Tell the user by the stdout and
+		Broodwar->printf("Soar: %s", msg); //Through starcraft
+		return; //Then return.
 	}
+	//No error
 
-	agent = kernel->CreateAgent("Soar-SC");
+	agent = kernel->CreateAgent("Soar-SC"); //Create a new agent
 
-	if (kernel->HadError())
+	if (kernel->HadError()) //Make sure there wasn't an error creating the agent
 	{
-		const char* msg = kernel->GetLastErrorDescription();
-		cout << "Soar: " << msg << endl;
-		Broodwar->printf("Soar: %s", msg);
-		return;
+		const char* msg = kernel->GetLastErrorDescription(); //There was so get the error description
+		cout << "Soar: " << msg << endl; //Then output to stdout
+		Broodwar->printf("Soar: %s", msg); //And starcraft
+		return; //Then return
 	}
+	//No error
 
-	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this);
-	agent->RegisterForRunEvent(smlEVENT_AFTER_RUN_ENDS, misc_global_handler, this);
-	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUN_STARTS, misc_global_handler, this);
+	//Register for all the Soar events
+	agent->RegisterForRunEvent(smlEVENT_AFTER_OUTPUT_PHASE, output_global_handler, this); //Output phase, called when the agent is after the output phase, ie. inbetween the input and output phases
+	agent->RegisterForRunEvent(smlEVENT_AFTER_RUN_ENDS, misc_global_handler, this); //Called whenever the run ends for any reason, halt, interrupt, stop-soar, etc.
+	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUN_STARTS, misc_global_handler, this); //Called just before the run starts after a run or step etc. command
 
-	agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this);
+	agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this); //Register for the print event to handle all output from the agent and other misc info like which thing is running etc.
 
-	agent->ExecuteCommandLine("watch 2");
-	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar");
-	event_queue.set_agent(agent);
+	agent->ExecuteCommandLine("watch 1"); //Not strictly needed but for being verbose, watch 1 outputs all the decision stuff like what the agent is doing along with outputs via write etc.
+	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar"); //Load our agent's source into memory
+	event_queue.set_agent(agent); //Set the agent in the event queue now that the agent is ready
 
-	UnitType::set types = UnitTypes::allUnitTypes();
+	//Load all the types of the Starcraft onto the input link for making the agent's life easier
+	UnitType::set types = UnitTypes::allUnitTypes(); //Get them all
 
-	Identifier* input_link = agent->GetInputLink();
-	Identifier* types_id;
-	if (!input_link->FindByAttribute("types", 0))
-		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier();
-	else
-		types_id = input_link->FindByAttribute("types", 0)->ConvertToIdentifier();
+	Identifier* input_link = agent->GetInputLink(); //Grab the input link
+	Identifier* types_id; //Create a variable for holding the types Identifier
+	if (!input_link->FindByAttribute("types", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
+		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier(); //It doesn't exist so create it
+	else //Otherwise
+		types_id = input_link->FindByAttribute("types", 0)->ConvertToIdentifier(); //Grab the existing one
 
+	//Loop throug all the units and add them to the input link
 	for (UnitType::set::iterator it = types.begin();it != types.end();it++)
 	{
-		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier();
-		type->CreateStringWME("name", (*it).getName().c_str());
-		type->CreateIntWME("id", (*it).getID());
+		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
+		type->CreateStringWME("name", (*it).getName().c_str()); //Create a string WME with the type's name
+		type->CreateIntWME("id", (*it).getID()); //Create an Int WME with the type's unique ID
 	}
 
-	stringstream ss;
-	ss << Broodwar->mapWidth();
-	string map_width_as_string = ss.str();
-	ss.str("");
-	ss << Broodwar->mapHeight();
-	string map_height_as_string = ss.str();
-	ss.str("");
+	//Terrain stuff, Put the entire terrain into SVS including barriers around the map so the agent doesn't think it can place stuff there
+	stringstream ss; //Create a string stream variable for converting the width and height of the map
+	ss << Broodwar->mapWidth(); //Get the map width an put it in a string stream to convert it to a string
+	string map_width_as_string = ss.str(); //Get the string representation
+	ss.str(""); //Clear the string stream
+	ss << Broodwar->mapHeight(); //Get the map height and put it in the string stream
+	string map_height_as_string = ss.str(); //Get the string representation
+	ss.str(""); //Clear the string stream once more
 
 	//Bottom barrier
 	string svs_command_1 = "a -x0 world v " + unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
 
-	test_input_file << "SVS-Actual: " << svs_command_1 << endl;
+	test_input_file << "SVS-Actual: " << svs_command_1 << endl; //Output the svs command to the test input
 
-	agent->SendSVSInput(svs_command_1);
+	agent->SendSVSInput(svs_command_1); //Send the SVS command to the agent
 
 	//Top barrier
 	string svs_command_2 = "a x0 world v " + unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
@@ -94,16 +100,16 @@ void Soar_Link::onStart()
 
 	agent->SendSVSInput(svs_command_4);
 
-	cout << "Soar-SC is running." << endl;
+	cout << "Soar-SC is running." << endl; //Tell the user everything is working perfectly so far
 	Broodwar->printf("Soar-SC is running.");
 
-	vector<vector<bool> > map;
-	size_t map_size_x = Broodwar->mapWidth() * 4;
-	size_t map_size_y = Broodwar->mapHeight() * 4;
+	vector<vector<bool> > map; //Variable for containing the map and whether a tile is walkable or not
+	size_t map_size_x = Broodwar->mapWidth() * 4; //Set the size to the number of walkable tiles, build tiles times 4
+	size_t map_size_y = Broodwar->mapHeight() * 4; //Same thing as above
 
-	vector<vector<bool> > build_tiles_map;
+	vector<vector<bool> > build_tiles_map; //Low res buildabilty map
 
-	for (int y = 0;y < int(map_size_y);y++)
+	for (int y = 0;y < int(map_size_y);y++) //Loop through every tile in the map and map the tile to a boolean in the vector vector of booleans.
 	{
 		vector<bool> map_y;
 
@@ -271,16 +277,19 @@ void Soar_Link::onStart()
 		}
 	}
 
+	//Create a new terrain analyzer
 	analyzer = new TerrainAnalyzer(map, agent, mu);
-	analyzer->analyze();
+	analyzer->analyze(); //Start analyzing the terrain
 
+	//Create the initial soar runner thread
 	soar_thread = SDL_CreateThread(thread_runner_soar, this);
-	if (!soar_thread)
-	{
+	if (!soar_thread) //Check to make sure the thread exists
+	{ //It doesn't so tell the user
 		Broodwar->printf("Soar: Unable to create soar thread!");
 		cout << "Soar: Unable to create soar thread!" << endl;
 	}
 
+	//Output the map to a file
 	/*ofstream ifs("bwapi-data/logs/map-3.txt", ios::out);
 
 	if (!ifs.is_open())
@@ -384,22 +393,22 @@ void Soar_Link::onUnitCreate(BWAPI::Unit* unit)
 }
 
 void Soar_Link::onUnitDestroy(BWAPI::Unit* unit)
-{
+{ //When a unit is destroyed, delete it from SVS and the input link
 	Unitset::iterator it;
-	if ((it = minerals.find(unit)) != minerals.end())
-	{
+	if ((it = minerals.find(unit)) != minerals.end()) //Check if it's a mineral
+	{ //It is so delete it
 		delete_resource(unit->getID());
 		return;
 	}
 
-	if ((it = vesp_gas.find(unit)) != vesp_gas.end())
-	{
+	if ((it = vesp_gas.find(unit)) != vesp_gas.end()) //Check if it's vesp gas
+	{ //Then delete it
 		delete_resource(unit->getID());
 		return;
 	}
 
-	if ((it = my_units.find(unit)) != my_units.end())
-	{
+	if ((it = my_units.find(unit)) != my_units.end()) //Check if it's a unit
+	{ //It is so delete it using delete_unit
 		delete_unit(unit->getID());
 		return;
 	}
@@ -426,36 +435,37 @@ void Soar_Link::onUnitComplete(BWAPI::Unit *bw_unit)
 	
 }
 
-void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type)
+void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type) //Add a resource
 {
-	Identifier* input_link = agent->GetInputLink();
+	Identifier* input_link = agent->GetInputLink(); //Get the input link
 
-	Identifier* id;
-	if (!input_link->FindByAttribute("resources", 0))
-	{
+	Identifier* id; //Variable for the resources identifier
+	if (!input_link->FindByAttribute("resources", 0)) //Check if it exits
+	{ //If it doesn't then create it 
 		Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
 		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
 
 		id = input_link->CreateIdWME("resources");
 	}
-	else
-		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+	else //Otherwise
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier(); //Use the first existing one
 
-	string name;
+	string name; //Variable for the type
 
-	if (type.getName().find("Mineral") != string::npos)
-		name = "mineral";
-	else
-		name = "vesp-gas";
+	if (type.getName().find("Mineral") != string::npos) //If it's a mineral
+		name = "mineral"; //Set the name to mineral
+	else //Otherwise
+		name = "vesp-gas"; //Set the name to vesp gas
 
-	Identifier* resource = id->CreateIdWME(name.c_str());
+	Identifier* resource = id->CreateIdWME(name.c_str()); //Create a new resource Identifier for the resrouce
 
-	resource->CreateIntWME("id", bw_id);
-	resource->CreateIntWME("count", count);
+	resource->CreateIntWME("id", bw_id); //Set the id
+	resource->CreateIntWME("count", count); //Set the number of minerals it holds
 
-	string svs_object_id = type.getName();
-	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
+	string svs_object_id = type.getName(); //Set the svs id to be the type's name
+	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end()); //Remove all the spaces
 
+	//Add the id of the resource to the id
 	stringstream ss;
 	ss << bw_id;
 	svs_object_id += ss.str();
@@ -469,16 +479,20 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	string size = ss.str();
 	ss.str("");
 
+	//Create the svs add command
 	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position_svs + " s " + size + " r 0 0 0";
 	//Broodwar->printf("%s", svs_command.c_str());
 	cout << svs_command << endl;
 
+	//Send the svs command to the agent
 	SDL_mutexP(mu);
 	agent->SendSVSInput(svs_command);
 	SDL_mutexV(mu);
 
+	//Create the svs object id on the input link
 	resource->CreateStringWME("svsobject", svs_object_id.c_str());
-
+	
+	//Output it to the log files
 	test_input_file << "I-resources-" << name << ": ^svsobject " << svs_object_id << endl;
 
 	test_input_file << "SVS-Actual: " << svs_command << endl;
@@ -486,7 +500,9 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 
 void Soar_Link::delete_resource(int bw_id)
 {
-	Identifier* input_link = agent->GetInputLink();
+	Identifier* input_link = agent->GetInputLink(); //Get the input link
+
+	//Check for the existence of the resources identifier, if it doesn't exist, create it
 
 	Identifier* id;
 
@@ -499,7 +515,7 @@ void Soar_Link::delete_resource(int bw_id)
 	else
 		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
 
-	for (int j = 0;j < id->GetNumberChildren();j++)
+	for (int j = 0;j < id->GetNumberChildren();j++) //Search for the existence of the given id in the resource list
 	{
 		Identifier* unit;
 		if (!id->GetChild(j)->IsIdentifier())
@@ -507,21 +523,24 @@ void Soar_Link::delete_resource(int bw_id)
 		else
 			unit = id->GetChild(j)->ConvertToIdentifier();
 
+		//Check the id against the given one
 		if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == bw_id)
 		{
+			//It is the same so delete the resource from svs and the input link
 			string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
 
 			string svs_command = "d " + svs_object_id;
 
 			test_input_file << "SVS-Actual: " << svs_command << endl;
 
-			event_queue.add_event(Soar_Event(svs_command, true));
-			event_queue.add_event(Soar_Event(id->GetChild(j)));
+			event_queue.add_event(Soar_Event(svs_command, true)); //Add the svs command to the queue
+			event_queue.add_event(Soar_Event(id->GetChild(j))); //And add the wme to destroy to the queue
 
-			break;
+			break; //Break because we're done
 		}
 	}
 
+	//Delete the resource from list
 	SDL_mutexP(mu);
 	Unitset::iterator it;
 	if ((it = minerals.find(getUnitFromID(bw_id))) != minerals.end())
@@ -531,7 +550,7 @@ void Soar_Link::delete_resource(int bw_id)
 	SDL_mutexV(mu);
 }
 
-void Soar_Link::update_resources()
+void Soar_Link::update_resources() //Update the resources
 {
 	Unitset visible_minerals = Broodwar->getMinerals();
 	Unitset visible_vesp_gas = Broodwar->getGeysers();
@@ -570,7 +589,8 @@ void Soar_Link::update_resources()
 	int gas = Broodwar->self()->gas();
 
 	Identifier* input_link = agent->GetInputLink();
-
+	
+	//Update the resource count
 	IntElement* minerals_id;
 	if (!input_link->FindByAttribute("minerals", 0))
 		minerals_id = input_link->CreateIntWME("minerals", 0)->ConvertToIntElement();
@@ -587,7 +607,7 @@ void Soar_Link::update_resources()
 	gas_id->Update(gas);
 }
 
-void Soar_Link::add_unit(BWAPI::Unit* bw_unit)
+void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 {
 	Identifier* input_link = agent->GetInputLink();
 
@@ -604,7 +624,7 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit)
 
 	Identifier* unit;
 
-	if (!bw_unit->getType().isBuilding())
+	if (!bw_unit->getType().isBuilding()) //Handle building type vs unit
 	{
 		unit = id->CreateIdWME("unit");
 
@@ -693,7 +713,7 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit)
 	my_units.insert(bw_unit);
 }
 
-void Soar_Link::delete_unit(int uid)
+void Soar_Link::delete_unit(int uid) //Delete an existing unit
 {
 	Identifier* input_link = agent->GetInputLink();
 	Identifier* id;
@@ -737,7 +757,7 @@ void Soar_Link::delete_unit(int uid)
 	SDL_mutexV(mu);
 }
 
-void Soar_Link::update_units()
+void Soar_Link::update_units() //Update all player units
 {
 	Unitset my_units_new = Broodwar->self()->getUnits();
 
@@ -817,7 +837,7 @@ void Soar_Link::update_units()
 	}
 }
 
-Unit* Soar_Link::getUnitFromID(string id_string)
+Unit* Soar_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version
 {
 	int id;
 	stringstream ss(id_string);
@@ -826,7 +846,7 @@ Unit* Soar_Link::getUnitFromID(string id_string)
 	return getUnitFromID(id);
 }
 
-Unit* Soar_Link::getUnitFromID(int id)
+Unit* Soar_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
 {
 	return Broodwar->getUnit(id);
 }

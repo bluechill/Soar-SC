@@ -1,14 +1,14 @@
-#include "Soar_Link.h"
+#include "Soar_Link.h" //Include Soar Link class header
 
 #include <string>
 
-using namespace BWAPI;
+using namespace BWAPI; //Use namespaces to allow use of string instead of std::string or Agent* instead of sml::Agent* for example
 using namespace std;
 using namespace sml;
 
-const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1";
+const std::string Soar_Link::unit_box_verts = "0 0 0 0 0 1 0 1 0 0 1 1 1 0 0 1 0 1 1 1 0 1 1 1"; //The vertices of a 1x1x1 unit box
 
-float Soar_Link::flip_one_d_point(const float &point, const bool &x_axis)
+float Soar_Link::flip_one_d_point(const float &point, const bool &x_axis) //Flip a point around the map's half point in the x or y axis
 {
 	int map;
 

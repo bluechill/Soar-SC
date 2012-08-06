@@ -1,6 +1,6 @@
-#include "Soar_Link.h"
+#include "Soar_Link.h" //Include Soar Link class header
 
-using namespace BWAPI;
+using namespace BWAPI; //Use namespace to allow use of string instead of std::string or Agent* instead of sml::Agent* for example
 using namespace std;
 using namespace sml;
 
@@ -24,13 +24,4 @@ void misc_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::sml
 int thread_runner_soar(void* link)
 {
 	return reinterpret_cast<Soar_Link*>(link)->soar_agent_thread();
-}
-
-//Misc globals
-string strip(string s, string lc, string rc)
-{
-	size_t b, e;
-	b = s.find_first_not_of(lc);
-	e = s.find_last_not_of(rc);
-	return s.substr(b, e - b + 1);
 }

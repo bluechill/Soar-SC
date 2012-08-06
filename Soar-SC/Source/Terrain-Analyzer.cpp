@@ -1,24 +1,23 @@
-#include "Terrain-Analyzer.h"
+#include "Terrain-Analyzer.h" //Include for TerrainAnalyzer class header
 
-#include "Soar_Link.h"
+#include "Soar_Link.h" //For Soar_Link class header
 
-#include <sstream>
+#include <sstream> //For std::stringstream
 
-using namespace std;
+using namespace std; //Allow use of string instead of std::string for example
 using namespace sml;
 
-int thread_runner(void* data)
+int thread_runner(void* data) //Terrain Analyzer thread
 {
-	TerrainAnalyzer* This = reinterpret_cast<TerrainAnalyzer*>(data);
-	This->mapping_function();
+	reinterpret_cast<TerrainAnalyzer*>(data)->mapping_function(); //Calls the mapping function to generate the svs representation of the map
 
 	return 0;
 }
 
-TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml::Agent* agent, SDL_mutex* mu)
-	: out("bwapi-data/logs/test_input-terrain.txt")
+TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml::Agent* agent, SDL_mutex* mu) //Main constructor
+	: out("bwapi-data/logs/test_input-terrain.txt") //Output file for the map
 {
-	if (!out.is_open())
+	if (!out.is_open()) //Check to make sure it is open otherwise stop working on the map
 		return;
 
 	this->map = map;
@@ -26,13 +25,12 @@ TerrainAnalyzer::TerrainAnalyzer(const std::vector<std::vector<bool> > &map, sml
 	this->agent = agent;
 
 	this->mu = mu;
-	this->terrain_mu = SDL_CreateMutex();
 
 	this->should_die = false;
 	this->done_svs = false;
 }
 
-TerrainAnalyzer::~TerrainAnalyzer()
+TerrainAnalyzer::~TerrainAnalyzer() //Deconstructor
 {
 	if (!out.is_open())
 		return;
@@ -42,15 +40,9 @@ TerrainAnalyzer::~TerrainAnalyzer()
 		SDL_WaitThread(thread,NULL);
 		thread = NULL;
 	}
-
-	if (terrain_mu)
-	{
-		SDL_DestroyMutex(terrain_mu);
-		terrain_mu = NULL;
-	}
 }
 
-void TerrainAnalyzer::analyze()
+void TerrainAnalyzer::analyze() //Main analyzer function, just creates a thread of the analyzer
 {
 	if (!out.is_open())
 		return;
@@ -58,7 +50,7 @@ void TerrainAnalyzer::analyze()
 	thread = SDL_CreateThread(thread_runner, this);
 }
 
-bool TerrainAnalyzer::rectangle_contains(const int x,const int y,vector<SVS_Rectangle> &rectangles)
+bool TerrainAnalyzer::rectangle_contains(const int x,const int y,vector<SVS_Rectangle> &rectangles) //Check whether a rectangle contains the given point
 {
 	SVS_Rectangle rect = get_rectangle(x,y,rectangles);
 	
@@ -68,7 +60,7 @@ bool TerrainAnalyzer::rectangle_contains(const int x,const int y,vector<SVS_Rect
 	return true;
 }
 
-TerrainAnalyzer::SVS_Rectangle TerrainAnalyzer::get_rectangle(const int x, const int y,vector<SVS_Rectangle> &rectangles)
+TerrainAnalyzer::SVS_Rectangle TerrainAnalyzer::get_rectangle(const int x, const int y,vector<SVS_Rectangle> &rectangles) //Get the rectangle containing the given point
 {
 	for (vector<SVS_Rectangle>::iterator it = rectangles.begin();it != rectangles.end();it++)
 	{
@@ -86,7 +78,7 @@ TerrainAnalyzer::SVS_Rectangle TerrainAnalyzer::get_rectangle(const int x, const
 	return rect;
 }
 
-void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vector<vector<bool> > &map, vector<SVS_Rectangle> &rectangles)
+void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vector<vector<bool> > &map, vector<SVS_Rectangle> &rectangles) //Generate the biggest rectangle from the given point
 {
 	vector<size_t> xs;
 	vector<size_t> ys;
@@ -144,7 +136,7 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 	rectangles.push_back(rect);
 }
 
-void TerrainAnalyzer::mapping_function()
+void TerrainAnalyzer::mapping_function() //Main map function generates the rectangles of the map
 {
 	vector<SVS_Rectangle> rectangles;
 
@@ -152,32 +144,22 @@ void TerrainAnalyzer::mapping_function()
 
 	size_t map_size = map.size();
 
-	SDL_mutexP(terrain_mu);
 	for (size_t y = 0;y < map_size && !should_die;y++,start_y++)
 	{
 		for (size_t x = 0;x < (*start_y).size() && !should_die;x++)
 		{
-			SDL_mutexV(terrain_mu);
-
 			if (start_y->at(x) || rectangle_contains(x, y, rectangles))
 				continue;
 
 			generate_rectangle(x,y,map,rectangles);
-
-			SDL_mutexP(terrain_mu);
 		}
 	}
-	SDL_mutexV(terrain_mu);
 
 	stringstream ss;
-
-	SDL_mutexP(terrain_mu);
 
 	int i = 0;
 	for (vector<SVS_Rectangle>::iterator it = rectangles.begin();it != rectangles.end() && !should_die;i++, it++)
 	{
-		SDL_mutexV(terrain_mu);
-
 		ss << i;
 		string id = ss.str();
 		ss.str("");
@@ -199,10 +181,7 @@ void TerrainAnalyzer::mapping_function()
 		SDL_mutexP(mu);
 		agent->SendSVSInput(svs_command);
 		SDL_mutexV(mu);
-
-		SDL_mutexP(terrain_mu);
 	}
-	SDL_mutexV(terrain_mu);
 
 	cout << "Rectangles: " << rectangles.size() << endl;
 
@@ -211,7 +190,7 @@ void TerrainAnalyzer::mapping_function()
 	SDL_mutexV(mu);
 }
 
-bool TerrainAnalyzer::done_sending_svs()
+bool TerrainAnalyzer::done_sending_svs() //Returns whether the analyzer is done create the map and putting it in svs
 {
 	if (should_die)
 		return true;
