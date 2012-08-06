@@ -2,8 +2,6 @@ sp {propose*build-scv
    (state <s> ^name Soar-SC
               ^io.input-link <i>)
    (<i> ^minerals <m> > 49
-        ^total-supplies <ts>
-        ^used-supplies <us> < <ts>
         ^units.building <b>
         ^types.type <t>)
    (<b> ^command-center 1

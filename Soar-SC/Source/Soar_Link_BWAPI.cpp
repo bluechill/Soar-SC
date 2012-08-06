@@ -588,6 +588,9 @@ void Soar_Link::update_resources() //Update the resources
 	int minerals = Broodwar->self()->minerals();
 	int gas = Broodwar->self()->gas();
 
+	int total_supplies = Broodwar->self()->supplyTotal();
+	int used_supplies = Broodwar->self()->supplyUsed();
+
 	Identifier* input_link = agent->GetInputLink();
 	
 	//Update the resource count
@@ -603,8 +606,23 @@ void Soar_Link::update_resources() //Update the resources
 	else
 		gas_id = input_link->FindByAttribute("gas", 0)->ConvertToIntElement();
 
+	IntElement* max_supplies_id;
+	if (!input_link->FindByAttribute("total-supplies", 0))
+		max_supplies_id = input_link->CreateIntWME("total-supplies", 0)->ConvertToIntElement();
+	else
+		max_supplies_id = input_link->FindByAttribute("total-supplies", 0)->ConvertToIntElement();
+
+	IntElement* used_supplies_id;
+	if (!input_link->FindByAttribute("used-supplies", 0))
+		used_supplies_id = input_link->CreateIntWME("used-supplies", 0)->ConvertToIntElement();
+	else
+		used_supplies_id = input_link->FindByAttribute("used-supplies", 0)->ConvertToIntElement();
+
 	minerals_id->Update(minerals);
 	gas_id->Update(gas);
+
+	max_supplies_id->Update(total_supplies);
+	used_supplies_id->Update(used_supplies);
 }
 
 void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit

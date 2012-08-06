@@ -1,4 +1,4 @@
-18
+57
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -17,18 +17,90 @@ SOAR_ID 14
 INT_RANGE 15 0 0
 INT_RANGE 17 0 0
 SOAR_ID 16
-14
-2 resources 8
+INT_RANGE 19 0 0
+INT_RANGE 18 0 0
+STRING 21
+SOAR_ID 20
+INT_RANGE 23 0 0
+INT_RANGE 22 0 0
+SOAR_ID 25
+INT_RANGE 24 0 0
+SOAR_ID 27
+SOAR_ID 26
+SOAR_ID 29
+STRING 28
+INT_RANGE 31 0 0
+INT_RANGE 30 0 0
+SOAR_ID 34
+SOAR_ID 35
+INT_RANGE 32 0 0
+INT_RANGE 33 0 0
+INT_RANGE 38 0 0
+SOAR_ID 39
+STRING 36
+INT_RANGE 37 0 0
+SOAR_ID 42
+INT_RANGE 43 0 0
+STRING 40
+INT_RANGE 41 0 0
+INT_RANGE 46 0 0
+INT_RANGE 47 0 0
+SOAR_ID 44
+INT_RANGE 45 0 0
+INT_RANGE 51 0 0
+STRING 50
+INT_RANGE 49 0 0
+SOAR_ID 48
+STRING 55
+STRING 54
+STRING 53
+STRING 52
+STRING 56
+47
+2 used-supplies 24
+7 unit 26
 0 type 4
-14 object2 17
+26 id 30
+26 worker 45
+1 output-link 3
+3 build 20
+27 svsobject 52
+39 location 41
+20 type 21
+0 superstate 5
+34 type 35
+48 id-object 51
+1 input-link 2
+7 building 25
+0 operator 48
+2 total-supplies 23
+39 name 40
+27 id 33
+48 name 50
+14 object 15
+2 types 34
+2 gas 19
+26 svsobject 55
+39 type 43
+35 id 37
+48 id-dest 49
+0 operator 39
 2 units 7
 3 move 14
-0 superstate 5
-1 input-link 2
-1 output-link 3
-8 id 9
-0 name 6
-14 object1 15
-7 id 11
-12 type 13
+25 command-center 38
+25 svsobject 56
+2 minerals 18
+26 carrying 54
+8 vesp-gas 29
+25 id 31
+20 location 22
+35 name 36
 0 io 1
+29 svsobject 53
+29 id 32
+0 name 6
+2 resources 8
+14 dest 17
+12 type 13
+26 idle 46
+8 mineral 27
