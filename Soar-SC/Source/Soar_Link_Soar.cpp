@@ -18,7 +18,7 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 	while(!analyzer->done_sending_svs())
 		Sleep(10);
 
-	test_input_file << "--------------------------------------------------" << endl;
+	//test_input_file << "--------------------------------------------------" << endl;
 
 	agent->RunSelfForever();
 
@@ -49,9 +49,6 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		else if (name == "build") //Build command
 		{
 			string type = output_command->GetParameterValue("type");
-			string location = output_command->GetParameterValue("location");
-
-			Unit* unit_location = getUnitFromID(location);
 
 			stringstream ss(type);
 			int type_id;
@@ -60,8 +57,41 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			UnitType unit_type(type_id);
 
-			unit_location->train(unit_type);
+			if (output_command->FindByAttribute("location-x", 0))
+			{
+				string location_x = output_command->GetParameterValue("location-x");
+				string location_y = output_command->GetParameterValue("location-y");
+
+				string worker_id = output_command->GetParameterValue("worker");
+
+				int x = 0;
+				int y = 0;
+
+				stringstream l_x(location_x);
+				l_x >> x;
+				stringstream l_y(location_y);
+				l_y >> y;
+				
+				Unit* worker = getUnitFromID(worker_id);
+				worker->stop();
+
+				if (!worker->build(unit_type, TilePosition(x,y)))
+				{
+					Error e = Broodwar->getLastError();
+					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
+				}
+			}
+			else
+			{
+				string location = output_command->GetParameterValue("location");
+
+				Unit* unit_location = getUnitFromID(location);
+
+				unit_location->train(unit_type);
+			}
 		}
+
+		output_command->AddStatusComplete();
 	}
 
 	//Update the units and resources
@@ -73,7 +103,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	
 	SDL_mutexV(mu);
 
-	test_input_file << "--------------------------------------------------" << endl;
+	//test_input_file << "--------------------------------------------------" << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent

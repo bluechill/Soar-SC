@@ -654,21 +654,8 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 		unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
 		test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
 
-		if (bw_unit->isCarryingGas())
-		{
-			unit->CreateStringWME("carrying", "gas");
-			test_input_file << " ^carring gas";
-		}
-		else if (bw_unit->isCarryingMinerals())
-		{
-			unit->CreateStringWME("carring", "minerals");
-			test_input_file << " ^carrying minerals";
-		}
-		else if (bw_unit->getPowerUp())
-		{
-			unit->CreateStringWME("carrying", "powerup");
-			test_input_file << " ^carrying powerup";
-		}
+		unit->CreateIntWME("constructing", bw_unit->isConstructing());
+		test_input_file << " ^constructing " << bw_unit->isConstructing();
 	}
 	else
 	{
@@ -803,7 +790,7 @@ void Soar_Link::update_units() //Update all player units
 
 			ss.str("");
 			ss << new_unit->getID();
-			svs_object_id += ss.str();
+			svs_object_id += ss.str();	
 			ss.str("");
 
 			string svs_command = "c " + svs_object_id + " p " + position;
@@ -833,6 +820,15 @@ void Soar_Link::update_units() //Update all player units
 						IntElement* idle_int = idle->ConvertToIntElement();
 
 						idle_int->Update(new_unit->isIdle());
+
+						WMElement* carrying = unit->FindByAttribute("carrying", 0);
+						IntElement* carrying_int = carrying->ConvertToIntElement();
+						carrying_int->Update((new_unit->isCarryingGas() || new_unit->isCarryingMinerals() || new_unit->getPowerUp()));
+
+						WMElement* constructing = unit->FindByAttribute("constructing", 0);
+						IntElement* constructing_int = constructing->ConvertToIntElement();
+						constructing_int->Update(new_unit->isConstructing());
+						
 						break;
 					}
 				}

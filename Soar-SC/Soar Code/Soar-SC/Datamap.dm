@@ -1,4 +1,4 @@
-66
+67
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -65,55 +65,57 @@ SOAR_ID 61
 SOAR_ID 60
 LINKED_DATAMAP 64 .
 LINKED_DATAMAP 65 Query-SVS-State.dm
-51
-0 name 6
-0 io 1
-0 operator 39
-8 vesp-gas 29
-39 location 41
-14 object 15
-48 id-dest 49
-25 type 57
-7 building 25
-1 input-link 2
-14 dest 17
-20 type 21
-29 id 32
-59 command 60
-2 resources 8
-35 id 37
-59 result 61
-27 id 33
-0 type 4
-2 units 7
-48 id-object 51
-2 types 34
-8 mineral 27
-25 id 31
-34 type 35
-48 name 50
-0 Query-SVS-State 65
-26 svsobject 55
-2 gas 19
-26 type 58
-20 location 22
-2 total-supplies 23
-0 operator 48
-26 id 30
-0 superstate 5
-39 name 40
-26 idle 46
-7 unit 26
-29 svsobject 53
-39 type 43
-60 extract 62
-3 build 20
-25 svsobject 56
-27 svsobject 52
-35 name 36
-3 move 14
-2 used-supplies 24
-2 minerals 18
-26 carrying 54
-12 type 13
+INT_RANGE 66 0 0
+52
 1 output-link 3
+20 location 22
+8 vesp-gas 29
+2 types 34
+20 type 21
+26 id 30
+1 input-link 2
+0 io 1
+7 unit 26
+0 operator 39
+25 id 31
+26 type 58
+27 id 33
+0 name 6
+59 result 61
+2 gas 19
+7 building 25
+29 svsobject 53
+0 Query-SVS-State 65
+8 mineral 27
+59 command 60
+34 type 35
+25 svsobject 56
+26 carrying 54
+35 name 36
+12 type 13
+2 total-supplies 23
+2 used-supplies 24
+39 name 40
+2 minerals 18
+14 object 15
+48 id-object 51
+2 units 7
+26 svsobject 55
+39 type 43
+0 operator 48
+14 dest 17
+3 move 14
+0 type 4
+48 name 50
+26 idle 46
+39 location 41
+0 superstate 5
+27 svsobject 52
+29 id 32
+60 extract 62
+35 id 37
+3 build 20
+25 type 57
+2 resources 8
+48 id-dest 49
+2 supply-depots 66
