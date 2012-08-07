@@ -662,6 +662,9 @@ void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 		unit = id->CreateIdWME("building");
 
 		test_input_file << "I-units-building:";
+
+		unit->CreateIntWME("can-produce", bw_unit->getType().canProduce());
+		unit->CreateIntWME("full-queue", false);
 	}
 
 	unit->CreateIntWME("id", bw_unit->getID());
@@ -750,6 +753,12 @@ void Soar_Link::delete_unit(int uid) //Delete an existing unit
 
 void Soar_Link::update_units() //Update all player units
 {
+	clock_t time_start = clock();
+	clock_t time_end;
+
+	time_end = clock();
+	cout << "UU-Time (0): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
 	Unitset my_units_new = Broodwar->self()->getUnits();
 
 	Identifier* input_link = agent->GetInputLink();
@@ -765,14 +774,24 @@ void Soar_Link::update_units() //Update all player units
 	else
 		units_id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
 
+	time_end = clock();
+	cout << "UU-Time (1): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
+	int z = 0;
 	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
 	{
-		if ((*it)->isTraining() || !(*it)->isCompleted())
+		time_end = clock();
+		cout << "UU-Time (2-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+		
+		if (!(*it)->isCompleted())
 			continue;
 		else if (my_units.find(*it) == my_units.end())
 			add_unit(*it);
 		else
 		{
+			time_end = clock();
+			cout << "UU-Time (3-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+			
 			Unitset::iterator old_it = my_units.find(*it);
 
 			Unit* new_unit = *it;
@@ -800,12 +819,18 @@ void Soar_Link::update_units() //Update all player units
 			agent->SendSVSInput(svs_command);
 			SDL_mutexV(mu);
 
+			time_end = clock();
+			cout << "UU-Time (4-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
 			if (!new_unit->getType().isBuilding())
 			{
 				Identifier* units = units_id;
 
 				for (int i = 0;i < units->GetNumberChildren();i++)
 				{
+					time_end = clock();
+					cout << "UU-Time (5-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+					
 					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
 
 					WMElement* id = unit->FindByAttribute("id", 0);
@@ -816,6 +841,9 @@ void Soar_Link::update_units() //Update all player units
 
 					if (unit_id == to_change_id)
 					{
+						time_end = clock();
+						cout << "UU-Time (6-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+						
 						WMElement* idle = unit->FindByAttribute("idle", 0);
 						IntElement* idle_int = idle->ConvertToIntElement();
 
@@ -829,12 +857,72 @@ void Soar_Link::update_units() //Update all player units
 						IntElement* constructing_int = constructing->ConvertToIntElement();
 						constructing_int->Update(new_unit->isConstructing());
 						
+						time_end = clock();
+						cout << "UU-Time (7-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
 						break;
 					}
+
+					time_end = clock();
+					cout << "UU-Time (8-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 				}
 			}
+
+			time_end = clock();
+			cout << "UU-Time (9-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
+			if (new_unit->getType().canProduce())
+			{
+				UnitType::set queue = new_unit->getTrainingQueue();
+
+				Identifier* units = units_id;
+
+				for (int i = 0;i < units->GetNumberChildren();i++)
+				{
+					time_end = clock();
+					cout << "UU-Time (10-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
+					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
+
+					WMElement* id = unit->FindByAttribute("id", 0);
+					IntElement* id_int = id->ConvertToIntElement();
+
+					int unit_id = int(id_int->GetValue());
+					int to_change_id = new_unit->getID();
+
+					time_end = clock();
+					cout << "UU-Time (11-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
+					if (unit_id == to_change_id)
+					{
+						time_end = clock();
+						cout << "UU-Time (12-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+						
+						IntElement* full_queue = unit->FindByAttribute("full-queue", 0)->ConvertToIntElement();
+
+						size_t size = queue.size();
+						if (size >= 5)
+							full_queue->Update(true);
+						else
+							full_queue->Update(false);
+
+						time_end = clock();
+						cout << "UU-Time (13-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
+						break;
+					}
+					time_end = clock();
+					cout << "UU-Time (14-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+				}
+			}
+
+			time_end = clock();
+			cout << "UU-Time (15-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 		}
 	}
+
+	time_end = clock();
+	cout << "UU-Time (16-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 }
 
 Unit* Soar_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version

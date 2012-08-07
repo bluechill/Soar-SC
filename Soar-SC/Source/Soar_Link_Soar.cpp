@@ -6,6 +6,8 @@
 
 #include <windows.h> //For windows related functions
 
+#include <ctime>
+
 using namespace BWAPI; //Use namespaces to allow the use of string instead of std::string for example
 using namespace std;
 using namespace sml;
@@ -27,6 +29,9 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
+	clock_t time_start = clock();
+	clock_t time_end;
+
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
@@ -87,7 +92,11 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 				Unit* unit_location = getUnitFromID(location);
 
-				unit_location->train(unit_type);
+				if (!unit_location->train(unit_type))
+				{
+					Error e = Broodwar->getLastError();
+					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
+				}
 			}
 		}
 
@@ -96,11 +105,17 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 	//Update the units and resources
 	SDL_mutexP(mu);
+	time_end = clock();
+	cout << "Time (4): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 	update_units();
+	time_end = clock();
+	cout << "Time (5): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 	update_resources();
+	time_end = clock();
+	cout << "Time (6): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 
 	event_queue.update(); //Then have the events in the queue execute
-	
+
 	SDL_mutexV(mu);
 
 	//test_input_file << "--------------------------------------------------" << endl;

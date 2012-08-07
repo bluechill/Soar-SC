@@ -8,12 +8,12 @@ sp {propose*build-scv
         ^types.type <scv-type>
         ^types.type <command-center>)
    (<command-center> ^name |Terran Command Center|
-                     ^id <command-center-id>)
+                     ^id <command-center-id>
+                     ^full-queue 0)
    (<scv-type> ^name |Terran SCV|
                ^id <type-id>)
    (<b> ^type <command-center-id>
-        ^id <id>
-        ^full-queue 0)
+        ^id <id>)
 -->
    (<s> ^operator <o> +)
    (<o> ^name build-scv
