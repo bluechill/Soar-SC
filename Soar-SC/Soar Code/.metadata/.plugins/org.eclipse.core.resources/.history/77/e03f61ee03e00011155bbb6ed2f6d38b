@@ -1,0 +1,166 @@
+sp {propose*build-supply-depot
+   (state <s> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 99
+        ^units.unit <u>
+        ^types.type <t>
+        ^supply-depots <l> < 9)
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+   (<u> ^type <type-id>
+        ^idle <idle>
+        ^carrying <carrying>
+        ^id <id>)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-supply-depot
+        ^worker <id>
+        ^idle <idle>
+        ^carrying <carrying>
+        ^location <l>)
+}
+
+sp {elaboration*building-supply-depot-better-than-build-scv
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot)
+   (<o2> ^name build-scv)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-supply-depot-better-than-gather-minerals
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+ 
+sp {elaboration*building-supply-depot-idle-better-than-non-idle
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot
+         ^idle 1)
+   (<o2> ^name build-supply-depot
+         ^idle 0)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-supply-depot-non-carrying-better-than-carrying
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot
+         ^carrying 0)
+   (<o2> ^name build-supply-depot
+         ^carrying 1)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*location-to-x-y-0
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 0)
+-->
+   (<o> ^location-x 42
+        ^location-y 47)
+}
+
+sp {elaboration*location-to-x-y-1
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 1)
+-->
+   (<o> ^location-x 45
+        ^location-y 47)
+}
+
+sp {elaboration*location-to-x-y-2
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 2)
+-->
+   (<o> ^location-x 48
+        ^location-y 47)
+}
+
+sp {elaboration*location-to-x-y-3
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 3)
+-->
+   (<o> ^location-x 42
+        ^location-y 49)
+}
+
+sp {elaboration*location-to-x-y-4
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 4)
+-->
+   (<o> ^location-x 45
+        ^location-y 49)
+}
+
+sp {elaboration*location-to-x-y-5
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 5)
+-->
+   (<o> ^location-x 48
+        ^location-y 49)
+}
+
+sp {elaboration*location-to-x-y-6
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 6)
+-->
+   (<o> ^location-x 42
+        ^location-y 51)
+}
+
+sp {elaboration*location-to-x-y-7
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 7)
+-->
+   (<o> ^location-x 45
+        ^location-y 51)
+}
+
+sp {elaboration*location-to-x-y-8
+   (state <s> ^operator <o>)
+   (<o> ^name build-supply-depot
+        ^location 8)
+-->
+   (<o> ^location-x 48
+        ^location-y 51)
+}
+
+sp {apply*build-supply-depot
+   (state <s> ^operator <op>
+              ^io.input-link <i>
+              ^io.output-link <o>)
+   (<op> ^name build-supply-depot
+         ^worker <id>
+         ^location-x <x>
+         ^location-y <y>)
+   (<i> ^types.type <t>
+        ^supply-depots <number>)
+   (<t> ^name |Terran Supply Depot|
+        ^id <type-id>)
+-->
+   (<o> ^build <b>)
+   (<b> ^type <type-id>
+        ^location-x <x>
+        ^location-y <y>
+        ^worker <id>
+        ^cycle <c>)
+   (<s> ^supply-depots <number> -
+        ^supply-depots (+ <number>))
+}

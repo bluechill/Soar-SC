@@ -1,0 +1,15 @@
+source gather-minerals.soar
+source wait.soar
+source build-units.soar
+#source build-supply-depots.soar
+
+#sp {remove*output-commands
+#   (state <s> ^name Soar-SC
+#              ^operator <op>
+#              ^io.output-link <o>)
+#   (<o> ^<attr> <object>)
+#   (<object> ^status complete)
+#-->
+#   (<o> ^<attr> <object> -)
+#   (write |remove*output-commands| (crlf))
+#}

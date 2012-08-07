@@ -1,0 +1,25 @@
+source gather-minerals.soar
+source wait.soar
+source build-units.soar
+source build-supply-depots.soar
+
+sp {apply*increment-cycle-count
+   (state <s> ^name Soar-SC
+              ^operator <op>
+              ^cycle-count <c>)
+-->
+   (write |Cycle Count| <c> | | (+ <c> 1) (crlf))
+   (<s> ^cycle-count <c> -
+        ^cycle-count (+ <c> 1))
+}
+
+sp {remove*output-commands
+   (state <s> ^name Soar-SC
+              ^operator <op>
+              ^io.output-link <o>
+              ^cycle-count <current>)
+   (<o> ^<attr> <object>)
+   (<object> ^cycle <> <current>)
+-->
+   (<o> ^<attr> <object> -)
+}

@@ -1,0 +1,102 @@
+sp {propose*build-supply-depot-idle
+   (state <s> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 99
+        ^units.unit <u>
+        ^types.type <t>)
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+   (<u> ^type <type-id>
+        ^idle 1
+        ^id <id>)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-supply-depot
+        ^worker <id>
+        ^idle 1)
+}
+
+sp {propose*build-supply-depot-non-idle
+   (state <s> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 99
+        ^units.unit <u>
+        ^types.type <t>)
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+   (<u> ^type <type-id>
+        ^carrying 0
+        ^idle 0
+        ^id <id>)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-supply-depot
+        ^worker <id>
+        ^idle 0
+        ^carrying 0)
+}
+
+sp {propose*build-supply-depot-carrying-non-idle
+   (state <s> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 99
+        ^units.unit <u>
+        ^types.type <t>)
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+   (<u> ^type <type-id>
+        ^carrying 1
+        ^idle 0
+        ^id <id>)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-supply-depot
+        ^worker <id>
+        ^carrying 1
+        ^idle 0)
+}
+
+sp {elaboration*building-supply-depot-better-than-build-scv
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot)
+   (<o2> ^name build-scv)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-supply-depot-better-than-gather-minerals
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+ 
+sp {elaboration*building-supply-depot-idle-better-than-non-idle
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot
+         ^idle 1)
+   (<o2> ^name build-supply-depot
+         ^idle 0)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-supply-depot-non-idle-better-than-carrying-non-idle
+   (state <s> ^operator <o1>
+              ^operator <o2>)
+   (<o1> ^name build-supply-depot
+         ^idle 0
+         ^carrying 0)
+   (<o2> ^name build-supply-depot
+         ^idle 0
+         ^carrying 1)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
