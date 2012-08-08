@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="16" version="2.0">
+<workbench progressCount="13" version="2.0">
 <workbenchAdvisor/>
 <window height="874" maximized="true" width="1427" x="0" y="22">
 <fastViewData fastViewLocation="1024"/>
@@ -10,8 +10,8 @@
 <coolItem id="group.file" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="106" y="22"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
-<coolItem id="edu.umich.soar.editor.editors.SoarEditor" itemType="typePlaceholder" x="-1" y="-1"/>
-<coolItem id="edu.umich.soar.editor.editors.datamap.DatamapEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="edu.umich.soar.editor.editors.SoarEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="edu.umich.soar.editor.editors.datamap.DatamapEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="100" y="22"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="62" y="22"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="62" y="22"/>
@@ -28,16 +28,51 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+</presentation>
 </folder>
 </info>
 </editorArea>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="gather-minerals.soar" partName="gather-minerals.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/gather-minerals.soar" title="gather-minerals.soar" tooltip="Soar-SC/Basic-Actions/gather-minerals.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/gather-minerals.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="685" selectionTopPixel="0"/>
+</editor>
+<editor activePart="true" focus="true" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Datamap.dm" partName="Datamap.dm" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Datamap.dm" title="Datamap.dm" tooltip="Soar-SC/Datamap.dm" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Datamap.dm"/>
+</editor>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="build-units.soar" partName="build-units.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-units.soar" title="build-units.soar" tooltip="Soar-SC/Basic-Actions/build-units.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/build-units.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="785" selectionTopPixel="0"/>
+</editor>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="build-supply-depots.soar" partName="build-supply-depots.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-supply-depots.soar" title="build-supply-depots.soar" tooltip="Soar-SC/Basic-Actions/build-supply-depots.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/build-supply-depots.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="715" selectionTopPixel="0"/>
+</editor>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="actions.soar" partName="actions.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar" title="actions.soar" tooltip="Soar-SC/Basic-Actions/actions.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/actions.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="355" selectionTopPixel="0"/>
+</editor>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="intialize-soar-sc.soar" partName="intialize-soar-sc.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/intialize-soar-sc.soar" title="intialize-soar-sc.soar" tooltip="Soar-SC/intialize-soar-sc.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/intialize-soar-sc.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="342" selectionTopPixel="0"/>
+</editor>
+<editor id="edu.umich.soar.editor.editors.SoarEditor" name="wait.soar" partName="wait.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/wait.soar" title="wait.soar" tooltip="Soar-SC/Basic-Actions/wait.soar" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/wait.soar"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="245" selectionTopPixel="0"/>
+</editor>
 </editors>
 <views>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Warnings (2 items)"/>
+<category IMemento.internal.id="Errors (1 item)"/>
 </expanded>
 <columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="120" org.eclipse.ui.ide.resourceField="90" org.eclipse.ui.ide.severityAndDescriptionField="300"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
@@ -45,6 +80,7 @@
 <visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
+<DESCENDING_FIELDS IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 </viewState>
 </view>
 <view id="org.eclipse.jdt.ui.PackageExplorer" partName="Package Explorer">
@@ -82,7 +118,7 @@
 <view id="org.eclipse.jdt.ui.SourceView" partName="Declaration"/>
 <view id="org.eclipse.jdt.ui.JavadocView" partName="Javadoc"/>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="edu.umich.soar.editor.editors.datamap.DatamapEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.jdt.internal.ui.JavaPerspectiveFactory" id="org.eclipse.jdt.ui.JavaPerspective" label="Java"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -193,7 +229,165 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/gather-minerals.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/build-units.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/build-supply-depots.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/actions.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/intialize-soar-sc.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" path="/Soar-SC/Basic-Actions/wait.soar"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" path="/Soar-SC/Datamap.dm"/>
+</editors>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="1907" y="0"/>
+</item>
+<item historyLabel="actions.soar" index="3">
+<position info="not_deleted" x="102" y="0"/>
+</item>
+<item historyLabel="wait.soar" index="5">
+<position info="not_deleted" x="245" y="0"/>
+</item>
+<item historyLabel="actions.soar" index="3">
+<position info="not_deleted" x="102" y="0"/>
+</item>
+<item historyLabel="wait.soar" index="5">
+<position info="not_deleted" x="245" y="0"/>
+</item>
+<item historyLabel="actions.soar" index="3">
+<position info="not_deleted" x="69" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="820" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="1116" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="342" y="0"/>
+</item>
+<item historyLabel="actions.soar" index="3">
+<position info="not_deleted" x="355" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="823" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="1907" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="3072" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="3324" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="3009" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="609" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="510" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="3161" y="15"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="1198" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="789" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="577" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="283" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="822" y="0"/>
+</item>
+<item historyLabel="wait.soar" index="5">
+<position info="not_deleted" x="234" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="283" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="349" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="232" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="339" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="232" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="339" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="611" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="822" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="706" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="726" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="1900" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="682" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="291" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="3667" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="334" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="509" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="610" y="0"/>
+</item>
+<item historyLabel="intialize-soar-sc.soar" index="4">
+<position info="not_deleted" x="342" y="0"/>
+</item>
+<item historyLabel="build-units.soar" index="1">
+<position info="not_deleted" x="785" y="0"/>
+</item>
+<item historyLabel="build-supply-depots.soar" index="2">
+<position info="not_deleted" x="715" y="0"/>
+</item>
+<item historyLabel="actions.soar" index="3">
+<position info="not_deleted" x="355" y="0"/>
+</item>
+<item historyLabel="gather-minerals.soar" index="0">
+<position info="not_deleted" x="685" y="0"/>
+</item>
+<item historyLabel="wait.soar" index="5">
+<position info="not_deleted" x="245" y="0"/>
+</item>
+<item active="true" historyLabel="Datamap.dm" index="6"/>
+</navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
@@ -210,11 +404,20 @@
 </trimLayout>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="Soar-SC_source.soar" tooltip="Soar-SC/Soar-SC/Soar-SC_source.soar">
-<persistable path="/Soar-SC/Soar-SC/Soar-SC_source.soar"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="wait.soar" tooltip="Soar-SC/Basic-Actions/wait.soar">
+<persistable path="/Soar-SC/Basic-Actions/wait.soar"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Query-SVS-State.dm" tooltip="Soar-SC/Query-SVS-State.dm">
-<persistable path="/Soar-SC/Query-SVS-State.dm"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="intialize-soar-sc.soar" tooltip="Soar-SC/intialize-soar-sc.soar">
+<persistable path="/Soar-SC/intialize-soar-sc.soar"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="actions.soar" tooltip="Soar-SC/Basic-Actions/actions.soar">
+<persistable path="/Soar-SC/Basic-Actions/actions.soar"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="build-supply-depots.soar" tooltip="Soar-SC/Basic-Actions/build-supply-depots.soar">
+<persistable path="/Soar-SC/Basic-Actions/build-supply-depots.soar"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="build-units.soar" tooltip="Soar-SC/Basic-Actions/build-units.soar">
+<persistable path="/Soar-SC/Basic-Actions/build-units.soar"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Datamap.dm" tooltip="Soar-SC/Datamap.dm">
 <persistable path="/Soar-SC/Datamap.dm"/>
@@ -222,23 +425,26 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="gather-minerals.soar" tooltip="Soar-SC/Basic-Actions/gather-minerals.soar">
 <persistable path="/Soar-SC/Basic-Actions/gather-minerals.soar"/>
 </file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Datamap-2.dm" tooltip="Soar-SC/Datamap-2.dm">
+<persistable path="/Soar-SC/Datamap-2.dm"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Datamap.dm" tooltip="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar-SC-bak/Datamap.dm">
+<persistable uri="file:/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar-SC-bak/Datamap.dm"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="intialize-soar-sc.soar" tooltip="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar-SC-bak/intialize-soar-sc.soar">
+<persistable uri="file:/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar-SC-bak/intialize-soar-sc.soar"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="Soar-SC_source.soar" tooltip="Soar-SC/Soar-SC/Soar-SC_source.soar">
+<persistable path="/Soar-SC/Soar-SC/Soar-SC_source.soar"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Query-SVS-State.dm" tooltip="Soar-SC/Query-SVS-State.dm">
+<persistable path="/Soar-SC/Query-SVS-State.dm"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Operator-Tie-Query-SVS-Datamap.dm" tooltip="Soar-SC/Operator-Tie-Query-SVS-Datamap.dm">
 <persistable path="/Soar-SC/Operator-Tie-Query-SVS-Datamap.dm"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.datamap.DatamapEditor" name="Top-State-Datamap.dm" tooltip="Soar-SC/Top-State-Datamap.dm">
 <persistable path="/Soar-SC/Top-State-Datamap.dm"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="intialize-soar-sc.soar" tooltip="Soar-SC/intialize-soar-sc.soar">
-<persistable path="/Soar-SC/intialize-soar-sc.soar"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="build-units.soar" tooltip="Soar-SC/Basic-Actions/build-units.soar">
-<persistable path="/Soar-SC/Basic-Actions/build-units.soar"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="actions.soar" tooltip="Soar-SC/Basic-Actions/actions.soar">
-<persistable path="/Soar-SC/Basic-Actions/actions.soar"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="wait.soar" tooltip="Soar-SC/Basic-Actions/wait.soar">
-<persistable path="/Soar-SC/Basic-Actions/wait.soar"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="edu.umich.soar.editor.editors.SoarEditor" name="Soar-SC.soar" tooltip="Soar-SC/Soar-SC.soar">
 <persistable path="/Soar-SC/Soar-SC.soar"/>

@@ -120,6 +120,7 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClCompile Include="Source\Soar_Link_Global.cpp" />
     <ClCompile Include="Source\Soar_Link_Misc.cpp" />
     <ClCompile Include="Source\Soar_Link_Soar.cpp" />
+    <ClCompile Include="Source\Soar_Unit.cpp" />
     <ClCompile Include="Source\Terrain-Analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +370,7 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClInclude Include="Source\Events.h" />
     <ClInclude Include="Source\Soar_Console.h" />
     <ClInclude Include="Source\Soar_Link.h" />
+    <ClInclude Include="Source\Soar_Unit.h" />
     <ClInclude Include="Source\Terrain-Analyzer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

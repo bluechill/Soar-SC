@@ -20,6 +20,8 @@
 
 #include "Events.h" //For the event queuee
 
+#include "Soar_Unit.h"
+
 // Remember not to use "Broodwar" in any global class constructor!
 
 class Soar_Link : public BWAPI::AIModule //The AI class.  Inherits from AIModule to use BWAPI functions.
@@ -52,7 +54,7 @@ public:
 	void delete_resource(int id); //Delete a resource from SVS and the input link
 
 	void add_unit(BWAPI::Unit* unit); //Add a unit to the input link and SVS
-	void delete_unit(int id); //Delete a unit from the input link and SVS
+	void delete_unit(BWAPI::Unit* unit); //Delete a unit from the input link and SVS
 
 	void update_resources(); //Update the resources of the player (AI) (Agent)
 	void update_units(); //Update the units of the player (AI) (Agent) (and eventually visible enemy positions etc.)
@@ -82,8 +84,8 @@ private:
 
 	std::ofstream test_input_file; //File for test input to SVS
 
-	BWAPI::Unitset my_units; //A set containing all the units of the player (AI) (Agent)
-	BWAPI::Unitset enemy_units; //A set for containing all the enemy units, currently not used
+	std::map<BWAPI::Unit*, Soar_Unit*> my_units; //A set containing all the units of the player (AI) (Agent)
+	std::map<BWAPI::Unit*, Soar_Unit*> enemy_units; //A set for containing all the enemy units, currently not used
 
 	BWAPI::Unitset minerals; //A set for containing all the minerals seen
 	BWAPI::Unitset vesp_gas; //A set for containing all the vesp gas geysers seen

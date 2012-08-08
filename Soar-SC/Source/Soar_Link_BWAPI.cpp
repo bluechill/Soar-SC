@@ -407,9 +407,9 @@ void Soar_Link::onUnitDestroy(BWAPI::Unit* unit)
 		return;
 	}
 
-	if ((it = my_units.find(unit)) != my_units.end()) //Check if it's a unit
+	if (my_units.find(unit) != my_units.end()) //Check if it's a unit
 	{ //It is so delete it using delete_unit
-		delete_unit(unit->getID());
+		delete_unit(unit);
 		return;
 	}
 }
@@ -627,302 +627,49 @@ void Soar_Link::update_resources() //Update the resources
 
 void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 {
-	Identifier* input_link = agent->GetInputLink();
+	Soar_Unit* soar_unit = new Soar_Unit(agent, bw_unit);
 
-	Identifier* id;
-	if (!input_link->FindByAttribute("units", 0))
-	{
-		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
-		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
-
-		id = input_link->CreateIdWME("units");
-	}
-	else
-		id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-	Identifier* unit;
-
-	if (!bw_unit->getType().isBuilding()) //Handle building type vs unit
-	{
-		unit = id->CreateIdWME("unit");
-
-		test_input_file << "I-units-unit:";
-
-		unit->CreateIntWME("idle", bw_unit->isIdle());
-		test_input_file << " ^idle " << bw_unit->isIdle();
-
-		unit->CreateIntWME("carrying", (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp()));
-		test_input_file << " ^carring " << (bw_unit->isCarryingGas() || bw_unit->isCarryingMinerals() || bw_unit->getPowerUp());
-
-		unit->CreateIntWME("constructing", bw_unit->isConstructing());
-		test_input_file << " ^constructing " << bw_unit->isConstructing();
-	}
-	else
-	{
-		unit = id->CreateIdWME("building");
-
-		test_input_file << "I-units-building:";
-
-		unit->CreateIntWME("can-produce", bw_unit->getType().canProduce());
-		unit->CreateIntWME("full-queue", false);
-	}
-
-	unit->CreateIntWME("id", bw_unit->getID());
-	test_input_file << " ^id " << bw_unit->getID();
-
-	unit->CreateIntWME("type", bw_unit->getType().getID());
-	test_input_file << " ^type " << bw_unit->getType().getID();
-
-	string svs_object_id = bw_unit->getType().getName();
-	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
-
-	stringstream ss;
-	ss << bw_unit->getID();
-	svs_object_id += ss.str();
-	ss.str("");
-
-	int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
-
-	//Flip the point so "north" isn't negative y
-	ss << ((float)bw_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)bw_unit->getTop() + size_y)/32.0f, false) << " 0";
-	string position = ss.str();
-	ss.str("");
-
-	ss << ((float)(bw_unit->getType().dimensionLeft() + bw_unit->getType().dimensionRight() + 1))/32.0f << " " << ((float)(size_y))/32.0f << " 1";
-	string size = ss.str();
-	ss.str("");
-
-	string svs_command = "a " + svs_object_id + " world v " + unit_box_verts + " p " + position + " s " + size + " r 0 0 0";
-	//Broodwar->printf("%s", svs_command.c_str());
-	cout << svs_command << endl;
-
-	agent->SendSVSInput(svs_command);
-
-	unit->CreateStringWME("svsobject", svs_object_id.c_str());
-
-	test_input_file << " ^svsobject " << svs_object_id << endl;
-
-	test_input_file << "SVS-Actual: " << svs_command << endl;
-
-	my_units.insert(bw_unit);
+	my_units[bw_unit] = soar_unit;
 }
 
-void Soar_Link::delete_unit(int uid) //Delete an existing unit
+void Soar_Link::delete_unit(BWAPI::Unit* unit) //Delete an existing unit
 {
-	Identifier* input_link = agent->GetInputLink();
-	Identifier* id;
+	map<Unit*, Soar_Unit*>::iterator it = my_units.find(unit);
 
-	if (!input_link->FindByAttribute("units", 0))
-	{
-		cout << "ERROR: No 'units' identifier on the input link! Creating...." << endl;
-
-		id = input_link->CreateIdWME("units");
-	}
-	else
-	{
-		id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-		for (int j = 0;j < id->GetNumberChildren();j++)
-		{
-			Identifier* unit;
-			if (!id->GetChild(j)->IsIdentifier())
-				continue;
-			else
-				unit = id->GetChild(j)->ConvertToIdentifier();
-
-			if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == uid)
-			{
-				string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
-
-				string svs_command = "d " + svs_object_id;
-
-				test_input_file << "SVS-Actual: " << svs_command << endl;
-
-				event_queue.add_event(Soar_Event(svs_command, true));
-				event_queue.add_event(Soar_Event(id->GetChild(j)));
-
-				break;
-			}
-		}
-	}
+	if (it == my_units.end())
+		return;
 	
-	SDL_mutexP(mu);
-	my_units.erase(my_units.find(getUnitFromID(uid)));
-	SDL_mutexV(mu);
+	it->second->delete_unit(&event_queue, agent);
+
+	delete it->second;
+
+	my_units.erase(it);
 }
 
 void Soar_Link::update_units() //Update all player units
 {
 	clock_t time_start = clock();
-	clock_t time_end;
 
-	time_end = clock();
-	cout << "UU-Time (0): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+	Unitset units = Broodwar->self()->getUnits();
 
-	Unitset my_units_new = Broodwar->self()->getUnits();
-
-	Identifier* input_link = agent->GetInputLink();
-
-	Identifier* units_id;
-	if (!input_link->FindByAttribute("units", 0))
+	for (Unitset::iterator it = units.begin();it != units.end();it++)
 	{
-		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
-		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+		Unit* unit = (*it);
 
-		units_id = input_link->CreateIdWME("units");
-	}
-	else
-		units_id = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
-
-	time_end = clock();
-	cout << "UU-Time (1): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-	int z = 0;
-	for (Unitset::iterator it = my_units_new.begin();it != my_units_new.end();it++)
-	{
-		time_end = clock();
-		cout << "UU-Time (2-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-		
-		if (!(*it)->isCompleted())
+		if (!unit->isCompleted())
 			continue;
-		else if (my_units.find(*it) == my_units.end())
-			add_unit(*it);
+
+		Soar_Unit* soar_unit = my_units[unit];
+
+		if (soar_unit == NULL)
+			add_unit(unit);
 		else
-		{
-			time_end = clock();
-			cout << "UU-Time (3-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-			
-			Unitset::iterator old_it = my_units.find(*it);
-
-			Unit* new_unit = *it;
-			Unit* old_unit = *old_it;
-
-			int size_y = new_unit->getType().dimensionUp() + new_unit->getType().dimensionDown() + 1;
-
-			stringstream ss;
-			ss << ((float)new_unit->getLeft()/32.0f) << " " << flip_one_d_point(((float)new_unit->getTop() + size_y)/32.0f, false) << " 0";
-			string position = ss.str();
-			ss.str("");
-
-			string svs_object_id = new_unit->getType().getName();
-			svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end());
-
-			ss.str("");
-			ss << new_unit->getID();
-			svs_object_id += ss.str();	
-			ss.str("");
-
-			string svs_command = "c " + svs_object_id + " p " + position;
-			test_input_file << "SVS-Actual: " << svs_command << endl;
-
-			SDL_mutexP(mu);
-			agent->SendSVSInput(svs_command);
-			SDL_mutexV(mu);
-
-			time_end = clock();
-			cout << "UU-Time (4-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-			if (!new_unit->getType().isBuilding())
-			{
-				Identifier* units = units_id;
-
-				for (int i = 0;i < units->GetNumberChildren();i++)
-				{
-					time_end = clock();
-					cout << "UU-Time (5-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-					
-					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
-
-					WMElement* id = unit->FindByAttribute("id", 0);
-					IntElement* id_int = id->ConvertToIntElement();
-
-					int unit_id = int(id_int->GetValue());
-					int to_change_id = new_unit->getID();
-
-					if (unit_id == to_change_id)
-					{
-						time_end = clock();
-						cout << "UU-Time (6-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-						
-						WMElement* idle = unit->FindByAttribute("idle", 0);
-						IntElement* idle_int = idle->ConvertToIntElement();
-
-						idle_int->Update(new_unit->isIdle());
-
-						WMElement* carrying = unit->FindByAttribute("carrying", 0);
-						IntElement* carrying_int = carrying->ConvertToIntElement();
-						carrying_int->Update((new_unit->isCarryingGas() || new_unit->isCarryingMinerals() || new_unit->getPowerUp()));
-
-						WMElement* constructing = unit->FindByAttribute("constructing", 0);
-						IntElement* constructing_int = constructing->ConvertToIntElement();
-						constructing_int->Update(new_unit->isConstructing());
-						
-						time_end = clock();
-						cout << "UU-Time (7-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-						break;
-					}
-
-					time_end = clock();
-					cout << "UU-Time (8-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-				}
-			}
-
-			time_end = clock();
-			cout << "UU-Time (9-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-			if (new_unit->getType().canProduce())
-			{
-				UnitType::set queue = new_unit->getTrainingQueue();
-
-				Identifier* units = units_id;
-
-				for (int i = 0;i < units->GetNumberChildren();i++)
-				{
-					time_end = clock();
-					cout << "UU-Time (10-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-					Identifier* unit = units->GetChild(i)->ConvertToIdentifier();
-
-					WMElement* id = unit->FindByAttribute("id", 0);
-					IntElement* id_int = id->ConvertToIntElement();
-
-					int unit_id = int(id_int->GetValue());
-					int to_change_id = new_unit->getID();
-
-					time_end = clock();
-					cout << "UU-Time (11-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-					if (unit_id == to_change_id)
-					{
-						time_end = clock();
-						cout << "UU-Time (12-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-						
-						IntElement* full_queue = unit->FindByAttribute("full-queue", 0)->ConvertToIntElement();
-
-						size_t size = queue.size();
-						if (size >= 5)
-							full_queue->Update(true);
-						else
-							full_queue->Update(false);
-
-						time_end = clock();
-						cout << "UU-Time (13-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-
-						break;
-					}
-					time_end = clock();
-					cout << "UU-Time (14-" << z << "-" << i << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-				}
-			}
-
-			time_end = clock();
-			cout << "UU-Time (15-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
-		}
+			soar_unit->update(agent, unit);
 	}
 
-	time_end = clock();
-	cout << "UU-Time (16-" << z << "): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+	clock_t time_end = clock();
+
+	cout << "UU-Time: " << (float(time_end) - float(time_start)) << endl;
 }
 
 Unit* Soar_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version
