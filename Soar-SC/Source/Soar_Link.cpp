@@ -26,7 +26,8 @@ Soar_Link::Soar_Link() //Constructor for the Soar Link class
 
 	mu = SDL_CreateMutex(); //Create a new mutex to prevent simultanous access to shared objects
 	
-	console = new Soar_Console(&event_queue); //Create a new soar console with a pointer to the event queue
+	//console = new Soar_Console(&event_queue); //Create a new soar console with a pointer to the event queue
+	console = NULL;
 
 	event_queue.set_console(console); //Set the event queue pointer to the soar console pointer
 
@@ -49,5 +50,6 @@ Soar_Link::~Soar_Link() //Deconstructor
 	cout.rdbuf(cout_orig_buffer); //Redirect the cout buffer back to prevent errors after deallocation
 	cerr.rdbuf(cerr_orig_buffer); //Do the same for the cerr buffer
 
-	delete console; //Then dealloc the console
+	if (console != NULL)
+		delete console; //Then dealloc the console
 }

@@ -6,7 +6,9 @@
 
 #include <windows.h> //For windows related functions
 
-#include <ctime>
+#include <time.h>
+
+#include "SDL/SDL.h"
 
 using namespace BWAPI; //Use namespaces to allow the use of string instead of std::string for example
 using namespace std;
@@ -14,6 +16,11 @@ using namespace sml;
 
 int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
+	int error = SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
+
+	if (error != 0)
+		cerr << "Thread Priority Error: " << SDL_GetError() << endl;
+
 	update_units();	
 	update_resources();
 
@@ -29,9 +36,6 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	clock_t time_start = clock();
-	clock_t time_end;
-
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
@@ -49,7 +53,19 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			Unit* dest = getUnitFromID(destination);
 
 			if (unit != NULL && dest != NULL)
-				unit->rightClick(dest); //Execute move command in starcraft
+			{
+				if (!unit->rightClick(dest)) //Execute move command in starcraft
+				{
+					Error e = Broodwar->getLastError();
+					cerr << "Error (BWAPI) (RightClick-" << dest->getID() << "): " << e.toString() << endl;
+
+					output_command->AddStatusError();
+				}
+				else
+					output_command->AddStatusComplete();
+			}
+			else
+				output_command->AddStatusError();
 		}
 		else if (name == "build") //Build command
 		{
@@ -84,6 +100,15 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				{
 					Error e = Broodwar->getLastError();
 					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
+					output_command->AddStatusError();
+				}
+				else
+				{
+					Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
+					build->type = unit_type;
+					build->build_id = output_command;
+
+					my_units[worker]->will_build(build);
 				}
 			}
 			else
@@ -96,23 +121,21 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				{
 					Error e = Broodwar->getLastError();
 					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
+
+					output_command->AddStatusError();
 				}
+				else
+					output_command->AddStatusComplete();
 			}
 		}
-
-		output_command->AddStatusComplete();
 	}
 
 	//Update the units and resources
 	SDL_mutexP(mu);
-	time_end = clock();
-	cout << "Time (4): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
 	update_units();
-	time_end = clock();
-	cout << "Time (5): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+
 	update_resources();
-	time_end = clock();
-	cout << "Time (6): " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 
 	event_queue.update(); //Then have the events in the queue execute
 
@@ -124,7 +147,8 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
 {
 	string output(m);
-	console->recieve_input(output);
+	if (console != NULL)
+		console->recieve_input(output);
 }
 
 void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase) //Handler for handling misc stuff, at this point handles run starts and stops

@@ -7,6 +7,8 @@
 
 #include <string> //For std::string
 
+#include "SDL/SDL.h"
+
 using namespace std; //Say that we're using the standard namespace so we don't have to do std::string and can just type string
 
 Events::Events(Soar_Console* console, Soar_Link* link) //The constructor of the event queue
@@ -36,7 +38,7 @@ Events::Events(Soar_Console* console, Soar_Link* link) //The constructor of the 
 
 	agent = NULL; //Set our agent to NULL
 
-	events_thread = SDL_CreateThread(events_global_thread, this); //Spawn the event queue thread
+	events_thread = SDL_CreateThread(events_global_thread, "Events Thread", this); //Spawn the event queue thread
 }
 
 Events::~Events() //Dealloc the class
@@ -72,7 +74,8 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 			}
 		case Soar_Event::Console_Input: //If it's Console Input
 			{
-				console->recieve_input(*e.get_command()); //"echo" the command to the console
+				if (console != NULL)
+					console->recieve_input(*e.get_command()); //"echo" the command to the console
 
 				if (e.get_command()->find("run") == 0 || e.get_command()->find("time") == 0) //Check if it's a run command or a time command
 				{
@@ -80,12 +83,14 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 					cmd->a = agent; //Set the agent for the thread
 					cmd->command = *e.get_command(); //Set the command for the thread
 
-					SDL_CreateThread(soar_command_thread, cmd); //Create a thread to execute the run command.  A run command never returns until the run stops.  This means that unless it's called from a seperate thread we will never be able to get info about the agent or stop the agent until it stops on it's own.
+					SDL_CreateThread(soar_command_thread, "Soar Run Thread", cmd); //Create a thread to execute the run command.  A run command never returns until the run stops.  This means that unless it's called from a seperate thread we will never be able to get info about the agent or stop the agent until it stops on it's own.
 				}
 				else //Otherwise
 				{
 					string output = agent->ExecuteCommandLine(e.get_command()->c_str()); //Execute it now
-					console->recieve_input(output); //And then send the output to the console
+					
+					if (console != NULL)
+						console->recieve_input(output); //And then send the output to the console
 				}
 
 				break; //Then break

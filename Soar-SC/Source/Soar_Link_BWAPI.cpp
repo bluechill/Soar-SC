@@ -282,7 +282,7 @@ void Soar_Link::onStart() //The "real" constructor in that this does the real wo
 	analyzer->analyze(); //Start analyzing the terrain
 
 	//Create the initial soar runner thread
-	soar_thread = SDL_CreateThread(thread_runner_soar, this);
+	soar_thread = SDL_CreateThread(thread_runner_soar, "Soar Runner", this);
 	if (!soar_thread) //Check to make sure the thread exists
 	{ //It doesn't so tell the user
 		Broodwar->printf("Soar: Unable to create soar thread!");
@@ -648,28 +648,35 @@ void Soar_Link::delete_unit(BWAPI::Unit* unit) //Delete an existing unit
 
 void Soar_Link::update_units() //Update all player units
 {
-	clock_t time_start = clock();
+	clock_t start = clock();
 
 	Unitset units = Broodwar->self()->getUnits();
 
+	cout << "Update Units Time (0): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+
 	for (Unitset::iterator it = units.begin();it != units.end();it++)
 	{
+		cout << "Update Units Time - Loop (0): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
 		Unit* unit = (*it);
 
 		if (!unit->isCompleted())
 			continue;
 
+		cout << "Update Units Time - Loop (1): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+
 		Soar_Unit* soar_unit = my_units[unit];
+
+		cout << "Update Units Time - Loop (2): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
 
 		if (soar_unit == NULL)
 			add_unit(unit);
 		else
-			soar_unit->update(agent, unit);
+			soar_unit->update(agent);
+
+		cout << "Update Units Time - Loop (3): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
 	}
 
-	clock_t time_end = clock();
-
-	cout << "UU-Time: " << (float(time_end) - float(time_start)) << endl;
+	cout << "Update Units Time (1): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
 }
 
 Unit* Soar_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version

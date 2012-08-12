@@ -11,19 +11,21 @@ namespace BWAPI { Game* Broodwar; } //Global variable for the BWAPI link
 
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved ) //The equivilent of the int main() in a standard program.  Called when the dll is injected
 {
-  switch (ul_reason_for_call) //Check for the reason of the function call
-  {
-  case DLL_PROCESS_ATTACH: //When we are attached to the process
-    BWAPI::BWAPI_init(); //Initialize BWAPI
-    break; //Then break
-  case DLL_PROCESS_DETACH: //Do nothing when we detach, nothing to do.
-    break;
-  }
-  return TRUE; //Return that we were successful
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
+	switch (ul_reason_for_call) //Check for the reason of the function call
+	{
+	case DLL_PROCESS_ATTACH: //When we are attached to the process
+		BWAPI::BWAPI_init(); //Initialize BWAPI
+		break; //Then break
+	case DLL_PROCESS_DETACH: //Do nothing when we detach, nothing to do.
+		break;
+	}
+	return TRUE; //Return that we were successful
 }
 
- extern "C" __declspec(dllexport) BWAPI::AIModule* newAIModule(BWAPI::Game* game) //Called when BWAPI is initialized
+extern "C" __declspec(dllexport) BWAPI::AIModule* newAIModule(BWAPI::Game* game) //Called when BWAPI is initialized
 {
-  BWAPI::Broodwar = game; //Set the global variable
-  return new Soar_Link(); //Create an instance of the AI class
+	BWAPI::Broodwar = game; //Set the global variable
+	return new Soar_Link(); //Create an instance of the AI class
 }

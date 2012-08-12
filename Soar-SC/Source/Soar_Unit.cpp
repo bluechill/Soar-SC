@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 
+#include <ctime>
+
 using namespace BWAPI;
 using namespace std;
 
@@ -14,6 +16,8 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit)
 	using namespace sml;
 
 	deleted = false;
+
+	this->unit = unit;
 
 	//Variable used a lot for conversion of ints to strings and strings to ints
 	stringstream ss;
@@ -24,7 +28,16 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit)
 	//Set the main booleans
 	idle = unit->isIdle();
 	carrying = (unit->isCarryingGas() || unit->isCarryingMinerals() || unit->getPowerUp());
-	constructing = unit->isConstructing();
+	constructing = -1;
+
+	if (unit->isConstructing())
+	{
+		Unit* unit_building = unit->getBuildUnit();
+		if (unit_building != NULL)
+		{
+			constructing = unit_building->getType().getID();
+		}
+	}
 
 	//Set the type
 	type = unit->getType();
@@ -91,7 +104,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit)
 Soar_Unit::~Soar_Unit()
 {}
 
-void Soar_Unit::update(sml::Agent* agent, BWAPI::Unit* unit)
+void Soar_Unit::update(sml::Agent* agent)
 {
 	using namespace sml;
 
@@ -133,7 +146,17 @@ void Soar_Unit::update(sml::Agent* agent, BWAPI::Unit* unit)
 		carrying_int->Update(carrying);
 	}
 
-	bool constructing = unit->isConstructing();
+	int constructing = -1;
+
+	if (unit->isConstructing())
+	{
+		Unit* unit_building = unit->getBuildUnit();
+		if (unit_building != NULL)
+		{
+			constructing = unit_building->getType().getID();
+		}
+	}
+	
 	if (this->constructing != constructing)
 	{
 		this->constructing = constructing;
@@ -149,6 +172,17 @@ void Soar_Unit::update(sml::Agent* agent, BWAPI::Unit* unit)
 
 		IntElement* constructing_int = unit_id->FindByAttribute("constructing", 0)->ConvertToIntElement();
 		constructing_int->Update(constructing);
+
+		if (build)
+		{
+			if (build->type.getID() == constructing)
+				build->build_id->AddStatusComplete();
+			else
+				build->build_id->AddStatusError();
+
+			delete build;
+			build = NULL;
+		}
 	}
 
 	if (can_produce)
@@ -194,12 +228,20 @@ void Soar_Unit::update(sml::Agent* agent, BWAPI::Unit* unit)
 			return;
 		}
 
+
 		stringstream ss;
 		ss << pos.x << " " << pos.y << " 0";
 		string position = ss.str();
 
 		string svs_command = "c " + svsobject_id + " p " + position;
+
+		clock_t time_start = clock();
+
 		agent->SendSVSInput(svs_command);
+
+		clock_t time_end = clock();
+
+		cout << "SVS Position change time: " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
 	}
 }
 
@@ -264,4 +306,12 @@ void Soar_Unit::delete_unit(Events *event_queue, sml::Agent* agent)
 
 	event_queue->add_event(Soar_Event(svs_command, true));
 	event_queue->add_event(Soar_Event(unit));
+}
+
+void Soar_Unit::will_build(build_struct* build)
+{
+	if (this->build == NULL || build == NULL)
+		return;
+
+	this->build = build;
 }

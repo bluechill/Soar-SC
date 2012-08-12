@@ -11,7 +11,7 @@ sp {propose*gather-minerals
    (<u> ^type <type-id>
         ^idle 1
         ^id <id-o>
-        ^constructing 0)
+        ^constructing -1)
 -->
    (<s> ^operator <o> +)
    (<o> ^name gather-minerals

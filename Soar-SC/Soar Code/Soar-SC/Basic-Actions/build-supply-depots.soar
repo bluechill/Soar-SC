@@ -23,9 +23,26 @@ sp {propose*build-supply-depot
 
 sp {elaboration*remove-build-supply-depot-operator-if-already-building
    (state <s> ^operator <op> +
-              ^io.input-link.units.unit <u>)
+              ^io.input-link <i>)
+   (<i> ^units.unit <u>
+        ^types.type <t>)
    (<op> ^name build-supply-depot)
-   (<u> ^constructing 1)
+   (<t> ^name |Terran Supply Depot|
+        ^id <type-id>)
+   (<u> ^constructing <type-id>)
+-->
+   (<s> ^operator <op> -)
+}
+
+sp {elaboration*remove-build-supply-depot-operator-if-not-yet-building-but-will
+   (state <s> ^operator <op> +
+              ^io.output-link.build <b>
+              ^io.input-link.types.type <t>)
+   (<t> ^name |Terran Supply Depot|
+        ^id <type-id>)
+   (<b> ^type <type-id>
+       -^status)
+   (<op> ^name build-supply-depot)
 -->
    (<s> ^operator <op> -)
 }
@@ -44,6 +61,15 @@ sp {elaboration*building-supply-depot-better-than-gather-minerals
               ^operator <o2> +)
    (<o1> ^name build-supply-depot)
    (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-supply-depot-better-than-build-barracks
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-supply-depot)
+   (<o2> ^name build-barracks)
 -->
    (<s> ^operator <o1> > <o2>)
 }
@@ -70,7 +96,7 @@ sp {elaboration*building-supply-depot-non-carrying-better-than-carrying
    (<s> ^operator <o1> > <o2>)
 }
 
-sp {elaboration*location-to-x-y-0
+sp {elaboration*supply-depots*location-to-x-y-0
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 0)
@@ -79,7 +105,7 @@ sp {elaboration*location-to-x-y-0
         ^location-y 47)
 }
 
-sp {elaboration*location-to-x-y-1
+sp {elaboration*supply-depots*location-to-x-y-1
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 1)
@@ -88,7 +114,7 @@ sp {elaboration*location-to-x-y-1
         ^location-y 47)
 }
 
-sp {elaboration*location-to-x-y-2
+sp {elaboration*supply-depots*location-to-x-y-2
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 2)
@@ -97,7 +123,7 @@ sp {elaboration*location-to-x-y-2
         ^location-y 47)
 }
 
-sp {elaboration*location-to-x-y-3
+sp {elaboration*supply-depots*location-to-x-y-3
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 3)
@@ -106,7 +132,7 @@ sp {elaboration*location-to-x-y-3
         ^location-y 49)
 }
 
-sp {elaboration*location-to-x-y-4
+sp {elaboration*supply-depots*location-to-x-y-4
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 4)
@@ -115,7 +141,7 @@ sp {elaboration*location-to-x-y-4
         ^location-y 49)
 }
 
-sp {elaboration*location-to-x-y-5
+sp {elaboration*supply-depots*location-to-x-y-5
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 5)
@@ -124,7 +150,7 @@ sp {elaboration*location-to-x-y-5
         ^location-y 49)
 }
 
-sp {elaboration*location-to-x-y-6
+sp {elaboration*supply-depots*location-to-x-y-6
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 6)
@@ -133,7 +159,7 @@ sp {elaboration*location-to-x-y-6
         ^location-y 51)
 }
 
-sp {elaboration*location-to-x-y-7
+sp {elaboration*supply-depots*location-to-x-y-7
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 7)
@@ -142,7 +168,7 @@ sp {elaboration*location-to-x-y-7
         ^location-y 51)
 }
 
-sp {elaboration*location-to-x-y-8
+sp {elaboration*supply-depots*location-to-x-y-8
    (state <s> ^operator <o>)
    (<o> ^name build-supply-depot
         ^location 8)

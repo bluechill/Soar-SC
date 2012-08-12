@@ -12,5 +12,6 @@ sp {apply*initialize-soar-sc
               ^io.input-link <i>)
 -->
    (<s> ^name Soar-SC)
-   (<i> ^supply-depots 0)
+   (<i> ^supply-depots 0
+        ^barracks 0)
 }

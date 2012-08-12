@@ -15,18 +15,27 @@ public:
 
 	void delete_unit(Events *event_queue, sml::Agent* agent);
 
-	void update(sml::Agent* agent, BWAPI::Unit* unit);
+	void update(sml::Agent* agent);
 
 	const int get_id();
 
+	typedef struct {
+		sml::Identifier* build_id;
+		BWAPI::UnitType type;
+	} build_struct;
+
+	void will_build(build_struct* build);
+
 private:
+	BWAPI::Unit* unit;
+
 	int id;
 
 	bool building;
 
 	bool idle;
 	bool carrying;
-	bool constructing;
+	int constructing;
 
 	bool can_produce;
 	bool full_queue;
@@ -47,6 +56,8 @@ private:
 	sml::Identifier* get_unit_identifier(sml::Agent* agent, bool create_unit = false);
 
 	bool deleted;
+
+	build_struct* build;
 };
 
 #endif
