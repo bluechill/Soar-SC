@@ -38,7 +38,7 @@ Events::Events(Soar_Console* console, Soar_Link* link) //The constructor of the 
 
 	agent = NULL; //Set our agent to NULL
 
-	events_thread = SDL_CreateThread(events_global_thread, "Events Thread", this); //Spawn the event queue thread
+	events_thread = SDL_CreateThread(events_global_thread, this); //Spawn the event queue thread
 }
 
 Events::~Events() //Dealloc the class
@@ -83,7 +83,7 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 					cmd->a = agent; //Set the agent for the thread
 					cmd->command = *e.get_command(); //Set the command for the thread
 
-					SDL_CreateThread(soar_command_thread, "Soar Run Thread", cmd); //Create a thread to execute the run command.  A run command never returns until the run stops.  This means that unless it's called from a seperate thread we will never be able to get info about the agent or stop the agent until it stops on it's own.
+					SDL_CreateThread(soar_command_thread, cmd); //Create a thread to execute the run command.  A run command never returns until the run stops.  This means that unless it's called from a seperate thread we will never be able to get info about the agent or stop the agent until it stops on it's own.
 				}
 				else //Otherwise
 				{

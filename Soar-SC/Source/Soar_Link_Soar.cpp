@@ -16,10 +16,7 @@ using namespace sml;
 
 int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
-	int error = SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
-
-	if (error != 0)
-		cerr << "Thread Priority Error: " << SDL_GetError() << endl;
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 	update_units();	
 	update_resources();

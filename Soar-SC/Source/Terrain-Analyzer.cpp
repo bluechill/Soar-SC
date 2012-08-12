@@ -47,7 +47,7 @@ void TerrainAnalyzer::analyze() //Main analyzer function, just creates a thread 
 	if (!out.is_open())
 		return;
 
-	thread = SDL_CreateThread(thread_runner, "Terrain Analyzer", this);
+	thread = SDL_CreateThread(thread_runner, this);
 }
 
 bool TerrainAnalyzer::rectangle_contains(const int x,const int y,vector<SVS_Rectangle> &rectangles) //Check whether a rectangle contains the given point

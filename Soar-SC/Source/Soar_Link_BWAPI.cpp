@@ -282,7 +282,7 @@ void Soar_Link::onStart() //The "real" constructor in that this does the real wo
 	analyzer->analyze(); //Start analyzing the terrain
 
 	//Create the initial soar runner thread
-	soar_thread = SDL_CreateThread(thread_runner_soar, "Soar Runner", this);
+	soar_thread = SDL_CreateThread(thread_runner_soar, this);
 	if (!soar_thread) //Check to make sure the thread exists
 	{ //It doesn't so tell the user
 		Broodwar->printf("Soar: Unable to create soar thread!");

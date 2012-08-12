@@ -181,7 +181,7 @@ Soar_Console::Soar_Console(Events* event_queue) //Constructor for the soar conso
 
 	lines = 0; //Set the number of lines output to 0
 
-	console_thread = SDL_CreateThread(console_thread_function, "Console Thread", NULL); //Create a new thread to handle the messages send from and to the window
+	console_thread = SDL_CreateThread(console_thread_function, NULL); //Create a new thread to handle the messages send from and to the window
 }
 
 Soar_Console::~Soar_Console() //Deconstructor
