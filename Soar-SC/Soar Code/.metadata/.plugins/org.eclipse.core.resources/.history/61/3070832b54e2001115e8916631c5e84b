@@ -1,0 +1,128 @@
+sp {propose*build-barracks
+   (state <s> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 149
+        ^units.unit <u>
+        ^types.type <t>
+        ^barracks { <l> < 2 })
+   (<t> ^name |Terran SCV|
+        ^id <type-id>)
+   (<u> ^type <type-id>
+        ^idle <idle>
+        ^carrying <carrying>
+        ^id <id>)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-barracks
+        ^worker <id>
+        ^idle <idle>
+        ^carrying <carrying>
+        ^location <l>)
+}
+
+sp {elaboration*remove-build-barracks-operator-if-already-building
+   (state <s> ^operator <op> +
+              ^io.input-link <i>)
+   (<i> ^units.unit <u>
+        ^types.type <t>)
+   (<op> ^name build-barracks)
+   (<t> ^name |Terran Barracks|
+        ^id <type-id>)
+   (<u> ^constructing <type-id>)
+-->
+   (<s> ^operator <op> -)
+}
+
+sp {elaboration*remove-build-barracks-operator-if-not-yet-building-but-will
+   (state <s> ^operator <op> +
+              ^io.output-link.build <b>
+              ^io.input-link.types.type <t>)
+   (<t> ^name |Terran Supply Depot|
+        ^id <type-id>)
+   (<b> ^type <type-id>
+       -^status)
+   (<op> ^name build-supply-depot)
+-->
+   (<s> ^operator <op> -)
+}
+
+sp {elaboration*building-barracks-better-than-build-scv
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-barracks)
+   (<o2> ^name build-scv)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-barracks-better-than-gather-minerals
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-barracks)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-barracks-idle-better-than-non-idle
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-barracks
+         ^idle 1)
+   (<o2> ^name build-barracks
+         ^idle 0)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*building-barracks-non-carrying-better-than-carrying
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-barracks
+         ^carrying 0)
+   (<o2> ^name build-barracks
+         ^carrying 1)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+sp {elaboration*barracks*location-to-x-y-0
+   (state <s> ^operator <o>)
+   (<o> ^name build-barracks
+        ^location 0)
+-->
+   (<o> ^location-x 28
+        ^location-y 50)
+}
+
+sp {elaboration*barracks*location-to-x-y-1
+   (state <s> ^operator <o>)
+   (<o> ^name build-barracks
+        ^location 1)
+-->
+   (<o> ^location-x 28
+        ^location-y 54)
+}
+
+sp {apply*build-barracks
+   (state <s> ^operator <op>
+              ^io.input-link <i>
+              ^io.output-link <o>)
+   (<op> ^name build-barracks
+         ^worker <id>
+         ^location-x <x>
+         ^location-y <y>)
+   (<i> ^types.type <t>
+        ^barracks <number>)
+   (<t> ^name |Terran Barracks|
+        ^id <type-id>)
+-->
+   (<o> ^build <b>)
+   (<b> ^type <type-id>
+        ^location-x <x>
+        ^location-y <y>
+        ^worker <id>)
+   (<i> ^barracks <number> -
+        ^barracks (+ <number> 1))
+}
