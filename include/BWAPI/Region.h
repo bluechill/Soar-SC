@@ -14,7 +14,15 @@ namespace BWAPI
   protected:
     virtual ~Region() {};
   public:
-    /** Returns the unique ID for this region assigned by Broodwar. */
+    /// @~English
+    /// Retrieves a unique identifier for this region.
+    ///
+    /// @note This identifier is explicitly assigned by Broodwar.
+    ///
+    /// @returns
+    ///   An integer that represents this region.
+    /// @~
+    /// @see Game::getRegion
     virtual int getID() const = 0;
 
     /** Returns an ID for the body of land that this region belongs to. */
@@ -51,18 +59,18 @@ namespace BWAPI
     int getDistance(BWAPI::Region *other) const;
 
     /// @~English
-    /// Retrieves a Unitset containing all the units
-    /// that are in this region, including the
-    /// ability to filter the units before the
-    /// Unitset's creation.
+    /// Retrieves a Unitset containing all the units that are in this region. Also has the ability
+    /// to filter the units before the creation of the Unitset.
     ///
-    /// @param pred Optional function predicate
-    /// for filtering the units.
-    /// 
-    /// @returns A Unitset containing all units
-    /// in this region that have met the
-    /// requirements of \p pred.
+    /// @param pred (optional)
+    ///   If this parameter is used, it is a UnitFilter or function predicate that will retrieve
+    ///   only the units whose attributes match the given criteria. If omitted, then a default
+    ///   value of nullptr is used, in which case there is no filter.
+    ///
+    /// @returns A Unitset containing all units in this region that have met the requirements
+    /// of \p pred.
     /// @~
+    /// @see UnitFilter
     Unitset getUnits(const UnitFilter &pred = nullptr) const;
   };
 };

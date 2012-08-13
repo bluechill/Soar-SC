@@ -151,6 +151,8 @@ bool Events::update_only_on_calls() //Tell the event thread to stop executing an
 
 void Events::update_thread() //Function called for the event thread
 {
+	SetThreadName("Events Loop", GetCurrentThreadId());
+
 	while (true) //Infinite loop!
 	{
 		SDL_mutexP(mu); //Lock the mutex
@@ -183,6 +185,8 @@ int events_global_thread(void* data) //Global function called by SDL.  The void*
 
 int soar_command_thread(void* data) //Global function to execute soar commands on an agent
 {
+	SetThreadName("Soar Command", GetCurrentThreadId());
+
 	Soar_Command* cmd = reinterpret_cast<Soar_Command*>(data); //Convert the void* to a Soar_Command pointer.
 
 	cmd->a->ExecuteCommandLine(cmd->command.c_str()); //Execute the command in the Soar_Command on the agent given in the Soar_Command.

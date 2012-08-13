@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="16" version="2.0">
+<workbench progressCount="15" version="2.0">
 <workbenchAdvisor/>
 <window height="874" maximized="true" width="1427" x="0" y="22">
 <fastViewData fastViewLocation="1024"/>
@@ -46,7 +46,7 @@
 </editor>
 <editor activePart="true" focus="true" id="edu.umich.soar.editor.editors.SoarEditor" name="build-barracks.soar" partName="build-barracks.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/build-barracks.soar" title="build-barracks.soar" tooltip="Soar-SC/Basic-Actions/build-barracks.soar" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/build-barracks.soar"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1180" selectionTopPixel="191"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2504" selectionTopPixel="1095"/>
 </editor>
 <editor id="edu.umich.soar.editor.editors.SoarEditor" name="actions.soar" partName="actions.soar" path="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar Code/Soar-SC/Basic-Actions/actions.soar" title="actions.soar" tooltip="Soar-SC/Basic-Actions/actions.soar" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Soar-SC/Basic-Actions/actions.soar"/>

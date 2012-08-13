@@ -18,6 +18,8 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
+	SetThreadName("Soar Run", GetCurrentThreadId());
+
 	update_units();	
 	update_resources();
 

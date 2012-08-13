@@ -138,6 +138,8 @@ void TerrainAnalyzer::generate_rectangle(const int x_start,const int y_start,vec
 
 void TerrainAnalyzer::mapping_function() //Main map function generates the rectangles of the map
 {
+	SetThreadName("Terrain Analyzer", GetCurrentThreadId());
+
 	vector<SVS_Rectangle> rectangles;
 
 	vector<bool>* start_y = &map[0];

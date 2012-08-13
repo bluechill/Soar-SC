@@ -35,7 +35,7 @@ namespace BWAPI
     };
     
     // operator not
-    inline UnaryFilter operator ~() const
+    inline UnaryFilter operator !() const
     {
       if ( !this->pred )
         return nullptr;
@@ -49,7 +49,7 @@ namespace BWAPI
     };
 
     // operator bool
-    inline operator bool() const
+    inline bool isValid() const
     {
       return (bool)pred;
     };

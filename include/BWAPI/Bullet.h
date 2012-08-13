@@ -168,11 +168,11 @@ namespace BWAPI
     /// Retrieves the visibility state of the Bullet.
     ///
     /// @param player (optional)
-    ///   If this parameter is specified, then the Bullet's visibility to the given player
-    ///   is checked. If this parameter is omitted, then a default value of nullptr is used,
-    ///   which will instead check if the BWAPI player has vision of the Bullet.
+    ///   If this parameter is specified, then the Bullet's visibility to the given player is
+    ///   checked. If this parameter is omitted, then a default value of nullptr is used, which
+    ///   will check if the BWAPI player has vision of the Bullet.
     ///
-    /// If \c player is nullptr and Broodwar->self() is also nullptr, then the visibility of
+    /// @note If \c player is nullptr and Broodwar->self() is also nullptr, then the visibility of
     /// the Bullet is determined by checking if at least one other player has vision of the
     /// Bullet.
     ///

@@ -115,4 +115,6 @@ extern void misc_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, s
 //Thread globals, calls the Soar_Link function
 extern int thread_runner_soar(void* link); //Initial thread for running the agent
 
+extern void SetThreadName(const char *threadName, DWORD threadId);
+
 #endif

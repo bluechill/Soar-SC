@@ -1,5 +1,7 @@
 #include "Soar_Console.h" //Include the Soar Console header
 
+extern void SetThreadName(const char *threadName, DWORD threadId);
+
 using namespace std; //Use the standard namespace so we don't have to use std::string and can just type string, for example.
 
 typedef basic_string<TCHAR> tstring; //Define a tstring as a string with a TCHAR as the character.  Used for conversions between TCHAR* and strings.  TCHAR* are returned from win32 functions sometimes.
@@ -134,6 +136,8 @@ LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 
 int console_thread_function(void* data) //Console thread function to distribute messages to and from the window
 {
+	SetThreadName("Console Message Loop", GetCurrentThreadId());
+
 	MSG msg; //Create variable to hold the message
 
 	while(GetMessage(&msg, NULL, 0, 0)) //While we have a message

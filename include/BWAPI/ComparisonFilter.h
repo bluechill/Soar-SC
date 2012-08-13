@@ -76,7 +76,8 @@ namespace BWAPI
       return pred(u);
     };
     
-    inline operator bool() const
+
+    inline bool isValid() const
     {
       return (bool)pred;
     };
