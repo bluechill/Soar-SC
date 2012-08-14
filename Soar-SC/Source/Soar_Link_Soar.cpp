@@ -20,7 +20,7 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 	SetThreadName("Soar Run", GetCurrentThreadId());
 
-	update_units();	
+	update_units();
 	update_resources();
 
 	while(!analyzer->done_sending_svs())
@@ -35,6 +35,9 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
+	Timer time;
+	time.StartTimer();
+
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
@@ -140,7 +143,9 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 	SDL_mutexV(mu);
 
-	//test_input_file << "--------------------------------------------------" << endl;
+	test_input_file << "--------------------------------------------------" << endl;
+
+	cout << "Output Handler Time: " << time.GetTimeMiliseconds() << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent

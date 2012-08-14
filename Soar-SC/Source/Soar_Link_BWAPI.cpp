@@ -552,6 +552,9 @@ void Soar_Link::delete_resource(int bw_id)
 
 void Soar_Link::update_resources() //Update the resources
 {
+	Timer time;
+	time.StartTimer();
+
 	Unitset visible_minerals = Broodwar->getMinerals();
 	Unitset visible_vesp_gas = Broodwar->getGeysers();
 
@@ -623,11 +626,13 @@ void Soar_Link::update_resources() //Update the resources
 
 	max_supplies_id->Update(total_supplies);
 	used_supplies_id->Update(used_supplies);
+
+	cout << "Update Resources Time: " << time.GetTimeMiliseconds() << endl;
 }
 
 void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
 {
-	Soar_Unit* soar_unit = new Soar_Unit(agent, bw_unit);
+	Soar_Unit* soar_unit = new Soar_Unit(agent, bw_unit, this);
 
 	my_units[bw_unit] = soar_unit;
 }
@@ -648,35 +653,36 @@ void Soar_Link::delete_unit(BWAPI::Unit* unit) //Delete an existing unit
 
 void Soar_Link::update_units() //Update all player units
 {
-	clock_t start = clock();
+	Timer time;
+	time.StartTimer();
 
 	Unitset units = Broodwar->self()->getUnits();
 
-	cout << "Update Units Time (0): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+	cout << "Update Units Time (0): " << time.GetTimeMiliseconds() << endl;
 
 	for (Unitset::iterator it = units.begin();it != units.end();it++)
 	{
-		cout << "Update Units Time - Loop (0): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+		cout << "Update Units Time - Loop (0): " << time.GetTimeMiliseconds() << endl;
 		Unit* unit = (*it);
 
 		if (!unit->isCompleted())
 			continue;
 
-		cout << "Update Units Time - Loop (1): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+		cout << "Update Units Time - Loop (1): " << time.GetTimeMiliseconds() << endl;
 
 		Soar_Unit* soar_unit = my_units[unit];
 
-		cout << "Update Units Time - Loop (2): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+		cout << "Update Units Time - Loop (2): " << time.GetTimeMiliseconds() << endl;
 
 		if (soar_unit == NULL)
 			add_unit(unit);
 		else
 			soar_unit->update(agent);
 
-		cout << "Update Units Time - Loop (3): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+		cout << "Update Units Time - Loop (3): " << time.GetTimeMiliseconds() << endl;
 	}
 
-	cout << "Update Units Time (1): " << (float(clock()) - float(start))/CLOCKS_PER_SEC << endl;
+	cout << "Update Units Time (1): " << time.GetTimeMiliseconds() << endl;
 }
 
 Unit* Soar_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version

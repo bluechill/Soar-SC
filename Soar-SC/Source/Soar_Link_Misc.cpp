@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include <windows.h>
+#include <iostream>
+
 using namespace BWAPI; //Use namespaces to allow use of string instead of std::string or Agent* instead of sml::Agent* for example
 using namespace std;
 using namespace sml;

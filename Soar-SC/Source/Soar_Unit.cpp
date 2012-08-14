@@ -11,8 +11,10 @@
 using namespace BWAPI;
 using namespace std;
 
-Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit)
+Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link)
 {
+	this->link = link;
+
 	using namespace sml;
 
 	deleted = false;
@@ -93,8 +95,10 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit)
 	ss << pos.x << " " << pos.y << " 0";
 	string position = ss.str();
 
-	string svs_command = "a " + svsobject_id + " world v " + Soar_Link::unit_box_verts + " p " + position + " s " + size + " r 0 0 0";
+	string svs_command = "a " + svsobject_id + " world v " + Soar_Link::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
 	agent->SendSVSInput(svs_command);
+
+	link->output_to_test_file(svs_command);
 
 	unit_id->CreateIntWME("type", type.getID());
 
@@ -233,15 +237,15 @@ void Soar_Unit::update(sml::Agent* agent)
 		ss << pos.x << " " << pos.y << " 0";
 		string position = ss.str();
 
-		string svs_command = "c " + svsobject_id + " p " + position;
+		string svs_command = "c " + svsobject_id + " p " + position + "\n";
+		link->output_to_test_file(svs_command);
 
-		clock_t time_start = clock();
+		Timer time;
+		time.StartTimer();
 
 		agent->SendSVSInput(svs_command);
 
-		clock_t time_end = clock();
-
-		cout << "SVS Position change time: " << (float(time_end) - float(time_start))/CLOCKS_PER_SEC << endl;
+		cout << "SVS Position change time: " << time.GetTimeMiliseconds() << endl;
 	}
 }
 
@@ -302,7 +306,8 @@ void Soar_Unit::delete_unit(Events *event_queue, sml::Agent* agent)
 {
 	sml::Identifier* unit = get_unit_identifier(agent);
 
-	string svs_command = "d " + svsobject_id;
+	string svs_command = "d " + svsobject_id + "\n";
+	link->output_to_test_file(svs_command);
 
 	event_queue->add_event(Soar_Event(svs_command, true));
 	event_queue->add_event(Soar_Event(unit));

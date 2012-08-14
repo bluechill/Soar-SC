@@ -7,10 +7,12 @@
 
 #include "Events.h"
 
+class Soar_Link;
+
 class Soar_Unit
 {
 public:
-	Soar_Unit(sml::Agent* agent, BWAPI::Unit* unit);
+	Soar_Unit(sml::Agent* agent, BWAPI::Unit* unit, Soar_Link* link);
 	~Soar_Unit();
 
 	void delete_unit(Events *event_queue, sml::Agent* agent);
@@ -27,6 +29,8 @@ public:
 	void will_build(build_struct* build);
 
 private:
+	Soar_Link* link;
+
 	BWAPI::Unit* unit;
 
 	int id;

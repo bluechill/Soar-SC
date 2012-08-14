@@ -12,6 +12,8 @@
 
 #include <windows.h> //For windows related fuctions
 
+#include <time.h>
+
 #include "SDL/SDL_thread.h" //For SDL threading
 #include "SDL/SDL_mutex.h" //For SDL mutexes
 
@@ -21,6 +23,8 @@
 #include "Events.h" //For the event queuee
 
 #include "Soar_Unit.h"
+
+#include "Timer.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -71,6 +75,8 @@ public:
 
 	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for handling the output phase of the Agent
 	void misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for misc events like when a run ends or starts
+
+	void output_to_test_file(std::string &output) { test_input_file << output; }
 
 private:
 	sml::Kernel* kernel; //Pointer to the soar kernel created
