@@ -63,8 +63,8 @@
       </Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>Soar/Soar.lib;Soar/LinearMath_Debug.lib;Soar/BulletCollision_Debug.lib;../lib/BWAPId.lib;winmm.lib;SDL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Soar;../lib;../lib/boost;../Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Soar.lib;LinearMath_Debug.lib;BulletCollision_Debug.lib;BWAPId.lib;winmm.lib;SDL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../lib;../Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
