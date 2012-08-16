@@ -16,7 +16,7 @@ using namespace sml;
 
 int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
 	SetThreadName("Soar Run", GetCurrentThreadId());
 
