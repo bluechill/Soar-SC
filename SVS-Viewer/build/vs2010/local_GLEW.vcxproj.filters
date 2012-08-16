@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{974D91AC-E45B-8C49-AC3F-70026552BFE2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{7D89854F-8748-B945-A541-D5F2DD8A3663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\glew">
+      <UniqueIdentifier>{D7CB78B1-F467-E542-BC9A-9BD264E35806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\glew\include">
+      <UniqueIdentifier>{DED0D28B-592F-8F46-8280-F6D01FF13909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\glew\include\GL">
+      <UniqueIdentifier>{34791F94-23D6-0B47-B381-D66B43777006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\glew\src">
+      <UniqueIdentifier>{A5ED78B2-2EFE-F347-8A08-06B221880680}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\glew\include\GL\glew.h">
+      <Filter>jni\external\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\glew\include\GL\glxew.h">
+      <Filter>jni\external\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\glew\include\GL\wglew.h">
+      <Filter>jni\external\glew\include\GL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\glew\src\glew.c">
+      <Filter>jni\external\glew\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

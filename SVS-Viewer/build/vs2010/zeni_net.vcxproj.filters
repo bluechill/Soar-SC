@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{78C73193-CCEE-A645-B401-0DC71BC515FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{692ADA5B-D415-0B48-8368-FE3853E7F770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib">
+      <UniqueIdentifier>{937ABB8C-0F59-9D4C-8484-CD8100EC2E38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_net">
+      <UniqueIdentifier>{23E62638-75AC-F84E-A95A-387F9006280C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_net\Zeni">
+      <UniqueIdentifier>{CB121560-F3A6-4442-9550-3BDA4A584A36}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\zeni_net.h">
+      <Filter>jni\external\zenilib\zeni_net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\Zeni\Net.h">
+      <Filter>jni\external\zenilib\zeni_net\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\Zeni\VLUID.h">
+      <Filter>jni\external\zenilib\zeni_net\Zeni</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_net\Net.cpp">
+      <Filter>jni\external\zenilib\zeni_net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_net\VLUID.cpp">
+      <Filter>jni\external\zenilib\zeni_net</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

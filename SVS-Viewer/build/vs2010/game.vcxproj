@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6D7C465F-A4F5-6A4F-8449-763EDD374CA9}</ProjectGuid>
+    <RootNamespace>game</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\d32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj\x32\Debug\game\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">game</TargetName>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\d64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj\x64\Debug\game\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">game</TargetName>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\x32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj\x32\Release\game\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">game</TargetName>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj\x64\Release\game\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">game</TargetName>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;DEBUG;TEST_NASTY_CONDITIONS;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)game.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;DEBUG;TEST_NASTY_CONDITIONS;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)game.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\..\bin\d32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy ..\..\dev\pc_ ..\.. /E /Y</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;DEBUG;TEST_NASTY_CONDITIONS;X64;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)game.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;DEBUG;TEST_NASTY_CONDITIONS;X64;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)game.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\..\bin\d64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy ..\..\dev\pc_ ..\.. /E /Y</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;NDEBUG;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;NDEBUG;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)game.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\..\bin\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy ..\..\dev\pc_ ..\.. /E /Y</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;NDEBUG;X64;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_CRT_SECURE_NO_DEPRECATE;NDEBUG;X64;DISABLE_CPP11;GLEW_NO_GLU;DISABLE_CG;ZLIB_DLL;OGG_DLL=__declspec(dllimport);VORBIS_DLL=__declspec(dllimport);VORBISFILE_DLL=__declspec(dllimport);LIB3DSAPI=__declspec(dllimport);TINYXML_DLL=__declspec(dllimport);TINYXML_EXT=extern;ZENI_DLL=__declspec(dllimport);ZENI_EXT=extern;ZENI_AUDIO_DLL=__declspec(dllimport);ZENI_AUDIO_EXT=extern;ZENI_CORE_DLL=__declspec(dllimport);ZENI_CORE_EXT=extern;ZENI_GRAPHICS_DLL=__declspec(dllimport);ZENI_GRAPHICS_EXT=extern;ZENI_NET_DLL=__declspec(dllimport);ZENI_NET_EXT=extern;ZENI_REST_DLL=__declspec(dllimport);ZENI_REST_EXT=extern;ENABLE_XINPUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\jni\application;..\..\jni\external\zenilib;..\..\jni\external\zenilib\zeni_rest;..\..\jni\external\zenilib\zeni_graphics;..\..\jni\external\zenilib\zeni_net;..\..\jni\external\zenilib\zeni_core;..\..\jni\external\zenilib\zeni_audio;..\..\jni\external\libvorbis\include;..\..\jni\external\libogg\include;..\..\jni\external\zenilib\zeni;..\..\jni\external\sdl_net;..\..\jni\external\sdl;..\..\jni\external\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)game.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\..\bin\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PreBuildEvent>
+      <Command>xcopy ..\..\dev\pc_ ..\.. /E /Y</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\application\SVSObject.h" />
+    <ClInclude Include="..\..\jni\application\SVSParser.h" />
+    <ClInclude Include="..\..\jni\application\SVSScene.h" />
+    <ClInclude Include="..\..\jni\application\SVSSocket.h" />
+    <ClInclude Include="..\..\jni\application\SVSViewerState.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zenilib.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\zeni.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Android.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Camera.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Chronometer.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Collision.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Color.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Colors.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Coordinate.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Database.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Define.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Error.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Event.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\File_Ops.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Hash_Map.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\macosx_zeni.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Matrix4f.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Quaternion.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Quit_Event.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Random.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Resource.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Serialization.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Singleton.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\String.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Timer_HQ.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Undefine.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Vector2f.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\Vector3f.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni\Zeni\XML.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\zeni_audio.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\al.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\alc.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\alext.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\efx-creative.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\efx.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Buffer.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer_AL.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer_SLES.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Source.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Source_Pool.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sounds.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\android_native_app_glue.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\zeni_core.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Core.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Joysticks.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Timer.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3d9.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3d9caps.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3d9types.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9anim.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9core.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9effect.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9math.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9mesh.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9shader.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9shape.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9tex.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\d3dx9xof.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\zeni_graphics.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\gl.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\gl_mangle.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glew.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glext.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glu.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glu_mangle.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glx.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glx_mangle.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glxew.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\glxext.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\wglew.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\GL\internal\dri_interface.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\EZ2D.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Fog.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Font.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Fonts.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\GLU.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Image.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Light.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Line_Segment.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Material.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Model.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Projector.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Quadrilateral.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Renderable.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Shader.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Texture.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Textures.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Triangle.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Vertex2f.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Vertex3f.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Vertex_Buffer.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Video.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Video_DX9.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Video_GL.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_graphics\Zeni\Window.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\zeni_net.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\Zeni\Net.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_net\Zeni\VLUID.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\zeni_rest.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Configurator_Video.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Console_State.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Game.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Gamestate.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Gamestate_II.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Logo.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Popup_State.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Title_State.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Widget.h" />
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_rest\Zeni\Widget_Gamestate.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\application\bootstrap.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\jni\application\SVSObject.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\jni\application\SVSParser.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\jni\application\SVSScene.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\jni\application\SVSSocket.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\jni\application\SVSViewerState.cpp">
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="local_SDLmain.vcxproj">
+      <Project>{A0215416-3045-A64E-9267-7A8D67B54FB4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni_rest.vcxproj">
+      <Project>{6BC8CBF6-4640-FA44-8BBE-CE0CF76DE5A7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni_graphics.vcxproj">
+      <Project>{FEE103F4-DB07-1F46-939F-E02090021367}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni_net.vcxproj">
+      <Project>{2807DA0C-28B8-8246-8B62-36901D698CB2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni_core.vcxproj">
+      <Project>{991E645E-B5B8-EF4B-9353-1F11BDB7A36E}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni_audio.vcxproj">
+      <Project>{132BA9D7-0006-BB46-B209-3126A78486B2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="zeni.vcxproj">
+      <Project>{F507C7CD-3BF3-E845-B6D4-23B046847CB5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="local_SDL.vcxproj">
+      <Project>{71787FC2-43DA-4A4B-807F-62F6859D8F87}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

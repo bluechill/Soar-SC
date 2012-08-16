@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{BE3FAFDF-BABD-5940-A4E1-E655827AC8C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{1597ECA5-C6F3-3043-A14F-65490F4E4985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libogg">
+      <UniqueIdentifier>{324C21C4-6A99-E44B-9E6F-C0D8E5196AB5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libogg\include">
+      <UniqueIdentifier>{C49DBFE6-E95F-2944-8943-E174A99D8D71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libogg\include\ogg">
+      <UniqueIdentifier>{8B4615A5-4D43-7246-B50F-392D473433F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libogg\src">
+      <UniqueIdentifier>{3CB48F10-C847-3443-AFB6-213E080AD39C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\libogg\include\ogg\config_types.h">
+      <Filter>jni\external\libogg\include\ogg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\libogg\include\ogg\ogg.h">
+      <Filter>jni\external\libogg\include\ogg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\libogg\include\ogg\os_types.h">
+      <Filter>jni\external\libogg\include\ogg</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\libogg\src\bitwise.c">
+      <Filter>jni\external\libogg\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libogg\src\framing.c">
+      <Filter>jni\external\libogg\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

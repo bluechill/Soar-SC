@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{E7F213A9-C907-6843-A1E5-099D9499A20B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{B9DDCBD6-5216-2246-B04F-5519DC0C3B10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib">
+      <UniqueIdentifier>{5C9C1797-5D26-0A4B-8087-AE433896F7F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_core">
+      <UniqueIdentifier>{AF051A4F-8C2E-0849-AB62-510B825F9368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_core\Zeni">
+      <UniqueIdentifier>{3200023E-DFF0-7E4B-88AA-4564B577A089}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\android_native_app_glue.h">
+      <Filter>jni\external\zenilib\zeni_core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\zeni_core.h">
+      <Filter>jni\external\zenilib\zeni_core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Core.h">
+      <Filter>jni\external\zenilib\zeni_core\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Joysticks.h">
+      <Filter>jni\external\zenilib\zeni_core\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Timer.h">
+      <Filter>jni\external\zenilib\zeni_core\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_core\Zeni\Timer.hxx">
+      <Filter>jni\external\zenilib\zeni_core\Zeni</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_core\Core.cpp">
+      <Filter>jni\external\zenilib\zeni_core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_core\Joysticks.cpp">
+      <Filter>jni\external\zenilib\zeni_core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_core\Timer.cpp">
+      <Filter>jni\external\zenilib\zeni_core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

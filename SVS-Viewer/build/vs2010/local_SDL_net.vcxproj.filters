@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{55FAABEC-707E-1E4D-A119-97341ECA6BFF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{00AD3916-9A83-7F43-AB59-ED51D795B9ED}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\sdl_net">
+      <UniqueIdentifier>{F0840EA1-0253-2946-B80E-4FD798654B80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\sdl_net\SDLnetUDP.c">
+      <Filter>jni\external\sdl_net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\sdl_net\SDLnetselect.c">
+      <Filter>jni\external\sdl_net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\sdl_net\SDLnetTCP.c">
+      <Filter>jni\external\sdl_net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\sdl_net\SDLnet.c">
+      <Filter>jni\external\sdl_net</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

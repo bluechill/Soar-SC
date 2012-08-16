@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{C3378301-D258-8845-9212-16241E2D4224}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{78B953E6-7665-FA4F-A5C2-984FE7AB6F08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\lib3ds">
+      <UniqueIdentifier>{B3249706-D0B7-574D-A8B5-E77CCDBAE98C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\lib3ds\src">
+      <UniqueIdentifier>{1AEF8F70-E312-2D4A-9B3F-9822FAEA0EEF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\lib3ds\src\lib3ds.h">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\lib3ds\src\lib3ds_impl.h">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_atmosphere.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_background.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_camera.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_chunk.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_chunktable.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_file.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_io.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_light.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_material.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_math.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_matrix.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_mesh.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_node.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_quat.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_shadow.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_track.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_util.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_vector.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\lib3ds\src\lib3ds_viewport.c">
+      <Filter>jni\external\lib3ds\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

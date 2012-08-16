@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{B2AED105-315D-5A46-8446-2FE45B0726CB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{F36B47C0-1D8F-C945-9325-898E23ADC035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\sdl">
+      <UniqueIdentifier>{3B91E79D-C8BB-E344-8BFD-099CD850CAEB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\sdl\src">
+      <UniqueIdentifier>{972F32DB-CB91-F446-A0E4-4E32639D627C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\sdl\src\main">
+      <UniqueIdentifier>{8AACC175-1BA1-F34D-AC77-D6DA5A5889AA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\sdl\src\main\win32">
+      <UniqueIdentifier>{7A8DD8E2-C143-B64E-8B56-B66532A864C0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\sdl\src\main\win32\SDL_win32_main.c">
+      <Filter>jni\external\sdl\src\main\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

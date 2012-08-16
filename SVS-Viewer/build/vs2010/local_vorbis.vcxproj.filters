@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{A825C7B4-4161-7346-872B-13AD1CD6A13A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{528BFBC4-33CB-1144-8339-45AD262D6B81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libvorbis">
+      <UniqueIdentifier>{5F876431-6B85-0246-AB74-1D038107A0A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libvorbis\include">
+      <UniqueIdentifier>{2ABB9507-BD6D-E645-900C-A69851A7393F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libvorbis\include\vorbis">
+      <UniqueIdentifier>{2F452923-3876-1240-A161-9B4D2D6D6F4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\libvorbis\lib">
+      <UniqueIdentifier>{8963B77D-6534-B240-B829-E8AAD60E3EEE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\libvorbis\include\vorbis\codec.h">
+      <Filter>jni\external\libvorbis\include\vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\libvorbis\include\vorbis\vorbisenc.h">
+      <Filter>jni\external\libvorbis\include\vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\libvorbis\include\vorbis\vorbisfile.h">
+      <Filter>jni\external\libvorbis\include\vorbis</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\mdct.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\smallft.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\block.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\envelope.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\window.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\lsp.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\lpc.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\analysis.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\synthesis.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\psy.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\info.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\floor1.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\floor0.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\res0.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\mapping0.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\registry.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\codebook.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\sharedbook.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\lookup.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\libvorbis\lib\bitrate.c">
+      <Filter>jni\external\libvorbis\lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{92AFDA72-AEF9-FE42-8857-1D9A7C0E46B4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{1FB6C100-8006-DA44-B15D-19702FD787FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib">
+      <UniqueIdentifier>{B9FAE91B-D4F6-B049-8D70-B5B250BB9E88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_audio">
+      <UniqueIdentifier>{0D294506-9453-994A-989E-F62E588D8F39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_audio\AL">
+      <UniqueIdentifier>{4107A5D7-E5C0-AA41-804F-9A05123417A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\zenilib\zeni_audio\Zeni">
+      <UniqueIdentifier>{90B7CDC2-124E-0449-B207-734E5DCA4244}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\zeni_audio.h">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\al.h">
+      <Filter>jni\external\zenilib\zeni_audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\alc.h">
+      <Filter>jni\external\zenilib\zeni_audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\alext.h">
+      <Filter>jni\external\zenilib\zeni_audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\efx-creative.h">
+      <Filter>jni\external\zenilib\zeni_audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\AL\efx.h">
+      <Filter>jni\external\zenilib\zeni_audio\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Buffer.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer_AL.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Renderer_SLES.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Source.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Source_Pool.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sounds.h">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound.hxx">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\zenilib\zeni_audio\Zeni\Sound_Source.hxx">
+      <Filter>jni\external\zenilib\zeni_audio\Zeni</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound_Buffer.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound_Renderer_AL.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound_Renderer_SLES.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound_Source.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sound_Source_Pool.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\zenilib\zeni_audio\Sounds.cpp">
+      <Filter>jni\external\zenilib\zeni_audio</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

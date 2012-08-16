@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jni">
+      <UniqueIdentifier>{11B81688-DF21-2C43-B7BD-A3D047E58B69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external">
+      <UniqueIdentifier>{379964B2-97A8-BE48-BC4B-321B9C277A91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2">
+      <UniqueIdentifier>{2491C8BA-0A70-C447-ABF4-A08EE7762B21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src">
+      <UniqueIdentifier>{0F54400E-22F0-764C-97F8-ADF7749E3F59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\autofit">
+      <UniqueIdentifier>{045E0652-26C8-D04E-871B-BD0D41D79FFF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\bdf">
+      <UniqueIdentifier>{6E45EE9B-1E57-1148-B05C-33A16873B50A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\cff">
+      <UniqueIdentifier>{40EC60AE-7CA0-B244-8222-CB5A38186ADA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\base">
+      <UniqueIdentifier>{2E7517BA-A5FF-E24C-B067-9FFE9C67FA75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\cache">
+      <UniqueIdentifier>{2084DC4E-559A-154D-81F7-4A807599B638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\lzw">
+      <UniqueIdentifier>{C1D983D7-93FD-7947-A5C2-350B4C3F578B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\smooth">
+      <UniqueIdentifier>{F4F66EE1-D0CC-6F47-ACB0-9D34602C926A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\pcf">
+      <UniqueIdentifier>{675E21B0-EB04-5643-AABB-5E6382C5F6C6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\pfr">
+      <UniqueIdentifier>{D5D5659A-B6F1-E448-83C8-60AC386453D2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\psaux">
+      <UniqueIdentifier>{9EB1485A-5AC9-7C41-8416-B1A414C95E24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\pshinter">
+      <UniqueIdentifier>{D03F82BD-6E02-AA4B-B0C2-0699E6960900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\psnames">
+      <UniqueIdentifier>{D5C0CB0E-B06C-8A40-A5FF-18A1BC723E4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\raster">
+      <UniqueIdentifier>{2B5F001F-0127-5D44-95FD-74A5A3A23D4C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\sfnt">
+      <UniqueIdentifier>{A5932FFC-B070-D540-A132-47D719FD1FAD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\truetype">
+      <UniqueIdentifier>{2C17EA3E-04E4-FB41-9BBD-B47FC6D105AA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\type1">
+      <UniqueIdentifier>{DBAD0E2F-F2C2-8A4E-8436-60DAF76C74E7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\cid">
+      <UniqueIdentifier>{724F6CD4-611E-F141-A921-CA473C5901C6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\type42">
+      <UniqueIdentifier>{D6B57D43-E61F-114B-9CC2-35DBD8DAA9A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\src\winfonts">
+      <UniqueIdentifier>{886F3C90-2D08-2347-B238-AF894F97A065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\include">
+      <UniqueIdentifier>{D06541A0-3A38-E943-A962-3BBCFCF2AF3F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\include\freetype">
+      <UniqueIdentifier>{721220B7-A8DC-554E-BC97-20F913BFEA62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\include\freetype\config">
+      <UniqueIdentifier>{60FBA7E0-189E-604D-9F20-1094FE4B8C5A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\include\freetype\internal">
+      <UniqueIdentifier>{A9946386-277D-0D4C-8BF3-A57F4603DEEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jni\external\freetype2\include\freetype\internal\services">
+      <UniqueIdentifier>{D0AB401B-9DA0-0440-8B4D-DBE29E6BEB41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jni\external\freetype2\include\ft2build.h">
+      <Filter>jni\external\freetype2\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\freetype.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftadvanc.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftbbox.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftbdf.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftbitmap.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftbzip2.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftcache.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftchapters.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftcid.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\fterrdef.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\fterrors.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftgasp.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftglyph.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftgxval.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftgzip.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftimage.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftincrem.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftlcdfil.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftlist.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftlzw.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftmac.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftmm.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftmodapi.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftmoderr.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftotval.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftoutln.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftpfr.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftrender.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftsizes.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftsnames.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftstroke.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftsynth.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftsystem.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\fttrigon.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\fttypes.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftwinfnt.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ftxf86.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\t1tables.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ttnameid.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\tttables.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\tttags.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\ttunpat.h">
+      <Filter>jni\external\freetype2\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\config\ftconfig.h">
+      <Filter>jni\external\freetype2\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\config\ftheader.h">
+      <Filter>jni\external\freetype2\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\config\ftmodule.h">
+      <Filter>jni\external\freetype2\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\config\ftoption.h">
+      <Filter>jni\external\freetype2\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\config\ftstdlib.h">
+      <Filter>jni\external\freetype2\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\autohint.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftcalc.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftdebug.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftdriver.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftgloadr.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftmemory.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftobjs.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftpic.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftrfork.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftserv.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftstream.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\fttrace.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\ftvalid.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\internal.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\psaux.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\pshints.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\sfnt.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\t1types.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\tttypes.h">
+      <Filter>jni\external\freetype2\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svbdf.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svcid.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svgldict.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svgxval.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svkern.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svmm.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svotval.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svpfr.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svpostnm.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svpscmap.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svpsinfo.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svsfnt.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svttcmap.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svtteng.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svttglyf.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svwinfnt.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jni\external\freetype2\include\freetype\internal\services\svxf86nm.h">
+      <Filter>jni\external\freetype2\include\freetype\internal\services</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jni\external\freetype2\src\autofit\autofit.c">
+      <Filter>jni\external\freetype2\src\autofit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\bdf\bdf.c">
+      <Filter>jni\external\freetype2\src\bdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\cff\cff.c">
+      <Filter>jni\external\freetype2\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftbase.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftbitmap.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\cache\ftcache.c">
+      <Filter>jni\external\freetype2\src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\ftdebug.c">
+      <Filter>jni\external\freetype2\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftfstype.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftgasp.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftglyph.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftinit.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\lzw\ftlzw.c">
+      <Filter>jni\external\freetype2\src\lzw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftstroke.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftsystem.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\smooth\smooth.c">
+      <Filter>jni\external\freetype2\src\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftbbox.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftmm.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftpfr.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftsynth.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\fttype1.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftwinfnt.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftxf86.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftlcdfil.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftgxval.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftotval.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\base\ftpatent.c">
+      <Filter>jni\external\freetype2\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\pcf\pcf.c">
+      <Filter>jni\external\freetype2\src\pcf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\pfr\pfr.c">
+      <Filter>jni\external\freetype2\src\pfr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\psaux\psaux.c">
+      <Filter>jni\external\freetype2\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\pshinter\pshinter.c">
+      <Filter>jni\external\freetype2\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\psnames\psmodule.c">
+      <Filter>jni\external\freetype2\src\psnames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\raster\raster.c">
+      <Filter>jni\external\freetype2\src\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\sfnt\sfnt.c">
+      <Filter>jni\external\freetype2\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\truetype\truetype.c">
+      <Filter>jni\external\freetype2\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\type1\type1.c">
+      <Filter>jni\external\freetype2\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\cid\type1cid.c">
+      <Filter>jni\external\freetype2\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\type42\type42.c">
+      <Filter>jni\external\freetype2\src\type42</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jni\external\freetype2\src\winfonts\winfnt.c">
+      <Filter>jni\external\freetype2\src\winfonts</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
