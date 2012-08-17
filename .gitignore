@@ -12,6 +12,8 @@
 *.so
 *.lib
 *.pdb
+*.sdf
+*.opensdf
 *.lastbuildstate
 
 # Packages #

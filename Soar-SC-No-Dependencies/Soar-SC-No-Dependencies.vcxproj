@@ -58,7 +58,8 @@
       <AdditionalLibraryDirectories>$(ProjectDir)..\Soar-SC\Soar;$(ProjectDir)..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY /Y /B $(ProjectDir)..\Soar-SC\Soar\Soar.dll  $(OutDir)Soar.dll</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

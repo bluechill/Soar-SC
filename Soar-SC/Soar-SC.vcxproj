@@ -72,10 +72,11 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(OutDir)$(TargetName)$(TargetExt) $(OutDir)..\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt);
-copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
-copy /Y $(OutDir)..\Soar-SC\Soar\Soar.dll "C:\Program Files\Starcraft\Soar.dll"
-xcopy /Y "$(ProjectDir)Soar Code\Soar-SC" "C:\Program Files\Starcraft\Soar-SC\" /E</Command>
+      <Command>xcopy /YDE "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
+xcopy /YDE "$(SolutionDir)\Starcraft\bwapi-data" "$(ProgramFiles)\Starcraft\bwapi-data\"
+xcopy /YDE "$(SolutionDir)\Chaoslauncher" "$(ProgramFiles)\Starcraft\Chaoslauncher\"
+xcopy /YDE "$(SolutionDir)lib\*.dll" "$(ProgramFiles)\Starcraft\"
+xcopy /YDE "$(ProjectDir)Soar Code\Soar-SC" "$(ProgramFiles)\Starcraft\Soar-SC\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
