@@ -6,8 +6,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerSQLDebugging>false</LocalDebuggerSQLDebugging>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>C:\Users\Alex Turner\Developer\Soar-SC\RunChaosLauncher.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)RunChaosLauncher.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(ProgramFiles)\Starcraft</LocalDebuggerWorkingDirectory>
     <ShowAllFiles>false</ShowAllFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommand>$(ProjectDir)RunChaosLauncher.exe</LocalDebuggerCommand>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(ProgramFiles)\Starcraft</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerAttach>false</LocalDebuggerAttach>
+    <LocalDebuggerSQLDebugging>false</LocalDebuggerSQLDebugging>
   </PropertyGroup>
 </Project>
