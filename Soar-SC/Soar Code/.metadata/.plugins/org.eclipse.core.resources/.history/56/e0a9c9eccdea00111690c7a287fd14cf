@@ -1,0 +1,21 @@
+sp {
+   (state <s> ^operator <op>
+              ^io.input-link <i>
+              ^io.output-link <o>
+              ^buildings <b>)
+   (<op> ^name build-building
+         ^worker <id>
+         ^location-x <x>
+         ^location-y <y>)
+   (<i> ^types.type <t>)
+   (<t> ^name |Terran Supply Depot|
+        ^id <type-id>)
+-->
+   (<o> ^build <b>)
+   (<b> ^type <type-id>
+        ^location-x <x>
+        ^location-y <y>
+        ^worker <id>)
+   (<i> ^supply-depots <number> -
+        ^supply-depots (+ <number> 1))
+}
