@@ -1,0 +1,20 @@
+sp {apply*build-scv
+   (state <s> ^operator <op>
+              ^io.output-link <o>)
+   (<op> ^name build-scv
+         ^location <id>
+         ^type <type-id>)
+-->
+   (<o> ^build <b>)
+   (<b> ^type <type-id>
+        ^location <id>)	
+}
+
+sp {elaboration*build-unit-better-than-gather-minerals
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-unit)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
