@@ -25,12 +25,6 @@
     <Filter Include="Soar Files">
       <UniqueIdentifier>{d019e73b-6040-4864-9e8b-978f5b66e047}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Soar Code">
-      <UniqueIdentifier>{34fbd92c-9ea0-4d4f-8490-4372afe58bb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Soar Code\Basic Actions">
-      <UniqueIdentifier>{ad8cfc96-3ec1-4ecc-8f2b-846ef359a96f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp">
@@ -818,31 +812,5 @@
     <ClInclude Include="Source\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Soar Code\Soar-SC\intialize-soar-sc.soar">
-      <Filter>Soar Code</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Soar-SC.soar">
-      <Filter>Soar Code</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\actions.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-barracks.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-supply-depots.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-units.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\gather-minerals.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\wait.soar">
-      <Filter>Soar Code\Basic Actions</Filter>
-    </None>
   </ItemGroup>
 </Project>

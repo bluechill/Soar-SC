@@ -11,7 +11,7 @@ namespace BWAPI { Game* Broodwar; } //Global variable for the BWAPI link
 
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved ) //The equivilent of the int main() in a standard program.  Called when the dll is injected
 {
-	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+	//SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 
 	switch (ul_reason_for_call) //Check for the reason of the function call
 	{

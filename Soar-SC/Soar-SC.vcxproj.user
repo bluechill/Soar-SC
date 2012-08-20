@@ -6,7 +6,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerSQLDebugging>false</LocalDebuggerSQLDebugging>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)RunChaosLauncher.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(SolutionDir)RunChaosLauncher.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(ProgramFiles)\Starcraft</LocalDebuggerWorkingDirectory>
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>

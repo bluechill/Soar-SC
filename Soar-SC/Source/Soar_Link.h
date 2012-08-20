@@ -76,6 +76,8 @@ public:
 	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for handling the output phase of the Agent
 	void misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for misc events like when a run ends or starts
 
+	void send_base_input(sml::Agent* agent, bool wait_for_analyzer = false);
+
 	void output_to_test_file(std::string &output) { test_input_file << output; }
 
 private:
@@ -120,6 +122,8 @@ extern void misc_global_handler(sml::smlRunEventId id, void* d, sml::Agent *a, s
 
 //Thread globals, calls the Soar_Link function
 extern int thread_runner_soar(void* link); //Initial thread for running the agent
+
+extern void send_base_input_global(sml::smlAgentEventId id, void* pUserData, sml::Agent* pAgent); //Called at agent creation and agent reinit
 
 extern void SetThreadName(const char *threadName, DWORD threadId);
 

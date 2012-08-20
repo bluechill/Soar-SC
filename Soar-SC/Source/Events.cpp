@@ -185,6 +185,8 @@ int events_global_thread(void* data) //Global function called by SDL.  The void*
 
 int soar_command_thread(void* data) //Global function to execute soar commands on an agent
 {
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
 	SetThreadName("Soar Command", GetCurrentThreadId());
 
 	Soar_Command* cmd = reinterpret_cast<Soar_Command*>(data); //Convert the void* to a Soar_Command pointer.

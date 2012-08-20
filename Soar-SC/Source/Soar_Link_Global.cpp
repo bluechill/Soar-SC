@@ -26,6 +26,10 @@ int thread_runner_soar(void* link)
 	return reinterpret_cast<Soar_Link*>(link)->soar_agent_thread();
 }
 
+void send_base_input_global(sml::smlAgentEventId id, void* link, sml::Agent* pAgent)
+{
+	reinterpret_cast<Soar_Link*>(link)->send_base_input(pAgent, true);
+}
 
 const DWORD MS_VC_EXCEPTION=0x406D1388;
 

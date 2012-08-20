@@ -376,16 +376,6 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClInclude Include="Source\Terrain-Analyzer.h" />
     <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Soar Code\Soar-SC\Basic-Actions\actions.soar" />
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-barracks.soar" />
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-supply-depots.soar" />
-    <None Include="Soar Code\Soar-SC\Basic-Actions\build-units.soar" />
-    <None Include="Soar Code\Soar-SC\Basic-Actions\gather-minerals.soar" />
-    <None Include="Soar Code\Soar-SC\Basic-Actions\wait.soar" />
-    <None Include="Soar Code\Soar-SC\intialize-soar-sc.soar" />
-    <None Include="Soar Code\Soar-SC\Soar-SC.soar" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
