@@ -105,6 +105,8 @@ void Soar_Link::onFrame()
 	// Latency frames are the number of frames before commands are processed.
 	if ( Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0 )
 		return;
+
+	event_queue.bwapi_update();
 }
 
 void Soar_Link::onSendText(std::string text)

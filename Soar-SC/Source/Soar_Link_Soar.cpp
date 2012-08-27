@@ -16,7 +16,7 @@ using namespace sml;
 
 int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+	//SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
 	SetThreadName("Soar Run", GetCurrentThreadId());
 
@@ -36,12 +36,15 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
 	Timer time;
+	int i = 0;
 	time.StartTimer();
 
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
 	{
+		int j = 0;
+
 		Identifier* output_command = a->GetCommand(i);
 
         string name  = output_command->GetCommandName();
@@ -56,20 +59,22 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			if (unit != NULL && dest != NULL)
 			{
-				if (!unit->rightClick(dest)) //Execute move command in starcraft
-				{
-					Error e = Broodwar->getLastError();
-					cerr << "Error (BWAPI) (RightClick-" << dest->getID() << "): " << e.toString() << endl;
+				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command));
 
-					output_command->AddStatusError();
-				}
-				else
-					output_command->AddStatusComplete();
+				//if (!unit->rightClick(dest)) //Execute move command in starcraft
+				//{
+				//	Error e = Broodwar->getLastError();
+				//	cerr << "Error (BWAPI) (RightClick-" << dest->getID() << "): " << e.toString() << endl;
+
+				//	output_command->AddStatusError();
+				//}
+				//else
+				//	output_command->AddStatusComplete();
 			}
 			else
 				output_command->AddStatusError();
 		}
-		else if (name == "build") //Build command
+		else if (name == "build-building") //Build command
 		{
 			string type = output_command->GetParameterValue("type");
 
@@ -80,55 +85,59 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			UnitType unit_type(type_id);
 
-			if (output_command->FindByAttribute("location-x", 0))
+			string location_x = output_command->GetParameterValue("location-x");
+			string location_y = output_command->GetParameterValue("location-y");
+
+			string worker_id = output_command->GetParameterValue("worker");
+
+			int x = 0;
+			int y = 0;
+
+			stringstream l_x(location_x);
+			l_x >> x;
+			stringstream l_y(location_y);
+			l_y >> y;
+
+			Unit* worker = getUnitFromID(worker_id);
+			event_queue.add_event(BWAPI_Event(UnitCommand::stop(worker), NULL));
+
+			event_queue.add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command));
+
+			/*else
 			{
-				string location_x = output_command->GetParameterValue("location-x");
-				string location_y = output_command->GetParameterValue("location-y");
+				Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
+				build->type = unit_type;
+				build->build_id = output_command;
 
-				string worker_id = output_command->GetParameterValue("worker");
+				my_units[worker]->will_build(build);
+			}*/
+		}
+		else if (name == "build-unit")
+		{
+			string type = output_command->GetParameterValue("type");
 
-				int x = 0;
-				int y = 0;
+			stringstream ss(type);
+			int type_id;
 
-				stringstream l_x(location_x);
-				l_x >> x;
-				stringstream l_y(location_y);
-				l_y >> y;
-				
-				Unit* worker = getUnitFromID(worker_id);
-				worker->stop();
+			ss >> type_id;
 
-				if (!worker->build(unit_type, TilePosition(x,y)))
-				{
-					Error e = Broodwar->getLastError();
-					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
-					output_command->AddStatusError();
-				}
-				else
-				{
-					Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
-					build->type = unit_type;
-					build->build_id = output_command;
+			UnitType unit_type(type_id);
 
-					my_units[worker]->will_build(build);
-				}
+			string location = output_command->GetParameterValue("building");
+
+			Unit* unit_location = getUnitFromID(location);
+
+			event_queue.add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command));
+
+			/*if (!unit_location->train(unit_type))
+			{
+				Error e = Broodwar->getLastError();
+				cerr << "Error (BWAPI) (Build Unit: " << unit_type.getName() << "): " << e.toString() << endl;
+
+				output_command->AddStatusError();
 			}
 			else
-			{
-				string location = output_command->GetParameterValue("location");
-
-				Unit* unit_location = getUnitFromID(location);
-
-				if (!unit_location->train(unit_type))
-				{
-					Error e = Broodwar->getLastError();
-					cerr << "Error (BWAPI) (Build object): " << e.toString() << endl;
-
-					output_command->AddStatusError();
-				}
-				else
-					output_command->AddStatusComplete();
-			}
+				output_command->AddStatusComplete();*/
 		}
 	}
 

@@ -112,8 +112,9 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\BWAPI_Event.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
-    <ClCompile Include="Source\Event.cpp" />
+    <ClCompile Include="Source\Soar_Event.cpp" />
     <ClCompile Include="Source\Events.cpp" />
     <ClCompile Include="Source\Soar_Console.cpp" />
     <ClCompile Include="Source\Soar_Link.cpp" />
@@ -368,7 +369,8 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClInclude Include="Soar\include\winstl\performance\tick_counter.hpp" />
     <ClInclude Include="Soar\include\winstl\winstl.h" />
     <ClInclude Include="Soar\include\XMLTrace.h" />
-    <ClInclude Include="Source\Event.h" />
+    <ClInclude Include="Source\BWAPI_Event.h" />
+    <ClInclude Include="Source\Soar_Event.h" />
     <ClInclude Include="Source\Events.h" />
     <ClInclude Include="Source\Soar_Console.h" />
     <ClInclude Include="Source\Soar_Link.h" />

@@ -1,23 +1,20 @@
 sp {apply*build-building
    (state <s> ^operator <op>
-              ^io.input-link <i>
               ^io.output-link <o>
-              ^buildings <b>)
+              ^buildings.building <building>)
    (<op> ^name build-building
          ^worker <id>
          ^location-x <x>
          ^location-y <y>
          ^type <type-id>)
-   (<i> ^types.type <t>)
-   (<b> ^building <building>)
    (<building> ^type <type-id>
                ^count <c>)
 -->
-   (<o> ^build <b>)
-   (<b> ^type <type-id>
-        ^location-x <x>
-        ^location-y <y>
-        ^worker <id>)
+   (<o> ^build-building <build>)
+   (<build> ^type <type-id>
+            ^location-x <x>
+            ^location-y <y>
+            ^worker <id>)
    (<building> ^count <c> -
                ^count (+ <c> 1))
 }
@@ -67,4 +64,3 @@ sp {pref*non-carrying-better-than-carrying
 -->
    (<s> ^operator <o1> > <o2>)
 }
-

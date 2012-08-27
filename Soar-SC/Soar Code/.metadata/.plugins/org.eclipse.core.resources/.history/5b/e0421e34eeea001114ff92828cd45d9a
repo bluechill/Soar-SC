@@ -1,0 +1,46 @@
+sp {propose*build-scv
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 49
+        ^total-supplies <ts>
+        ^used-supplies <us> < <ts>
+        ^units.building <b>
+        ^types.type <scv-type>
+        ^types.type <command-center>)
+   (<command-center> ^name |Terran Command Center|
+                     ^id <command-center-id>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
+   (<b> ^type <command-center-id>
+        ^id <id>
+        ^full-queue 0)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-unit
+        ^location <id>
+        ^type <type-id>)
+}
+
+sp {propose*build-marines
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>)
+   (<i> ^minerals <m> > 49
+        ^total-supplies <ts>
+        ^used-supplies <us> < <ts>
+        ^units.building <b>
+        ^types.type <marine-type>
+        ^types.type <barracks-type>)
+   (<barracks-type> ^name |Terran Barracks|
+                    ^id <barracks-id>)
+   (<marine-type> ^name |Terran Marine|
+               ^id <type-id>)
+   (<b> ^type <barracks-id>
+        ^id <id>
+        ^full-queue 0)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-unit
+        ^location <id>
+        ^type <type-id>)
+}
+

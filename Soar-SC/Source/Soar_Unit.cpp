@@ -99,10 +99,12 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link)
 	agent->SendSVSInput(svs_command);
 
 	link->output_to_test_file(svs_command);
-
+	
 	unit_id->CreateIntWME("type", type.getID());
 
 	unit_id->CreateStringWME("svsobject", svsobject_id.c_str());
+
+	build = NULL;
 }
 
 Soar_Unit::~Soar_Unit()

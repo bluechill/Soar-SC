@@ -29,6 +29,14 @@ Events::Events(Soar_Console* console, Soar_Link* link) //The constructor of the 
 		exit(7332); //And exit
 	}
 
+	bwapi_mu = SDL_CreateMutex(); //Create the mutex to be used for preventing simultanous access between event thread and everything else
+
+	if (bwapi_mu == NULL) //Make sure it's valid
+	{
+		std::cerr << "Unable to create bwapi_mu for bwapi_update, things will probably go bad.... exiting...." << std::endl; //Otherwise tell the user
+		exit(7331); //And exit
+	}
+
 	should_die = false; //Set to false so the event thread doesn't immediately exit
 
 	this->console = console; //Set the internal variable pointer to the console
@@ -63,13 +71,14 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 	while (!event_queue.empty()) //While our queue isn't empty
 	{
 		Soar_Event e = event_queue.front(); //Get the first event
-		event_queue.pop_front(); //Then remove it from the queue
+		event_queue.pop(); //Then remove it from the queue
 
 		switch (e.get_type()) //Switch based on the type of the event
 		{
 		case Soar_Event::SVS_Command: //If it's a SVS Command
 			{
 				agent->SendSVSInput(*e.get_command()); //Send it to the agent
+
 				break; //Then break out of the switch statement
 			}
 		case Soar_Event::Console_Input: //If it's Console Input
@@ -88,7 +97,7 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 				else //Otherwise
 				{
 					string output = agent->ExecuteCommandLine(e.get_command()->c_str()); //Execute it now
-					
+
 					if (console != NULL)
 						console->recieve_input(output); //And then send the output to the console
 				}
@@ -98,12 +107,33 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 		case Soar_Event::WME_Destroy: //If it's a destroy command
 			{
 				e.get_element()->DestroyWME(); //Destroy the WMElement
+
 				break; //Then break
+			}
+		case Soar_Event::Status_Update:
+			{
+				sml::Identifier* output_link = agent->GetOutputLink();
+
+				sml::Identifier::ChildrenIter it = find(output_link->GetChildrenBegin(), output_link->GetChildrenEnd(), e.get_identifier());
+
+				if (it == output_link->GetChildrenEnd())
+				{
+					cout << "Coult not find Events Identifer: " << e.get_identifier() << " on the output link! ERROR! THIS WILL FAIL" << endl;
+					break;
+				}
+
+				if (e.get_status())
+					e.get_identifier()->AddStatusComplete();
+				else
+					e.get_identifier()->AddStatusError();
+				
+				break;
 			}
 		case Soar_Event::New_Unit: //If we're supposed to add a unit
 			{
 				BWAPI::Unit* unit = e.get_unit(); //Get the unit to add
 				link->add_unit(unit); //Then add it
+
 				break; //Then break
 			}
 		default: //If it's a default, handle it as an error.  This is never possible unless there is memory corruption in which case more things than just this will go wrong.
@@ -121,7 +151,7 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 void Events::add_event(Soar_Event event) //Function to add events
 {
 	SDL_mutexP(mu); //Lock the mutex to prevent simultanous access
-	event_queue.push_back(event); //Add the event to the internal queue
+	event_queue.push(event); //Add the event to the internal queue
 	SDL_mutexV(mu); //Then unlock the mutex
 }
 
@@ -185,7 +215,7 @@ int events_global_thread(void* data) //Global function called by SDL.  The void*
 
 int soar_command_thread(void* data) //Global function to execute soar commands on an agent
 {
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+	//SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
 	SetThreadName("Soar Command", GetCurrentThreadId());
 
@@ -198,7 +228,36 @@ int soar_command_thread(void* data) //Global function to execute soar commands o
 	return 0; //Return success (0).
 }
 
-SDL_mutex* Events::get_mutex() //Function to return the Event's mutex.
+void Events::add_event(BWAPI_Event event) //Add a BWAPI event
 {
-	return mu; //Return it.
+	SDL_mutexP(bwapi_mu);
+	if (bwapi_queue.find(event.get_unit()) == bwapi_queue.end())
+		bwapi_queue[event.get_unit()] = std::queue<BWAPI_Event>();
+
+	bwapi_queue[event.get_unit()].push(event);
+	SDL_mutexV(bwapi_mu);
 }
+
+void Events::bwapi_update() //WARNING, will not return until bwapi event queue is empty!
+{
+	SDL_mutexP(bwapi_mu);
+	
+	std::vector<BWAPI::Unit*> to_erase;
+
+	for (std::map<BWAPI::Unit*, std::queue<BWAPI_Event> >::iterator it = bwapi_queue.begin();it != bwapi_queue.end();it++)
+	{
+		BWAPI_Event e = it->second.front();
+		it->second.pop();
+
+		e.execute_command(this);
+
+		if (it->second.size() == 0)
+			to_erase.push_back(it->first);
+	}
+
+	for (std::vector<BWAPI::Unit*>::iterator it = to_erase.begin();it != to_erase.end();it++)
+		bwapi_queue.erase(bwapi_queue.find(*it));
+
+	SDL_mutexV(bwapi_mu);
+}
+

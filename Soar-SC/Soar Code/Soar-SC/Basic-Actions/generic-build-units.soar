@@ -5,9 +5,9 @@ sp {apply*build-unit
          ^location <id>
          ^type <type-id>)
 -->
-   (<o> ^build <b>)
+   (<o> ^build-unit <b>)
    (<b> ^type <type-id>
-        ^location <id>)
+        ^building <id>)
 }
 
 #Preference rules

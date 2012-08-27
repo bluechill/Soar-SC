@@ -2,18 +2,26 @@ sp {propose*build-barracks
    (state <s> ^name Soar-SC
               ^superstate nil
               ^io.input-link <i>
+              ^io.output-link <ol>
               ^buildings.building <b>)
    (<i> ^minerals <m> > 149
-        ^units.unit <u>
-        ^types.type <t>)
+        ^units.unit <build-unit>
+        ^types.type <t>
+        ^types.type <t-b>)
    (<t> ^name |Terran SCV|
         ^id <type-id>)
-   (<u> ^type <type-id>
+   (<build-unit> ^type <type-id>
         ^idle <idle>
         ^carrying <carrying>
         ^id <id>)
-   (<b> ^type <supply-id>
+   (<t-b> ^name |Terran Barracks|
+          ^id <barracks-id>)
+   (<b> ^type <barracks-id>
         ^count { <l> < 2 })
+   -{(<i> ^units.unit <u1>)
+     (<u1> ^constructing <barracks-id>)}
+   -{(<ol> ^build-building <b>)
+     (<b> ^type <barracks-id>)}
 -->
    (<s> ^operator <o> + =)
    (<o> ^name build-building
@@ -21,38 +29,12 @@ sp {propose*build-barracks
         ^idle <idle>
         ^carrying <carrying>
         ^location <l>
-        ^type <type-id>)
+        ^type <barracks-id>)
 }
 
-sp {elaboration*remove-build-barracks-operator-if-already-building
-   (state <s> ^operator <op> +
-              ^io.input-link <i>)
-   (<i> ^units.unit <u>
-        ^types.type <t>)
-   (<t> ^name |Terran Barracks|
-        ^id <type-id>)
-   (<op> ^name build-building
-         ^type <type-id>)
-   (<u> ^constructing <type-id>)
--->
-   (<s> ^operator <op> -)
-}
+#Preference rules
 
-sp {elaboration*remove-build-barracks-operator-if-not-yet-building-but-will
-   (state <s> ^operator <op> +
-              ^io.output-link.build <b>
-              ^io.input-link.types.type <t>)
-   (<t> ^name |Terran Barracks|
-        ^id <type-id>)
-   (<b> ^type <type-id>
-       -^status)
-   (<op> ^name build-building
-         ^type <type-id>)
--->
-   (<s> ^operator <op> -)
-}
-
-sp {elaboration*building-barracks-better-than-gather-minerals
+sp {pref*building-barracks-better-than-gather-minerals
    (state <s> ^operator <o1> +
               ^operator <o2> +
               ^io.input-link.types.type <t>)
@@ -64,6 +46,8 @@ sp {elaboration*building-barracks-better-than-gather-minerals
 -->
    (<s> ^operator <o1> > <o2>)
 }
+
+#Elaboration Rules
 
 sp {elaboration*barracks*location-to-x-y-0
    (state <s> ^operator <o> +
