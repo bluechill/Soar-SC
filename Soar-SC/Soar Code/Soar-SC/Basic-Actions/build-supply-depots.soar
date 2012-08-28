@@ -21,7 +21,8 @@ sp {propose*build-supply-depot
   -{ (<input-link> ^units.unit <scv>)
      (<scv> ^constructing <supply-depot-type-id>)}
   -{ (<output-link> ^build-building <command-to-build>)
-     (<command-to-build> ^type <supply-depot-type-id>)}
+     (<command-to-build> ^type <supply-depot-type-id>
+                        -^status)}
 -->
    (<state> ^operator <build-supply-depot-operator> + =)
    (<build-supply-depot-operator> ^name build-building

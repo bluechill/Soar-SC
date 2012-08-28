@@ -21,7 +21,8 @@ sp {propose*build-barracks
    -{(<i> ^units.unit <u1>)
      (<u1> ^constructing <barracks-id>)}
    -{(<ol> ^build-building <b>)
-     (<b> ^type <barracks-id>)}
+     (<b> ^type <barracks-id>
+         -^status)}
 -->
    (<s> ^operator <o> + =)
    (<o> ^name build-building

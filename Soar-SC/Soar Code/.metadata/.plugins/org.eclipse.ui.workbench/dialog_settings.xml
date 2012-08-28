@@ -7,6 +7,18 @@
 			<item value="/Users/bluechill/Developer/BWAPI/Soar-SC/Soar-SC/Soar-SC-bak"/>
 		</list>
 	</section>
+	<section name="org.eclipse.ui.internal.QuickAccess">
+		<item value="1080" key="dialogWidth"/>
+		<item value="625" key="dialogHeight"/>
+		<list key="orderedProviders">
+		</list>
+		<list key="textArray">
+		</list>
+		<list key="orderedElements">
+		</list>
+		<list key="textEntries">
+		</list>
+	</section>
 	<section name="WorkbenchPreferenceDialogSettings">
 		<item value="81" key="DIALOG_Y_ORIGIN"/>
 		<item value="411" key="DIALOG_X_ORIGIN"/>

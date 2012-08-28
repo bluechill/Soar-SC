@@ -1,6 +1,7 @@
 sp {propose*build-scv
    (state <s> ^name Soar-SC
-              ^io.input-link <i>)
+              ^io.input-link <i>
+              ^io.output-link <output-link>)
    (<i> ^minerals <m> > 49
         ^total-supplies <ts>
         ^used-supplies <us> < <ts>
@@ -14,6 +15,9 @@ sp {propose*build-scv
    (<b> ^type <command-center-id>
         ^id <id>
         ^full-queue 0)
+   -{ (<output-link> ^build-unit <command-to-build>)
+      (<command-to-build> ^type <type-id>
+                         -^status)}
 -->
    (<s> ^operator <o> + =)
    (<o> ^name build-unit
@@ -37,6 +41,9 @@ sp {propose*build-marines
    (<b> ^type <barracks-id>
         ^id <id>
         ^full-queue 0)
+   -{ (<output-link> ^build-unit <command-to-build>)
+      (<command-to-build> ^type <type-id>
+                         -^status)}
 -->
    (<s> ^operator <o> + =)
    (<o> ^name build-unit
