@@ -53,7 +53,12 @@ private:
 
 	std::queue<Soar_Event> event_queue; //Internal queue for the events
 
-	std::map<BWAPI::Unit*, std::queue<BWAPI_Event> > bwapi_queue;
+	typedef struct {
+		std::queue<BWAPI_Event> queue;
+		int count;
+	} BWAPI_Event_Struct;
+
+	std::map<BWAPI::Unit*, BWAPI_Event_Struct* > bwapi_queue;
 
 	Soar_Console* console; //Pointer for the console
 

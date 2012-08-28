@@ -57,7 +57,7 @@
         <Multisampling>0</Multisampling>
         <Resolution>
             <Width>622</Width>
-            <Height>481</Height>
+            <Height>480</Height>
         </Resolution>
         <Vertical_Sync>1</Vertical_Sync>
     </Video>

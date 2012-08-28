@@ -1,36 +1,36 @@
 sp {propose*build-barracks
-   (state <s> ^name Soar-SC
+   (state <state> ^name Soar-SC
               ^superstate nil
-              ^io.input-link <i>
-              ^io.output-link <ol>
-              ^buildings.building <b>)
-   (<i> ^minerals <m> > 149
-        ^units.unit <build-unit>
-        ^types.type <t>
-        ^types.type <t-b>)
-   (<t> ^name |Terran SCV|
-        ^id <type-id>)
+              ^io.input-link <input-link>
+              ^io.output-link <output-link>
+              ^buildings.building <building>)
+   (<input-link> ^minerals <minerals> > 149
+                 ^units.unit <build-unit>
+                 ^types.type <scv-type>
+                 ^types.type <barracks-type>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
    (<build-unit> ^type <type-id>
-        ^idle <idle>
-        ^carrying <carrying>
-        ^id <id>)
-   (<t-b> ^name |Terran Barracks|
-          ^id <barracks-id>)
-   (<b> ^type <barracks-id>
-        ^count { <l> < 2 })
-   -{(<i> ^units.unit <u1>)
-     (<u1> ^constructing <barracks-id>)}
-   -{(<ol> ^build-building <b>)
-     (<b> ^type <barracks-id>
-         -^status)}
+                 ^idle <idle>
+                 ^carrying <carrying>
+                 ^id <id>)
+   (<barracks-type> ^name |Terran Barracks|
+                    ^id <barracks-id>)
+   (<building> ^type <barracks-id>
+               ^count { <l> < 2 })
+   -{(<input-link> ^units.unit <unit>)
+     (<unit> ^constructing <barracks-id>)}
+   -{(<output-link> ^build-building <build-building>)
+     (<building-building> ^type <barracks-id>
+                         -^status)}
 -->
-   (<s> ^operator <o> + =)
-   (<o> ^name build-building
-        ^worker <id>
-        ^idle <idle>
-        ^carrying <carrying>
-        ^location <l>
-        ^type <barracks-id>)
+   (<state> ^operator <operator> + =)
+   (<operator> ^name build-building
+               ^worker <id>
+               ^idle <idle>
+               ^carrying <carrying>
+               ^location <l>
+               ^type <barracks-id>)
 }
 
 #Preference rules

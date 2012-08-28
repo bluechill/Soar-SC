@@ -77,7 +77,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		else if (name == "build-building") //Build command
 		{
 			string type = output_command->GetParameterValue("type");
-
+				
 			stringstream ss(type);
 			int type_id;
 

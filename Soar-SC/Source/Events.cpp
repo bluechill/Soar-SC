@@ -232,9 +232,12 @@ void Events::add_event(BWAPI_Event event) //Add a BWAPI event
 {
 	SDL_mutexP(bwapi_mu);
 	if (bwapi_queue.find(event.get_unit()) == bwapi_queue.end())
-		bwapi_queue[event.get_unit()] = std::queue<BWAPI_Event>();
+	{
+		bwapi_queue[event.get_unit()] = new BWAPI_Event_Struct;
+		bwapi_queue[event.get_unit()]->count = 0;
+	}
 
-	bwapi_queue[event.get_unit()].push(event);
+	bwapi_queue[event.get_unit()]->queue.push(event);
 	SDL_mutexV(bwapi_mu);
 }
 
@@ -244,15 +247,23 @@ void Events::bwapi_update() //WARNING, will not return until bwapi event queue i
 	
 	std::vector<BWAPI::Unit*> to_erase;
 
-	for (std::map<BWAPI::Unit*, std::queue<BWAPI_Event> >::iterator it = bwapi_queue.begin();it != bwapi_queue.end();it++)
+	for (std::map<BWAPI::Unit*, BWAPI_Event_Struct* >::iterator it = bwapi_queue.begin();it != bwapi_queue.end();it++)
 	{
-		BWAPI_Event e = it->second.front();
-		it->second.pop();
+		BWAPI_Event_Struct* es = it->second;
+		if (es->count <= 0)
+		{
+			BWAPI_Event e = es->queue.front();
+			es->queue.pop();
 
-		e.execute_command(this);
+			e.execute_command(this);
 
-		if (it->second.size() == 0)
-			to_erase.push_back(it->first);
+			es->count = 2;
+
+			if (es->queue.size() == 0)
+				to_erase.push_back(it->first);
+		}
+		else
+			es->count--;
 	}
 
 	for (std::vector<BWAPI::Unit*>::iterator it = to_erase.begin();it != to_erase.end();it++)
