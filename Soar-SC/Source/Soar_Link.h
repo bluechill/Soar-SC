@@ -80,6 +80,8 @@ public:
 
 	void output_to_test_file(std::string &output) { test_input_file << output; }
 
+	std::map<BWAPI::Unit*, Soar_Unit*> get_units() { return my_units; }
+
 private:
 	sml::Kernel* kernel; //Pointer to the soar kernel created
 	sml::Agent* agent; //Pointer to the soar agent created

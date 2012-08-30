@@ -1,0 +1,142 @@
+sp {propose*gather-minerals
+   (state <state> ^name Soar-SC
+                  ^superstate nil
+                  ^io.input-link <input-link>)
+   (<input-link> ^resources.mineral <mineral-field>
+                 ^units.unit <scv>
+                 ^types.type <scv-type>)
+   (<scv-type> ^name |Terran SCV|
+          ^id <scv-type-id>)
+   (<scv> ^type <scv-type-id>
+          ^idle 1
+          ^id <scv-id>
+          ^svsobject <scv-svsobject>
+          ^constructing -1)
+-->
+   (<state> ^operator <operator> + =)
+   (<operator> ^name gather-minerals
+               ^scv <scv-id>
+               ^svsobject <scv-svsobject>)
+}
+
+sp {apply*gather-minerals
+   (state <s> ^name Soar-SC
+              ^operator <gather-minerals-operator>
+              ^io.output-link <output-link>)
+   (<gather-minerals-operator> ^name gather-minerals
+                               ^mineral-field <mineral-field>
+                               ^scv <scv>)
+-->
+   (<output-link> ^move <move-command>)
+   (<move-command> ^object <scv>
+                   ^dest <mineral-field>)
+}
+
+sp {propose*initialize-gather-minerals-substate
+   (state <state> ^superstate <superstate>
+                 -^name
+                  ^impasse no-change)
+   (<superstate> ^name Soar-SC
+                 ^operator <operator>)
+   (<operator> ^name gather-minerals)
+-->
+   (<state> ^operator <init-operator> + >)
+   (<init-operator> ^name initialize-gather-minerals-substate)
+}
+
+sp {apply*initialize-gather-minerals-substate
+   (state <state> ^operator <init-operator>)
+   (<init-operator> ^name initialize-gather-minerals-substate)
+-->
+   (<state> ^name gather-minerals-substate)
+}
+
+sp {propose*locate-closest-mineral-field
+   (state <s> ^name gather-minerals-substate
+              ^superstate <superstate>)
+   (<superstate> ^name Soar-SC)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name locate-closest-mineral-field)
+}
+
+sp {apply*locate-closest-mineral-field
+   (state <state> ^operator.name locate-closest-mineral-field
+                  ^superstate <superstate>)
+   (<superstate> ^svs.command <commands>
+                 ^operator <gather-minerals-operator>)
+   (<gather-minerals-operator> ^name gather-minerals
+                               ^svsobject <svsobject>)
+-->
+   (<commands> ^extract <extract-command>)
+   (<extract-command> ^type closest ^a <node1> ^b <node2>)
+   (<node1> ^type combine
+            ^scv <scv>)
+   (<node2> ^type combine)
+   (<scv> ^type node ^id <svsobject>)
+}
+
+sp {apply*locate-closest-mineral-field-create-minerals
+   (state <state> ^operator.name locate-closest-mineral-field
+                  ^superstate <superstate>)
+   (<superstate> ^svs.command.extract <extract-command>
+                 ^io.input-link <input-link>)
+   (<extract-command> ^b <node1>)
+   (<input-link> ^resources.mineral <mineral-field>)
+   (<mineral-field> ^svsobject <svsobject>)
+-->
+   (<node1> ^mineral-field <mineral>)
+   (<mineral> ^type node ^id <svsobject>)
+}
+
+
+#sp {propose*apply-locate-closest-knowledge
+#   (state <state> ^name gather-minerals-substate
+#                  ^superstate <superstate>)
+#   (<superstate> ^svs.command.extract <extract-command>
+#                 ^operator <gather-minerals-operator>
+#                 ^io.input-link.resources.mineral <mineral-field>)
+#   (<extract-command> ^status success
+#                      ^result.record.params.b <svs-mineral-field>)
+#   (<mineral-field> ^svsobject <svs-mineral-field>
+#                    ^id <mineral-field-id>)
+#-->
+#   (<state> ^operator <apply-knowledge-operator> + >)
+#   (<apply-knowledge-operator> ^name apply-gather-minerals-knowledge
+#                               ^id <mineral-field-id>
+#                               ^svsobject <svs-mineral-field>)
+#}
+#
+#sp {apply*apply-locate-closest-knowledge
+#   (state <state> ^operator <apply-knowledge-operator>
+#                  ^superstate <superstate>)
+#   (<apply-knowledge-operator> ^name apply-gather-minerals-knowledge
+#                               ^id <mineral-field-id>
+#                               ^svsobject <svs-mineral-field>)
+#   (<superstate> ^svs.command <command>
+#                 ^operator <gather-minerals-operator>)
+#   (<command> ^extract <extract>)
+#   (<extract> ^status success
+#              ^result.record.params.b <svs-mineral-field>
+#              ^result.record.params.a <svs-scv>)
+#   (<gather-minerals-operator> ^svsobject <svs-scv>)
+#-->
+#   (<gather-minerals-operator> ^mineral-field <mineral-field-id>)
+#   (<command> ^extract <extract> -)
+#}
+
+sp {pref*result-of-svs-query-for-closest-mineral-field
+   (state <state> ^superstate <superstate>
+                  ^name gather-minerals-substate)
+   (<superstate> ^svs.command.extract <extract-command>
+                 ^operator <gather-minerals-operator>
+                 ^io.input-link.resources.mineral <mineral-field>
+                 ^io.input-link.units.unit <scv>)
+   (<extract-command> ^status success
+                      ^result.record.params.b <svs-mineral-field>)
+   (<mineral-field> ^svsobject <svs-mineral-field>
+                    ^id <mineral-field-id>)
+-->
+   (<gather-minerals-operator> ^mineral-field <mineral-field-id>)
+}
+ 

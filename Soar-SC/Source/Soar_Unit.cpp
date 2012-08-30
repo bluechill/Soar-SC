@@ -178,17 +178,32 @@ void Soar_Unit::update(sml::Agent* agent)
 
 		IntElement* constructing_int = unit_id->FindByAttribute("constructing", 0)->ConvertToIntElement();
 		constructing_int->Update(constructing);
+	}
 
-		if (build)
+	if (build)
+	{
+		WMElement* elem = build->build_id->FindByAttribute("status", 0);
+
+		if (elem == NULL && build->type.getID() == constructing)
 		{
-			if (build->type.getID() == constructing)
-				build->build_id->AddStatusComplete();
-			else
-				build->build_id->AddStatusError();
+			build->build_id->AddStatusComplete();
 
 			delete build;
 			build = NULL;
+
+			cerr << "NULLing Build from Complete!" << endl;
 		}
+		else if (elem == NULL && unit->isIdle())
+		{
+			build->build_id->AddStatusError();
+
+			delete build;
+			build = NULL;
+
+			cerr << "NULLing Build from ERROR!" << endl;
+		}
+		else
+			cerr << "Build exists.  Doing nothing though..., Orders: " << unit->getOrder().getName() << endl;
 	}
 
 	if (can_produce)
@@ -242,12 +257,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		string svs_command = "c " + svsobject_id + " p " + position + "\n";
 		link->output_to_test_file(svs_command);
 
-		Timer time;
-		time.StartTimer();
-
 		agent->SendSVSInput(svs_command);
-
-		cout << "SVS Position change time: " << time.GetTimeMiliseconds() << endl;
 	}
 }
 
@@ -317,8 +327,10 @@ void Soar_Unit::delete_unit(Events *event_queue, sml::Agent* agent)
 
 void Soar_Unit::will_build(build_struct* build)
 {
-	if (this->build == NULL || build == NULL)
+	if (this->build != NULL || build == NULL)
 		return;
 
 	this->build = build;
+
+	cerr << "Set build." << endl;
 }

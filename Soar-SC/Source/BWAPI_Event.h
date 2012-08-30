@@ -6,11 +6,12 @@
 #include "sml_Client.h"
 
 class Events;
+class Soar_Link;
 
 class BWAPI_Event
 {
 public:
-	BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id); //Construct a BWAPI_Event around a command for a unit
+	BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_Link* link); //Construct a BWAPI_Event around a command for a unit
 
 	BWAPI::Unit* get_unit();
 
@@ -19,6 +20,7 @@ public:
 private:
 	BWAPI::UnitCommand internal_command;
 	sml::Identifier *internal_id;
+	Soar_Link* internal_link;
 };
 
 #endif

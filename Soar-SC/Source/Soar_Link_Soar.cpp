@@ -35,10 +35,6 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	Timer time;
-	int i = 0;
-	time.StartTimer();
-
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
@@ -59,7 +55,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			if (unit != NULL && dest != NULL)
 			{
-				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command));
+				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, this));
 
 				//if (!unit->rightClick(dest)) //Execute move command in starcraft
 				//{
@@ -99,18 +95,11 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			l_y >> y;
 
 			Unit* worker = getUnitFromID(worker_id);
-			event_queue.add_event(BWAPI_Event(UnitCommand::stop(worker), NULL));
 
-			event_queue.add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command));
+			if (!worker->isIdle())
+				event_queue.add_event(BWAPI_Event(UnitCommand::stop(worker), NULL, this));
 
-			/*else
-			{
-				Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
-				build->type = unit_type;
-				build->build_id = output_command;
-
-				my_units[worker]->will_build(build);
-			}*/
+			event_queue.add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command, this));
 		}
 		else if (name == "build-unit")
 		{
@@ -127,7 +116,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			Unit* unit_location = getUnitFromID(location);
 
-			event_queue.add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command));
+			event_queue.add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command, this));
 
 			/*if (!unit_location->train(unit_type))
 			{
@@ -153,8 +142,6 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
-
-	cout << "Output Handler Time: " << time.GetTimeMiliseconds() << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
