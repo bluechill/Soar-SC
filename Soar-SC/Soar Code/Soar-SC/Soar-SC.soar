@@ -1,5 +1,6 @@
 pushd Basic-Actions
 source actions.soar
+source economy.soar
 popd
 
 source intialize-soar-sc.soar

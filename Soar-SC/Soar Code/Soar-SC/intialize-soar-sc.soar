@@ -18,7 +18,9 @@ sp {apply*initialize-soar-sc
           ^id <supply-id>)
 -->
    (<s> ^name Soar-SC
-   	    ^buildings <b>)
+   	    ^buildings <b>
+        ^minerals-used 0
+        ^gas-used 0)
    (<b> ^building <barracks>
         ^building <supply>)
    (<barracks> ^type <barracks-id>

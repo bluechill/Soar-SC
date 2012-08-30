@@ -1,13 +1,18 @@
 sp {propose*build-supply-depot
    (state <state> ^name Soar-SC
-              ^superstate nil
-              ^io.input-link <input-link>
-              ^io.output-link <output-link>
-              ^buildings.building <supply-depot-count>)
+                  ^superstate nil
+                  ^io.input-link <input-link>
+                  ^io.output-link <output-link>
+                  ^buildings.building <supply-depot-count>
+                  ^supply-depot-unit-total <sdut>
+                  ^minerals-budget <minerals-budget>
+                  ^gas-budget <gas-budget>)
    (<input-link> ^minerals <m> > 99
                  ^units.unit <scv>
                  ^types.type <scv-type>
-                 ^types.type <supply-depot-type>)
+                 ^types.type <supply-depot-type>
+                 ^total-supplies <ts>
+                 ^used-supplies { >= <sdut> <= <ts> <us> } )
    (<scv-type> ^name |Terran SCV|
                ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
@@ -15,7 +20,9 @@ sp {propose*build-supply-depot
           ^carrying <scv-carrying>
           ^id <scv-id>)
    (<supply-depot-type> ^name |Terran Supply Depot|
-                        ^id <supply-depot-type-id>)
+                        ^id <supply-depot-type-id>
+                        ^mineral-cost { <= <minerals-budget> }
+                        ^gas-cost { <= <gas-budget> })
    (<supply-depot-count> ^type <supply-depot-type-id>
                          ^count { <l> < 9 })
   -{ (<input-link> ^units.unit <scv>)
@@ -31,6 +38,13 @@ sp {propose*build-supply-depot
                                   ^carrying <scv-carrying>
                                   ^location <l>
                                   ^type <supply-depot-type-id>)
+}
+
+#Elaboration Rules
+sp {elaboration*supply-depot-unit-total
+   (state <state> ^io.input-link.total-supplies <ts>)
+-->
+   (<state> ^supply-depot-unit-total (- <ts> 5))
 }
 
 #Preference rules

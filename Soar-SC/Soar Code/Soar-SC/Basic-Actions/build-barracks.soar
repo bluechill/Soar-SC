@@ -3,7 +3,9 @@ sp {propose*build-barracks
               ^superstate nil
               ^io.input-link <input-link>
               ^io.output-link <output-link>
-              ^buildings.building <building>)
+              ^buildings.building <building>
+              ^minerals-budget <minerals-budget>
+              ^gas-budget <gas-budget>)
    (<input-link> ^minerals <minerals> > 149
                  ^units.unit <build-unit>
                  ^types.type <scv-type>
@@ -15,13 +17,15 @@ sp {propose*build-barracks
                  ^carrying <carrying>
                  ^id <id>)
    (<barracks-type> ^name |Terran Barracks|
-                    ^id <barracks-id>)
+                    ^id <barracks-id>
+                    ^mineral-cost { <= <minerals-budget> }
+                    ^gas-cost { <= <gas-budget> })
    (<building> ^type <barracks-id>
-               ^count { <l> < 2 })
+               ^count { <l> < 4 })
    -{(<input-link> ^units.unit <unit>)
      (<unit> ^constructing <barracks-id>)}
    -{(<output-link> ^build-building <build-building>)
-     (<building-building> ^type <barracks-id>
+     (<build-building> ^type <barracks-id>
                          -^status)}
 -->
    (<state> ^operator <operator> + =)
@@ -72,6 +76,32 @@ sp {elaboration*barracks*location-to-x-y-1
         ^type <type-id>
         ^location 1)
 -->
-   (<o> ^location-x 46
+   (<o> ^location-x 44
+        ^location-y 60)
+}
+
+sp {elaboration*barracks*location-to-x-y-2
+   (state <s> ^operator <o> +
+              ^io.input-link.types.type <t>)
+   (<t> ^name |Terran Barracks|
+        ^id <type-id>)
+   (<o> ^name build-building
+        ^type <type-id>
+        ^location 2)
+-->
+   (<o> ^location-x 48
+        ^location-y 60)
+}
+
+sp {elaboration*barracks*location-to-x-y-3
+   (state <s> ^operator <o> +
+              ^io.input-link.types.type <t>)
+   (<t> ^name |Terran Barracks|
+        ^id <type-id>)
+   (<o> ^name build-building
+        ^type <type-id>
+        ^location 3)
+-->
+   (<o> ^location-x 52
         ^location-y 60)
 }

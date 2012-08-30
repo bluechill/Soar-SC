@@ -1,7 +1,10 @@
 sp {apply*build-building
    (state <s> ^operator <op>
               ^io.output-link <o>
-              ^buildings.building <building>)
+              ^io.input-link.types.type <building-type>
+              ^buildings.building <building>
+              ^minerals-used <minerals-used>
+              ^gas-used <gas-used>)
    (<op> ^name build-building
          ^worker <id>
          ^location-x <x>
@@ -9,6 +12,10 @@ sp {apply*build-building
          ^type <type-id>)
    (<building> ^type <type-id>
                ^count <c>)
+   (<building-type> ^id <type-id>
+                    ^mineral-cost <mineral-cost>
+                    ^gas-cost <gas-cost>)
+   -{(<o> ^<attr>.status)}
 -->
    (<o> ^build-building <build>)
    (<build> ^type <type-id>
@@ -17,6 +24,10 @@ sp {apply*build-building
             ^worker <id>)
    (<building> ^count <c> -
                ^count (+ <c> 1))
+   (<s> ^minerals-used <minerals-used> -
+        ^gas-used <gas-used> -
+        ^minerals-used (+ <minerals-used> <mineral-cost>)
+        ^gas-used (+ <gas-used> <gas-cost>))
 }
 
 #Preference rules

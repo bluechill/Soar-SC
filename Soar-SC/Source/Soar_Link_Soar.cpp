@@ -196,6 +196,8 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 		type->CreateStringWME("name", (*it).getName().c_str()); //Create a string WME with the type's name
 		type->CreateIntWME("id", (*it).getID()); //Create an Int WME with the type's unique ID
+		type->CreateIntWME("mineral-cost", (*it).mineralPrice());
+		type->CreateIntWME("gas-cost", (*it).gasPrice());
 	}
 
 	//Terrain stuff, Put the entire terrain into SVS including barriers around the map so the agent doesn't think it can place stuff there
