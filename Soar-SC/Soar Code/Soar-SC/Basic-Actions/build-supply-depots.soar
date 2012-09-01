@@ -18,7 +18,8 @@ sp {propose*build-supply-depot
    (<scv> ^type <scv-type-id>
           ^idle <scv-idle>
           ^carrying <scv-carrying>
-          ^id <scv-id>)
+          ^id <scv-id>
+         -^scouting)
    (<supply-depot-type> ^name |Terran Supply Depot|
                         ^id <supply-depot-type-id>
                         ^mineral-cost { <= <minerals-budget> }

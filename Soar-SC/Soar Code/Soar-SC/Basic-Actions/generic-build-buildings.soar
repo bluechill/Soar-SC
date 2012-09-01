@@ -31,14 +31,14 @@ sp {apply*build-building
 }
 
 #Preference rules
-sp {pref*buildings-better-than-units
-   (state <s> ^operator <o1> +
-              ^operator <o2> +)
-   (<o1> ^name build-unit)
-   (<o2> ^name build-building)
--->
-   (<s> ^operator <o2> > <o2>)
-}
+#sp {pref*buildings-better-than-units
+#   (state <s> ^operator <o1> +
+#              ^operator <o2> +)
+#   (<o1> ^name build-unit)
+#   (<o2> ^name build-building)
+#-->
+#   (<s> ^operator <o2> > <o2>)
+#}
 
 sp {pref*idle-better-than-non-idle
    (state <s> ^operator <o1> +
@@ -58,23 +58,23 @@ sp {pref*idle-better-than-non-idle
    (<s> ^operator <o1> > <o2>)
 }
 
-sp {pref*non-carrying-better-than-carrying
-   (state <s> ^operator <o1> +
-              ^operator <o2> +
-              ^io.input-link.units <units>)
-   (<o1> ^name build-building
-         ^worker <id1>)
-   (<o2> ^name build-building
-         ^worker <id2>)
-   (<units> ^unit <u1>
-            ^unit <u2>)
-   (<u1> ^id <id1>
-         ^carrying 0)
-   (<u2> ^id <id2>
-         ^carrying 1)
--->
-   (<s> ^operator <o1> > <o2>)
-}
+#sp {pref*non-carrying-better-than-carrying
+#   (state <s> ^operator <o1> +
+#              ^operator <o2> +
+#              ^io.input-link.units <units>)
+#   (<o1> ^name build-building
+#         ^worker <id1>)
+#   (<o2> ^name build-building
+#         ^worker <id2>)
+#   (<units> ^unit <u1>
+#            ^unit <u2>)
+#   (<u1> ^id <id1>
+#         ^carrying 0)
+#   (<u2> ^id <id2>
+#         ^carrying 1)
+#-->
+#   (<s> ^operator <o1> > <o2>)
+#}
 
 sp {pref*force-wait-for-build-command-done
    (state <state> ^name Soar-SC

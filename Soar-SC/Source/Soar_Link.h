@@ -82,6 +82,8 @@ public:
 
 	std::map<BWAPI::Unit*, Soar_Unit*> get_units() { return my_units; }
 
+	void update_fogOfWar();
+
 private:
 	sml::Kernel* kernel; //Pointer to the soar kernel created
 	sml::Agent* agent; //Pointer to the soar agent created

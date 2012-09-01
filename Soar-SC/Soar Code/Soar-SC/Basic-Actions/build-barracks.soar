@@ -15,7 +15,8 @@ sp {propose*build-barracks
    (<build-unit> ^type <type-id>
                  ^idle <idle>
                  ^carrying <carrying>
-                 ^id <id>)
+                 ^id <id>
+                -^scouting)
    (<barracks-type> ^name |Terran Barracks|
                     ^id <barracks-id>
                     ^mineral-cost { <= <minerals-budget> }

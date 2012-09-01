@@ -449,3 +449,72 @@ Unit* Soar_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
 {
 	return Broodwar->getUnit(id);
 }
+
+void Soar_Link::update_fogOfWar()
+{
+	size_t mapSize_x = Broodwar->mapWidth();
+	size_t mapSize_y = Broodwar->mapHeight();
+
+	static vector<pair<int, int> > visible_tiles;
+
+	for (size_t x = 0;x < mapSize_x;x++)
+	{
+		for (size_t y = 0;y < mapSize_y;y++)
+		{
+			int id_x = x - x % 4;
+			int id_y = size_t(flip_one_d_point(float(y - y % 4), false));
+
+			pair<int, int> block = make_pair(id_x, id_y);
+
+			bool found = false;
+			for (vector<pair<int, int> >::iterator it = visible_tiles.begin();it != visible_tiles.end();it++)
+			{
+				if (it->first == id_x && it->second == id_y)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (found)
+				continue;
+
+			if (Broodwar->isVisible(x, y))
+			{
+				Identifier* input_link = agent->GetInputLink();
+				WMElement* elem = input_link->FindByAttribute("fog-tiles", 0);
+
+				assert(elem == NULL);
+
+				Identifier* fog_tiles = elem->ConvertToIdentifier();
+
+				std::stringstream ss_x;
+				ss_x << id_x;
+				std::stringstream ss_y;
+				ss_y << id_y;
+				
+				std::string svsobject_id = "fog" + ss_x.str() + ":" + ss_y.str();
+
+				int children = fog_tiles->GetNumberChildren();
+				for (int i = 0;i < children;i++)
+				{
+					Identifier* child = fog_tiles->GetChild(i)->ConvertToIdentifier();
+
+					std::string svs_id = child->GetParameterValue("svsobject");
+					if (svs_id != svsobject_id)
+						continue;
+
+					event_queue.add_event(Soar_Event(fog_tiles->GetChild(i)));
+
+					std::string command = "d " + svsobject_id;
+					
+					event_queue.add_event(Soar_Event(command, true));
+
+					visible_tiles.push_back(block);
+
+					break;
+				}
+			}
+		}
+	}
+}

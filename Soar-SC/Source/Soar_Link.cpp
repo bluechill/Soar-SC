@@ -39,7 +39,7 @@ Soar_Link::~Soar_Link() //Deconstructor
 {
 	should_die = true; //Tell the soar agent run thread to die if it is still running
 
-	agent->ExecuteCommandLine("halt"); //Execute a halt command to halt the agent
+	event_queue.add_event(Soar_Event("stop", false)); //Execute a stop command to stop the agent
 
 	SDL_WaitThread(soar_thread, NULL); //Wait for the soar agent run thread to die if it's till running
 	SDL_DestroyMutex(mu); //Then destroy the mutex

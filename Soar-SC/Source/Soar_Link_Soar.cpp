@@ -35,28 +35,40 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
+	Timer timer;
+	timer.StartTimer();
+
 	int commands = a->GetNumberCommands();
+
+	cout << "Time (0): " << timer.GetTimeMiliseconds() << endl;
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
 	{
 		int j = 0;
 
+		cout << "Time (1-0): " << timer.GetTimeMiliseconds() << endl;
+
 		Identifier* output_command = a->GetCommand(i);
 
         string name  = output_command->GetCommandName();
+
+		cout << "Time (1-1): " << timer.GetTimeMiliseconds() << endl;
 
 		if (name == "move") //Move command
 		{
 			string object_to_move = output_command->GetParameterValue("object");
 			string destination = output_command->GetParameterValue("dest");
-
+			
 			Unit* unit = getUnitFromID(object_to_move);
 			Unit* dest = getUnitFromID(destination);
 
+			
 			if (unit != NULL && dest != NULL)
 			{
+				
 				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, this));
 
+				
 				//if (!unit->rightClick(dest)) //Execute move command in starcraft
 				//{
 				//	Error e = Broodwar->getLastError();
@@ -69,11 +81,13 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			}
 			else
 				output_command->AddStatusError();
+
+			cout << "Time (1-2-0): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-building") //Build command
 		{
 			string type = output_command->GetParameterValue("type");
-				
+			
 			stringstream ss(type);
 			int type_id;
 
@@ -100,6 +114,8 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				event_queue.add_event(BWAPI_Event(UnitCommand::stop(worker), NULL, this));
 
 			event_queue.add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command, this));
+
+			cout << "Time (1-2-1): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-unit")
 		{
@@ -118,6 +134,8 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			event_queue.add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command, this));
 
+			cout << "Time (1-2-2): " << timer.GetTimeMiliseconds() << endl;
+
 			/*if (!unit_location->train(unit_type))
 			{
 				Error e = Broodwar->getLastError();
@@ -130,18 +148,32 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		}
 	}
 
+	cout << "Time (1-3): " << timer.GetTimeMiliseconds() << endl;
+
 	//Update the units and resources
 	SDL_mutexP(mu);
 
+	cout << "Time (1-4): " << timer.GetTimeMiliseconds() << endl;
+
 	update_units();
+
+	cout << "Time (1-5): " << timer.GetTimeMiliseconds() << endl;
 
 	update_resources();
 
+	cout << "Time (1-6): " << timer.GetTimeMiliseconds() << endl;
+
+	update_fogOfWar();
+
 	event_queue.update(); //Then have the events in the queue execute
+
+	cout << "Time (1-7): " << timer.GetTimeMiliseconds() << endl;
 
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
+
+	cout << "Total Time: " << timer.GetTimeMiliseconds() << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
@@ -243,8 +275,6 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	vector<vector<bool> > map; //Variable for containing the map and whether a tile is walkable or not
 	size_t map_size_x = Broodwar->mapWidth() * 4; //Set the size to the number of walkable tiles, build tiles times 4
 	size_t map_size_y = Broodwar->mapHeight() * 4; //Same thing as above
-
-	vector<vector<bool> > build_tiles_map; //Low res buildabilty map
 
 	for (int y = 0;y < int(map_size_y);y++) //Loop through every tile in the map and map the tile to a boolean in the vector vector of booleans.
 	{
@@ -406,11 +436,47 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 					for (int i = 3;i >= 0;i--)
 					{
 						for (int j = 3;j >= 0;j--)
-							map[y-i][x-j] = false;
+						{
+							int x_val = x-j;
+							int y_val = y-i;
+
+							if (x_val < 0)
+								x_val = 0;
+
+							if (y_val < 0)
+								y_val = 0;
+
+							map[y_val][x_val] = false;
+						}
 					}
 					continue;
 				}
 			}
+		}
+	}
+
+	size_t fogOfWarSize_x = Broodwar->mapWidth();
+	size_t fogOfWarSize_y = Broodwar->mapHeight();
+
+	Identifier* fog_tiles = input_link->CreateIdWME("fog-tiles")->ConvertToIdentifier();
+
+	for (size_t x = 0;x < fogOfWarSize_x;x += 4)
+	{
+		for (size_t y = 0;y < fogOfWarSize_y;y += 4)
+		{
+			std::stringstream ss_x;
+			std::stringstream ss_y;
+			ss_x << x;
+			ss_y << size_t(flip_one_d_point(float(y), false));
+
+			std::string svsobject_id = "fog" + ss_x.str() + ":" + ss_y.str();
+
+			std::string svs_command = "a " + svsobject_id + " world v " + unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
+			agent->SendSVSInput(svs_command);
+
+			Identifier* fogTile = fog_tiles->CreateIdWME("tile")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
+			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
+			fogTile->CreateIntWME("timeout", 0); //Create an Int WME with the type's unique ID
 		}
 	}
 
@@ -420,6 +486,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 	update_units();
 	update_resources();
+	update_fogOfWar();
 
 	if (wait_for_analyzer)
 	{

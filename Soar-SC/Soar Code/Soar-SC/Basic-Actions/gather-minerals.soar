@@ -10,6 +10,7 @@ sp {propose*gather-minerals
           ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
           ^idle 1
+         -^scouting
           ^id <scv-id>
           ^svsobject <scv-svsobject>
           ^constructing -1)
