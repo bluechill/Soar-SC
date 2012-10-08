@@ -10,12 +10,22 @@ sp {propose*new-scout
          -^scouting
           ^idle 1
           ^id <scv-id>)
-   -{(<input-link> ^unit.unit <other-scv>)
-     (<other-scv> ^scouting 1)}
+   -{(<input-link> ^units.unit <other-scv>)
+     (<other-scv> ^scouting)}
 -->
    (<s> ^operator <scout-operator> + >)
    (<scout-operator> ^name scout
                      ^id <scv-id>)
+}
+
+sp {pref*all-scouts-are-equal
+   (state <s> ^name Soar-SC
+              ^operator <scout1> +
+              ^operator <scout2> +)
+   (<scout1> ^name scout)
+   (<scout2> ^name scout)
+-->
+   (<s> ^operator <scout1> = <scout2>)
 }
 
 sp {apply*new-scout
