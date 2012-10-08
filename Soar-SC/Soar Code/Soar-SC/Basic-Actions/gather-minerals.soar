@@ -102,42 +102,6 @@ sp {apply*locate-closest-mineral-field-create-minerals
    (<mineral> ^type node ^id <svsobject>)
 }
 
-
-#sp {propose*apply-locate-closest-knowledge
-#   (state <state> ^name gather-minerals-substate
-#                  ^superstate <superstate>)
-#   (<superstate> ^svs.command.extract <extract-command>
-#                 ^operator <gather-minerals-operator>
-#                 ^io.input-link.resources.mineral <mineral-field>)
-#   (<extract-command> ^status success
-#                      ^result.record.params.b <svs-mineral-field>)
-#   (<mineral-field> ^svsobject <svs-mineral-field>
-#                    ^id <mineral-field-id>)
-#-->
-#   (<state> ^operator <apply-knowledge-operator> + >)
-#   (<apply-knowledge-operator> ^name apply-gather-minerals-knowledge
-#                               ^id <mineral-field-id>
-#                               ^svsobject <svs-mineral-field>)
-#}
-#
-#sp {apply*apply-locate-closest-knowledge
-#   (state <state> ^operator <apply-knowledge-operator>
-#                  ^superstate <superstate>)
-#   (<apply-knowledge-operator> ^name apply-gather-minerals-knowledge
-#                               ^id <mineral-field-id>
-#                               ^svsobject <svs-mineral-field>)
-#   (<superstate> ^svs.command <command>
-#                 ^operator <gather-minerals-operator>)
-#   (<command> ^extract <extract>)
-#   (<extract> ^status success
-#              ^result.record.params.b <svs-mineral-field>
-#              ^result.record.params.a <svs-scv>)
-#   (<gather-minerals-operator> ^svsobject <svs-scv>)
-#-->
-#   (<gather-minerals-operator> ^mineral-field <mineral-field-id>)
-#   (<command> ^extract <extract> -)
-#}
-
 sp {pref*result-of-svs-query-for-closest-mineral-field
    (state <state> ^name Soar-SC
                   ^svs.command <command>

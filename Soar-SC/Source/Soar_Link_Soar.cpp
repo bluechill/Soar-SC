@@ -35,54 +35,104 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	Timer timer;
-	timer.StartTimer();
+	//Timer timer;
+	//timer.StartTimer();
 
 	int commands = a->GetNumberCommands();
 
-	cout << "Time (0): " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Time (0): " << timer.GetTimeMiliseconds() << endl;
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
 	{
 		int j = 0;
 
-		cout << "Time (1-0): " << timer.GetTimeMiliseconds() << endl;
+		//cout << "Time (1-0): " << timer.GetTimeMiliseconds() << endl;
 
 		Identifier* output_command = a->GetCommand(i);
 
         string name  = output_command->GetCommandName();
 
-		cout << "Time (1-1): " << timer.GetTimeMiliseconds() << endl;
+		//cout << "Time (1-1): " << timer.GetTimeMiliseconds() << endl;
 
 		if (name == "move") //Move command
 		{
 			string object_to_move = output_command->GetParameterValue("object");
-			string destination = output_command->GetParameterValue("dest");
-			
 			Unit* unit = getUnitFromID(object_to_move);
-			Unit* dest = getUnitFromID(destination);
 
-			
-			if (unit != NULL && dest != NULL)
+			bool action = true;
+
+			string destination;
+			Unit* dest;
+
+			float x;
+			float y;
+
+			WMElement* destination_wme = output_command->FindByAttribute("dest", 0);
+			WMElement* location_string_wme = output_command->FindByAttribute("location-string", 0);
+			if (destination_wme == NULL && location_string_wme == NULL)
 			{
-				
-				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, this));
+				IntElement* x_wme = output_command->FindByAttribute("x", 0)->ConvertToIntElement();
+				IntElement* y_wme = output_command->FindByAttribute("y", 0)->ConvertToIntElement();
 
-				
-				//if (!unit->rightClick(dest)) //Execute move command in starcraft
-				//{
-				//	Error e = Broodwar->getLastError();
-				//	cerr << "Error (BWAPI) (RightClick-" << dest->getID() << "): " << e.toString() << endl;
+				x = float(x_wme->GetValue());
+				y = float(y_wme->GetValue());
 
-				//	output_command->AddStatusError();
-				//}
-				//else
-				//	output_command->AddStatusComplete();
+				cout << "Moving " << unit->getType().getName() << " to X: " << x << " " << "Y: " << y << " from " << unit->getPosition().x << " " << flip_one_d_point(unit->getPosition().y, false) << endl;
+
+				action = false;
+			}
+			else if (destination_wme == NULL && location_string_wme != NULL)
+			{
+				string location = location_string_wme->ConvertToStringElement()->GetValue();
+
+				cout << "Fog Tile Location: " << location << endl;
+
+				int x_start = location.find(':', 0)+1;
+				int x_end = location.find(':', x_start);
+				int y_start = x_end+1;
+				int y_end = location.size();
+
+				string x_cord = location.substr(x_start, x_end-x_start);
+				string y_cord = location.substr(y_start, y_end-y_start);
+
+				cout << "Moving " << unit->getType().getName() << " to X: " << x_cord << " " << "Y: " << y_cord << " from " << unit->getPosition().x/32.0f << " " << flip_one_d_point(unit->getPosition().y, false)/32.0f << endl;
+
+				x = 0;
+				y = 0;
+
+				stringstream ss;
+				ss << x_cord;
+				ss >> x;
+
+				stringstream ss2;
+
+				ss2 << y_cord;
+				ss2 >> y;
+
+				action = false;
 			}
 			else
-				output_command->AddStatusError();
+			{
+				destination = output_command->GetParameterValue("dest");
+				dest = getUnitFromID(destination);
+			}
 
-			cout << "Time (1-2-0): " << timer.GetTimeMiliseconds() << endl;
+			y = flip_one_d_point(y, false)*32.0f;
+			x *= 32.0f;
+
+			cout << "Moving to final position (" << x << "," << y << ") from (" << unit->getPosition().x << "," << unit->getPosition().y << ")" << endl;
+			
+			if (action)
+			{
+				if (unit != NULL && dest != NULL)
+					event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, this));
+				else
+					output_command->AddStatusError();
+			}
+			else
+				event_queue.add_event(BWAPI_Event(UnitCommand::rightClick(unit, Position(x,y)), output_command, this));
+
+			//cout << "Time (1-2-0): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-building") //Build command
 		{
@@ -115,7 +165,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			event_queue.add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command, this));
 
-			cout << "Time (1-2-1): " << timer.GetTimeMiliseconds() << endl;
+			//cout << "Time (1-2-1): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-unit")
 		{
@@ -134,7 +184,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			event_queue.add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command, this));
 
-			cout << "Time (1-2-2): " << timer.GetTimeMiliseconds() << endl;
+			//cout << "Time (1-2-2): " << timer.GetTimeMiliseconds() << endl;
 
 			/*if (!unit_location->train(unit_type))
 			{
@@ -148,32 +198,32 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		}
 	}
 
-	cout << "Time (1-3): " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Time (1-3): " << timer.GetTimeMiliseconds() << endl;
 
 	//Update the units and resources
 	SDL_mutexP(mu);
 
-	cout << "Time (1-4): " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Time (1-4): " << timer.GetTimeMiliseconds() << endl;
 
 	update_units();
 
-	cout << "Time (1-5): " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Time (1-5): " << timer.GetTimeMiliseconds() << endl;
 
 	update_resources();
 
-	cout << "Time (1-6): " << timer.GetTimeMiliseconds() << endl;
+	update_fogOfWar(0.0f, 0.0f, float(Broodwar->mapWidth()), float(Broodwar->mapHeight()));
 
-	update_fogOfWar();
+	//cout << "Time (1-7): " << timer.GetTimeMiliseconds() << endl;
 
 	event_queue.update(); //Then have the events in the queue execute
 
-	cout << "Time (1-7): " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Time (1-8): " << timer.GetTimeMiliseconds() << endl;
 
 	SDL_mutexV(mu);
 
 	test_input_file << "--------------------------------------------------" << endl;
 
-	cout << "Total Time: " << timer.GetTimeMiliseconds() << endl;
+	//cout << "Total Time: " << timer.GetTimeMiliseconds() << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
@@ -469,12 +519,12 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 			ss_x << x;
 			ss_y << size_t(flip_one_d_point(float(y), false));
 
-			std::string svsobject_id = "fog" + ss_x.str() + ":" + ss_y.str();
+			std::string svsobject_id = "fog:" + ss_x.str() + ":" + ss_y.str();
 
 			std::string svs_command = "a " + svsobject_id + " world v " + unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
 			agent->SendSVSInput(svs_command);
 
-			Identifier* fogTile = fog_tiles->CreateIdWME("tile")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
+			Identifier* fogTile = fog_tiles->CreateIdWME(string(ss_x.str() + ":" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
 			fogTile->CreateIntWME("timeout", 0); //Create an Int WME with the type's unique ID
 		}
@@ -486,7 +536,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 	update_units();
 	update_resources();
-	update_fogOfWar();
+	update_fogOfWar(0.0f, 0.0f, float(Broodwar->mapWidth()), float(Broodwar->mapHeight()));
 
 	if (wait_for_analyzer)
 	{

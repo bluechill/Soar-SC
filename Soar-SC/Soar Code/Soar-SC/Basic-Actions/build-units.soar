@@ -27,7 +27,8 @@ sp {propose*build-scv
 
 sp {propose*build-marines
    (state <s> ^name Soar-SC
-              ^io.input-link <i>)
+              ^io.input-link <i>
+              ^io.output-link <output-link>)
    (<i> ^minerals <m> > 49
         ^total-supplies <ts>
         ^used-supplies <us> < <ts>

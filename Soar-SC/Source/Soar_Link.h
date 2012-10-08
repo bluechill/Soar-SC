@@ -82,7 +82,7 @@ public:
 
 	std::map<BWAPI::Unit*, Soar_Unit*> get_units() { return my_units; }
 
-	void update_fogOfWar();
+	void update_fogOfWar(float x_start, float y_start, float size_x, float size_y);
 
 private:
 	sml::Kernel* kernel; //Pointer to the soar kernel created

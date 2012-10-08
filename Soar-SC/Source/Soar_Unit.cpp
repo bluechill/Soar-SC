@@ -238,6 +238,47 @@ void Soar_Unit::update(sml::Agent* agent)
 	pos.y = Soar_Link::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
 	if (this->pos.x != pos.x || this->pos.y != pos.y)
 	{
+		/*float left_boundary = 0;
+		float right_boundary = 0;
+		float top_boundary = 0;
+		float bottom_boundary = 0;
+
+		if (pos.x > this->pos.x)
+		{
+			right_boundary = pos.x;
+			left_boundary = this->pos.x;
+		}
+		else
+		{
+			right_boundary = this->pos.x;
+			left_boundary = pos.x;
+		}
+
+		if (pos.y > this->pos.y)
+		{
+			top_boundary = pos.y;
+			bottom_boundary = this->pos.y;
+		}
+		else
+		{
+			top_boundary = this->pos.y;
+			bottom_boundary = pos.y;
+		}
+
+		float sight = (float(this->unit->getType().sightRange()) / 32.0f) + 4.0f;
+
+		right_boundary += sight;
+		left_boundary -= sight;
+		top_boundary += sight;
+		bottom_boundary -= sight;
+
+		float x_start = left_boundary;
+		float y_start =  Soar_Link::flip_one_d_point(bottom_boundary, false);
+		float x_size = right_boundary - left_boundary;
+		float y_size = top_boundary - bottom_boundary;
+
+		link->update_fogOfWar(pos.x - sight/2, pos.y - sight/2, sight, sight);*/
+
 		this->pos = pos;
 
 		if (unit_id == NULL)
@@ -248,7 +289,6 @@ void Soar_Unit::update(sml::Agent* agent)
 			cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 			return;
 		}
-
 
 		stringstream ss;
 		ss << pos.x << " " << pos.y << " 0";

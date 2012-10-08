@@ -9,7 +9,7 @@ Soar_Link::Soar_Link() //Constructor for the Soar Link class
 	cerr_redirect("bwapi-data/logs/stderr.txt"), //Initialize the replacement cerr buffer with the path of the cerr log file
 	test_input_file("bwapi-data/logs/test_input.txt"), //Initialize the test SVS input buffer with the path of the test svs log file
 	event_queue(NULL, this) //Initialize the event queue with a temporary NULL pointer for the console and a this pointer for the Soar Link
-{	
+{
 	cout_orig_buffer = cout.rdbuf(); //Set the original cout buffer to the backup one
 	cerr_orig_buffer = cerr.rdbuf(); //Set the original cerr buffer to the backup one
 
@@ -27,7 +27,7 @@ Soar_Link::Soar_Link() //Constructor for the Soar Link class
 	mu = SDL_CreateMutex(); //Create a new mutex to prevent simultanous access to shared objects
 	
 	//console = new Soar_Console(&event_queue); //Create a new soar console with a pointer to the event queue
-	console = NULL;
+	console = NULL;	
 
 	event_queue.set_console(console); //Set the event queue pointer to the soar console pointer
 

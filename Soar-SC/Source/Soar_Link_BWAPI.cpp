@@ -8,6 +8,8 @@
 #include <set> //For std::set
 #include <sstream> //For std::stringstream
 
+#include "Timer.h"
+
 using namespace BWAPI; //Use the namespaces BWAPI, std, sml to allow the use of string instead of std::string or Agent* instead of sml::Agent* etc.
 using namespace std;
 using namespace sml;
@@ -450,71 +452,87 @@ Unit* Soar_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
 	return Broodwar->getUnit(id);
 }
 
-void Soar_Link::update_fogOfWar()
+void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, float size_y)
 {
-	size_t mapSize_x = Broodwar->mapWidth();
-	size_t mapSize_y = Broodwar->mapHeight();
+	//cout << "Fog of War Function time:" << endl;
+
+	//Timer timer;
+	//timer.StartTimer();
+
+	//cout << "FTime 0: " << timer.GetTimeMiliseconds() << endl;
 
 	static vector<pair<int, int> > visible_tiles;
 
-	for (size_t x = 0;x < mapSize_x;x++)
+	//cout << "FTime 1: " << timer.GetTimeMiliseconds() << endl;
+
+	Identifier* input_link = agent->GetInputLink();
+	WMElement* elem = input_link->FindByAttribute("fog-tiles", 0);
+
+	//cout << "FTime 1-1: " << timer.GetTimeMiliseconds() << endl;
+
+	assert(elem == NULL);
+
+	Identifier* fog_tiles = elem->ConvertToIdentifier();
+
+	//cout << "FTime 1-2: " << timer.GetTimeMiliseconds() << endl;
+
+	for (size_t x = size_t(x_start);x < size_x+x_start;x++)
 	{
-		for (size_t y = 0;y < mapSize_y;y++)
+		for (size_t y = size_t(y_start);y < size_y+y_start;y++)
 		{
+	//		cout << "FTime 2-0: " << timer.GetTimeMiliseconds() << endl;
+
 			int id_x = x - x % 4;
 			int id_y = size_t(flip_one_d_point(float(y - y % 4), false));
 
+		//	cout << "FTime 2-1: " << timer.GetTimeMiliseconds() << endl;
+
 			pair<int, int> block = make_pair(id_x, id_y);
 
-			bool found = false;
-			for (vector<pair<int, int> >::iterator it = visible_tiles.begin();it != visible_tiles.end();it++)
-			{
-				if (it->first == id_x && it->second == id_y)
-				{
-					found = true;
-					break;
-				}
-			}
+			//cout << "FTime 2-2: " << timer.GetTimeMiliseconds() << endl;
 
-			if (found)
+			if (find(visible_tiles.begin(), visible_tiles.end(), block) != visible_tiles.end())
 				continue;
 
-			if (Broodwar->isVisible(x, y))
+			//cout << "FTime 2-3: " << timer.GetTimeMiliseconds() << endl;
+
+			if (Broodwar->isExplored(x, y) || Broodwar->isVisible(x,y))
 			{
-				Identifier* input_link = agent->GetInputLink();
-				WMElement* elem = input_link->FindByAttribute("fog-tiles", 0);
-
-				assert(elem == NULL);
-
-				Identifier* fog_tiles = elem->ConvertToIdentifier();
+			//	cout << "FTime 2-4/5: " << timer.GetTimeMiliseconds() << endl;
 
 				std::stringstream ss_x;
 				ss_x << id_x;
 				std::stringstream ss_y;
 				ss_y << id_y;
-				
-				std::string svsobject_id = "fog" + ss_x.str() + ":" + ss_y.str();
 
-				int children = fog_tiles->GetNumberChildren();
-				for (int i = 0;i < children;i++)
-				{
-					Identifier* child = fog_tiles->GetChild(i)->ConvertToIdentifier();
+				//cout << "FTime 2-6: " << timer.GetTimeMiliseconds() << endl;
 
-					std::string svs_id = child->GetParameterValue("svsobject");
-					if (svs_id != svsobject_id)
-						continue;
+				WMElement* tile_wme = fog_tiles->FindByAttribute(string(ss_x.str() + ":" + ss_y.str()).c_str(), 0);
 
-					event_queue.add_event(Soar_Event(fog_tiles->GetChild(i)));
+				if (tile_wme == NULL)
+					continue; //Ignore it, probably should but oh well, TODO: fix ME!
 
-					std::string command = "d " + svsobject_id;
-					
-					event_queue.add_event(Soar_Event(command, true));
+				Identifier* child = tile_wme->ConvertToIdentifier();
 
-					visible_tiles.push_back(block);
+				//cout << "FTime 2-7/8: " << timer.GetTimeMiliseconds() << endl;
 
-					break;
-				}
+				event_queue.add_event(Soar_Event(child));
+
+				std::string svsobject_id = "fog:" + ss_x.str() + ":" + ss_y.str();
+
+				std::string command = "d " + svsobject_id;
+
+				event_queue.add_event(Soar_Event(command, true));
+
+				visible_tiles.push_back(block);
+				sort(visible_tiles.begin(), visible_tiles.end());
+
+				//cout << "FTime 2-9: " << timer.GetTimeMiliseconds() << endl;
+
+				//cout << "FTime 2-10: " << timer.GetTimeMiliseconds() << endl;
 			}
 		}
 	}
+
+	//cout << "FTime 3: " << timer.GetTimeMiliseconds() << endl;
 }
