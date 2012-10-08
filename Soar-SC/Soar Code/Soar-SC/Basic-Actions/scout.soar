@@ -42,6 +42,27 @@ sp {propose*scouting
                      ^id <scv-id>)
 }
 
+sp {pref*stop-scouting-if-none-left
+   (state <s> ^name Soar-SC
+              ^operator <scout-operator> +
+              ^io.input-link.fog-tiles <fog-tiles>)
+   -{(<fog-tiles> ^<attr> <tile>)
+     (<tile> -^timeout)}
+	(<scout-operator> ^name scouting)
+-->
+   (<s> ^operator <scout-operator> -)
+}
+
+sp {pref*stop-scouting-if-none-left-that-arent-timed-out
+   (state <s> ^name Soar-SC
+              ^operator <scout-operator> +
+              ^io.input-link.fog-tiles <fog-tiles>)
+   -{(<fog-tiles> ^<attr> <tile>)}
+	(<scout-operator> ^name scouting)
+-->
+   (<s> ^operator <scout-operator> -)
+}
+
 #substate
 
 sp {propose*initialize-scouting-substate
