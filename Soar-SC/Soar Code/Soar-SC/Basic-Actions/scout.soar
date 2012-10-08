@@ -108,7 +108,7 @@ sp {apply*find-closest-fog-tile-create-tile
                       ^b <node2>)
    (<fog-tiles> ^<attr> <tile>)
    (<tile> ^svsobject <id>
-           ^timeout 0)
+          -^timeout)
 -->
    (<node2> ^tile <tile-svs>)
    (<tile-svs> ^type node ^id <id>)
@@ -139,13 +139,11 @@ sp {apply*check-prior-use-of-scout-tile-scout-incorrect
    (<scv> ^last-scout-tile <tile>)
    (<check-operator> ^tile <tile>)
    (<scout-operator> ^name scouting)
-   (<fog-tile> ^timeout <timeout>
-               ^svsobject <tile>)
+   (<fog-tile> ^svsobject <tile>)
    (<extract> ^type closest
               ^status success)
 -->
-   (<fog-tile> ^timeout <timeout> -
-               ^timeout 1)
+   (<fog-tile> ^timeout 1)
    (<command> ^extract <extract> -)
 }
 

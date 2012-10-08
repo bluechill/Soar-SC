@@ -526,7 +526,6 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 			Identifier* fogTile = fog_tiles->CreateIdWME(string(ss_x.str() + ":" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
-			fogTile->CreateIntWME("timeout", 0); //Create an Int WME with the type's unique ID
 		}
 	}
 
