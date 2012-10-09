@@ -5,6 +5,7 @@ source build-supply-depots.soar
 source build-barracks.soar
 source generic-build-operators.soar
 source scout.soar
+source attack.soar
 
 sp {remove*output-commands
    (state <s> ^name Soar-SC

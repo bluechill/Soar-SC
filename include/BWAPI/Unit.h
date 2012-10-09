@@ -4,6 +4,7 @@
 #include <BWAPI/UnitType.h>
 #include <BWAPI/Filters.h>
 #include <BWAPI/UnaryFilter.h>
+#include <BWAPI/Interface.h>
 
 namespace BWAPI
 {
@@ -42,7 +43,7 @@ namespace BWAPI
   /// However for units that were owned by the player, getPlayer and getType will continue to work for units
   /// that have been destroyed.
   /// @~
-  class Unit
+  class Unit : public Interface
   {
   protected:
     virtual ~Unit() {};
@@ -96,8 +97,7 @@ namespace BWAPI
     /// @~English
     /// Retrieves the unit's type.
     ///
-    /// @retval UnitTypes::Unknown if this unit is inaccessible 
-    /// or cannot be determined.
+    /// @retval UnitTypes::Unknown if this unit is inaccessible or cannot be determined.
     ///
     /// @returns A UnitType objects representing the unit's type.
     /// @~
@@ -105,8 +105,7 @@ namespace BWAPI
     virtual UnitType getType() const = 0;
 
     /// @~English
-    /// Retrieves the unit's position from the
-    /// upper left corner of the map in pixels.
+    /// Retrieves the unit's position from the upper left corner of the map in pixels.
     ///
     /// @retval Positions::Unknown if this unit is inaccessible.
     ///
@@ -116,11 +115,9 @@ namespace BWAPI
     virtual Position getPosition() const = 0;
 
     /// @~English
-    /// Retrieves the unit's build position from the
-    /// upper left corner of the map in tiles.
+    /// Retrieves the unit's build position from the upper left corner of the map in tiles.
     ///
-    /// @note: This tile position is the tile that is at the top
-    /// left corner of the structure.
+    /// @note: This tile position is the tile that is at the top left corner of the structure.
     ///
     /// @retval TilePositions::Unknown if this unit is inaccessible.
     ///
@@ -157,66 +154,57 @@ namespace BWAPI
     /// @~English
     /// Retrieves the Region that the center of the unit is in.
     ///
-    /// @retval NULL If the unit is inaccessible.
+    /// @retval nullptr If the unit is inaccessible.
     ///
     /// @returns A pointer to a Region object that contains this unit.
     /// @~
     virtual BWAPI::Region *getRegion() const = 0;
 
     /// @~English
-    /// Retrieves the X coordinate of the unit's left boundry,
-    /// measured in pixels from the left side of the map.
+    /// Retrieves the X coordinate of the unit's left boundry, measured in pixels from the left
+    /// side of the map.
     ///
-    /// @returns An integer representing the position of the
-    /// left side of the unit.
+    /// @returns An integer representing the position of the left side of the unit.
     ///
     /// @~
     /// @see getTop, getRight, getBottom
     virtual int getLeft() const = 0;
 
     /// @~English
-    /// Retrieves the Y coordinate of the unit's top boundry,
-    /// measured in pixels from the top of the map.
+    /// Retrieves the Y coordinate of the unit's top boundry, measured in pixels from the top of
+    /// the map.
     ///
-    /// @returns An integer representing the position of the
-    /// top side of the unit.
+    /// @returns An integer representing the position of the top side of the unit.
     /// @~
     /// @see getLeft, getRight, getBottom
     virtual int getTop() const = 0;
 
     /// @~English
-    /// Retrieves the X coordinate of the unit's right boundry,
-    /// measured in pixels from the left side of the map.
+    /// Retrieves the X coordinate of the unit's right boundry, measured in pixels from the left
+    /// side of the map.
     ///
-    /// @returns An integer representing the position of the
-    /// right side of the unit.
+    /// @returns An integer representing the position of the right side of the unit.
     /// @~
     /// @see getLeft, getTop, getBottom
     virtual int getRight() const = 0;
 
     /// @~English
-    /// Retrieves the Y coordinate of the unit's bottom boundry,
-    /// measured in pixels from the top of the map.
+    /// Retrieves the Y coordinate of the unit's bottom boundry, measured in pixels from the top
+    /// of the map.
     ///
-    /// @returns An integer representing the position of the
-    /// bottom side of the unit.
+    /// @returns An integer representing the position of the bottom side of the unit.
     /// @~
     /// @see getLeft, getTop, getRight
     virtual int getBottom() const = 0;
 
     /// @~English
-    /// Retrieves the unit's current Hit Points (HP) as
-    /// seen in the game.
+    /// Retrieves the unit's current Hit Points (HP) as seen in the game.
     ///
-    /// @returns An integer representing the amount of
-    /// hit points a unit currently has.
+    /// @returns An integer representing the amount of hit points a unit currently has.
     ///
-    /// @note In Starcraft, a unit usually dies when
-    /// its HP reaches 0. It is possible however, to
-    /// have abnormal HP values in the Use Map Settings
-    /// game type and as the result of a hack over
-    /// Battle.net. Such values include units that 
-    /// have 0 HP (can't be killed conventionally)
+    /// @note In Starcraft, a unit usually dies when its HP reaches 0. It is possible however, to
+    /// have abnormal HP values in the Use Map Settings game type and as the result of a hack over
+    /// Battle.net. Such values include units that have 0 HP (can't be killed conventionally)
     /// or even negative HP (death in one hit).
     ///
     /// @~
@@ -224,98 +212,81 @@ namespace BWAPI
     virtual int getHitPoints() const = 0;
 
     /// @~English
-    /// Retrieves the unit's current Shield Points
-    /// (Shields) as seen in the game.
+    /// Retrieves the unit's current Shield Points (Shields) as seen in the game.
     ///
-    /// @returns An integer representing the amount of
-    /// shield points a unit currently has.
+    /// @returns An integer representing the amount of shield points a unit currently has.
     ///
     /// @~
     /// @see UnitType::maxShields, getHitPoints
     virtual int getShields() const = 0;
 
     /// @~English
-    /// Retrieves the unit's current Energy Points
-    /// (Energy) as seen in the game.
+    /// Retrieves the unit's current Energy Points (Energy) as seen in the game.
     ///
-    /// @returns An integer representing the amount of
-    /// energy points a unit currently has.
+    /// @returns An integer representing the amount of energy points a unit currently has.
     ///
-    /// @note Energy is required in order for units
-    /// to use abilities.
+    /// @note Energy is required in order for units to use abilities.
     ///
     /// @~
     /// @see UnitType::maxEnergy
     virtual int getEnergy() const = 0;
 
     /// @~English
-    /// Retrieves the resource amount from a resource
-    /// container, such as a Mineral Field and
+    /// Retrieves the resource amount from a resource container, such as a Mineral Field and
     /// Vespene Geyser.
     ///
-    /// @returns An integer representing the amount of
-    /// resources remaining in this resource.
+    /// @returns An integer representing the amount of resources remaining in this resource.
     ///
     /// @~
     /// @see getInitialResources
     virtual int getResources() const = 0;
 
     /// @~English
-    /// Retrieves a grouping index from a resource
-    /// container. Other resource containers of the
-    /// same value are considered part of one expansion
-    /// location (group of resources that are close together).
+    /// Retrieves a grouping index from a resource container. Other resource containers of the
+    /// same value are considered part of one expansion location (group of resources that are
+    /// close together).
     ///
-    /// @note This grouping method is explicitly determined
-    /// by Starcraft itself and is used only by the internal
-    /// AI.
+    /// @note This grouping method is explicitly determined by Starcraft itself and is used only
+    /// by the internal AI.
     ///
-    /// @returns An integer with an identifier between
-    /// 0 and 250 that determine which resources are
-    /// grouped together to form an expansion.
+    /// @returns An integer with an identifier between 0 and 250 that determine which resources
+    /// are grouped together to form an expansion.
     ///
     /// @~
     virtual int getResourceGroup() const = 0;
 
     /// @~English
-    /// Retrieves the distance between this unit and
-    /// a target.
+    /// Retrieves the distance between this unit and a target.
     ///
-    /// @note Distance is calculated from the edge of this unit,
-    /// using Starcraft's own distance algorithm.
+    /// @note Distance is calculated from the edge of this unit, using Starcraft's own distance
+    /// algorithm.
     ///
-    /// @param target A Position or a Unit to calculate the
-    /// distance to. If it is a unit, then it will calculate
-    /// the distance to the edge of the target unit.
+    /// @param target
+    ///   A Position or a Unit to calculate the distance to. If it is a unit, then it will
+    ///   calculate the distance to the edge of the target unit.
     ///
-    /// @returns An integer representation of the number of
-    /// pixels between this unit and the \p target.
+    /// @returns An integer representation of the number of pixels between this unit and the
+    /// \p target.
     ///
     /// @~
     virtual int getDistance(PositionOrUnit target) const = 0;
 
     /// @~English
-    /// Using data provided by Starcraft, checks if there is
-    /// a path available from this unit to the given target.
+    /// Using data provided by Starcraft, checks if there is a path available from this unit to
+    /// the given target.
     ///
-    /// @note This function only takes into account the
-    /// terrain data, and does not include buildings
-    /// when determining if a path is available.
-    /// However, the time it takes to execute this
-    /// function is O(1), and no extensive calculations
-    /// are necessary.
+    /// @note This function only takes into account the terrain data, and does not include
+    /// buildings when determining if a path is available. However, the time it takes to execute
+    /// this function is O(1), and no extensive calculations are necessary.
     ///
-    /// @note If the current unit is an air unit, then
-    /// this function will always return true.
+    /// @note If the current unit is an air unit, then this function will always return true.
     ///
-    /// @param target A Position or a Unit that is
-    /// used to determine if this unit has a path
-    /// to the target.
+    /// @param target
+    ///   A Position or a Unit that is used to determine if this unit has a path to the target.
     ///
-    /// @retval true If there is a path between this unit
-    /// and the target.
-    /// @retval false If the target is on a different
-    /// piece of land than this one (such as an island).
+    /// @retval true If there is a path between this unit and the target.
+    /// @retval false If the target is on a different piece of land than this one (such as an
+    /// island).
     ///
     /// @~
     virtual bool hasPath(PositionOrUnit target) const = 0;
@@ -567,41 +538,6 @@ namespace BWAPI
 
     Unit *getClosestUnit(const UnitFilter &pred = nullptr, int radius = 999999) const;
 
-    /** Returns the unit's custom client info. The client is responsible for deallocation. */
-    /// @~English
-    /// Retrieves a pointer or value at an index that was stored for this Unit using
-    /// setClientInfo.
-    ///
-    /// @param index
-    ///   The index to retrieve the data from. Must be between 0 and 255.
-    /// 
-    /// @retval nullptr if index is out of bounds.
-    ///
-    /// @returns A pointer to the client info at that index.
-    /// @~
-    /// @see setClientInfo, getClientInfoInt
-    virtual void* getClientInfo(int index = 0) const = 0;
-
-    /// @~English
-    /// Associates one or more pointers or values with a Unit.
-    ///
-    /// This client information is managed entirely by the AI module. It is not modified by BWAPI.
-    /// If pointer to allocated memory is used, then the AI module is responsible for deallocating
-    /// the memory.
-    ///
-    /// @param clientinfo
-    ///   The data to associate with this unit.
-    /// @param index
-    ///   The index to use for this data. It can be between 0 and 255. Default is 0. No action will
-    ///   be taken if this value is out of bounds.
-    ///  
-    /// @~
-    /// @see getClientInfo
-    virtual void setClientInfo(void* clientinfo = nullptr, int index = 0) = 0;
-
-    /// @copydoc setClientInfo
-    void setClientInfo(int clientInfo = 0, int index = 0);
-
     /* Returns true if the Nuclear Missile Silo has a nuke */
     virtual bool hasNuke() const = 0;
 
@@ -806,18 +742,14 @@ namespace BWAPI
     virtual bool canIssueCommand(UnitCommand command) const = 0;
 
     /// @~English
-    /// This function issues a command to the unit(s), however it
-    /// is used for interfacing only, and is recommended to use
-    /// one of the more specific command functions when writing
-    /// an AI.
+    /// This function issues a command to the unit(s), however it is used for interfacing only,
+    /// and is recommended to use one of the more specific command functions when writing an AI.
     ///
-    /// @param command A UnitCommand containing command parameters
-    /// such as the type, position, target, etc.
+    /// @param command
+    ///   A UnitCommand containing command parameters such as the type, position, target, etc.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed.
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     /// @~
     /// @see UnitCommandTypes, Game::getLastError
     virtual bool issueCommand(UnitCommand command) = 0;
@@ -825,16 +757,14 @@ namespace BWAPI
     /// @~English
     /// Orders the unit(s) to attack move to the specified location.
     ///
-    /// @param target A Position or a Unit to designate as the target.
-    /// If a Position is used, the unit will perform an Attack Move
-    /// command.
-    /// @param shiftQueueCommand If this value is true, then the
-    /// order will be queued instead of immediately executed.
+    /// @param target
+    ///   A Position or a Unit to designate as the target. If a Position is used, the unit will
+    ///   perform an Attack Move command.
+    /// @param shiftQueueCommand
+    ///   If this value is true, then the order will be queued instead of immediately executed.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed.
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     ///
     /// @note A @Medic will use Heal Move instead of attack.
     /// @~
@@ -845,19 +775,18 @@ namespace BWAPI
     /// Orders the worker unit(s) to construct a structure at a target
     /// position.
     ///
-    /// @param type The UnitType to build.
-    /// @param target A TilePosition to specify the build location,
-    /// specifically the upper-left corner of the location. If the 
-    /// target is not specified, then the function call will be
-    /// redirected to the train command.
+    /// @param type
+    ///   The UnitType to build.
+    /// @param target
+    ///   A TilePosition to specify the build location, specifically the upper-left corner of the
+    ///   location. If the target is not specified, then the function call will be redirected to
+    ///   the train command.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed. 
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     ///
-    /// @note You must have sufficient resources and meet the
-    /// necessary requirements in order to build a structure.
+    /// @note You must have sufficient resources and meet the necessary requirements in order to
+    /// build a structure.
     ///
     /// @~
     /// @see Game::getLastError, Unit::train, Unit::cancelConstruction
@@ -866,39 +795,34 @@ namespace BWAPI
     /// @~English
     /// Orders the @Terran structure(s) to construct an add-on.
     ///
-    /// @param type The add-on UnitType to construct.
+    /// @param type
+    ///   The add-on UnitType to construct.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed. 
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     ///
-    /// @note You must have sufficient resources and meet the
-    /// necessary requirements in order to build a structure.
+    /// @note You must have sufficient resources and meet the necessary requirements in order to
+    /// build a structure.
     ///
     /// @~
     /// @see Game::getLastError, Unit::build, Unit::cancelAddon
     bool buildAddon(UnitType type);
 
     /// @~English
-    /// Orders the unit(s) to add a UnitType to its training
-    /// queue, or morphs into the UnitType if it is @Zerg.
+    /// Orders the unit(s) to add a UnitType to its training queue, or morphs into the UnitType if
+    /// it is @Zerg.
     ///
-    /// @param type The UnitType to train.
+    /// @param type
+    ///   The UnitType to train.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed. 
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     ///
-    /// @note You must have sufficient resources, supply, and
-    /// meet the necessary requirements in order to train
-    /// a unit.
-    /// @note This command is also used for training @Interceptors
-    /// and @Scarabs.
-    /// @note If you call this using a @Hatchery, @Lair, or
-    /// @Hive, then it will automatically pass the command
-    /// to one of its @Larvae.
+    /// @note You must have sufficient resources, supply, and meet the necessary requirements in
+    /// order to train a unit.
+    /// @note This command is also used for training @Interceptors and @Scarabs.
+    /// @note If you call this using a @Hatchery, @Lair, or @Hive, then it will automatically
+    /// pass the command to one of its @Larvae.
     ///
     /// @~
     /// @see Game::getLastError, Unit::build, Unit::morph, Unit::cancelTrain, Unit::isTraining
@@ -907,12 +831,11 @@ namespace BWAPI
     /// @~English
     /// Orders the unit(s) to morph into a different UnitType.
     ///
-    /// @param type The UnitType to morph into.
+    /// @param type
+    ///   The UnitType to morph into.
     ///
-    /// @retval true if BWAPI determined that the command was valid
-    /// and passed it to Starcraft.
-    /// @retval false if an error occured and the command could
-    /// not be executed.
+    /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
+    /// @retval false if an error occured and the command could not be executed.
     ///
     /// @~
     /// @see Game::getLastError, Unit::build, Unit::morph

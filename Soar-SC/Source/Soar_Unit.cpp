@@ -11,9 +11,10 @@
 using namespace BWAPI;
 using namespace std;
 
-Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link)
+Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 {
 	this->link = link;
+	this->isEnemy = enemy;
 
 	using namespace sml;
 
@@ -65,7 +66,12 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link)
 	pos.y = Soar_Link::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
 
 	//Set the svsobject id
-	svsobject_id = type.getName();
+	if (enemy)
+		svsobject_id = "Enemy";
+	else
+		svsobject_id = "";
+
+	svsobject_id += type.getName();
 	svsobject_id.erase(remove_if(svsobject_id.begin(), svsobject_id.end(), isspace), svsobject_id.end());
 
 	ss << id;
@@ -76,7 +82,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link)
 	//
 
 	//Create the units
-	Identifier* unit_id = get_unit_identifier(agent, true);
+	Identifier* unit_id = get_unit_identifier(agent, true, enemy);
 
 	unit_id->CreateIntWME("id", id);
 
@@ -122,7 +128,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->idle = idle;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent);
+			unit_id = get_unit_identifier(agent, false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -140,7 +146,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->carrying = carrying;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent);
+			unit_id = get_unit_identifier(agent, false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -168,7 +174,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->constructing = constructing;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent);
+			unit_id = get_unit_identifier(agent, false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -217,7 +223,7 @@ void Soar_Unit::update(sml::Agent* agent)
 			this->full_queue = full_queue;
 
 			if (unit_id == NULL)
-				unit_id = get_unit_identifier(agent);
+				unit_id = get_unit_identifier(agent, false, isEnemy);
 
 			if (unit_id == NULL)
 			{
@@ -282,7 +288,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->pos = pos;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent);
+			unit_id = get_unit_identifier(agent, false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -306,22 +312,37 @@ const int Soar_Unit::get_id()
 	return id;
 }
 
-sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_unit)
+sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_unit, bool enemy)
 {
 	using namespace sml;
 
 	Identifier* input_link = agent->GetInputLink();
 
 	Identifier* units;
-	if (!input_link->FindByAttribute("units", 0))
+	if (!enemy)
 	{
-		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
-		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+		if (!input_link->FindByAttribute("units", 0))
+		{
+			//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+			cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
 
-		units = input_link->CreateIdWME("units");
+			units = input_link->CreateIdWME("units");
+		}
+		else
+			units = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
 	}
 	else
-		units = input_link->FindByAttribute("units", 0)->ConvertToIdentifier();
+	{
+		if (!input_link->FindByAttribute("enemy-units", 0))
+		{
+			//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+			cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+			units = input_link->CreateIdWME("enemy-units");
+		}
+		else
+			units = input_link->FindByAttribute("enemy-units", 0)->ConvertToIdentifier();
+	}
 
 	Identifier* unit = NULL;
 
@@ -343,7 +364,7 @@ sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_u
 
 	if (create_unit)
 	{
-		if (building)
+		if (building && !enemy)
 			unit = units->CreateIdWME("building");
 		else
 			unit = units->CreateIdWME("unit");
@@ -356,7 +377,7 @@ sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_u
 
 void Soar_Unit::delete_unit(Events *event_queue, sml::Agent* agent)
 {
-	sml::Identifier* unit = get_unit_identifier(agent);
+	sml::Identifier* unit = get_unit_identifier(agent, false, isEnemy);
 
 	string svs_command = "d " + svsobject_id + "\n";
 	link->output_to_test_file(svs_command);

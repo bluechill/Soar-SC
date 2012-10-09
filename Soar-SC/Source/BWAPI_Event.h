@@ -18,6 +18,9 @@ public:
 	void execute_command(Events* events);
 
 private:
+	int id;
+
+	BWAPI::Position pos;
 	BWAPI::UnitCommand internal_command;
 	sml::Identifier *internal_id;
 	Soar_Link* internal_link;

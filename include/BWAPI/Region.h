@@ -2,6 +2,7 @@
 #include <BWAPI/Position.h>
 #include <BWAPI/Filters.h>
 #include <BWAPI/UnaryFilter.h>
+#include <BWAPI/Interface.h>
 
 namespace BWAPI
 {
@@ -9,7 +10,7 @@ namespace BWAPI
   class Unitset;
   class Unit;
 
-  class Region
+  class Region : public Interface
   {
   protected:
     virtual ~Region() {};

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-// Forward Declarations
+#include <BWAPI/Interface.h>
 
 namespace BWAPI
 {
@@ -9,7 +9,7 @@ namespace BWAPI
 
   /** The Force class is used to get information about each force in the match, such as the name of the force
    * and the set of players in the force. */
-  class Force
+  class Force : public Interface
   {
   protected:
     virtual ~Force() {};

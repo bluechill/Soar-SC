@@ -132,7 +132,7 @@ void Events::update(bool lock) //Update function.  Set lock to true to lock a mu
 		case Soar_Event::New_Unit: //If we're supposed to add a unit
 			{
 				BWAPI::Unit* unit = e.get_unit(); //Get the unit to add
-				link->add_unit(unit); //Then add it
+				link->add_unit(unit, unit->getPlayer()->isEnemy(BWAPI::Broodwar->self())); //Then add it
 
 				break; //Then break
 			}

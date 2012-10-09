@@ -1,3 +1,4 @@
+#include <BWAPI/Interface.h>
 #include <BWAPI/AIModule.h>
 #include <BWAPI/Bullet.h>
 #include <BWAPI/Bulletset.h>

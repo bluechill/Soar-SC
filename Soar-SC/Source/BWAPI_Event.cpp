@@ -10,6 +10,12 @@
 BWAPI_Event::BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_Link* link)
 {
 	internal_command = command;
+
+	if (internal_command.getTarget() != NULL)
+		this->id = internal_command.getTarget()->getID();
+	else
+		this->id = -1;
+
 	internal_id = id;
 	internal_link = link;
 }
@@ -21,13 +27,41 @@ void BWAPI_Event::execute_command(Events* events)
 
 	Unitset set;
 	set.insert(internal_command.getUnit());
+
 	if (!Broodwar->issueCommand(set, internal_command))
 	{
 		Error e = Broodwar->getLastError();
-		cerr << "Got error trying to execute unit command: " << e.toString() << endl;
+		
+		if (e == Errors::Unit_Does_Not_Exist)
+		{
+			std::map<int, BWAPI::Position> copyHiddenMap = internal_link->get_last_positions();
+			std::map<int, BWAPI::Position>::iterator hidden_it = copyHiddenMap.find(id);
+			if (hidden_it != copyHiddenMap.end())
+			{
+				internal_command = UnitCommand::move(internal_command.getUnit(), hidden_it->second);
 
-		if (internal_id != NULL)
-			events->add_event(Soar_Event(internal_id, false));
+				this->execute_command(events);
+				return;
+			}
+			else
+			{
+				cerr << "Got error trying to execute unit command: " << e.toString() << endl;
+
+				if (internal_id != NULL)
+					events->add_event(Soar_Event(internal_id, false));
+
+				return;
+			}
+		}
+		else
+		{
+			cerr << "Got error trying to execute unit command: " << e.toString() << endl;
+
+			if (internal_id != NULL)
+				events->add_event(Soar_Event(internal_id, false));
+
+			return;
+		}
 	}
 
 	if (internal_command.getType() != UnitCommandTypes::Build && internal_id != NULL)

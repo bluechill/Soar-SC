@@ -1,5 +1,6 @@
 #pragma once
 #include <BWAPI/Position.h>
+#include <BWAPI/Interface.h>
 
 namespace BWAPI
 {
@@ -29,7 +30,7 @@ namespace BWAPI
   /// in the game are accessible.
   /// @~
   /// @see Game::getBullets, Bullet::exists
-  class Bullet
+  class Bullet : public Interface
   {
   protected:
     virtual ~Bullet() {};

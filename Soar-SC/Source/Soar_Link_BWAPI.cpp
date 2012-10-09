@@ -156,7 +156,13 @@ void Soar_Link::onUnitShow(BWAPI::Unit* unit)
 
 void Soar_Link::onUnitHide(BWAPI::Unit* unit)
 {
+	std::map<Unit*, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
 
+	if (enemy_it == enemy_units.end())
+		return;
+
+	BWAPI::Position oldPos = BWAPI::Position(enemy_it->second->lastPosition().x * 32.0f, flip_one_d_point(enemy_it->second->lastPosition().y * 32.0f, false));
+	hiddenUnitsPositions[enemy_it->second->get_id()] = oldPos;
 }
 
 void Soar_Link::onUnitCreate(BWAPI::Unit* unit)
@@ -181,7 +187,13 @@ void Soar_Link::onUnitDestroy(BWAPI::Unit* unit)
 
 	if (my_units.find(unit) != my_units.end()) //Check if it's a unit
 	{ //It is so delete it using delete_unit
-		delete_unit(unit);
+		delete_unit(unit, false);
+		return;
+	}
+
+	if (enemy_units.find(unit) != enemy_units.end())
+	{
+		delete_unit(unit, true);
 		return;
 	}
 }
@@ -397,19 +409,39 @@ void Soar_Link::update_resources() //Update the resources
 	used_supplies_id->Update(used_supplies);
 }
 
-void Soar_Link::add_unit(BWAPI::Unit* bw_unit) //Add a new unit
+void Soar_Link::add_unit(BWAPI::Unit* bw_unit, bool enemy) //Add a new unit
 {
-	Soar_Unit* soar_unit = new Soar_Unit(agent, bw_unit, this);
+	Soar_Unit* soar_unit = new Soar_Unit(agent, bw_unit, this, enemy);
 
-	my_units[bw_unit] = soar_unit;
+	if (!enemy)
+		my_units[bw_unit] = soar_unit;
+	else
+		enemy_units[bw_unit] = soar_unit;
 }
 
-void Soar_Link::delete_unit(BWAPI::Unit* unit) //Delete an existing unit
+void Soar_Link::delete_unit(BWAPI::Unit* unit, bool enemy) //Delete an existing unit
 {
 	map<Unit*, Soar_Unit*>::iterator it = my_units.find(unit);
 
-	if (it == my_units.end())
+	if (enemy)
+	{
+		map<Unit*, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
+
+		if (enemy_it == enemy_units.end())
+			return;
+
+		map<int, BWAPI::Position>::iterator hiddenUnits_it = hiddenUnitsPositions.find(enemy_it->second->get_id());
+
+		if (hiddenUnits_it != hiddenUnitsPositions.end())
+			hiddenUnitsPositions.erase(hiddenUnits_it);
+
+		enemy_it->second->delete_unit(&event_queue, agent);
+		delete enemy_it->second;
+		
+		enemy_units.erase(enemy_it);
+		
 		return;
+	}
 	
 	it->second->delete_unit(&event_queue, agent);
 
@@ -420,21 +452,37 @@ void Soar_Link::delete_unit(BWAPI::Unit* unit) //Delete an existing unit
 
 void Soar_Link::update_units() //Update all player units
 {
-	Unitset units = Broodwar->self()->getUnits();
+	Playerset players = Broodwar->getPlayers();
 
-	for (Unitset::iterator it = units.begin();it != units.end();it++)
+	for (Playerset::iterator it = players.begin();it != players.end();it++)
 	{
-		Unit* unit = (*it);
+		Player* player = *it;
+		Unitset units = player->getUnits();
 
-		if (!unit->isCompleted())
-			continue;
+		for (Unitset::iterator it = units.begin();it != units.end();it++)
+		{
+			Unit* unit = (*it);
 
-		Soar_Unit* soar_unit = my_units[unit];
+			if (unit->getPlayer()->isEnemy(Broodwar->self()) || unit->getPlayer()->getID() == Broodwar->self()->getID())
+			{
+				bool isEnemy = unit->getPlayer()->isEnemy(Broodwar->self());
 
-		if (soar_unit == NULL)
-			add_unit(unit);
-		else
-			soar_unit->update(agent);
+				if (!unit->isCompleted() && !isEnemy)
+					continue;
+
+				Soar_Unit* soar_unit;
+
+				if (!isEnemy)
+					soar_unit = my_units[unit];
+				else
+					soar_unit = enemy_units[unit];
+
+				if (soar_unit == NULL)
+					add_unit(unit, isEnemy);
+				else
+					soar_unit->update(agent);
+			}
+		}
 	}
 }
 

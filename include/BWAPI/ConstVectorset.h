@@ -11,24 +11,16 @@ namespace BWAPI
   class Vectorset;
 
   /// @~English
-  /// The Vectorset is a class template designed
-  /// specifically for trivial classes or PODs and 
-  /// performance. It mimics the usage of various
-  /// stl containers (specifically the Vector and Set)
-  /// in order to replace them. The Vectorset is
-  /// designed for BWAPI usage and is recommended, 
-  /// especially if stl containers are causing a 
-  /// bottleneck in your bot's code.
+  /// The Vectorset is a class template designed specifically for trivial classes or PODs and 
+  /// performance. It mimics the usage of various stl containers (specifically the Vector and Set)
+  /// in order to replace them. The Vectorset is designed for BWAPI usage and is recommended, 
+  /// especially if stl containers are causing a bottleneck in your bot's code.
   ///
-  /// @warning The Vectorset should only be used with 
-  /// objects that have a trivial destructor and 
-  /// trivial copy constructor. Objects in the
-  /// Vectorset should not do any memory management 
-  /// or the behaviour will be undefined. Use with
-  /// caution.
+  /// @warning The Vectorset should only be used with objects that have a trivial destructor and 
+  /// trivial copy constructor. Objects in the Vectorset should not do any memory management 
+  /// or the behaviour will be undefined. Use with caution.
   ///
-  /// @note The Vectorset will only free memory
-  /// when the object is destroyed.
+  /// @note The Vectorset will only free memory when the object is destroyed.
   /// @~
   /// @see std::vector, std::set
   template<typename _T>
@@ -44,23 +36,20 @@ namespace BWAPI
     ConstVectorset();
   public:
     /// @~English
-    /// The iterator is used to traverse the elements 
-    /// in the set. It is used the same way as in the
-    /// stl containers.
+    /// The iterator is used to traverse the elements in the set. It is used the same way as in
+    /// the stl containers.
     /// @~
     typedef iterator<_T> iterator;
 
   // ----------------------------------------------------------------- Constructors
     /// @~English
-    /// This constructor uses an existing array
-    /// of objects and copies them into the vector.
-    /// The Vectorset will allocate only enough
-    /// memory to copy the array's contents.
+    /// This constructor uses an existing array of objects and copies them into the vector.
+    /// The Vectorset will allocate only enough memory to copy the array's contents.
     ///
-    /// @param pArray Pointer to an array of objects of
-    /// type _T.
-    /// @param arrSize The number of elements contained
-    /// in the given array.
+    /// @param pArray
+    ///   Pointer to an array of objects of type _T.
+    /// @param arrSize
+    ///   The number of elements contained in the given array.
     ///
     /// @note Duplicate entries are not removed.
     /// @~
@@ -76,15 +65,13 @@ namespace BWAPI
 
   // ----------------------------------------------------------------- Operators
     /// @~English
-    /// Creates a new Vectorset containing all elements
-    /// of the current Vectorset with all elements of
-    /// the other Vectorset appended on to it.
+    /// Creates a new Vectorset containing all elements of the current Vectorset with all elements
+    /// of the other Vectorset appended on to it.
     ///
-    /// @param other The other Vectorset of the same 
-    /// type to use in combination.
+    /// @param other
+    ///   The other Vectorset of the same type to use in combination.
     ///
-    /// @returns A new Vectorset containing the contents
-    /// of both this and other.
+    /// @returns A new Vectorset containing the contents of both this and other.
     ///
     /// @note Duplicate entries are not removed.
     /// @~
@@ -105,15 +92,13 @@ namespace BWAPI
     };
 
     /// @~English
-    /// Creates a new Vectorset containing all elements
-    /// of the current Vectorset and all elements of
-    /// the other Vectorset with duplicates removed.
+    /// Creates a new Vectorset containing all elements of the current Vectorset and all elements
+    /// of the other Vectorset with duplicates removed.
     ///
-    /// @param other The other Vectorset of the same 
-    /// type to use in combination.
+    /// @param other
+    ///   The other Vectorset of the same type to use in combination.
     ///
-    /// @returns A new Vectorset containing the contents
-    /// of both this and other.
+    /// @returns A new Vectorset containing the contents of both this and other.
     /// @~
     Vectorset<_T> operator |(const ConstVectorset<_T> &other) const
     {
@@ -130,16 +115,13 @@ namespace BWAPI
       return vcopy;
     };
     /// @~English
-    /// Compares this Vectorset with another Vectorset
-    /// of the same type.
+    /// Compares this Vectorset with another Vectorset of the same type.
     /// 
-    /// @param other A Vectorset of the same type to
-    /// use for comparison.
+    /// @param other
+    ///   A Vectorset of the same type to use for comparison.
     ///
-    /// @retval true if the other Vectorset is exactly
-    /// the same as this one.
-    /// @retval false if at least one element in this
-    /// Vectorset is not found in the other, or if
+    /// @retval true if the other Vectorset is exactly the same as this one.
+    /// @retval false if at least one element in this Vectorset is not found in the other, or if
     /// they are not in the exact same positions.
     ///
     /// @note This simply calls memcmp.
@@ -180,8 +162,8 @@ namespace BWAPI
     /// 
     /// @TODO Needs to be modified
     ///
-    /// @param index The array index in the Vectorset to 
-    /// retrieve the value from.
+    /// @param index
+    ///   The array index in the Vectorset to retrieve the value from.
     /// @~
     inline _T operator [](unsigned int index) const
     {
@@ -192,10 +174,10 @@ namespace BWAPI
 
   // ----------------------------------------------------------------- Custom const functions
     /// @~English
-    /// This function checks if an element exists in the
-    /// Vectorset.
+    /// This function checks if an element exists in the Vectorset.
     ///
-    /// @param element The value to search for in the Vectorset.
+    /// @param element
+    ///   The value to search for in the Vectorset.
     ///
     /// @retval true if the element is in the Vectorset.
     /// @retval false if the element was not found.
@@ -210,15 +192,14 @@ namespace BWAPI
       return false;
     };
     /// @~English
-    /// This macro is used to choose a random value from
-    /// a Vectorset.
+    /// This macro is used to choose a random value from a Vectorset.
     ///
     /// @TODO needs to be modified
     ///
     /// @retval NULL if the Vectorset is empty.
     ///
-    /// @note This function calls the rand() function.
-    /// A call to srand() should be used for initialization.
+    /// @note This function calls the rand() function. A call to srand() should be used for
+    /// initialization.
     /// @~
     /// @see rand()
     _T rand() const
@@ -256,21 +237,18 @@ namespace BWAPI
       return this->pStartArr[::rand()%size];
     };
     /// @~English
-    /// Iterates the Vectorset and retrieves the
-    /// best entry using two callback procedures.
-    /// The first returning the value to compare,
-    /// the second being a binary comparison.
+    /// Iterates the Vectorset and retrieves the best entry using two callback procedures. The
+    /// first returning the value to compare, the second being a binary comparison.
     ///
-    /// @param cmpValue A functor taking one argument,
-    /// _T, and returning a value to compare.
-    /// @param cmpProc A functor taking two values,
-    /// (the ones returned by cmpValue), and
-    /// returns a boolean indicating that the
-    /// first value passed in is the new best value.
+    /// @param cmpValue
+    ///   A functor taking one argument, _T, and returning a value to compare.
+    ///
+    /// @param cmpProc
+    ///   A functor taking two values, (the ones returned by cmpValue), and returns a boolean
+    ///   indicating that the first value passed in is the new best value.
     ///
     /// @retval NULL If the Vectorset is empty.
-    /// @returns A _T representing the best in
-    /// the Vectorset.
+    /// @returns A _T representing the best in the Vectorset.
     /// @~
     ///
     template < typename _V, typename _C >
@@ -315,19 +293,15 @@ namespace BWAPI
       return this->getBest( std::forward<_V>(cmpValue), [](const int &v1, const int &v2)->bool{ return v1 < v2; } );
     };
     /// @~English
-    /// Calculates a total by applying a
-    /// functor to each element and adding
-    /// what the functor returns.
+    /// Calculates a total by applying a functor to each element and adding what the functor
+    /// returns.
     ///
-    /// @param valProc A unary functor
-    /// that takes _T as a parameter
-    /// and returns the integer used
-    /// to add to the total.
+    /// @param valProc
+    ///   A unary functor that takes _T as a parameter and returns the integer used to add to
+    ///   the total.
     ///
-    /// @returns An integer representing
-    /// the sum of results from \p valProc
-    /// applied to every element in the
-    /// Vectorset.
+    /// @returns An integer representing the sum of results from \p valProc applied to every
+    /// element in the Vectorset.
     /// @~
     template < typename _V >
     int total(const _V &valProc) const
@@ -339,14 +313,12 @@ namespace BWAPI
     };
   // ----------------------------------------------------------------- stl spinoff const functions
     /// @~English
-    /// Retrieves the number of elements currently
-    /// in the Vectorset.
+    /// Retrieves the number of elements currently in the Vectorset.
     ///
-    /// @returns The number of elements contained
-    /// in this Vectorset.
+    /// @returns The number of elements contained in this Vectorset.
     ///
-    /// @note For efficiency it is recommended to use
-    /// empty() to check if the Vectorset has 0 elements.
+    /// @note For efficiency it is recommended to use empty() to check if the Vectorset has 0
+    /// elements.
     /// @~
     /// @see empty
     inline size_t size() const
@@ -400,16 +372,13 @@ namespace BWAPI
     };
   // ----------------------------------------------------------------- stl algorithms
     /// @~English
-    /// Works similar to the STL algorithm count_if.
-    /// Iterates and calls a function predicate for
-    /// each element in the Vectorset. If the predicate
-    /// call returns true, then a counter is incremented.
+    /// Works similar to the STL algorithm count_if. Iterates and calls a function predicate for
+    /// each element in the Vectorset. If the predicate call returns true, then a counter is
+    /// incremented.
     ///
-    /// @param pred Function predicate used to determine
-    /// if a value is counted.
+    /// @param pred Function predicate used to determine if a value is counted.
     ///
-    /// @returns An integer containing the number of
-    /// elements that were counted.
+    /// @returns An integer containing the number of elements that were counted.
     /// @~
     /// @see std::count_if, count
     template <typename Func>
@@ -424,16 +393,13 @@ namespace BWAPI
       return rval;
     };
     /// @~English
-    /// Works similar to the STL algorithm count.
-    /// Iterates and compares each element of the
-    /// Vectorset to a value. If the value matches,
-    /// then a counter is incremented.
+    /// Works similar to the STL algorithm count. Iterates and compares each element of the
+    /// Vectorset to a value. If the value matches, then a counter is incremented.
     ///
-    /// @param val The value to compare each element
-    /// with.
+    /// @param val
+    ///   The value to compare each element with.
     ///
-    /// @returns An integer containing the number of
-    /// elements that were counted.
+    /// @returns An integer containing the number of elements that were counted.
     /// @~
     /// @see std::count, count_if, size
     int count(const _T &val) const

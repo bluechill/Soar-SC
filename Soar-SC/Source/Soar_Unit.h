@@ -12,7 +12,7 @@ class Soar_Link;
 class Soar_Unit
 {
 public:
-	Soar_Unit(sml::Agent* agent, BWAPI::Unit* unit, Soar_Link* link);
+	Soar_Unit(sml::Agent* agent, BWAPI::Unit* unit, Soar_Link* link, bool enemy);
 	~Soar_Unit();
 
 	void delete_unit(Events *event_queue, sml::Agent* agent);
@@ -27,6 +27,13 @@ public:
 	} build_struct;
 
 	void will_build(build_struct* build);
+
+	typedef struct {
+		float x;
+		float y;
+	} Position;
+
+	Position lastPosition() { return pos; }
 
 private:
 	Soar_Link* link;
@@ -44,11 +51,6 @@ private:
 	bool can_produce;
 	bool full_queue;
 
-	typedef struct {
-		float x;
-		float y;
-	} Position;
-
 	typedef Position Size;
 
 	Position pos;
@@ -57,11 +59,13 @@ private:
 
 	std::string svsobject_id;
 
-	sml::Identifier* get_unit_identifier(sml::Agent* agent, bool create_unit = false);
+	sml::Identifier* get_unit_identifier(sml::Agent* agent, bool create_unit = false, bool enemy = false);
 
 	bool deleted;
 
 	build_struct* build;
+
+	bool isEnemy;
 };
 
 #endif

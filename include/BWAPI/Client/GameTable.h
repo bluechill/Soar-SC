@@ -7,7 +7,7 @@ namespace BWAPI
     DWORD serverProcessID;
     bool isConnected;
     //time_t lastKeepAliveTime;
-  DWORD lastKeepAliveTime;
+    DWORD lastKeepAliveTime;
   };
   struct GameTable
   {

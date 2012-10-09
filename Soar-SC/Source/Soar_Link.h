@@ -57,8 +57,8 @@ public:
 	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type); //Add a resource in SVS and on the input link
 	void delete_resource(int id); //Delete a resource from SVS and the input link
 
-	void add_unit(BWAPI::Unit* unit); //Add a unit to the input link and SVS
-	void delete_unit(BWAPI::Unit* unit); //Delete a unit from the input link and SVS
+	void add_unit(BWAPI::Unit* unit, bool enemy); //Add a unit to the input link and SVS
+	void delete_unit(BWAPI::Unit* unit, bool enemy); //Delete a unit from the input link and SVS
 
 	void update_resources(); //Update the resources of the player (AI) (Agent)
 	void update_units(); //Update the units of the player (AI) (Agent) (and eventually visible enemy positions etc.)
@@ -81,6 +81,8 @@ public:
 	void output_to_test_file(std::string &output) { test_input_file << output; }
 
 	std::map<BWAPI::Unit*, Soar_Unit*> get_units() { return my_units; }
+	std::map<BWAPI::Unit*, Soar_Unit*> get_enemy_units() { return enemy_units; }
+	std::map<int, BWAPI::Position> get_last_positions() { return hiddenUnitsPositions; }
 
 	void update_fogOfWar(float x_start, float y_start, float size_x, float size_y);
 
@@ -98,6 +100,7 @@ private:
 
 	std::map<BWAPI::Unit*, Soar_Unit*> my_units; //A set containing all the units of the player (AI) (Agent)
 	std::map<BWAPI::Unit*, Soar_Unit*> enemy_units; //A set for containing all the enemy units, currently not used
+	std::map<int, BWAPI::Position> hiddenUnitsPositions;
 
 	BWAPI::Unitset minerals; //A set for containing all the minerals seen
 	BWAPI::Unitset vesp_gas; //A set for containing all the vesp gas geysers seen

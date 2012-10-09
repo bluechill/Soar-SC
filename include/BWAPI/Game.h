@@ -7,6 +7,7 @@
 
 #include <BWAPI/Filters.h>
 #include <BWAPI/UnaryFilter.h>
+#include <BWAPI/Interface.h>
 
 namespace BWAPI
 {
@@ -35,7 +36,7 @@ namespace BWAPI
    * about the current Broodwar game, including the set of players, units, map information, as well as
    * information about the user, such as mouse position, screen position, and the current selection of
    * units. */
-  class Game
+  class Game : public Interface
   {
   protected:
     virtual ~Game() {};
