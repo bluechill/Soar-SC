@@ -161,7 +161,7 @@ void Soar_Link::onUnitHide(BWAPI::Unit* unit)
 	if (enemy_it == enemy_units.end())
 		return;
 
-	BWAPI::Position oldPos = BWAPI::Position(enemy_it->second->lastPosition().x * 32.0f, flip_one_d_point(enemy_it->second->lastPosition().y * 32.0f, false));
+	BWAPI::Position oldPos = BWAPI::Position(enemy_it->second->lastPosition().x * 32.0f, flip_one_d_point(enemy_it->second->lastPosition().y, false) * 32.0f);
 	hiddenUnitsPositions[enemy_it->second->get_id()] = oldPos;
 }
 

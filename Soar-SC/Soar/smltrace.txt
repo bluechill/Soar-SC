@@ -1,1 +1,3 @@
+Error: Error creating the listener pipe
+Failed to create the listener pipe.  Shutting down thread.
 Error: Error creating client connection pipe
