@@ -1,0 +1,33 @@
+sp {apply*build-unit
+   (state <s> ^operator <op>
+              ^io.output-link <o>
+              ^io.input-link.types.type <unit-type>
+              ^minerals-used <minerals-used>
+              ^gas-used <gas-used>)
+   (<op> ^name build-unit
+         ^location <id>
+         ^type <type-id>)
+   (<unit-type> ^id <type-id>
+                ^mineral-cost <mineral-cost>
+                ^gas-cost <gas-cost>)
+   -{(<o> ^<attr>.status)}
+-->
+   (<o> ^build-unit <b>)
+   (<b> ^type <type-id>
+        ^building <id>)
+   (<s> ^minerals-used <minerals-used> -
+        ^gas-used <gas-used> -
+        ^minerals-used (+ <minerals-used> <mineral-cost>)
+        ^gas-used (+ <gas-used> <gas-cost>))
+}
+
+#Preference rules
+
+sp {pref*build-unit-better-than-gather-minerals
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name build-unit)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}

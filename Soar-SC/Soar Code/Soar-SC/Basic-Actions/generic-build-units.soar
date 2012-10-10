@@ -3,7 +3,8 @@ sp {apply*build-unit
               ^io.output-link <o>
               ^io.input-link.types.type <unit-type>
               ^minerals-used <minerals-used>
-              ^gas-used <gas-used>)
+              ^gas-used <gas-used>
+              ^unit-limits.unit-limit <unit-limit>)
    (<op> ^name build-unit
          ^location <id>
          ^type <type-id>)
@@ -11,6 +12,8 @@ sp {apply*build-unit
                 ^mineral-cost <mineral-cost>
                 ^gas-cost <gas-cost>)
    -{(<o> ^<attr>.status)}
+   (<unit-limit> ^type <type-id>
+                 ^count <count>)
 -->
    (<o> ^build-unit <b>)
    (<b> ^type <type-id>
@@ -19,6 +22,8 @@ sp {apply*build-unit
         ^gas-used <gas-used> -
         ^minerals-used (+ <minerals-used> <mineral-cost>)
         ^gas-used (+ <gas-used> <gas-cost>))
+   (<unit-limit> ^count <count> -
+                 ^count (+ <count> 1))
 }
 
 #Preference rules

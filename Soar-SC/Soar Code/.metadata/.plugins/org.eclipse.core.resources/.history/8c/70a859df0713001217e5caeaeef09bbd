@@ -1,0 +1,92 @@
+sp {propose*build-scv
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>
+              ^io.output-link <output-link>
+              ^unit-limits.unit-limit <scv-limit>)
+   (<i> ^minerals <m> > 49
+        ^total-supplies <ts>
+        ^used-supplies <us> < <ts>
+        ^units.building <b>
+        ^types.type <scv-type>
+        ^types.type <command-center>)
+   (<command-center> ^name |Terran Command Center|
+                     ^id <command-center-id>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
+   (<b> ^type <command-center-id>
+        ^id <id>
+        ^full-queue 0)
+   -{ (<output-link> ^build-unit <command-to-build>)
+      (<command-to-build> ^type <type-id>
+                         -^status)}
+   (<scv-limit> ^type <type-id>
+                ^count { <l> < 10 })
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-unit
+        ^location <id>
+        ^type <type-id>)
+}
+
+sp {apply*secondary-build-scv-apply
+   (state <s> ^name Soar-SC
+              ^operator <build-unit>
+              ^types.type <scv-type>
+              ^unit-limits.unit-limit <scv-limit>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
+   (<build-unit> ^name build-unit
+                 ^type <type-id>)
+   (<scv-limit> ^type <type-id>
+                ^count <count>)
+-->
+   (<scv-limit> ^count <count> -
+                ^count (+ <count> 1))
+}
+   
+
+sp {propose*build-marines
+   (state <s> ^name Soar-SC
+              ^io.input-link <i>
+              ^io.output-link <output-link>)
+   (<i> ^minerals <m> > 49
+        ^total-supplies <ts>
+        ^used-supplies <us> < <ts>
+        ^units.building <b>
+        ^types.type <marine-type>
+        ^types.type <barracks-type>)
+   (<barracks-type> ^name |Terran Barracks|
+                    ^id <barracks-id>)
+   (<marine-type> ^name |Terran Marine|
+               ^id <type-id>)
+   (<b> ^type <barracks-id>
+        ^id <id>
+        ^full-queue 0)
+   -{ (<output-link> ^build-unit <command-to-build>)
+      (<command-to-build> ^type <type-id>
+                         -^status)}
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name build-unit
+        ^location <id>
+        ^type <type-id>)
+}
+
+#Preference rules
+sp {pref*marines-better-than-scv
+   (state <s> ^operator <o1> +
+              ^operator <o2> +
+              ^io.input-link.types.type <t1>
+              ^io.input-link.types.type <t2>)
+   (<t1> ^name |Terran Marine|
+         ^id <marine-id>)
+   (<t2> ^name |Terran SCV|
+         ^id <scv-id>)
+   (<o1> ^name build-unit
+         ^type <marine-id>)
+   (<o2> ^name build-unit
+         ^type <scv-id>)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
