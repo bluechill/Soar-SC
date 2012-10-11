@@ -316,6 +316,13 @@ void Soar_Unit::update(sml::Agent* agent)
 	int newTargetID = 0;
 	if (target != NULL)
 		newTargetID = target->getID();
+	else
+	{
+		target = unit->getOrderTarget();
+
+		if (target != NULL)
+			newTargetID = target->getID();
+	}
 
 	if (newTargetID != targetID)
 	{

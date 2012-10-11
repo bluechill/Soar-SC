@@ -1,1 +1,3 @@
 Error: Error creating client connection pipe
+Unable to connect to server
+Error: Error creating client connection pipe
