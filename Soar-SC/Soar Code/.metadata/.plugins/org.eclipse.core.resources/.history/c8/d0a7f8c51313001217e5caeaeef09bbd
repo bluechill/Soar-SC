@@ -1,0 +1,101 @@
+sp {propose*attack
+   (state <s> ^name Soar-SC
+              ^io.input-link.enemy-units <enemy-units>
+              ^io.input-link.units <my-units>
+              ^io.input-link.types.type <marine-type>
+              ^io.output-link <output-link>)
+   (<enemy-units> ^unit <enemy>)
+   (<enemy> ^id <enemy-id>)
+   (<marine-type> ^name |Terran Marine|
+                  ^id <type-id>)
+   (<my-units> ^unit <my-unit>)
+   (<my-unit> ^type <type-id>
+              ^id <marine-id>
+              ^idle 1)
+-->
+   (<s> ^operator <attack-operator> + >)
+   (<attack-operator> ^name attack
+                      ^enemy <enemy-id>
+                      ^marine <marine-id>
+                      ^unit-attack 1)
+}
+
+sp {propose*attack
+   (state <s> ^name Soar-SC
+              ^io.input-link.enemy-units <enemy-units>
+              ^io.input-link.units <my-units>
+              ^io.input-link.types.type <marine-type>
+              ^io.output-link <output-link>)
+   (<enemy-units> ^building <enemy>)
+   (<enemy> ^id <enemy-id>)
+   (<marine-type> ^name |Terran Marine|
+                  ^id <type-id>)
+   (<my-units> ^unit <my-unit>)
+   (<my-unit> ^type <type-id>
+              ^id <marine-id>
+              ^idle 1)
+-->
+   (<s> ^operator <attack-operator> + >)
+   (<attack-operator> ^name attack
+                      ^enemy <enemy-id>
+                      ^marine <marine-id>)
+}
+
+sp {pref*all-attacks-of-same-type-are-equal
+   (state <s> ^name Soar-SC
+              ^operator <attack1> +
+              ^operator <attack2> +)
+   (<attack1> ^name attack
+              ^unit-attack)
+   (<attack2> ^name attack
+              ^unit-attack)
+-->
+   (<s> ^operator <attack1> = <attack2>)
+}
+
+sp {pref*all-attacks-of-same-type-are-equal-two
+   (state <s> ^name Soar-SC
+              ^operator <attack1> +
+              ^operator <attack2> +)
+   (<attack1> ^name attack
+             -^unit-attack)
+   (<attack2> ^name attack
+             -^unit-attack)
+-->
+   (<s> ^operator <attack1> = <attack2>)
+}
+
+sp {pref*unit-attack-better-than-building
+   (state <s> ^name Soar-SC
+              ^operator <attack1> +
+              ^operator <attack2> +)
+   (<attack1> ^name attack
+              ^unit-attack)
+   (<attack2> ^name attack
+             -^unit-attack)
+-->
+   (<s> ^operator <attack1> > <attack2>)
+}
+
+sp {pref*attack-better-than-all
+   (state <s> ^name Soar-SC
+              ^operator <non-attack> +
+              ^operator <attack> +)
+   (<non-attack> ^name { <> attack })
+   (<attack> ^name attack)
+-->
+   (<s> ^operator <attack> > <non-attack>)
+}
+
+sp {apply*attack
+   (state <s> ^name Soar-SC
+              ^operator <attack-operator>
+              ^io.output-link <output-link>)
+   (<attack-operator> ^name attack
+                      ^enemy <enemy-id>
+                      ^marine <marine-id>)
+-->
+   (<output-link> ^move <attack>)
+   (<attack> ^object <marine-id>
+             ^dest <enemy-id>)
+}

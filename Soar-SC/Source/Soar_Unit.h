@@ -66,6 +66,8 @@ private:
 	build_struct* build;
 
 	bool isEnemy;
+
+	int targetID;
 };
 
 #endif

@@ -42,6 +42,11 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 		}
 	}
 
+	if (unit->getTarget() != NULL)
+		targetID = unit->getTarget()->getID();
+	else
+		targetID = 0;
+
 	//Set the type
 	type = unit->getType();
 
@@ -92,6 +97,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 
 	unit_id->CreateIntWME("can-produce", can_produce);
 	unit_id->CreateIntWME("full-queue", full_queue);
+	unit_id->CreateIntWME("target", targetID);
 
 	ss.str("");
 	ss << size.x/32.0f << " " << size.y/32.0f << " 1";
@@ -305,6 +311,22 @@ void Soar_Unit::update(sml::Agent* agent)
 
 		agent->SendSVSInput(svs_command);
 	}
+
+	Unit* target = unit->getTarget();
+	int newTargetID = 0;
+	if (target != NULL)
+		newTargetID = target->getID();
+
+	if (newTargetID != targetID)
+	{
+		if (unit_id == NULL)
+			unit_id = get_unit_identifier(agent, false, isEnemy);
+
+		targetID = newTargetID;
+
+		IntElement* wme = unit_id->FindByAttribute("target", 0)->ConvertToIntElement();
+		wme->Update(targetID);
+	}
 }
 
 const int Soar_Unit::get_id()
@@ -364,7 +386,7 @@ sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_u
 
 	if (create_unit)
 	{
-		if (building && !enemy)
+		if (building)
 			unit = units->CreateIdWME("building");
 		else
 			unit = units->CreateIdWME("unit");
