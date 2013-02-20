@@ -17,22 +17,22 @@ namespace BWAPI
   public:
     RegionImpl(int index);
     void setNeighbors();
-    virtual int getID() const;
-    virtual int getRegionGroupID() const;
-    virtual BWAPI::Position getCenter() const;
-    virtual bool isHigherGround() const;
-    virtual int getDefensePriority() const;
-    virtual bool isWalkable() const;
+    virtual int getID() const override;
+    virtual int getRegionGroupID() const override;
+    virtual BWAPI::Position getCenter() const override;
+    virtual bool isHigherGround() const override;
+    virtual int getDefensePriority() const override;
+    virtual bool isWalkable() const override;
 
-    virtual const Regionset &getNeighbors() const;
+    virtual const Regionset &getNeighbors() const override;
 
-    virtual int getBoundsLeft() const;
-    virtual int getBoundsTop() const;
-    virtual int getBoundsRight() const;
-    virtual int getBoundsBottom() const;
+    virtual int getBoundsLeft() const override;
+    virtual int getBoundsTop() const override;
+    virtual int getBoundsRight() const override;
+    virtual int getBoundsBottom() const override;
 
-    virtual BWAPI::Region *getClosestAccessibleRegion() const;
-    virtual BWAPI::Region *getClosestInaccessibleRegion() const;
+    virtual BWAPI::Region *getClosestAccessibleRegion() const override;
+    virtual BWAPI::Region *getClosestInaccessibleRegion() const override;
   };
 
 };

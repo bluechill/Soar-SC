@@ -61,17 +61,10 @@ namespace BWAPI
   {
     public:
       BulletType(int id = BulletTypes::Enum::None);
-
-      /** Returns the name of this bullet type. */
-      const std::string &getName() const;
-      const char *c_str() const;
   };
 
   namespace BulletTypes
   {
-    /** Given the name of an bullet type, getBulletType() will return the corresponding BulletType object. */
-    BulletType getBulletType(std::string name);
-
     /** Returns the set of all the BulletTypes. */
     const BulletType::const_set& allBulletTypes();
 

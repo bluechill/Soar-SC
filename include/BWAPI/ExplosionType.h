@@ -43,16 +43,9 @@ namespace BWAPI
   {
     public:
       ExplosionType(int id = ExplosionTypes::Enum::None);
-
-      /** Returns the name of this explosion type. */
-      const std::string &getName() const;
-      const char *c_str() const;
   };
   namespace ExplosionTypes
   {
-    /** Given a name of an explosion type, this will return the corresponding ExplosionType  object. */
-    ExplosionType getExplosionType(std::string name);
-
     /** Returns the set of all ExplosionTypes. */
     const ExplosionType::const_set& allExplosionTypes();
 

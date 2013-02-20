@@ -10,19 +10,18 @@ namespace BWAPI
   class Unitset;
   class Unit;
 
-  class Region : public Interface
+  /// @TODO documentation of class
+  class Region : public Interface<Region>
   {
   protected:
     virtual ~Region() {};
   public:
-    /// @~English
     /// Retrieves a unique identifier for this region.
     ///
     /// @note This identifier is explicitly assigned by Broodwar.
     ///
     /// @returns
     ///   An integer that represents this region.
-    /// @~
     /// @see Game::getRegion
     virtual int getID() const = 0;
 
@@ -59,7 +58,6 @@ namespace BWAPI
     /** Retrieves the center-to-center distance between two regions. */
     int getDistance(BWAPI::Region *other) const;
 
-    /// @~English
     /// Retrieves a Unitset containing all the units that are in this region. Also has the ability
     /// to filter the units before the creation of the Unitset.
     ///
@@ -70,7 +68,7 @@ namespace BWAPI
     ///
     /// @returns A Unitset containing all units in this region that have met the requirements
     /// of \p pred.
-    /// @~
+    ///
     /// @see UnitFilter
     Unitset getUnits(const UnitFilter &pred = nullptr) const;
   };

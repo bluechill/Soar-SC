@@ -2,12 +2,15 @@
 #include <list>
 #include <string>
 
+#include <BWAPI/Interface.h>
 #include <BWAPI/UnitType.h>
 #include <BWAPI/Error.h>
 
 #include <BWAPI/Filters.h>
 #include <BWAPI/UnaryFilter.h>
-#include <BWAPI/Interface.h>
+#include <BWAPI/Input.h>
+
+#include <sstream>
 
 namespace BWAPI
 {
@@ -29,14 +32,11 @@ namespace BWAPI
   class Unitset;
   class UpgradeType;
 
-  enum MouseButton;
-  enum Key;
-
   /** The abstract Game class is implemented by BWAPI and offers many methods for retrieving information
    * about the current Broodwar game, including the set of players, units, map information, as well as
    * information about the user, such as mouse position, screen position, and the current selection of
    * units. */
-  class Game : public Interface
+  class Game : public Interface<Game>
   {
   protected:
     virtual ~Game() {};
@@ -50,7 +50,23 @@ namespace BWAPI
 
     /** Returns all the visible units. If Flag::CompleteMapInformation is enabled, the set of all units
      * is returned, not just visible ones. Note that units inside refineries are not included in this set
-     * yet. */
+     * yet
+	 *
+	 * Warning about multi-threaded AIs:
+	 *
+	 * If you are using multiple threads for your AI AND you are using units from this outside of the BWAPI
+	 * event thread, it is not recommended to use this function.  Currently you may run into heap corruption
+	 * related to the destruction of Vectorset.  One possible way around this is to do the following:
+	 *
+	 * Playerset players = Broodwar->getPlayers();
+	 * 
+	 * for (Playerset::iterator it = players.begin();it != players.end();it++)
+	 * {
+	 *    Player* player = *it;
+	 *    Unitset units = player->getUnits();
+	 *
+	 *    ... Do whatever you need to do with "units" ...
+	 * } */
     virtual const Unitset& getAllUnits() const = 0;
 
     /** Returns the set of all accessible mineral patches. */
@@ -160,11 +176,12 @@ namespace BWAPI
 
     /** Returns the set of accessible units that are in or overlapping the given rectangle. */
     virtual Unitset getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = nullptr) const = 0;
+    Unitset getUnitsInRectangle(BWAPI::Position topLeft, BWAPI::Position bottomRight, const UnitFilter &pred = nullptr) const;
 
     /** Returns the set of accessible units within or overlapping a circle at the given point with the given radius. */
     Unitset getUnitsInRadius(BWAPI::Position center, int radius, const UnitFilter &pred = nullptr) const;
 
-    /// @~English
+    
     /// Retrieves the closest unit to center that
     /// matches the criteria of pred within a radius.
     ///
@@ -177,12 +194,12 @@ namespace BWAPI
     /// @returns The desired unit that is closest
     /// to center.
     /// @retval nullptr If a suitable unit was not found.
-    /// @~
+    
     /// @see getBestUnit
     Unit *getClosestUnit(Position center, const UnitFilter &pred = nullptr, int radius = 999999) const;
     virtual Unit *getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
 
-    /// @~English
+    
     /// Compares all units with pred to determine
     /// which of them is the best. All units are
     /// checked. If center and radius are specified,
@@ -197,21 +214,21 @@ namespace BWAPI
     /// @returns The desired unit that best matches
     /// the given criteria.
     /// @retval nullptr if a suitable unit was not found.
-    /// @~
+    
     /// @see getClosestUnit
     virtual Unit *getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::None, int radius = 999999) const = 0;
 
-    /// @~English
+    
     /// Returns the last error that was set using setLastError.
     /// If a function call in BWAPI has failed, you can use
     /// this function to retrieve the reason it failed.
     ///
     /// @returns Error type containing the reason for failure.
-    /// @~
+    
     /// @see setLastError, Errors
     virtual Error getLastError() const = 0;
 
-    /// @~English
+    
     /// Sets the last error so that future calls to 
     /// getLastError will return the value that was set.
     ///
@@ -219,9 +236,9 @@ namespace BWAPI
     ///
     /// @retval true If the type passed was Errors::None.
     /// @retval false If any other error type was passed.
-    /// @~
+    
     /// @see getLastError, Errors
-    virtual bool setLastError(BWAPI::Error e = Errors::None) = 0;
+    virtual bool setLastError(BWAPI::Error e = Errors::None) const = 0;
 
     /** Returns the width of the current map, in build tile units. To get the width of the current map in
      * walk tile units, multiply by 4. To get the width of the current map in Position units, multiply by
@@ -278,17 +295,17 @@ namespace BWAPI
     bool hasCreep(TilePosition position) const;
 
     /** Returns true if the given build location is powered by a nearby friendly pylon. */
-    virtual bool hasPower(int tileX, int tileY, UnitType unitType = UnitTypes::None) const = 0;
+    bool hasPower(int tileX, int tileY, UnitType unitType = UnitTypes::None) const;
     /** Returns true if the given build location is powered by a nearby friendly pylon. */
-    virtual bool hasPower(TilePosition position, UnitType unitType = UnitTypes::None) const = 0;
+    bool hasPower(TilePosition position, UnitType unitType = UnitTypes::None) const;
     /** Returns true if the given build location is powered by a nearby friendly pylon. */
-    virtual bool hasPower(int tileX, int tileY, int tileWidth, int tileHeight, UnitType unitType = UnitTypes::None) const = 0;
+    bool hasPower(int tileX, int tileY, int tileWidth, int tileHeight, UnitType unitType = UnitTypes::None) const;
     /** Returns true if the given build location is powered by a nearby friendly pylon. */
-    virtual bool hasPower(TilePosition position, int tileWidth, int tileHeight, UnitType unitType = UnitTypes::None) const = 0;
+    bool hasPower(TilePosition position, int tileWidth, int tileHeight, UnitType unitType = UnitTypes::None) const;
     /** Returns true if the given pixel location is powered by a nearby friendly pylon. */
     virtual bool hasPowerPrecise(int x, int y, UnitType unitType = UnitTypes::None ) const = 0;
     /** Returns true if the given pixel location is powered by a nearby friendly pylon. */
-    virtual bool hasPowerPrecise(Position position, UnitType unitType = UnitTypes::None) const = 0;
+    bool hasPowerPrecise(Position position, UnitType unitType = UnitTypes::None) const;
 
     /** Returns true if the given unit type can be built at the given build tile position. Note the tile
      * position specifies the top left tile of the building. If builder is not null, the unit will be
@@ -302,25 +319,28 @@ namespace BWAPI
 
     /** Returns true if the AI player has enough resources required to research the given tech type. If unit
      * is not null, canResearch will return true only if the given unit can research the given tech type. */
-    virtual bool canResearch(TechType type, const Unit *unit = nullptr) = 0;
+    virtual bool canResearch(TechType type, const Unit *unit = nullptr, bool checkCanIssueCommandType = true) = 0;
 
     /** Returns true if the AI player has enough resources required to upgrade the given upgrade type. If
      * unit is not null, canUpgrade will return true only if the given unit can upgrade the given upgrade
      * type. */
-    virtual bool canUpgrade(UpgradeType type, const Unit *unit = nullptr) = 0;
+    virtual bool canUpgrade(UpgradeType type, const Unit *unit = nullptr, bool checkCanIssueCommandType = true) = 0;
 
     /** Returns the set of starting locations for the given map. To determine the starting location for the
      * players in the current match, see Player::getStartLocation. */
     virtual const TilePosition::set& getStartLocations() const = 0;
 
     /** Prints text on the screen. Text is not sent to other players in multiplayer games. */
-    virtual void printf(const char *format, ...) = 0;
+    virtual void vPrintf(const char *format, va_list arg) = 0;
+    void printf(const char *format, ...);
 
     /** Sends text to other players - as if it were entered in chat. In single player games and replays,
      * this will just print the text on the screen. If the game is a single player match and not a replay,
      * then this function can be used to execute cheat codes, i.e. Broodwar->sendText("show me the money"). */
-    virtual void sendText(const char *format, ...) = 0;
-    virtual void sendTextEx(bool toAllies, const char *format, ...) = 0;
+    void sendText(const char *format, ...);
+    void vSendText(const char *format, va_list arg);
+    void sendTextEx(bool toAllies, const char *format, ...);
+    virtual void vSendTextEx(bool toAllies, const char *format, va_list arg) = 0;
 
     /** Used to change the race while in a lobby. Note that there is no onLobbyEnter callback yet, so this
      * function cannot be used at this time. */
@@ -365,14 +385,14 @@ namespace BWAPI
     /** Sets the speed of the game to the given number. Lower numbers are faster. 0 is the fastest speed
      * StarCraft can handle (which is about as fast as the fastest speed you can view a replay at). Any
      * negative value will reset the speed to the StarCraft default. */
-    virtual void setLocalSpeed(int speed = -1) = 0;
+    virtual void setLocalSpeed(int speed) = 0;
 
     /** Issues a command to a group of units */
     virtual bool issueCommand(const Unitset& units, UnitCommand command) = 0;
 
     /** Returns the set of units currently selected by the user in the GUI. If Flag?::UserInput? was not
      * enabled during the AIModule::onStart callback, this function will always return an empty set. */
-    virtual const Unitset& getSelectedUnits() = 0;
+    virtual const Unitset& getSelectedUnits() const = 0;
 
     /** Returns a pointer to the player that BWAPI controls. In replays this will return null. */
     virtual Player* self() = 0;
@@ -397,10 +417,14 @@ namespace BWAPI
     virtual void setTextSize(int size = 1) = 0;
     /** Draws text on the screen at the given position. Text can be drawn in different colors by using the
      * following control characters: TODO: add image from wiki.*/
-    virtual void drawText(int ctype, int x, int y, const char *format, ...) = 0;
-    virtual void drawTextMap(int x, int y, const char *format, ...) = 0;
-    virtual void drawTextMouse(int x, int y, const char *format, ...) = 0;
-    virtual void drawTextScreen(int x, int y, const char *format, ...) = 0;
+    virtual void vDrawText(int ctype, int x, int y, const char *format, va_list arg) = 0;
+    void drawText(int ctype, int x, int y, const char *format, ...);
+    void drawTextMap(int x, int y, const char *format, ...);
+    void drawTextMouse(int x, int y, const char *format, ...);
+    void drawTextScreen(int x, int y, const char *format, ...);
+    void drawTextMap(Position p, const char *format, ...);
+    void drawTextMouse(Position p, const char *format, ...);
+    void drawTextScreen(Position p, const char *format, ...);
 
     /** Draws a box on the screen, with the given color. If isSolid is true, the entire box will be
      * rendered, otherwise just the outline will be drawn. */
@@ -457,41 +481,68 @@ namespace BWAPI
     void drawLineMouse(Position a, Position b, Color color);
     void drawLineScreen(Position a, Position b, Color color);
 
-    /** Retrieves the screen buffer for the game (excluding the HUD) */
-    virtual void *getScreenBuffer() = 0;
-
     /** Retrieves latency values for the game. Includes latency, speed, and mode */
-    virtual int getLatencyFrames() = 0;
-    virtual int getLatencyTime() = 0;
-    virtual int getRemainingLatencyFrames() = 0;
-    virtual int getRemainingLatencyTime() = 0;
+    virtual int getLatencyFrames() const = 0;
+    virtual int getLatencyTime() const = 0;
+    virtual int getRemainingLatencyFrames() const = 0;
+    virtual int getRemainingLatencyTime() const = 0;
 
     /** Retrieves the current revision of BWAPI. */
-    virtual int getRevision() = 0;
+    virtual int getRevision() const = 0;
 
     /** Retrieves the debug state of the BWAPI build. */
-    virtual bool isDebug() = 0;
+    virtual bool isDebug() const = 0;
 
     /** Returns true if latency compensation is enabled */
-    virtual bool isLatComEnabled() = 0;
+    virtual bool isLatComEnabled() const = 0;
 
     /** Use to enable or disable latency compensation. Default: Enabled */
     virtual void setLatCom(bool isEnabled) = 0;
 
-    /** Sets the rendering state of the Starcraft GUI */
-    virtual void setGUI(bool enabled = true) = 0;
+    /// Checks if the GUI is enabled. The GUI includes all drawing functions of BWAPI, as well
+    /// as screen updates from Broodwar.
+    ///
+    /// @retval true If the GUI is enabled, and everything is visible
+    /// @retval false If the GUI is disabled and drawing functions are rejected
+    ///
+    /// @see setGUI
+    virtual bool isGUIEnabled() const = 0;
 
-    /** Retrieves the instance number recorded by BWAPI to identify which instance an AI module belongs to */
-    virtual int  getInstanceNumber() = 0;
+    /// Sets the rendering state of the Starcraft GUI. This typically gives Starcraft a very
+    /// low graphical frame rate and disables all drawing functionality in BWAPI.
+    ///
+    /// @param enabled
+    ///   A boolean value that determines the state of the GUI. Passing false to this function
+    ///   will disable the GUI, and true will enable it.
+    ///
+    /// Example Usage:
+    /// @code
+    ///   void ExampleAIModule::onStart()
+    ///   {   // Make our bot run thousands of games as fast as possible!
+    ///     Broodwar->setLocalSpeed(0);
+    ///     Broodwar->setGUI(false);
+    ///   }
+    /// @endcode
+    ///
+    /// @see isGUIEnabled
+    virtual void setGUI(bool enabled) = 0;
+
+    /// Retrieves the Starcraft instance number recorded by BWAPI to identify which Starcraft
+    /// instance an AI module belongs to. This only applies to users running multiple instances
+    /// of Starcraft.
+    ///
+    /// @returns
+    ///   An integer value representing the instance number.
+    virtual int getInstanceNumber() const = 0;
 
     /** Retrieves the bot's APM. Can include or exclude select commands. */
-    virtual int getAPM(bool includeSelects = false) = 0;
+    virtual int getAPM(bool includeSelects = false) const = 0;
 
     /** Changes the map to the one specified. Changes do not take effect unless the game is restarted. */
     virtual bool setMap(const char *mapFileName) = 0;
 
     /** Sets the frame skip value. 1 = normal */
-    virtual void setFrameSkip(int frameSkip = 1) = 0;
+    virtual void setFrameSkip(int frameSkip) = 0;
 
     /** Returns true if Starcraft can find a path from the source to the destination. */
     virtual bool hasPath(Position source, Position destination) const = 0;
@@ -505,12 +556,89 @@ namespace BWAPI
     /** Returns the elapsed game time in seconds. */
     virtual int  elapsedTime() const = 0;
 
-    /** Sets the level of command optimizations.
-        0 = No optimization.
-        1 = Some optimization    (Stop, Hold Position, Siege, Burrow, etc.).
-        2 = More optimization    (Train, Set Rally, Lift, [multi-select buildings]).
-        3 = Maximum optimization (Attack/Move to position, use ability at position, etc.).*/
-    virtual void setCommandOptimizationLevel(int level = 0) = 0;
+    /// Sets the command optimization level. Command optimization is a feature in BWAPI that tries
+    /// to reduce the APM of the bot by grouping or eliminating unnecessary game actions. For
+    /// example, suppose the bot told 24 @Zerglings to @Burrow. At command optimization level 0,
+    /// BWAPI is designed to select each Zergling to burrow individually, which costs 48 actions.
+    /// With command optimization level 1, it can perform the same behaviour using only 4 actions.
+    /// The command optimizer also reduces the amount of bytes used for each action if it can
+    /// express the same action using a different command. For example, Right_Click uses less
+    /// bytes than Move.
+    ///
+    /// @param level
+    ///   An integer representation of the aggressiveness for which commands are optimized. A
+    ///   lower level means less optimization, and a higher level means more optimization. The
+    ///   values for level are as follows:
+    ///     + 0: No optimization.
+    ///     + 1: Some optimization.
+    ///       + Is not detected as a hack.
+    ///       + Does not alter behaviour.
+    ///       + Units performing the following actions are grouped and ordered 12 at a time:
+    ///         + Attack_Unit
+    ///         + Morph (@Larva only)
+    ///         + Hold_Position
+    ///         + Stop
+    ///         + Follow
+    ///         + Gather
+    ///         + Return_Cargo
+    ///         + Repair
+    ///         + Burrow
+    ///         + Unburrow
+    ///         + Cloak
+    ///         + Decloak
+    ///         + Siege
+    ///         + Unsiege
+    ///         + Right_Click_Unit
+    ///         + Halt_Construction
+    ///         + Cancel_Train (@Carrier and @Reaver only)
+    ///         + Cancel_Train_Slot (@Carrier and @Reaver only)
+    ///         + Cancel_Morph (for non-buildings only)
+    ///         + Use_Tech
+    ///         + Use_Tech_Unit
+    ///       + The following order transformations are applied to allow better grouping:
+    ///         + Attack_Unit becomes Right_Click_Unit if the target is an enemy
+    ///         + Move becomes Right_Click_Position
+    ///         + Gather becomes Right_Click_Unit if the target contains resources
+    ///         + Set_Rally_Position becomes Right_Click_Position for buildings
+    ///         + Set_Rally_Unit becomes Right_Click_Unit for buildings
+    ///         + Use_Tech_Unit with Infestation becomes Right_Click_Unit if the target is valid
+    ///     + 2: More optimization by grouping structures.
+    ///       + Includes the optimizations made by all previous levels.
+    ///       + May be detected as a hack by some replay utilities.
+    ///       + Does not alter behaviour.
+    ///       + Units performing the following actions are grouped and ordered 12 at a time:
+    ///         + Attack_Unit (@Turrets, @Photon_Cannons, @Sunkens, @Spores)
+    ///         + Train
+    ///         + Morph
+    ///         + Set_Rally_Unit
+    ///         + Lift
+    ///         + Unload_All (@Bunkers only)
+    ///         + Cancel_Construction
+    ///         + Cancel_Addon
+    ///         + Cancel_Train
+    ///         + Cancel_Train_Slot
+    ///         + Cancel_Morph
+    ///         + Cancel_Research
+    ///         + Cancel_Upgrade
+    ///     + 3: Extensive optimization 
+    ///       + Includes the optimizations made by all previous levels.
+    ///       + Units may behave or move differently than expected.
+    ///       + Units performing the following actions are grouped and ordered 12 at a time:
+    ///         + Attack_Move
+    ///         + Set_Rally_Position
+    ///         + Move
+    ///         + Patrol
+    ///         + Unload_All
+    ///         + Unload_All_Position
+    ///         + Right_Click_Position
+    ///         + Use_Tech_Position
+    ///     + 4: Aggressive optimization
+    ///       + Includes the optimizations made by all previous levels.
+    ///       + Positions used in commands will be rounded to multiples of 32.
+    ///       + @High_Templar and @Dark_Templar that merge into @Archons will be grouped and may
+    ///         choose a different target to merge with. It will not merge with a target that
+    ///         wasn't included.
+    virtual void setCommandOptimizationLevel(int level) = 0;
 
     /** Returns the remaining countdown time in seconds. */
     virtual int  countdownTimer() const = 0;
@@ -530,6 +658,72 @@ namespace BWAPI
 
     /** Enables or disables the Fog of War in a replay. */
     virtual bool setRevealAll(bool reveal = true) = 0;
+
+    /// Retrieves a basic build position just as the default Computer AI would. This allows users
+    /// to find simple build locations without relying on external libraries.
+    ///
+    /// @param type
+    ///   A valid UnitType representing the unit type to accomodate space for.
+    /// @param desiredPosition
+    ///   A valid TilePosition containing the desired placement position.
+    /// @param maxRange (optional)
+    ///   The maximum distance (in tiles) to build from \p desiredPosition.
+    /// @param creep (optional)
+    ///   A special boolean value that changes the behaviour of @Creep_Colony placement.
+    ///
+    /// @retval TilePositions::Invalid If a build location could not be found within \p maxRange.
+    /// @returns
+    ///   A TilePosition containing the location that the structure should be constructed at.
+    TilePosition getBuildLocation(UnitType type, TilePosition desiredPosition, int maxRange = 64, bool creep = false) const;
   };
-  extern Game* Broodwar;
+
+  extern Game *BroodwarPtr;
+
+  /// Broodwar wrapper
+  class GameWrapper
+  {
+  private:
+    std::ostringstream ss;
+  public:
+    /// Member access operator to retain the original Broodwar-> behaviour.
+    Game *operator ->() const
+    {
+      return BroodwarPtr;
+    };
+
+    /// Output stream operator for printing text to Broodwar. Using this operator invokes
+    /// Game::printf when a newline character is encountered.
+    template < class T >
+    GameWrapper &operator <<(const T &in)
+    {
+      // Pass whatever into the stream
+      ss << in;
+      return *this;
+    };
+
+    typedef std::ostream& (*ostream_manipulator)(std::ostream&);
+    GameWrapper &operator <<( const ostream_manipulator &fn )
+    {
+      // Pass manipulator into the stream
+      ss << fn;
+
+      // Flush to Broodwar's printf if we see endl or ends
+      if ( fn == (ostream_manipulator)std::endl || fn == (ostream_manipulator)std::ends )
+        this->flush();
+      return *this;
+    };
+
+    void flush()
+    {
+      if ( !BroodwarPtr )
+        return;
+
+      BroodwarPtr->printf("%s", ss.str().c_str() );
+      ss.str("");
+    };
+  };
+
+  extern GameWrapper Broodwar;
+
 }
+

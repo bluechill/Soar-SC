@@ -8,7 +8,7 @@ Blog                  http://bwapi.blogspot.com/
 Google Group          http://groups.google.com/group/bwapi
 Forums                http://www.broodwarai.com/forums/index.php?showforum=46
 Bug Reports           http://code.google.com/p/bwapi/issues/list
-IRC Channel           QuakeNet #BWAPI
+IRC Channel           Freenode #BWAPI
 
 1. Introduction to BWAPI
 ------------------------

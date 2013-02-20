@@ -30,20 +30,12 @@ namespace BWAPI
   {
     public:
       PlayerType(int id = PlayerTypes::Enum::None);
-      /** Returns the name of the player type. For example PlayerTypes::Computer.getName() will return an
-       * std::string object containing "Computer". */
-      const std::string &getName() const;
-      const char *c_str() const;
 
       bool isLobbyType() const;
       bool isGameType() const;
   };
   namespace PlayerTypes
   {
-    /** Given the name of a player type, this function will return the playertype. For example:
-     *  PlayerTypes::getPlayerType("Human") will return PlayerTypes::Human. */
-    PlayerType getPlayerType(std::string name);
-
     /** Returns the set of all the PlayerTypes. */
     const PlayerType::const_set& allPlayerTypes();
     

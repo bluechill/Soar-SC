@@ -63,8 +63,8 @@ SVS_Rectangle get_rectangle(const int x, const int y,const vector<SVS_Rectangle>
 
 void generate_rectangle(const int x_start,const int y_start,const vector<string> &map, vector<SVS_Rectangle> &rectangles)
 {
-	vector<int> xs;
-	vector<int> ys;
+	vector<size_t> xs;
+	vector<size_t> ys;
 	
 	for (size_t y = y_start;y < map.size();y++)
 	{
@@ -103,7 +103,7 @@ void generate_rectangle(const int x_start,const int y_start,const vector<string>
 		}
 	}
 
-	int min_y = map.size() + 1;
+	size_t min_y = map.size() + 1;
 	for (size_t i = 0;i < ys.size();i++)
 	{
 		if (ys[i] < min_y)
@@ -186,15 +186,15 @@ int main(int argc, const char * argv[])
 	
 	char c = '0';
 	cout << "Rectangles: " << rectangles.size() << endl;
-	for (int i = 0;i < rectangles.size();i++)
+	for (size_t i = 0;i < rectangles.size();i++)
 	{
 		rectangles[i].c = c;
 		c++;
 	}
 	
-	for (int y = 0;y < file_lines.size();y++)
+	for (size_t y = 0;y < file_lines.size();y++)
 	{
-		for (int x = 0;x < file_lines[y].size();x++)
+		for (size_t x = 0;x < file_lines[y].size();x++)
 		{
 			SVS_Rectangle rect = get_rectangle(x, y, rectangles);
 			if (rect.x == -1)

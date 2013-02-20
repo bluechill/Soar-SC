@@ -13,14 +13,8 @@
 
 namespace BWAPI
 {
-  /// @~English
-  /// The CompareFilter is a temporary container
-  /// in which the stored function predicate
-  /// returns a value. If any relational
-  /// operators are used, then it becomes
-  /// a UnaryFilter.
-  ///
-  /// @~
+  /// The CompareFilter is a temporary container in which the stored function predicate returns a
+  /// value. If any relational operators are used, then it becomes a UnaryFilter.
   template<typename _Param, typename _Cmp = int>
   class CompareFilter
   {
@@ -76,7 +70,6 @@ namespace BWAPI
       return pred(u);
     };
     
-
     inline bool isValid() const
     {
       return (bool)pred;

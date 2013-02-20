@@ -9,7 +9,6 @@ namespace BWAPI
   class Unit;
   class BulletType;
 
-  /// @~English
   /// An interface object representing a bullet or missile spawned from an attack.
   ///
   /// The Bullet interface allows you to detect bullets, missiles, and other types
@@ -28,21 +27,18 @@ namespace BWAPI
   /// If Flag::CompleteMapInformation is disabled, then a Bullet is accessible if and only if
   /// it is visible. Otherwise if Flag::CompleteMapInformation is enabled, then all Bullets
   /// in the game are accessible.
-  /// @~
   /// @see Game::getBullets, Bullet::exists
-  class Bullet : public Interface
+  class Bullet : public Interface<Bullet>
   {
   protected:
     virtual ~Bullet() {};
   public:
-    /// @~English
     /// Retrieves a unique identifier for the current Bullet.
     ///
-    /// @returns An integer value containing the identifier.
-    /// @~
+    /// @returns
+    ///   An integer value containing the identifier.
     virtual int getID() const = 0;
     
-    /// @~English
     /// Checks if the Bullet exists in the view of the BWAPI player.
     ///
     /// @retval true If the bullet exists or is visible.
@@ -54,104 +50,93 @@ namespace BWAPI
     ///
     /// If Flag::CompleteMapInformation is enabled, then this function is accurate for all
     /// Bullet information.
-    /// @~
     /// @see isVisible, Unit::exists
     virtual bool exists() const = 0;
 
-    /// @~English
     /// Retrieves the Player interface that owns the Bullet.
     ///
     /// @retval nullptr If the Player object for this Bullet is inaccessible.
     ///
-    /// @returns A pointer to the owning Player object.
-    /// @~
+    /// @returns
+    ///   A pointer to the owning Player object.
     virtual Player* getPlayer() const = 0;
 
-    /// @~English
     /// Retrieves the type of this Bullet.
     ///
     /// @retval BulletTypes::Unknown if the Bullet is inaccessible.
     ///
-    /// @returns A BulletType representing the Bullet's type.
-    /// @~
+    /// @returns
+    ///   A BulletType representing the Bullet's type.
     virtual BulletType getType() const = 0;
 
-    /// @~English
     /// Retrieves the Unit interface that the Bullet spawned from.
     ///
     /// @retval nullptr If the source can not be identified or is inaccessible.
     ///
-    /// @returns A pointer to the owning Unit object.
-    /// @~
+    /// @returns
+    ///   A pointer to the owning Unit object.
+    ///
     /// @see getTarget
     virtual Unit* getSource() const = 0;
 
-    /// @~English
     /// Retrieves the Bullet's current position.
     ///
     /// @retval Positions::Unknown If the Bullet is inaccessible.
     ///
-    /// @returns A Position containing the Bullet's current coordinates.
-    /// @~
+    /// @returns
+    ///   A Position containing the Bullet's current coordinates.
+    ///
     /// @see getTargetPosition
     virtual Position getPosition() const = 0;
 
-    /// @~English
-    /// Retrieve's the direction the Bullet is facing.
-    ///
-    /// An angle of 0 means the Bullet is facing to the right.
+    /// Retrieve's the direction the Bullet is facing. If the angle is 0, then the Bullet is
+    /// facing right.
     /// 
-    /// @retval 0 If the bullet is inaccessible.
-    /// @returns A double representing the direction the Bullet is facing.
-    /// @~
+    /// @retval 0.0 If the bullet is inaccessible.
+    ///
+    /// @returns
+    ///   A double representing the direction the Bullet is facing.
     virtual double getAngle() const = 0;
 
-    /// @~English
-    /// Retrieves the X component of the Bullet's velocity.
+    /// Retrieves the X component of the Bullet's velocity, measured in pixels per frame.
     ///
-    /// The Bullet's velocity is measured in pixels per frame.
+    /// @retval 0.0 if the Bullet is inaccessible.
     ///
-    /// @retval 0 if the Bullet is inaccessible.
-    /// @returns A double representing the number of pixels moved on the X axis per
-    /// frame.
-    /// @~
+    /// @returns
+    ///   A double representing the number of pixels moved on the X axis per frame.
+    ///
     /// @see getVelocityY, getAngle
     virtual double getVelocityX() const = 0;
 
-    /// @~English
-    /// Retrieves the Y component of the Bullet's velocity.
+    /// Retrieves the Y component of the Bullet's velocity, measured in pixels per frame.
     ///
-    /// The Bullet's velocity is measured in pixels per frame.
+    /// @retval 0.0 if the Bullet is inaccessible.
     ///
-    /// @retval 0 if the Bullet is inaccessible.
-    /// @returns A double representing the number of pixels moved on the Y axis per
-    /// frame.
-    /// @~
+    /// @returns
+    ///   A double representing the number of pixels moved on the Y axis per frame.
+    ///
     /// @see getVelocityX, getAngle
     virtual double getVelocityY() const = 0;
 
-    /// @~English
     /// Retrieves the Unit interface that the Bullet is heading to.
     ///
-    /// @retval nullptr If the Bullet's target Unit is inaccessible, the Bullet is targetting,
-    /// the ground, or if the Bullet itself is inaccessible.
+    /// @retval nullptr If the Bullet's target Unit is inaccessible, the Bullet is targetting the
+    /// ground, or if the Bullet itself is inaccessible.
     ///
-    /// @returns A pointer to the target Unit object, if one exists.
-    /// @~
+    /// @returns
+    ///   A pointer to the target Unit object, if one exists.
     /// @see getTargetPosition, getSource
     virtual Unit* getTarget() const = 0;
 
-    /// @~English
     /// Retrieves the target position that the Bullet is heading to.
     ///
     /// @retval Positions::Unknown If the bullet is inaccessible.
     ///
-    /// @returns A Position indicating where the Bullet is headed.
-    /// @~
+    /// @returns
+    ///   A Position indicating where the Bullet is headed.
     /// @see getTarget, getPosition
     virtual Position getTargetPosition() const = 0;
 
-    /// @~English
     /// Retrieves the timer that indicates the Bullet's life span.
     ///
     /// Bullets are not permanent objects, so they will often have a limited life span.
@@ -160,12 +145,10 @@ namespace BWAPI
     ///
     /// @retval 0 If the Bullet is inaccessible.
     ///
-    /// @returns An integer representing the remaining number of frames until the Bullet's
-    /// self-destruction.
-    /// @~
+    /// @returns
+    ///   An integer representing the remaining number of frames until the Bullet self-destructs.
     virtual int getRemoveTimer() const = 0;
 
-    /// @~English
     /// Retrieves the visibility state of the Bullet.
     ///
     /// @param player (optional)
@@ -179,7 +162,6 @@ namespace BWAPI
     ///
     /// @retval true If the Bullet is visible to the specified player.
     /// @retval false If the Bullet is not visible to the specified player.
-    /// @~
     virtual bool isVisible(Player* player = nullptr) const = 0;
   };
 }

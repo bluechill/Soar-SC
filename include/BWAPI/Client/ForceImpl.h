@@ -15,8 +15,8 @@ namespace BWAPI
       int id;
     public:
       ForceImpl(int id);
-      virtual int getID() const;
-      virtual std::string getName() const;
-      virtual Playerset getPlayers() const;
+      virtual int getID() const override;
+      virtual std::string getName() const override;
+      virtual Playerset getPlayers() const override;
   };
 }

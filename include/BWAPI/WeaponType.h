@@ -100,6 +100,7 @@ namespace BWAPI
         Warp_Blades_Zeratul = 85,
         Warp_Blades_Hero = 86,
         
+        Platform_Laser_Battery = 92,
         Independant_Laser_Battery = 93,
         
         Twin_Autocannons_Floor_Trap = 96,
@@ -135,10 +136,6 @@ namespace BWAPI
   {
     public:
       WeaponType(int id = WeaponTypes::Enum::None);
-
-      /** Returns the name of the weapon. */
-      const std::string &getName() const;
-      const char *c_str() const;
 
       /** Returns the tech type that must be researched before this weapon can be used, or TechTypes::None if
        * no tech type is required. */
@@ -201,9 +198,6 @@ namespace BWAPI
   };
   namespace WeaponTypes
   {
-    /** Given the name of a weapon, this will return the corresponding weapon type object. */
-    WeaponType getWeaponType(std::string name);
-
     /** Returns the set of all the WeaponTypes. */
     const WeaponType::set& allWeaponTypes();
 
@@ -212,8 +206,6 @@ namespace BWAPI
 
     /** Returns the set of all special weapons in WeaponTypes. */
     const WeaponType::const_set& specialWeaponTypes();
-
-    void init();
 
     extern const WeaponType Gauss_Rifle;
     extern const WeaponType Gauss_Rifle_Jim_Raynor;

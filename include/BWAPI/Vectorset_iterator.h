@@ -1,36 +1,33 @@
 #pragma once
+#include <iterator>
 
-#define _ITER_COMPARE(op) bool operator op(const iterator<_T> &other) const     \
-                          { return this->__val op &other; };
+#define _ITER_COMPARE(op) friend bool operator op(const VSetIterator<T> &lhs, const VSetIterator<T> &rhs) \
+                          { return lhs.pVal op rhs.pVal; };
 
 namespace BWAPI
 {
-  /// @~English
   /// The iterator class template allows the iteration
   /// of elements of a Vectorset with ease while
   /// maintaining the compatibility with any familiar
   /// STL container iteration.
   ///
-  /// @~
   /// @see Vectorset
-  template<typename _T>
-  class iterator
+  template<typename T>
+  class VSetIterator : public std::iterator<std::random_access_iterator_tag, T>
   {
   public:
     // constructors
-    iterator(_T *ptr = nullptr) : __val(ptr) {};
-    iterator(const iterator<_T> &other) : __val(&other) {};
+    VSetIterator(pointer ptr = nullptr) : pVal(ptr) {};
+    VSetIterator(const VSetIterator<T> &other) : pVal(&other) {};
+
+    // Copy assignment
+    VSetIterator<T> &operator =(const VSetIterator<T> &other)
+    {
+      this->pVal = other.pVal;
+      return *this;
+    };
 
     // comparison operators
-    bool operator ==(const _T &element) const
-    {
-      return *this->__val == element;
-    };
-    bool operator !=(const _T &element) const
-    {
-      return *this->__val != element;
-    };
-
     _ITER_COMPARE(==);
     _ITER_COMPARE(!=);
     _ITER_COMPARE(<);
@@ -39,62 +36,75 @@ namespace BWAPI
     _ITER_COMPARE(>=);
 
     // modification operators
-    iterator &operator ++()
+    VSetIterator<T> &operator ++()
     {
-      ++__val;
+      ++pVal;
       return *this;
     };
-    iterator operator ++(int)
+    VSetIterator<T> operator ++(int)
     {
-      iterator copy(*this);
-      ++__val;
+      VSetIterator<T> copy(*this);
+      ++pVal;
       return copy;
     };
-    iterator &operator --()
+    VSetIterator<T> &operator --()
     {
-      --__val;
+      --pVal;
       return *this;
     };
-    iterator operator --(int)
+    VSetIterator<T> operator --(int)
     {
-      iterator copy(*this);
-      --__val;
+      VSetIterator<T> copy(*this);
+      --pVal;
       return copy;
     };
-    iterator operator +(int val) const
+    VSetIterator<T> operator +(const difference_type &n) const
     {
-      return iterator(this->__val + val);
+      return VSetIterator(this->pVal + n);
     };
-    iterator operator -(int val) const
+    VSetIterator<T> operator -(const difference_type &n) const
     {
-      return iterator(this->__val - val);
+      return VSetIterator(this->pVal - n);
     };
-    iterator &operator +=(int val)
+    friend difference_type operator -(const VSetIterator<T> &lhs, const VSetIterator<T> &rhs)
     {
-      this->__val += val;
+      return lhs.pVal - rhs.pVal;
+    };
+
+    VSetIterator &operator +=(const difference_type &n)
+    {
+      this->pVal += n;
       return *this;
     };
-    iterator &operator -=(int val)
+    VSetIterator &operator -=(const difference_type &n)
     {
-      this->__val -= val;
+      this->pVal -= n;
       return *this;
     };
 
-    // Casting operators
-    _T operator *() const
+    // Dereference operators
+    reference operator *() const
     {
-      return *__val;
+      return *pVal;
     };
-    _T *operator &() const
+    // @TODO: should be "pointer" and "return pVal", need specialization
+    reference operator ->() const
     {
-      return __val;
+      return *pVal;
     };
-    _T operator ->() const
+    reference operator [](const difference_type &n) const
     {
-      return *__val;
+      return this->pVal[n];
     };
-  private:
-    _T *__val;
+
+
+    // @TODO: remove
+    T *operator &() const
+    {
+      return pVal;
+    };
+  protected:
+    pointer pVal;
   };
 
 

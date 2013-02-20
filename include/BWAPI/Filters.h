@@ -26,6 +26,7 @@ namespace BWAPI
   extern const UnitFilter CanAttack;
   extern const UnitFilter CanMove;
   extern const UnitFilter IsFlyer;
+  extern const UnitFilter IsFlying;
   extern const UnitFilter RegeneratesHP;
   extern const UnitFilter IsSpellcaster;
   extern const UnitFilter HasPermanentCloak;
@@ -53,6 +54,7 @@ namespace BWAPI
   extern const UnitFilter IsSpell;
   extern const UnitFilter ProducesLarva;
   extern const UnitFilter IsMineralField;
+  extern const UnitFilter IsCritter;
   extern const UnitFilter CanBuildAddon;
   
   extern const CompareFilter<Unit*> HP;
@@ -78,6 +80,7 @@ namespace BWAPI
   extern const CompareFilter<Unit*> SupplyProvided;
 
   extern const CompareFilter<Unit*> SpaceRequired;
+  extern const CompareFilter<Unit*> SpaceRemaining;
   extern const CompareFilter<Unit*> SpaceProvided;
 
   extern const CompareFilter<Unit*> BuildScore;

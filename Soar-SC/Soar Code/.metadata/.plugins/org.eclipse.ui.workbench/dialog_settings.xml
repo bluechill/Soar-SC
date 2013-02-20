@@ -23,18 +23,18 @@
 		<item value="81" key="DIALOG_Y_ORIGIN"/>
 		<item value="411" key="DIALOG_X_ORIGIN"/>
 	</section>
-	<section name="InstallationDialogSettings">
-		<item value="702" key="DIALOG_WIDTH"/>
-		<item value="-230" key="DIALOG_Y_ORIGIN"/>
-		<item value="652" key="DIALOG_HEIGHT"/>
-		<item value="-80" key="DIALOG_X_ORIGIN"/>
-		<item value="1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande" key="DIALOG_FONT_NAME"/>
-	</section>
 	<section name="NewWizardAction">
 		<item value="edu.umich.soar.editor.wizards.SoarFileWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
 		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
 			<item value="edu.umich.soar.editor.wizards.SoarCategory"/>
 		</list>
+	</section>
+	<section name="InstallationDialogSettings">
+		<item value="702" key="DIALOG_WIDTH"/>
+		<item value="-230" key="DIALOG_Y_ORIGIN"/>
+		<item value="-80" key="DIALOG_X_ORIGIN"/>
+		<item value="652" key="DIALOG_HEIGHT"/>
+		<item value="1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="ImportExportAction">
 		<item value="org.eclipse.ui.wizards.import.FileSystem" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>

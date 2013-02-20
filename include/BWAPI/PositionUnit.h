@@ -5,13 +5,13 @@ namespace BWAPI
 {
   class Unit;
 
-  /// @~English
+  
   /// PositionOrUnit is a class that is either 
   /// a Position OR a Unit. The purpose of
   /// this class is to reduce interface
   /// overhead by combining two commonly
   /// passed values into one.
-  /// @~
+  
   class PositionOrUnit
   {
   public:

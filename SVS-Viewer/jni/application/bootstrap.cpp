@@ -22,7 +22,7 @@ class Bootstrap {
 	class Gamestate_One_Initializer : public Gamestate_Zero_Initializer {
 		virtual Gamestate_Base * operator()() {
 			Window::set_title("zenilib Application");
-			
+				
 			get_Joysticks();
 			get_Video();
 			get_Textures();

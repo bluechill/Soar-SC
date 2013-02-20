@@ -4,23 +4,16 @@
 
 namespace BWAPI
 {
-  /// @~English
-  /// The BestFilter is used to compare two
-  /// objects with each other. Each function
-  /// object compares two of the same object
-  /// and returns the most desirable one.
+  /// The BestFilter is used to compare two objects with each other. Each function object compares
+  /// two of the same object and returns the most desirable one.
   ///
-  /// @note: A function object should return
-  /// one of the two given parameters, never NULL. 
-  /// Both parameters being given should never be
-  /// NULL.
-  /// 
-  /// @~
-  template<typename _Param>
+  /// @note: A function object should return one of the two given parameters, never nullptr. Both
+  /// parameters being given should never be nullptr.
+  template<typename _PARAM>
   class BestFilter
   {
   private:
-    std::function<_Param(_Param,_Param)> pred;
+    std::function<_PARAM(_PARAM,_PARAM)> pred;
   public:
     // Constructor
     template <typename _T>
@@ -29,7 +22,7 @@ namespace BWAPI
 
     // Assignment
     template <typename _T>
-    BestFilter<_Param> &operator =(const _T &other)
+    BestFilter<_PARAM> &operator =(const _T &other)
     {
       this->pred = other;
       return *this;
@@ -37,28 +30,28 @@ namespace BWAPI
 
     // Bitwise operators
     template <typename _T>
-    inline BestFilter<_Param> operator &&(const _T &other) const
+    inline BestFilter<_PARAM> operator &&(const _T &other) const
     {
-      return [&](_Param p1, _Param p2)->_Param{ return other( (*this)(p1, p2) ); };
+      return [&](_PARAM p1, _PARAM p2)->_PARAM{ return other( (*this)(p1, p2) ); };
     };
 
     // call
-    inline _Param operator()(const _Param &p1, const _Param &p2) const
+    inline _PARAM operator()(const _PARAM &p1, const _PARAM &p2) const
     {
       return this->pred(p1, p2);
     };
 
   };
 
-  template <typename _Param>
-  BestFilter<_Param> Lowest(const CompareFilter<_Param,int> &filter)
+  template <typename _PARAM>
+  BestFilter<_PARAM> Lowest(const CompareFilter<_PARAM,int> &filter)
   {
-    return [&](_Param p1, _Param p2)->_Param{ return filter(p2) < filter(p1) ? p2 : p1; };
+    return [&](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) < filter(p1) ? p2 : p1; };
   };
-  template <typename _Param>
-  BestFilter<_Param> Highest(const CompareFilter<_Param,int> &filter)
+  template <typename _PARAM>
+  BestFilter<_PARAM> Highest(const CompareFilter<_PARAM,int> &filter)
   {
-    return [&](_Param p1, _Param p2)->_Param{ return filter(p2) > filter(p1) ? p2 : p1; };
+    return [&](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) > filter(p1) ? p2 : p1; };
   };
 
 }

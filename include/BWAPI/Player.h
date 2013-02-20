@@ -21,154 +21,139 @@ namespace BWAPI
 
   struct PlayerData;
 
-  /// @~English
-  /// The Player represents a unique controller in the game.
-  /// Each player in a match will have his or her own player
-  /// instance. There is also a neutral player which owns 
-  /// all the neutral units (such as mineral patches and
-  /// vespene geysers).
+  /// The Player represents a unique controller in the game. Each player in a match will have his
+  /// or her own player instance. There is also a neutral player which owns all the neutral units
+  /// (such as mineral patches and vespene geysers).
   ///
-  /// @~
   /// @see Playerset, PlayerType, Race
-  class Player : public Interface
+  class Player : public Interface<Player>
   {
   protected:
     virtual ~Player() {};
   public :
-    /// @~English
     /// Retrieves a unique ID that represents the player.
     ///
-    /// @returns The ID of the player.
-    ///
-    /// @~
+    /// @returns
+    ///   An integer representing the ID of the player.
     virtual int getID() const = 0;
 
-    /// @~English
-    /// Retrieves the name of the player as a string object.
+    /// Retrieves the name of the player.
     ///
-    /// @returns The player name.
+    /// @returns
+    ///   A std::string object containing the player's name.
     ///
-    /// @note Don't forget to use std::string::c_str() when 
-    /// passing this parameter to Game::sendText and other
-    /// variadic functions.
+    /// @note Don't forget to use std::string::c_str() when passing this parameter to
+    /// Game::sendText and other variadic functions.
     ///
-    /// @~
-    /// @Ex player.cpp getName
+    /// Example usage:
+    /// @code
+    ///   BWAPI::Player *myEnemy = BWAPI::Broodwar->enemy();
+    ///   if ( myEnemy != nullptr )   // Make sure there is an enemy!
+    ///     BWAPI::Broodwar->sendText("Prepare to be crushed, %s!", myEnemy->getName().c_str());
+    /// @endcode
     virtual std::string getName() const = 0;
 
-    /// @~English
-    /// Retrieves the set of all units that the player owns.
-    /// This also includes incomplete units.
+    /// @TODO: This function should be altered to include a UnitFilter (function predicate) and
+    /// return a copy. The current documentation needs to be fixed after this task is completed.
     ///
-    /// @param pred An optional predicate that can filter
-    /// the units to be more specific.
+    /// Retrieves the set of all units that the player owns. This also includes incomplete units.
+    ///
+    /// @param pred An optional predicate that can filter the units to be more specific.
     ///
     /// @returns Unitset containing the units.
     ///
-    /// @note This does not include units that are loaded
-    /// into transports, @Bunkers, @Refineries, @Assimilators,
-    /// or @Extractors.
-    ///
-    /// @~
-    /// @Ex player.cpp getUnits
+    /// @note This does not include units that are loaded into transports, @Bunkers, @Refineries,
+    /// @Assimilators, or @Extractors.
     virtual const Unitset &getUnits() const = 0;
 
-    /// @~English
-    /// Retrieves the race of the player. This allows
-    /// you to change strategies against different
-    /// races.
+    /// Retrieves the race of the player. This allows you to change strategies against different
+    /// races, or generalize some commands for yourself.
     ///
-    /// @returns The Race that the player is using.
+    /// @retval Races::Unknown If the player chose Races::Random when the game started and they
+    /// have not been seen.
     ///
-    /// @~
-    /// @Ex player.cpp getRace
+    /// @returns
+    ///   The Race that the player is using.
+    ///
+    /// Example usage:
+    /// @code
+    ///   if ( BWAPI::Broodwar->enemy() )
+    ///   {
+    ///     BWAPI::Race enemyRace = BWAPI::Broodwar->enemy()->getRace();
+    ///     if ( enemyRace == Races::Zerg )
+    ///       BWAPI::Broodwar->sendText("Do you really think you can beat me with a zergling rush?");
+    ///   }
+    /// @endcode
     virtual Race getRace() const = 0;
 
-    /// @~English
-    /// Retrieves the player's controller type.
-    /// This allows you to distinguish betweeen 
-    /// computer and human players.
+    /// Retrieves the player's controller type. This allows you to distinguish betweeen computer
+    /// and human players.
     ///
-    /// @returns The type that is controlling the player.
+    /// @returns
+    ///   The PlayerType that identifies who is controlling a player.
     ///
-    /// @note Other players using BWAPI will be 
-    /// treated as a human player and return
+    /// @note Other players using BWAPI will be treated as a human player and return
     /// PlayerTypes::Player.
     ///
-    /// @~
-    /// @Ex player.cpp getType
+    /// @code
+    ///   if ( BWAPI::Broodwar->enemy() )
+    ///   {
+    ///     if ( BWAPI::Broodwar->enemy()->getType() == PlayerTypes::Computer )
+    ///       BWAPI::Broodwar << "Looks like something I can abuse!" << std::endl;
+    ///   }
+    /// @endcode
     virtual PlayerType getType() const = 0;
 
-    /// @~English
-    /// Retrieves the player's force. A force
-    /// is the team that the player is playing
-    /// on. This is only used in non-melee
-    /// game types.
+    /// Retrieves the player's force. A force is the team that the player is playing on. This is
+    /// only used in non-melee game types.
     ///
-    /// @returns The force that the player is on.
-    ///
-    /// @note It is not called a team because
-    /// players on the same force do not necessarily
-    /// need to be allied at the beginning of a match.
-    ///
-    /// @~
+    /// @returns
+    ///   The Force object that the player is part of.
     virtual Force* getForce() const = 0;
 
-    /// @~English
-    /// Checks if this player is allied to the specified
-    /// player.
+    /// Checks if this player is allied to the specified player.
     ///
-    /// @param player The player to check alliance with.
+    /// @param player
+    ///     The player to check alliance with.
     ///
     /// @retval true if this player is allied with \p player .
     /// @retval false if this player is not allied with \p player.
     ///
-    /// @note This function will also return false if this
-    /// player is neutral or an observer, or if \p player
-    /// is neutral or an observer.
+    /// @note This function will also return false if this player is neutral or an observer, or
+    /// if \p player is neutral or an observer.
     ///
-    /// @~
     /// @see isEnemy
     virtual bool isAlly(Player* player) const = 0;
 
-    /// @~English
-    /// Checks if this player is unallied to the specified
-    /// player.
+    /// Checks if this player is unallied to the specified player.
     ///
-    /// @param player The player to check alliance with.
+    /// @param player
+    ///     The player to check alliance with.
     ///
     /// @retval true if this player is allied with \p player .
     /// @retval false if this player is not allied with \p player .
     ///
-    /// @note This function will also return false if this
-    /// player is neutral or an observer, or if \p player
-    /// is neutral or an observer.
+    /// @note This function will also return false if this player is neutral or an observer, or if
+    /// \p player is neutral or an observer.
     ///
-    /// @~
     /// @see isAlly
     virtual bool isEnemy(Player* player) const = 0;
 
-    /// @~English
     /// Checks if this player is the neutral player.
     ///
     /// @retval true if this player is the neutral player.
     /// @retval false if this player is any other player.
-    ///
-    /// @~
     virtual bool isNeutral() const = 0;
 
-    /// @~English
     /// Retrieve's the player's starting location.
     ///
-    /// @returns A TilePosition containing the position
-    /// of the start location.
+    /// @returns
+    ///   A TilePosition containing the position of the start location.
     ///
-    /// @retval TilePositions::None if the player does 
-    /// not have a start location.
-    /// @retval TilePositions::Unknown if an error occured
-    /// while trying to retrieve the start location.
+    /// @retval TilePositions::None if the player does not have a start location.
+    /// @retval TilePositions::Unknown if an error occured while trying to retrieve the start
+    /// location.
     ///
-    /// @~
     /// @see Game::getStartLocations, Game::getLastError
     virtual TilePosition getStartLocation() const = 0;
 
@@ -262,7 +247,7 @@ namespace BWAPI
     virtual BWAPI::Color getColor() const = 0;
 
     /** Returns the color of the player for text messages */
-    virtual int getTextColor() const = 0;
+    virtual char getTextColor() const = 0;
 
     /** Returns the max energy of the given unit type, taking into account upgrades */
     virtual int maxEnergy(UnitType unit) const = 0;

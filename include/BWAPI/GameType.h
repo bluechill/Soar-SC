@@ -37,18 +37,9 @@ namespace BWAPI
   {
     public:
       GameType(int id = GameTypes::Enum::None);
-
-      /** Returns the name of the game type. For example GameTypes::Melee.getName() will return an
-       * std::string object containing "Melee". */
-      const std::string &getName() const;
-      const char *c_str() const;
   };
   namespace GameTypes
   {
-    /** Given the name of a game type, this function will return the GameType. For example:
-     *  GameTypes::getGameType("Free For All") will return GameTypes::Free_For_All. */
-    GameType getGameType(std::string name);
-
     /** Returns the set of all the GameTypes. */
     const GameType::const_set& allGameTypes();
     

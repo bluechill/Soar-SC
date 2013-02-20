@@ -6,103 +6,18 @@ ifndef config
 endif
 export config
 
-PROJECTS := game local_3ds local_z local_png local_freetype2 local_tinyxml local_GLEW local_ogg local_vorbis local_vorbisfile local_SDL local_SDL_net zeni zeni_audio zeni_core zeni_graphics zeni_net zeni_rest
+PROJECTS := game
 
 .PHONY: all clean help $(PROJECTS)
 
 all: $(PROJECTS)
 
-game: zeni_rest zeni_graphics zeni_net zeni_core zeni_audio zeni local_SDL
+game: 
 	@echo "==== Building game ($(config)) ===="
 	@${MAKE} --no-print-directory -C . -f game.make
 
-local_3ds: 
-	@echo "==== Building local_3ds ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_3ds.make
-
-local_z: 
-	@echo "==== Building local_z ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_z.make
-
-local_png: local_z
-	@echo "==== Building local_png ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_png.make
-
-local_freetype2: 
-	@echo "==== Building local_freetype2 ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_freetype2.make
-
-local_tinyxml: 
-	@echo "==== Building local_tinyxml ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_tinyxml.make
-
-local_GLEW: 
-	@echo "==== Building local_GLEW ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_GLEW.make
-
-local_ogg: 
-	@echo "==== Building local_ogg ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_ogg.make
-
-local_vorbis: local_ogg
-	@echo "==== Building local_vorbis ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_vorbis.make
-
-local_vorbisfile: local_vorbis local_ogg
-	@echo "==== Building local_vorbisfile ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_vorbisfile.make
-
-local_SDL: 
-	@echo "==== Building local_SDL ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_SDL.make
-
-local_SDL_net: local_SDL
-	@echo "==== Building local_SDL_net ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f local_SDL_net.make
-
-zeni: local_tinyxml
-	@echo "==== Building zeni ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni.make
-
-zeni_audio: local_vorbisfile zeni
-	@echo "==== Building zeni_audio ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni_audio.make
-
-zeni_core: zeni local_SDL
-	@echo "==== Building zeni_core ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni_core.make
-
-zeni_graphics: zeni_core zeni local_SDL local_GLEW local_freetype2 local_png local_z local_3ds
-	@echo "==== Building zeni_graphics ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni_graphics.make
-
-zeni_net: zeni_core zeni local_SDL_net local_SDL
-	@echo "==== Building zeni_net ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni_net.make
-
-zeni_rest: zeni_graphics zeni_core zeni_audio zeni local_SDL
-	@echo "==== Building zeni_rest ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f zeni_rest.make
-
 clean:
 	@${MAKE} --no-print-directory -C . -f game.make clean
-	@${MAKE} --no-print-directory -C . -f local_3ds.make clean
-	@${MAKE} --no-print-directory -C . -f local_z.make clean
-	@${MAKE} --no-print-directory -C . -f local_png.make clean
-	@${MAKE} --no-print-directory -C . -f local_freetype2.make clean
-	@${MAKE} --no-print-directory -C . -f local_tinyxml.make clean
-	@${MAKE} --no-print-directory -C . -f local_GLEW.make clean
-	@${MAKE} --no-print-directory -C . -f local_ogg.make clean
-	@${MAKE} --no-print-directory -C . -f local_vorbis.make clean
-	@${MAKE} --no-print-directory -C . -f local_vorbisfile.make clean
-	@${MAKE} --no-print-directory -C . -f local_SDL.make clean
-	@${MAKE} --no-print-directory -C . -f local_SDL_net.make clean
-	@${MAKE} --no-print-directory -C . -f zeni.make clean
-	@${MAKE} --no-print-directory -C . -f zeni_audio.make clean
-	@${MAKE} --no-print-directory -C . -f zeni_core.make clean
-	@${MAKE} --no-print-directory -C . -f zeni_graphics.make clean
-	@${MAKE} --no-print-directory -C . -f zeni_net.make clean
-	@${MAKE} --no-print-directory -C . -f zeni_rest.make clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -117,22 +32,5 @@ help:
 	@echo "   all (default)"
 	@echo "   clean"
 	@echo "   game"
-	@echo "   local_3ds"
-	@echo "   local_z"
-	@echo "   local_png"
-	@echo "   local_freetype2"
-	@echo "   local_tinyxml"
-	@echo "   local_GLEW"
-	@echo "   local_ogg"
-	@echo "   local_vorbis"
-	@echo "   local_vorbisfile"
-	@echo "   local_SDL"
-	@echo "   local_SDL_net"
-	@echo "   zeni"
-	@echo "   zeni_audio"
-	@echo "   zeni_core"
-	@echo "   zeni_graphics"
-	@echo "   zeni_net"
-	@echo "   zeni_rest"
 	@echo ""
 	@echo "For more information, see http://industriousone.com/premake/quick-start"

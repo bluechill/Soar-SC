@@ -9,7 +9,7 @@ namespace BWAPI
     {
       enum Enum
       {
-        Independent = 0,
+        Independent,
         Explosive,
         Concussive,
         Normal,
@@ -24,18 +24,9 @@ namespace BWAPI
   {
     public:
       DamageType(int id = DamageTypes::Enum::None);
-
-      /** Returns the name of this damage type. For example DamageTypes::Explosive.getName() will return
-       * std::string("Explosive"). */
-      const std::string &getName() const;
-      const char *c_str() const;
   };
   namespace DamageTypes
   {
-    /** Given the name of a damage type, this will return a corresponding DamageType object. For example,
-     * DamageTypes::getDamageType("Concussive") will return DamageTypes::Concussive. */
-    DamageType getDamageType(std::string name);
-
     /** Returns the set of all the DamageTypes. */
     const DamageType::const_set& allDamageTypes();
 

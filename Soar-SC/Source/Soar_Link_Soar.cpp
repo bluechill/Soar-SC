@@ -275,8 +275,11 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	//Loop throug all the units and add them to the input link
 	for (UnitType::set::iterator it = types.begin();it != types.end();it++)
 	{
+		char* name = const_cast<char*>((*it).getName().c_str());
+		replace(&name[0], &name[strlen(name)], '_', ' ');
+
 		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
-		type->CreateStringWME("name", (*it).getName().c_str()); //Create a string WME with the type's name
+		type->CreateStringWME("name", name); //Create a string WME with the type's name
 		type->CreateIntWME("id", (*it).getID()); //Create an Int WME with the type's unique ID
 		type->CreateIntWME("mineral-cost", (*it).mineralPrice());
 		type->CreateIntWME("gas-cost", (*it).gasPrice());

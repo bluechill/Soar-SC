@@ -25,17 +25,9 @@ namespace BWAPI
   {
   public:
     UnitSizeType(int id = UnitSizeTypes::Enum::None);
-    /** Returns the string corresponding to the UnitSizeType object. For example,
-     * UnitSizeTypes::Medium.getName() returns std::string("Medium")*/
-    const std::string &getName() const;
-    const char *c_str() const;
   };
   namespace UnitSizeTypes
   {
-    /** Given a string, this function returns the size type it refers to. For example,
-     * UnitSizeTypes::getUnitSizeType("Small") returns UnitSizeTypes::Small. */
-    UnitSizeType getUnitSizeType(std::string name);
-
     /** Returns the set of all the sizes, which are listed below: */
     const UnitSizeType::const_set& allUnitSizeTypes();
     

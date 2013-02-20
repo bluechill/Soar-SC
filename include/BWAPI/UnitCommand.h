@@ -59,25 +59,23 @@ namespace BWAPI
       static UnitCommand placeCOP(Unit* unit, TilePosition target);
 
       UnitCommandType getType() const;
-      Unit*      getUnit() const;
-      Unit*      getTarget() const;
-      Position    getTargetPosition() const;
-      TilePosition  getTargetTilePosition() const;
-      UnitType    getUnitType() const;
-      TechType    getTechType() const;
-      UpgradeType    getUpgradeType() const;
-      int        getSlot() const;
-      bool      isQueued() const;
+      Unit*           getUnit() const;
+      Unit*           getTarget() const;
+      Position        getTargetPosition() const;
+      TilePosition    getTargetTilePosition() const;
+      UnitType        getUnitType() const;
+      TechType        getTechType() const;
+      UpgradeType     getUpgradeType() const;
+      int             getSlot() const;
+      bool            isQueued() const;
+      
       bool operator==(const UnitCommand& other) const;
       bool operator!=(const UnitCommand& other) const;
-      bool operator<(const UnitCommand& other) const;
-      bool operator>(const UnitCommand& other) const;
 
       Unit* unit;
       UnitCommandType type;
       Unit* target;
-      int x;
-      int y;
+      int x, y;
       int extra;
   };
 }

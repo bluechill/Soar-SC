@@ -49,7 +49,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../include;Soar/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SOARMODULE_EXPORTS;_SECURE_SCL 0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SOARMODULE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -127,75 +127,6 @@ copy /Y $(OutDir)$(TargetName)$(TargetExt) "C:\Program Files\Starcraft\bwapi-dat
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\BWAPI.h" />
-    <ClInclude Include="..\include\BWAPI\AIModule.h" />
-    <ClInclude Include="..\include\BWAPI\ArithmaticFilter.h" />
-    <ClInclude Include="..\include\BWAPI\BestFilter.h" />
-    <ClInclude Include="..\include\BWAPI\Bullet.h" />
-    <ClInclude Include="..\include\BWAPI\Bulletset.h" />
-    <ClInclude Include="..\include\BWAPI\BulletType.h" />
-    <ClInclude Include="..\include\BWAPI\Client.h" />
-    <ClInclude Include="..\include\BWAPI\Client\BulletData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\BulletImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Client\Client.h" />
-    <ClInclude Include="..\include\BWAPI\Client\Command.h" />
-    <ClInclude Include="..\include\BWAPI\Client\CommandType.h" />
-    <ClInclude Include="..\include\BWAPI\Client\Event.h" />
-    <ClInclude Include="..\include\BWAPI\Client\ForceData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\ForceImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Client\GameData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\GameImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Client\GameTable.h" />
-    <ClInclude Include="..\include\BWAPI\Client\PlayerData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\PlayerImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Client\RegionData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\RegionImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Client\Shape.h" />
-    <ClInclude Include="..\include\BWAPI\Client\ShapeType.h" />
-    <ClInclude Include="..\include\BWAPI\Client\UnitCommand.h" />
-    <ClInclude Include="..\include\BWAPI\Client\UnitData.h" />
-    <ClInclude Include="..\include\BWAPI\Client\UnitImpl.h" />
-    <ClInclude Include="..\include\BWAPI\Color.h" />
-    <ClInclude Include="..\include\BWAPI\ComparisonFilter.h" />
-    <ClInclude Include="..\include\BWAPI\Constants.h" />
-    <ClInclude Include="..\include\BWAPI\ConstVectorset.h" />
-    <ClInclude Include="..\include\BWAPI\CoordinateType.h" />
-    <ClInclude Include="..\include\BWAPI\DamageType.h" />
-    <ClInclude Include="..\include\BWAPI\Error.h" />
-    <ClInclude Include="..\include\BWAPI\Event.h" />
-    <ClInclude Include="..\include\BWAPI\EventType.h" />
-    <ClInclude Include="..\include\BWAPI\ExplosionType.h" />
-    <ClInclude Include="..\include\BWAPI\Filters.h" />
-    <ClInclude Include="..\include\BWAPI\Flag.h" />
-    <ClInclude Include="..\include\BWAPI\Force.h" />
-    <ClInclude Include="..\include\BWAPI\Forceset.h" />
-    <ClInclude Include="..\include\BWAPI\Game.h" />
-    <ClInclude Include="..\include\BWAPI\GameType.h" />
-    <ClInclude Include="..\include\BWAPI\Input.h" />
-    <ClInclude Include="..\include\BWAPI\Latency.h" />
-    <ClInclude Include="..\include\BWAPI\Order.h" />
-    <ClInclude Include="..\include\BWAPI\Player.h" />
-    <ClInclude Include="..\include\BWAPI\Playerset.h" />
-    <ClInclude Include="..\include\BWAPI\PlayerType.h" />
-    <ClInclude Include="..\include\BWAPI\Position.h" />
-    <ClInclude Include="..\include\BWAPI\PositionUnit.h" />
-    <ClInclude Include="..\include\BWAPI\Race.h" />
-    <ClInclude Include="..\include\BWAPI\Region.h" />
-    <ClInclude Include="..\include\BWAPI\Regionset.h" />
-    <ClInclude Include="..\include\BWAPI\TechType.h" />
-    <ClInclude Include="..\include\BWAPI\TournamentAction.h" />
-    <ClInclude Include="..\include\BWAPI\Type.h" />
-    <ClInclude Include="..\include\BWAPI\UnaryFilter.h" />
-    <ClInclude Include="..\include\BWAPI\Unit.h" />
-    <ClInclude Include="..\include\BWAPI\UnitCommand.h" />
-    <ClInclude Include="..\include\BWAPI\UnitCommandType.h" />
-    <ClInclude Include="..\include\BWAPI\Unitset.h" />
-    <ClInclude Include="..\include\BWAPI\UnitSizeType.h" />
-    <ClInclude Include="..\include\BWAPI\UnitType.h" />
-    <ClInclude Include="..\include\BWAPI\UpgradeType.h" />
-    <ClInclude Include="..\include\BWAPI\Vectorset.h" />
-    <ClInclude Include="..\include\BWAPI\Vectorset_iterator.h" />
-    <ClInclude Include="..\include\BWAPI\WeaponType.h" />
     <ClInclude Include="..\include\SDL\begin_code.h" />
     <ClInclude Include="..\include\SDL\close_code.h" />
     <ClInclude Include="..\include\SDL\SDL.h" />

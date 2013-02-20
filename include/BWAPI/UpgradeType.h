@@ -67,6 +67,7 @@ namespace BWAPI
         Anabolic_Synthesis      = 53,
         Charon_Boosters         = 54,
     
+        Upgrade_60              = 60,
         None                    = 61,
         Unknown,
         MAX
@@ -77,10 +78,6 @@ namespace BWAPI
   {
   public:
     UpgradeType(int id = UpgradeTypes::Enum::None);
-
-    /** Returns the name for the upgrade type. */
-    const std::string &getName() const;
-    const char *c_str() const;
 
     /** Returns the race the upgrade is for. For example, UpgradeTypes::Terran_Infantry_Armor.getRace()
      * will return Races::Terran. */
@@ -114,17 +111,12 @@ namespace BWAPI
     UnitType whatsRequired(int level = 1) const;
 
     /** Returns the set of units that are affected by this upgrade. */
-    const UnitType::set& whatUses() const;
+    const UnitType::const_set& whatUses() const;
   };
   namespace UpgradeTypes
   {
-    /** Given a string, this will return the upgrade type. */
-    UpgradeType getUpgradeType(std::string name);
-
     /** Returns the set of all the UpgradeTypes. */
     const UpgradeType::const_set& allUpgradeTypes();
-
-    void init();
 
     extern const UpgradeType Terran_Infantry_Armor;
     extern const UpgradeType Terran_Vehicle_Plating;

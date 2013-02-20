@@ -258,6 +258,8 @@ namespace BWAPI
         Unknown,
         MAX
       };
+
+
     };
   }
   /** The UnitType class is used to get information about a particular type of unit, such as the build time
@@ -266,10 +268,6 @@ namespace BWAPI
   {
   public:
     UnitType(int id = UnitTypes::Enum::None);
-
-    /** Returns the name of the unit. */
-    const std::string &getName() const;
-    const char *c_str() const;
 
     /** Returns the race that the unit belongs to. For example UnitTypes::Terran_SCV.getRace() will return
      * Races::Terran. */
@@ -299,10 +297,10 @@ namespace BWAPI
 
     /** Returns the set of tech types this unit can use, provided the tech types have been researched and
      * the unit has enough energy. */
-    const Typeset<TechType>& abilities() const;
+    const ConstVectorset<TechType>& abilities() const;
 
     /** Returns the set of upgrade types that can affect this unit. */
-    const Typeset<UpgradeType>& upgrades() const;
+    const ConstVectorset<UpgradeType>& upgrades() const;
 
     /** Returns the upgrade that increase's the unit's armor, or UpgradeTypes::None if no upgrade
      * increase's this unit's armor. For example UnitTypes::Terran_Marine.armorUpgrade() will return a
@@ -377,6 +375,14 @@ namespace BWAPI
 
     /** Distance from the center of the unit to the bottom edge of the unit, measured in pixels. */
     int dimensionDown() const;
+
+    /// A macro for retrieving the width of the unit type, which is calculated using
+    /// dimensionLeft + dimensionRight + 1.
+    int width() const;
+
+    /// A macro for retrieving the height of the unit type, which is calculated using
+    /// dimensionUp + dimensionDown + 1.
+    int height() const;
 
     /** Returns the range at which the unit will start targeting enemy units, measured in pixels. */
     int seekRange() const;
@@ -524,30 +530,45 @@ namespace BWAPI
     /** Returns true if the unit is one of the three mineral field types. */
     bool isMineralField() const;
 
-    /** Returns true if the unit is capable of constructing an addon.
-        This consists of Command Center, Factory, Starport, and Science Facility. */
+    /// Returns true if this unit type is a neutral critter.
+    ///
+    /// @code
+    ///   BWAPI::Position myBasePosition( BWAPI::Broodwar->self()->getStartLocation() );
+    ///   BWAPI::UnitSet unitsAroundTheBase = BWAPI::Broodwar->getUnitsInRadius(myBasePosition, 1024, GetPlayer != BWAPI::Broodwar->self());
+    ///   for ( auto i = unitsAroundTheBase.begin(); i != unitsAroundTheBase.end(); ++i )
+    ///   {
+    ///     if ( i->getType().isCritter() && !i->isInvincible() )
+    ///     {
+    ///       BWAPI::Unit *myQueen = i->getClosestUnit(GetType == BWAPI::UnitTypes::Zerg_Queen && GetPlayer == BWAPI::Broodwar->self());
+    ///       if ( myQueen )
+    ///         myQueen->useTech(BWAPI::TechTypes::Spawn_Broodlings, *i);
+    ///     }
+    ///   }
+    /// @endcode
+    bool isCritter() const;
+
+    /// Returns true if the unit is capable of constructing an add-on. An add-on is an extension
+    /// or attachment for @Terran structures, specifically the @Command_Center, @Factory,
+    /// @Starport, and @Science_Facility.
+    ///
+    /// @see isAddon
     bool canBuildAddon() const;
   };
 
   /// Namespace containing unit types
   namespace UnitTypes
   {
-    /** Given the name of a unit type, this function will return the unit type.
-     * For example, UnitTypes::getUnitType("Terran Marine") will return UnitTypes::Terran_Marine. */
-    UnitType getUnitType(std::string name);
-
-    /// max unit width
+    /// Retrieves the maximum unit width from the set of all units.
     int maxUnitWidth();
     
-    /// max unit height
+    /// Retrieves the maximum unit height from the set of all units.
     int maxUnitHeight();
 
     /** Returns the set of all the UnitTypes. */
-    const UnitType::set& allUnitTypes();
+    const UnitType::const_set& allUnitTypes();
 
     /** Returns the set of all the MacroTypes. */
-    const UnitType::set& allMacroTypes();
-    void init();
+    const UnitType::const_set& allMacroTypes();
 
     extern const UnitType Terran_Marine;
     extern const UnitType Terran_Ghost;

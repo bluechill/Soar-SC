@@ -7,10 +7,10 @@ namespace BWAPI
   class Force;
   class Playerset;
 
-  /// @~English
+  
   /// A container that holds a group of Forces.
   ///
-  /// @~
+  
   /// @see BWAPI::Force, BWAPI::Vectorset
   class Forceset : public Vectorset<BWAPI::Force*>
   {

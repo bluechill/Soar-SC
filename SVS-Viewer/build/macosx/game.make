@@ -28,7 +28,7 @@ ifndef RESCOMP
 endif
 
 ifeq ($(config),debug)
-  OBJDIR     = obj/Debug/game
+  OBJDIR     = obj/Debug
   TARGETDIR  = ../../game_d.app/Contents/MacOS
   TARGET     = $(TARGETDIR)/game_d
   DEFINES   += -D_MACOSX -D_DEBUG -DDEBUG -DTEST_NASTY_CONDITIONS -DDISABLE_CPP11 -DGLEW_NO_GLU -DDISABLE_CG -DOGG_DLL= -DVORBIS_DLL= -DVORBISFILE_DLL= -DDISABLE_DX9 -DDISABLE_WGL -DTINYXML_DLL= -DTINYXML_EXT= -DZENI_DLL= -DZENI_EXT= -DZENI_AUDIO_DLL= -DZENI_AUDIO_EXT= -DZENI_CORE_DLL= -DZENI_CORE_EXT= -DZENI_GRAPHICS_DLL= -DZENI_GRAPHICS_EXT= -DZENI_NET_DLL= -DZENI_NET_EXT= -DZENI_REST_DLL= -DZENI_REST_EXT=
@@ -38,13 +38,13 @@ ifeq ($(config),debug)
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -L../../lib/univ_d -stdlib=libc++
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lzeni_rest_d -lzeni_graphics_d -lzeni_net_d -lzeni_core_d -lzeni_audio_d -lzeni_d -llocal_SDL_d -framework Cocoa -framework OpenGL
-  LDDEPS    += ../../lib/univ_d/libzeni_rest_d.dylib ../../lib/univ_d/libzeni_graphics_d.dylib ../../lib/univ_d/libzeni_net_d.dylib ../../lib/univ_d/libzeni_core_d.dylib ../../lib/univ_d/libzeni_audio_d.dylib ../../lib/univ_d/libzeni_d.dylib ../../lib/univ_d/liblocal_SDL_d.dylib
+  LIBS      += -framework Cocoa -lzeni_rest_d -lzeni_graphics_d -lzeni_net_d -lzeni_core_d -lzeni_audio_d -lzeni_d -llocal_SDL_d
+  LDDEPS    += 
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
 	@echo Running pre-build commands
 	rsync -av --exclude '.*' ../../dev/pc_/ ../..
-	/usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion 10.7" ../../Info_d.plist
+	/usr/libexec/PlistBuddy -c "Delete :LSMinimumSystemVersion" ../../Info_d.plist
 	mkdir -p ../../game_d.app/Contents
 	rsync -av --exclude '.*' ../../lib/univ_d/ ../../game_d.app/Contents/MacOS
 	rsync -av --exclude '.*' --delete ../../assets/ ../../game_d.app/Contents/assets
@@ -58,7 +58,7 @@ ifeq ($(config),debug)
 endif
 
 ifeq ($(config),release)
-  OBJDIR     = obj/Release/game
+  OBJDIR     = obj/Release
   TARGETDIR  = ../../game.app/Contents/MacOS
   TARGET     = $(TARGETDIR)/game
   DEFINES   += -D_MACOSX -DNDEBUG -DDISABLE_CPP11 -DGLEW_NO_GLU -DDISABLE_CG -DOGG_DLL= -DVORBIS_DLL= -DVORBISFILE_DLL= -DDISABLE_DX9 -DDISABLE_WGL -DTINYXML_DLL= -DTINYXML_EXT= -DZENI_DLL= -DZENI_EXT= -DZENI_AUDIO_DLL= -DZENI_AUDIO_EXT= -DZENI_CORE_DLL= -DZENI_CORE_EXT= -DZENI_GRAPHICS_DLL= -DZENI_GRAPHICS_EXT= -DZENI_NET_DLL= -DZENI_NET_EXT= -DZENI_REST_DLL= -DZENI_REST_EXT=
@@ -68,13 +68,13 @@ ifeq ($(config),release)
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -L../../lib/univ -Wl,-x -stdlib=libc++
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lzeni_rest -lzeni_graphics -lzeni_net -lzeni_core -lzeni_audio -lzeni -llocal_SDL -framework Cocoa -framework OpenGL
-  LDDEPS    += ../../lib/univ/libzeni_rest.dylib ../../lib/univ/libzeni_graphics.dylib ../../lib/univ/libzeni_net.dylib ../../lib/univ/libzeni_core.dylib ../../lib/univ/libzeni_audio.dylib ../../lib/univ/libzeni.dylib ../../lib/univ/liblocal_SDL.dylib
+  LIBS      += -framework Cocoa -lzeni_rest -lzeni_graphics -lzeni_net -lzeni_core -lzeni_audio -lzeni -llocal_SDL
+  LDDEPS    += 
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
 	@echo Running pre-build commands
 	rsync -av --exclude '.*' ../../dev/pc_/ ../..
-	/usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion 10.7" ../../Info.plist
+	/usr/libexec/PlistBuddy -c "Delete :LSMinimumSystemVersion" ../../Info.plist
 	mkdir -p ../../game.app/Contents
 	rsync -av --exclude '.*' ../../lib/univ/ ../../game.app/Contents/MacOS
 	rsync -av --exclude '.*' --delete ../../assets/ ../../game.app/Contents/assets
@@ -88,7 +88,7 @@ ifeq ($(config),release)
 endif
 
 ifeq ($(config),debuguniv)
-  OBJDIR     = obj/Universal/Debug/game
+  OBJDIR     = obj/Universal/Debug
   TARGETDIR  = ../../game_d.app/Contents/MacOS
   TARGET     = $(TARGETDIR)/game_d
   DEFINES   += -D_MACOSX -D_DEBUG -DDEBUG -DTEST_NASTY_CONDITIONS -DDISABLE_CPP11 -DGLEW_NO_GLU -DDISABLE_CG -DOGG_DLL= -DVORBIS_DLL= -DVORBISFILE_DLL= -DDISABLE_DX9 -DDISABLE_WGL -DTINYXML_DLL= -DTINYXML_EXT= -DZENI_DLL= -DZENI_EXT= -DZENI_AUDIO_DLL= -DZENI_AUDIO_EXT= -DZENI_CORE_DLL= -DZENI_CORE_EXT= -DZENI_GRAPHICS_DLL= -DZENI_GRAPHICS_EXT= -DZENI_NET_DLL= -DZENI_NET_EXT= -DZENI_REST_DLL= -DZENI_REST_EXT=
@@ -98,13 +98,13 @@ ifeq ($(config),debuguniv)
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -L../../lib/univ_d -arch i386 -arch x86_64 -stdlib=libc++
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lzeni_rest_d -lzeni_graphics_d -lzeni_net_d -lzeni_core_d -lzeni_audio_d -lzeni_d -llocal_SDL_d -framework Cocoa -framework OpenGL
-  LDDEPS    += ../../lib/univ_d/libzeni_rest_d.dylib ../../lib/univ_d/libzeni_graphics_d.dylib ../../lib/univ_d/libzeni_net_d.dylib ../../lib/univ_d/libzeni_core_d.dylib ../../lib/univ_d/libzeni_audio_d.dylib ../../lib/univ_d/libzeni_d.dylib ../../lib/univ_d/liblocal_SDL_d.dylib
+  LIBS      += -framework Cocoa -lzeni_rest_d -lzeni_graphics_d -lzeni_net_d -lzeni_core_d -lzeni_audio_d -lzeni_d -llocal_SDL_d
+  LDDEPS    += 
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
 	@echo Running pre-build commands
 	rsync -av --exclude '.*' ../../dev/pc_/ ../..
-	/usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion 10.7" ../../Info_d.plist
+	/usr/libexec/PlistBuddy -c "Delete :LSMinimumSystemVersion" ../../Info_d.plist
 	mkdir -p ../../game_d.app/Contents
 	rsync -av --exclude '.*' ../../lib/univ_d/ ../../game_d.app/Contents/MacOS
 	rsync -av --exclude '.*' --delete ../../assets/ ../../game_d.app/Contents/assets
@@ -118,7 +118,7 @@ ifeq ($(config),debuguniv)
 endif
 
 ifeq ($(config),releaseuniv)
-  OBJDIR     = obj/Universal/Release/game
+  OBJDIR     = obj/Universal/Release
   TARGETDIR  = ../../game.app/Contents/MacOS
   TARGET     = $(TARGETDIR)/game
   DEFINES   += -D_MACOSX -DNDEBUG -DDISABLE_CPP11 -DGLEW_NO_GLU -DDISABLE_CG -DOGG_DLL= -DVORBIS_DLL= -DVORBISFILE_DLL= -DDISABLE_DX9 -DDISABLE_WGL -DTINYXML_DLL= -DTINYXML_EXT= -DZENI_DLL= -DZENI_EXT= -DZENI_AUDIO_DLL= -DZENI_AUDIO_EXT= -DZENI_CORE_DLL= -DZENI_CORE_EXT= -DZENI_GRAPHICS_DLL= -DZENI_GRAPHICS_EXT= -DZENI_NET_DLL= -DZENI_NET_EXT= -DZENI_REST_DLL= -DZENI_REST_EXT=
@@ -128,13 +128,13 @@ ifeq ($(config),releaseuniv)
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -L../../lib/univ -Wl,-x -arch i386 -arch x86_64 -stdlib=libc++
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lzeni_rest -lzeni_graphics -lzeni_net -lzeni_core -lzeni_audio -lzeni -llocal_SDL -framework Cocoa -framework OpenGL
-  LDDEPS    += ../../lib/univ/libzeni_rest.dylib ../../lib/univ/libzeni_graphics.dylib ../../lib/univ/libzeni_net.dylib ../../lib/univ/libzeni_core.dylib ../../lib/univ/libzeni_audio.dylib ../../lib/univ/libzeni.dylib ../../lib/univ/liblocal_SDL.dylib
+  LIBS      += -framework Cocoa -lzeni_rest -lzeni_graphics -lzeni_net -lzeni_core -lzeni_audio -lzeni -llocal_SDL
+  LDDEPS    += 
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
 	@echo Running pre-build commands
 	rsync -av --exclude '.*' ../../dev/pc_/ ../..
-	/usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion 10.7" ../../Info.plist
+	/usr/libexec/PlistBuddy -c "Delete :LSMinimumSystemVersion" ../../Info.plist
 	mkdir -p ../../game.app/Contents
 	rsync -av --exclude '.*' ../../lib/univ/ ../../game.app/Contents/MacOS
 	rsync -av --exclude '.*' --delete ../../assets/ ../../game.app/Contents/assets
@@ -151,11 +151,6 @@ OBJECTS := \
 	$(OBJDIR)/ApplicationAppDelegate.o \
 	$(OBJDIR)/SDLMain.o \
 	$(OBJDIR)/bootstrap.o \
-	$(OBJDIR)/SVSObject.o \
-	$(OBJDIR)/SVSParser.o \
-	$(OBJDIR)/SVSScene.o \
-	$(OBJDIR)/SVSSocket.o \
-	$(OBJDIR)/SVSViewerState.o \
 
 RESOURCES := \
 
@@ -230,21 +225,6 @@ $(OBJDIR)/SDLMain.o: ../../jni/external/sdl/SDLmain/SDLMain.mm
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/bootstrap.o: ../../jni/application/bootstrap.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SVSObject.o: ../../jni/application/SVSObject.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SVSParser.o: ../../jni/application/SVSParser.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SVSScene.o: ../../jni/application/SVSScene.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SVSSocket.o: ../../jni/application/SVSSocket.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SVSViewerState.o: ../../jni/application/SVSViewerState.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

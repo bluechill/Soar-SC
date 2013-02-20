@@ -63,17 +63,9 @@ namespace BWAPI
   {
   public:
     UnitCommandType(int id = UnitCommandTypes::Enum::None);
-    /** Returns the string corresponding to the UnitCommandType object. For example,
-     * UnitCommandTypes::Set_Rally_Position.getName() returns std::string("Set Rally Position")*/
-    const std::string &getName() const;
-    const char *c_str() const;
   };
   namespace UnitCommandTypes
   {
-    /** Given a string, this function returns the command type it refers to. For example,
-     * UnitCommandTypes::getUnitCommandType("Attack Position") returns UnitCommandTypes::Attack_Position. */
-    UnitCommandType getUnitCommandType(std::string name);
-
     /** Returns the set of all the sizes, which are listed below: */
     const UnitCommandType::const_set& allUnitCommandTypes();
     

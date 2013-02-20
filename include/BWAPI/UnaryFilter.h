@@ -3,11 +3,11 @@
 
 namespace BWAPI
 {
-  template<typename _Param>
+  template<typename _PARAM>
   class UnaryFilter
   {
   private:
-    std::function<bool(_Param)> pred;
+    std::function<bool(_PARAM)> pred;
   public:
     // Constructor
     template <typename _T>
@@ -26,12 +26,12 @@ namespace BWAPI
     template <typename _T>
     inline UnaryFilter operator &&(const _T& other) const
     {
-      return [&](_Param u){ return (*this)(u) && other(u); };
+      return [&](_PARAM u){ return (*this)(u) && other(u); };
     };
     template <typename _T>
     inline UnaryFilter operator ||(const _T& other) const
     {
-      return [&](_Param u){ return (*this)(u) || other(u); };
+      return [&](_PARAM u){ return (*this)(u) || other(u); };
     };
     
     // operator not
@@ -43,7 +43,7 @@ namespace BWAPI
     };
 
     // call
-    inline bool operator()(_Param u) const
+    inline bool operator()(_PARAM u) const
     {
       return pred(u);
     };

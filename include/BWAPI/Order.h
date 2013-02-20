@@ -213,16 +213,9 @@ namespace BWAPI
   {
     public:
       Order(int id = Orders::Enum::None);
-
-      /** Returns the name of this order. */
-      const std::string &getName() const;
-      const char *c_str() const;
   };
   namespace Orders
   {
-    /** Given the name of an order, getOrder() will return the corresponding order object. */
-    Order getOrder(std::string name);
-
     /** Returns the set of all the Orders. */
     const Order::const_set& allOrders();
 
