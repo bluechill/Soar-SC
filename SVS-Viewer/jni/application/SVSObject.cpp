@@ -322,7 +322,7 @@ std::vector<std::vector<int> > SVSObject::verts_for_faces(const std::vector<Zeni
 	
 	std::string command_line;
 #ifdef _WIN32
-	command_line = "bin\\qhull.exe i TI ";
+	command_line = "qhull.exe i TI ";
 #else
 	command_line = "i TI ";
 #endif

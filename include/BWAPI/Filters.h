@@ -2,187 +2,191 @@
 #include <BWAPI/UnaryFilter.h>
 #include <BWAPI/ComparisonFilter.h>
 #include <BWAPI/BestFilter.h>
+#include <BWAPI/UnitSizeType.h>
+#include <BWAPI/UpgradeType.h>
+#include <BWAPI/WeaponType.h>
+#include <BWAPI/Order.h>
+#include <BWAPI/Race.h>
 
 namespace BWAPI
 {
   // forwards
   class Unit;
-  class UpgradeType;
   class Player;
-  class Order;
-  class Race;
-  class WeaponType;
   class UnitType;
-  class UnitSizeType;
 
   // typedefs
   typedef UnaryFilter<Unit*> UnitFilter;
+  typedef UnaryFilter<Unit*,bool (*)(Unit*)> PtrUnitFilter;
   typedef BestFilter<Unit*>  BestUnitFilter;
+  typedef CompareFilter<Unit*,int,int(*)(Unit*)> PtrIntCompareUnitFilter;
 
-  // presets
-  extern const UnitFilter IsTransport;
+  namespace Filter
+  {
+    // presets
+    extern const PtrUnitFilter IsTransport;
 
-  extern const UnitFilter CanProduce;
-  extern const UnitFilter CanAttack;
-  extern const UnitFilter CanMove;
-  extern const UnitFilter IsFlyer;
-  extern const UnitFilter IsFlying;
-  extern const UnitFilter RegeneratesHP;
-  extern const UnitFilter IsSpellcaster;
-  extern const UnitFilter HasPermanentCloak;
-  extern const UnitFilter IsOrganic;
-  extern const UnitFilter IsMechanical;
-  extern const UnitFilter IsRobotic;
-  extern const UnitFilter IsDetector;
-  extern const UnitFilter IsResourceContainer;
-  extern const UnitFilter IsResourceDepot;
-  extern const UnitFilter IsRefinery;
-  extern const UnitFilter IsWorker;
-  extern const UnitFilter RequiresPsi;
-  extern const UnitFilter RequiresCreep;
-  extern const UnitFilter IsBurrowable;
-  extern const UnitFilter IsCloakable;
-  extern const UnitFilter IsBuilding;
-  extern const UnitFilter IsAddon;
-  extern const UnitFilter IsFlyingBuilding;
-  extern const UnitFilter IsNeutral;
-  extern const UnitFilter IsHero;
-  extern const UnitFilter IsPowerup;
-  extern const UnitFilter IsBeacon;
-  extern const UnitFilter IsFlagBeacon;
-  extern const UnitFilter IsSpecialBuilding;
-  extern const UnitFilter IsSpell;
-  extern const UnitFilter ProducesLarva;
-  extern const UnitFilter IsMineralField;
-  extern const UnitFilter IsCritter;
-  extern const UnitFilter CanBuildAddon;
+    extern const PtrUnitFilter CanProduce;
+    extern const PtrUnitFilter CanAttack;
+    extern const PtrUnitFilter CanMove;
+    extern const PtrUnitFilter IsFlyer;
+    extern const PtrUnitFilter IsFlying;
+    extern const PtrUnitFilter RegeneratesHP;
+    extern const PtrUnitFilter IsSpellcaster;
+    extern const PtrUnitFilter HasPermanentCloak;
+    extern const PtrUnitFilter IsOrganic;
+    extern const PtrUnitFilter IsMechanical;
+    extern const PtrUnitFilter IsRobotic;
+    extern const PtrUnitFilter IsDetector;
+    extern const PtrUnitFilter IsResourceContainer;
+    extern const PtrUnitFilter IsResourceDepot;
+    extern const PtrUnitFilter IsRefinery;
+    extern const PtrUnitFilter IsWorker;
+    extern const PtrUnitFilter RequiresPsi;
+    extern const PtrUnitFilter RequiresCreep;
+    extern const PtrUnitFilter IsBurrowable;
+    extern const PtrUnitFilter IsCloakable;
+    extern const PtrUnitFilter IsBuilding;
+    extern const PtrUnitFilter IsAddon;
+    extern const PtrUnitFilter IsFlyingBuilding;
+    extern const PtrUnitFilter IsNeutral;
+    extern const PtrUnitFilter IsHero;
+    extern const PtrUnitFilter IsPowerup;
+    extern const PtrUnitFilter IsBeacon;
+    extern const PtrUnitFilter IsFlagBeacon;
+    extern const PtrUnitFilter IsSpecialBuilding;
+    extern const PtrUnitFilter IsSpell;
+    extern const PtrUnitFilter ProducesLarva;
+    extern const PtrUnitFilter IsMineralField;
+    extern const PtrUnitFilter IsCritter;
+    extern const PtrUnitFilter CanBuildAddon;
   
-  extern const CompareFilter<Unit*> HP;
-  extern const CompareFilter<Unit*> MaxHP;
-  extern const CompareFilter<Unit*> HP_Percent;
+    extern const PtrIntCompareUnitFilter HP;
+    extern const PtrIntCompareUnitFilter MaxHP;
+    extern const PtrIntCompareUnitFilter HP_Percent;
   
-  extern const CompareFilter<Unit*> Shields;
-  extern const CompareFilter<Unit*> MaxShields;
-  extern const CompareFilter<Unit*> Shields_Percent;
+    extern const PtrIntCompareUnitFilter Shields;
+    extern const PtrIntCompareUnitFilter MaxShields;
+    extern const PtrIntCompareUnitFilter Shields_Percent;
   
-  extern const CompareFilter<Unit*> Energy;
-  extern const CompareFilter<Unit*> MaxEnergy;
-  extern const CompareFilter<Unit*> Energy_Percent;
+    extern const PtrIntCompareUnitFilter Energy;
+    extern const PtrIntCompareUnitFilter MaxEnergy;
+    extern const PtrIntCompareUnitFilter Energy_Percent;
 
-  extern const CompareFilter<Unit*> Armor;
-  extern const CompareFilter<Unit*,UpgradeType> ArmorUpgrade;
+    extern const PtrIntCompareUnitFilter Armor;
+    extern const CompareFilter<Unit*,UpgradeType,UpgradeType (*)(Unit*)> ArmorUpgrade;
 
-  extern const CompareFilter<Unit*> MineralPrice;
-  extern const CompareFilter<Unit*> GasPrice;
-  extern const CompareFilter<Unit*> BuildTime;
+    extern const PtrIntCompareUnitFilter MineralPrice;
+    extern const PtrIntCompareUnitFilter GasPrice;
+    extern const PtrIntCompareUnitFilter BuildTime;
 
-  extern const CompareFilter<Unit*> SupplyRequired;
-  extern const CompareFilter<Unit*> SupplyProvided;
+    extern const PtrIntCompareUnitFilter SupplyRequired;
+    extern const PtrIntCompareUnitFilter SupplyProvided;
 
-  extern const CompareFilter<Unit*> SpaceRequired;
-  extern const CompareFilter<Unit*> SpaceRemaining;
-  extern const CompareFilter<Unit*> SpaceProvided;
+    extern const PtrIntCompareUnitFilter SpaceRequired;
+    extern const PtrIntCompareUnitFilter SpaceRemaining;
+    extern const PtrIntCompareUnitFilter SpaceProvided;
 
-  extern const CompareFilter<Unit*> BuildScore;
-  extern const CompareFilter<Unit*> DestroyScore;
+    extern const PtrIntCompareUnitFilter BuildScore;
+    extern const PtrIntCompareUnitFilter DestroyScore;
 
-  extern const CompareFilter<Unit*,double> TopSpeed;
-  extern const CompareFilter<Unit*> SightRange;
-  extern const CompareFilter<Unit*> WeaponCooldown;
-  extern const CompareFilter<Unit*,UnitSizeType> SizeType;
+    extern const CompareFilter<Unit*,double,double (*)(Unit*)> TopSpeed;
+    extern const PtrIntCompareUnitFilter SightRange;
+    extern const PtrIntCompareUnitFilter WeaponCooldown;
+    extern const CompareFilter<Unit*,UnitSizeType,UnitSizeType (*)(Unit*)> SizeType;
 
-  extern const CompareFilter<Unit*,WeaponType> GroundWeapon;
-  extern const CompareFilter<Unit*,WeaponType> AirWeapon;
+    extern const CompareFilter<Unit*,WeaponType,WeaponType (*)(Unit*)> GroundWeapon;
+    extern const CompareFilter<Unit*,WeaponType,WeaponType (*)(Unit*)> AirWeapon;
 
-  extern const CompareFilter<Unit*,UnitType> GetType;
-  extern const CompareFilter<Unit*,Race> GetRace;
-  extern const CompareFilter<Unit*,Player*> GetPlayer;
+    extern const CompareFilter<Unit*,UnitType,UnitType (*)(Unit*)> GetType;
+    extern const CompareFilter<Unit*,Race,Race (*)(Unit*)> GetRace;
+    extern const CompareFilter<Unit*,Player*,Player* (*)(Unit*)> GetPlayer;
   
-  extern const CompareFilter<Unit*> Resources;
-  extern const CompareFilter<Unit*> ResourceGroup;
-  extern const CompareFilter<Unit*> AcidSporeCount;
-  extern const CompareFilter<Unit*> InterceptorCount;
-  extern const CompareFilter<Unit*> ScarabCount;
-  extern const CompareFilter<Unit*> SpiderMineCount;
-  extern const CompareFilter<Unit*> MaxWeaponCooldown;
-  extern const CompareFilter<Unit*> SpellCooldown;
+    extern const PtrIntCompareUnitFilter Resources;
+    extern const PtrIntCompareUnitFilter ResourceGroup;
+    extern const PtrIntCompareUnitFilter AcidSporeCount;
+    extern const PtrIntCompareUnitFilter InterceptorCount;
+    extern const PtrIntCompareUnitFilter ScarabCount;
+    extern const PtrIntCompareUnitFilter SpiderMineCount;
+    extern const PtrIntCompareUnitFilter MaxWeaponCooldown;
+    extern const PtrIntCompareUnitFilter SpellCooldown;
 
-  extern const CompareFilter<Unit*> DefenseMatrixPoints;
-  extern const CompareFilter<Unit*> DefenseMatrixTime;
-  extern const CompareFilter<Unit*> EnsnareTime;
-  extern const CompareFilter<Unit*> IrradiateTime;
-  extern const CompareFilter<Unit*> LockdownTime;
-  extern const CompareFilter<Unit*> MaelstromTime;
-  extern const CompareFilter<Unit*> OrderTime;
-  extern const CompareFilter<Unit*> PlagueTimer;
-  extern const CompareFilter<Unit*> RemoveTime;
-  extern const CompareFilter<Unit*> StasisTime;
-  extern const CompareFilter<Unit*> StimTime;
-  extern const CompareFilter<Unit*,UnitType> BuildType;
-  extern const CompareFilter<Unit*> RemainingBuildTime;
-  extern const CompareFilter<Unit*> RemainingTrainTime;
-  extern const CompareFilter<Unit*,Unit*> Target;
-  extern const CompareFilter<Unit*,Order> CurrentOrder;
-  extern const CompareFilter<Unit*,Order> SecondaryOrder;
-  extern const CompareFilter<Unit*,Unit*> OrderTarget;
-  extern const CompareFilter<Unit*,void*> ClientInfo;
-  extern const CompareFilter<Unit*> GetLeft;
-  extern const CompareFilter<Unit*> GetTop;
-  extern const CompareFilter<Unit*> GetRight;
-  extern const CompareFilter<Unit*> GetBottom;
+    extern const PtrIntCompareUnitFilter DefenseMatrixPoints;
+    extern const PtrIntCompareUnitFilter DefenseMatrixTime;
+    extern const PtrIntCompareUnitFilter EnsnareTime;
+    extern const PtrIntCompareUnitFilter IrradiateTime;
+    extern const PtrIntCompareUnitFilter LockdownTime;
+    extern const PtrIntCompareUnitFilter MaelstromTime;
+    extern const PtrIntCompareUnitFilter OrderTime;
+    extern const PtrIntCompareUnitFilter PlagueTimer;
+    extern const PtrIntCompareUnitFilter RemoveTime;
+    extern const PtrIntCompareUnitFilter StasisTime;
+    extern const PtrIntCompareUnitFilter StimTime;
+    extern const CompareFilter<Unit*,UnitType,UnitType (*)(Unit*)> BuildType;
+    extern const PtrIntCompareUnitFilter RemainingBuildTime;
+    extern const PtrIntCompareUnitFilter RemainingTrainTime;
+    extern const CompareFilter<Unit*,Unit*,Unit* (*)(Unit*)> Target;
+    extern const CompareFilter<Unit*,Order,Order (*)(Unit*)> CurrentOrder;
+    extern const CompareFilter<Unit*,Order,Order (*)(Unit*)> SecondaryOrder;
+    extern const CompareFilter<Unit*,Unit*,Unit* (*)(Unit*)> OrderTarget;
+    extern const PtrIntCompareUnitFilter GetLeft;
+    extern const PtrIntCompareUnitFilter GetTop;
+    extern const PtrIntCompareUnitFilter GetRight;
+    extern const PtrIntCompareUnitFilter GetBottom;
 
-  extern const UnitFilter Exists;
-  extern const UnitFilter IsAttacking;
-  extern const UnitFilter IsBeingConstructed;
-  extern const UnitFilter IsBeingGathered;
-  extern const UnitFilter IsBeingHealed;
-  extern const UnitFilter IsBlind;
-  extern const UnitFilter IsBraking;
-  extern const UnitFilter IsBurrowed;
-  extern const UnitFilter IsCarryingGas;
-  extern const UnitFilter IsCarryingMinerals;
-  extern const UnitFilter IsCarryingSomething;
-  extern const UnitFilter IsCloaked;
-  extern const UnitFilter IsCompleted;
-  extern const UnitFilter IsConstructing;
-  extern const UnitFilter IsDefenseMatrixed;
-  extern const UnitFilter IsDetected;
-  extern const UnitFilter IsEnsnared;
-  extern const UnitFilter IsFollowing;
-  extern const UnitFilter IsGatheringGas;
-  extern const UnitFilter IsGatheringMinerals;
-  extern const UnitFilter IsHallucination;
-  extern const UnitFilter IsHoldingPosition;
-  extern const UnitFilter IsIdle;
-  extern const UnitFilter IsInterruptible;
-  extern const UnitFilter IsInvincible;
-  extern const UnitFilter IsIrradiated;
-  extern const UnitFilter IsLifted;
-  extern const UnitFilter IsLoaded;
-  extern const UnitFilter IsLockedDown;
-  extern const UnitFilter IsMaelstrommed;
-  extern const UnitFilter IsMorphing;
-  extern const UnitFilter IsMoving;
-  extern const UnitFilter IsParasited;
-  extern const UnitFilter IsPatrolling;
-  extern const UnitFilter IsPlagued;
-  extern const UnitFilter IsRepairing;
-  extern const UnitFilter IsResearching;
-  extern const UnitFilter IsSieged;
-  extern const UnitFilter IsStartingAttack;
-  extern const UnitFilter IsStasised;
-  extern const UnitFilter IsStimmed;
-  extern const UnitFilter IsStuck;
-  extern const UnitFilter IsTraining;
-  extern const UnitFilter IsUnderAttack;
-  extern const UnitFilter IsUnderDarkSwarm;
-  extern const UnitFilter IsUnderDisruptionWeb;
-  extern const UnitFilter IsUnderStorm;
-  extern const UnitFilter IsUnpowered;
-  extern const UnitFilter IsVisible;
+    extern const PtrUnitFilter Exists;
+    extern const PtrUnitFilter IsAttacking;
+    extern const PtrUnitFilter IsBeingConstructed;
+    extern const PtrUnitFilter IsBeingGathered;
+    extern const PtrUnitFilter IsBeingHealed;
+    extern const PtrUnitFilter IsBlind;
+    extern const PtrUnitFilter IsBraking;
+    extern const PtrUnitFilter IsBurrowed;
+    extern const PtrUnitFilter IsCarryingGas;
+    extern const PtrUnitFilter IsCarryingMinerals;
+    extern const PtrUnitFilter IsCarryingSomething;
+    extern const PtrUnitFilter IsCloaked;
+    extern const PtrUnitFilter IsCompleted;
+    extern const PtrUnitFilter IsConstructing;
+    extern const PtrUnitFilter IsDefenseMatrixed;
+    extern const PtrUnitFilter IsDetected;
+    extern const PtrUnitFilter IsEnsnared;
+    extern const PtrUnitFilter IsFollowing;
+    extern const PtrUnitFilter IsGatheringGas;
+    extern const PtrUnitFilter IsGatheringMinerals;
+    extern const PtrUnitFilter IsHallucination;
+    extern const PtrUnitFilter IsHoldingPosition;
+    extern const PtrUnitFilter IsIdle;
+    extern const PtrUnitFilter IsInterruptible;
+    extern const PtrUnitFilter IsInvincible;
+    extern const PtrUnitFilter IsIrradiated;
+    extern const PtrUnitFilter IsLifted;
+    extern const PtrUnitFilter IsLoaded;
+    extern const PtrUnitFilter IsLockedDown;
+    extern const PtrUnitFilter IsMaelstrommed;
+    extern const PtrUnitFilter IsMorphing;
+    extern const PtrUnitFilter IsMoving;
+    extern const PtrUnitFilter IsParasited;
+    extern const PtrUnitFilter IsPatrolling;
+    extern const PtrUnitFilter IsPlagued;
+    extern const PtrUnitFilter IsRepairing;
+    extern const PtrUnitFilter IsResearching;
+    extern const PtrUnitFilter IsSieged;
+    extern const PtrUnitFilter IsStartingAttack;
+    extern const PtrUnitFilter IsStasised;
+    extern const PtrUnitFilter IsStimmed;
+    extern const PtrUnitFilter IsStuck;
+    extern const PtrUnitFilter IsTraining;
+    extern const PtrUnitFilter IsUnderAttack;
+    extern const PtrUnitFilter IsUnderDarkSwarm;
+    extern const PtrUnitFilter IsUnderDisruptionWeb;
+    extern const PtrUnitFilter IsUnderStorm;
+    extern const PtrUnitFilter IsUnpowered;
+    extern const PtrUnitFilter IsVisible;
   
-  extern const UnitFilter IsEnemy;
-  extern const UnitFilter IsAlly;
-  extern const UnitFilter IsOwned;
+    extern const PtrUnitFilter IsEnemy;
+    extern const PtrUnitFilter IsAlly;
+    extern const PtrUnitFilter IsOwned;
+  }
 }
 

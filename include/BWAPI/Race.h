@@ -7,10 +7,10 @@ namespace BWAPI
 
   namespace Races
   {
-
-    /// Enumeration of Race Types
+    /// Enumeration of races
     namespace Enum
     {
+      /// Enumeration of races
       enum Enum
       {
         Zerg = 0,
@@ -27,7 +27,6 @@ namespace BWAPI
     };
   }
 
-  
   /// The Race object is used to get information about a particular race. For example, the default
   /// worker and supply provider UnitType.
   ///
@@ -36,6 +35,7 @@ namespace BWAPI
   class Race : public Type<Race, Races::Enum::Unknown>
   {
     public:
+      /// @copydoc Type::Type(int)
       Race(int id = Races::Enum::None);
 
       /// Retrieves the default worker type for this Race.
@@ -81,6 +81,7 @@ namespace BWAPI
       /// @returns UnitType that provides the player with supply.
       UnitType getSupplyProvider() const;
   };
+  /// Namespace containing all races
   namespace Races
   {
     /// Retrieves the set of all races.
@@ -88,11 +89,16 @@ namespace BWAPI
     /// @returns Race::set containing all the Race types.
     const Race::const_set& allRaces();
 
-    extern const Race Zerg;
-    extern const Race Terran;
-    extern const Race Protoss;
-    extern const Race Random;
-    extern const Race None;
-    extern const Race Unknown;
+#ifdef BWAPI_DECL
+#undef BWAPI_DECL
+#endif
+#define BWAPI_DECL(x) /** x */ extern const Race x
+    BWAPI_DECL(Zerg);
+    BWAPI_DECL(Terran);
+    BWAPI_DECL(Protoss);
+    BWAPI_DECL(Random);
+    BWAPI_DECL(None);
+    BWAPI_DECL(Unknown);
+#undef BWAPI_DECL
   }
 }

@@ -3,6 +3,7 @@
 #include <set> //for std::set
 #include <vector> //For std::vector
 #include <sstream> //For std::stringstream
+#include <stack>
 
 #include <windows.h> //For windows related functions
 
@@ -260,6 +261,114 @@ void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml:
 	}
 }
 
+//typedef vector<pair<int,int> > map_array;
+//typedef pair<string, map_array> named_map;
+
+bool Soar_Link::named_map_contains_point(named_map &map, pair<int,int> &point)
+{
+	map_array* internal_map = &(map.second);
+	int internal_map_size = internal_map->size();
+
+	for (int i = 0;i < internal_map_size;i++)
+	{
+		if (point.first == internal_map->at(i).first &&
+			point.second == internal_map->at(i).second)
+			return true;
+	}
+
+	return false;
+}
+
+bool Soar_Link::vector_named_map_contains_point(vector<named_map> &vector_map, pair<int,int> &point)
+{
+	int vector_map_size = vector_map.size();
+
+	for (int i = 0;i < vector_map_size;i++)
+	{
+		if (named_map_contains_point(vector_map[i], point))
+			return true;
+	}
+
+	return false;
+}
+
+void Soar_Link::flood_fill(std::pair<int,int> &location, std::vector<std::vector<bool> > &bool_map, bool target, named_map &fill_vector)
+{
+	stack<pair<int,int> > locations;
+
+	if (location.second > bool_map.size() || location.first > bool_map[location.second].size() || location.first < 0 || location.second < 0)
+		return;
+
+	if (bool_map[location.second][location.first] != target)
+		return;
+
+	if (named_map_contains_point(fill_vector, location))
+		return;
+
+	locations.push(location);
+
+	while (!locations.empty())
+	{
+		pair<int,int> n = locations.top();
+		locations.pop();
+
+		if (n.second > bool_map.size()				||
+			n.first > bool_map[n.second].size()		||
+			n.first < 0								||
+			n.second < 0							||
+			bool_map[n.second][n.first] != target	||
+			named_map_contains_point(fill_vector, n))
+			continue;
+
+		pair<int,int> west,east;
+		west = n;
+		east = n;
+		west.first--;
+		east.first++;
+
+		if (west.first >= 0)
+		{
+			while (	west.first > 0 &&
+					bool_map[west.second][west.first] == target &&
+					!named_map_contains_point(fill_vector, west))
+			{
+				fill_vector.second.push_back(west);
+				west.first--;
+			}
+		}
+		else
+			west.first = 0;
+
+		if (east.first < bool_map[n.second].size())
+		{
+			while (	east.first < bool_map[n.second].size() &&
+					bool_map[east.second][east.first] == target &&
+					!named_map_contains_point(fill_vector, east))
+			{
+				fill_vector.second.push_back(east);
+				east.first++;
+			}
+		}
+		else
+			east.first = bool_map[n.second].size()-1;
+
+		fill_vector.second.push_back(n);
+
+		for (int x = west.first;x < east.first;x++)
+		{
+			if ((n.second+1) < bool_map.size() &&
+				bool_map[n.second+1][x] == target)
+				locations.push(make_pair<int,int>(x,n.second+1));
+			
+			if ((n.second-1) >= 0 &&
+				bool_map[n.second-1][x] == target)
+				locations.push(make_pair<int,int>(x,n.second-1));
+		}
+	}
+
+	//Done
+}
+
 void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 {
 	//Load all the types of the Starcraft onto the input link for making the agent's life easier
@@ -326,186 +435,96 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	cout << "Soar-SC is running." << endl; //Tell the user everything is working perfectly so far
 	Broodwar->printf("Soar-SC is running.");
 
-	vector<vector<bool> > map; //Variable for containing the map and whether a tile is walkable or not
+	vector<vector<bool> > initial_base_map; //Variable for containing the map and whether a tile is walkable or not
 	size_t map_size_x = Broodwar->mapWidth() * 4; //Set the size to the number of walkable tiles, build tiles times 4
 	size_t map_size_y = Broodwar->mapHeight() * 4; //Same thing as above
 
-	for (int y = 0;y < int(map_size_y);y++) //Loop through every tile in the map and map the tile to a boolean in the vector vector of booleans.
+	string named_map_names = "A";
+	int named_map_pos = 0;
+	vector<named_map> free_tiles;
+
+	//Value for determining whether to keep named_maps of less than X size
+	const int min_size_cap = 5;
+
+	for (int y = 0;y < int(map_size_y);y += 4) //Loop through every tile in the map and map the tile to a boolean in the vector vector of booleans.
 	{
 		vector<bool> map_y;
 
-		int last_16 = 0;
-		for (int x = 0;x < int(map_size_x);x++)
-		{
-			map_y.push_back(Broodwar->isWalkable(x,y));
-			if (x % 4 == 0)
-			{
-				if ((x-3) > 0 && !map_y[x-3])
-					last_16++;
-
-				if ((x-2) > 0 && !map_y[x-2])
-					last_16++;
-
-				if ((x-2) > 0 && !map_y[x-1])
-					last_16++;
-
-				if (y != 0 && !map_y[x])
-					last_16++;
-			}
-
-			if (y % 4 == 0)
-			{
-				if ((y-3) > 0 && !map[y-3][x])
-					last_16++;
-
-				if ((y-2) > 0 && !map[y-2][x])
-					last_16++;
-
-				if ((y-1) > 0 && !map[y-1][x])
-					last_16++;
-
-				if (!map_y[x])
-					last_16++;
-			}
-
-			if (y % 4 == 0 && x % 4 == 0 && last_16 > 0)
-			{
-				if (y == 0 && x == 0)
-				{
-					map_y[x] = false;
-
-					last_16 = 0;
-					continue;
-				}
-				else if (y == 0)
-				{
-					for (int j = 3;j >= 0;j--)
-						map_y[x-j] = false;
-
-					continue;
-				}
-
-				for (int i = 3;i >= 0;i--)
-				{
-					if (x == 0)
-					{
-						if (i == 0)
-							map_y[x] = false;
-						else
-							map[y-i][x] = false;
-
-						last_16 = 0;
-
-						continue;
-					}
-
-					for (int j = 3;j >= 0;j--)
-					{
-						if (i == 0)
-							map_y[x-j] = false;
-						else
-							map[y-i][x-j] = false;
-					}
-				}
-
-				last_16 = 0;
-			}
-		}
-
-		map.push_back(map_y);
-	}
-
-	//Clean up the map even more
-
-	for (int y = 0;y < int(map_size_y);y += 4)
-	{
 		for (int x = 0;x < int(map_size_x);x += 4)
 		{
-			if (map[y][x])
+			bool walkable[4][4];
+			int is_walkable_count = 0;
+
+			for (int i = 0;i < 4;i++)
 			{
-				int surrounding = 0;
-
-				int distance = 5;
-
-				if (y + distance < int(map.size()) && !map[y+distance][x])
-					surrounding++;
-				else if (y + distance - 1 < int(map.size()) && !map[y+distance-1][x])
-					surrounding++;
-
-				if (y - distance >= 0 && !map[y-distance][x])
-					surrounding++;
-				else if (y - distance + 1 >= 0 && !map[y-distance+1][x])
-					surrounding++;
-
-				if (x + distance < int(map[y].size()) && !map[y][x+distance])
-					surrounding++;
-				else if (x + distance - 1 < int(map[y].size()) && !map[y][x+distance-1])
-					surrounding++;
-
-				if (x - distance >= 0 && !map[y][x-distance])
-					surrounding++;
-				else if (x - distance + 1 >= 0 && !map[y][x-distance+1])
-					surrounding++;
-
-				//Diagonals
-
-				if (y + distance < int(map.size()) && x + distance < int(map[y+distance].size()) && !map[y+distance][x+distance])
-					surrounding++;
-				else if (y + distance - 1 < int(map.size()) && x + distance < int(map[y+distance-1].size()) && !map[y+distance-1][x+distance])
-					surrounding++;
-				else if (y + distance - 1 < int(map.size()) && x + distance - 1 < int(map[y+distance-1].size()) && !map[y+distance-1][x+distance-1])
-					surrounding++;
-				else if (y + distance < int(map.size()) && x + distance - 1 < int(map[y+distance].size()) && !map[y+distance][x+distance-1])
-					surrounding++;
-
-				if (y + distance < int(map.size()) && x - distance >= 0 && !map[y+distance][x-distance])
-					surrounding++;
-				else if (y + distance - 1 < int(map.size()) && x - distance >= 0 && !map[y+distance-1][x-distance])
-					surrounding++;
-				else if (y + distance - 1 < int(map.size()) && x - distance + 1 >= 0 && !map[y+distance-1][x-distance+1])
-					surrounding++;
-				else if (y + distance < int(map.size()) && x - distance + 1 >= 0 && !map[y+distance][x-distance+1])
-					surrounding++;
-
-				if (y - distance >= 0 && x + distance < int(map[y-distance].size()) && !map[y-distance][x+distance])
-					surrounding++;
-				else if (y - distance + 1 >= 0 && x + distance < int(map[y-distance+1].size()) && !map[y-distance+1][x+distance])
-					surrounding++;
-				else if (y - distance + 1 >= 0 && x + distance - 1 < int(map[y-distance+1].size()) && !map[y-distance+1][x+distance-1])
-					surrounding++;
-				else if (y - distance >= 0 && x + distance - 1 < int(map[y-distance].size()) && !map[y-distance][x+distance-1])
-					surrounding++;
-
-				if (y - distance >= 0 && x - distance >= 0 && !map[y-distance][x-distance])
-					surrounding++;
-				else if (y - distance + 1 >= 0 && x - distance >= 0 && !map[y-distance+1][x-distance])
-					surrounding++;
-				else if (y - distance + 1 >= 0 && x - distance + 1 >= 0 && !map[y-distance+1][x-distance+1])
-					surrounding++;
-				else if (y - distance >= 0 && x - distance + 1 >= 0 && !map[y-distance][x-distance+1])
-					surrounding++;
-
-				if (surrounding > 4) //Greater than 50%
+				for (int j = 0;j < 4;j++)
 				{
-					for (int i = 3;i >= 0;i--)
-					{
-						for (int j = 3;j >= 0;j--)
-						{
-							int x_val = x-j;
-							int y_val = y-i;
-
-							if (x_val < 0)
-								x_val = 0;
-
-							if (y_val < 0)
-								y_val = 0;
-
-							map[y_val][x_val] = false;
-						}
-					}
-					continue;
+					walkable[i][j] = Broodwar->isWalkable(x+i,y+j);
+					if (walkable[i][j])
+						is_walkable_count++;
 				}
 			}
+
+			if (is_walkable_count > 12)
+				map_y.push_back(true);
+			else
+				map_y.push_back(false);
+		}
+
+		initial_base_map.push_back(map_y);
+	}
+
+	for (int y = 0;y < int(initial_base_map.size());y++)
+	{
+		for (int x = 0;x < int(initial_base_map[y].size());x++)
+		{
+			if (initial_base_map[y][x] && !vector_named_map_contains_point(free_tiles, make_pair<int,int>(x,y)))
+			{
+				named_map new_free_section;
+
+				flood_fill(make_pair<int,int>(x,y), initial_base_map, true, new_free_section);
+
+				if (new_free_section.second.size() < min_size_cap)
+					continue;
+
+				new_free_section.first = named_map_names;
+
+				named_map_names[named_map_pos]++;
+
+				if (named_map_names[named_map_pos] > 'Z')
+				{
+					named_map_pos++;
+					named_map_names.push_back('A');
+				}
+
+				free_tiles.push_back(new_free_section);
+			}
+		}
+	}
+
+	vector<vector<bool> > map;
+	map.reserve(initial_base_map.size()*4);
+	
+	for (int i = 0;i < initial_base_map.size()*4;i++)
+	{
+		vector<bool> temporary_vector;
+		temporary_vector.reserve(initial_base_map[floor(float(i)/4)].size()*4);
+
+		for (int j = 0;j < initial_base_map[floor(float(i)/4)].size()*4;j++)
+			temporary_vector.push_back(true);
+		
+		map.push_back(temporary_vector);
+	}
+
+	//Scale the map back up while making a new version of it
+	for (int y = 0;y < int(initial_base_map.size()*4);y++)
+	{
+		for (int x = 0;x < int(initial_base_map[floor(float(y)/4)].size()*4);x++)
+		{
+			if (!vector_named_map_contains_point(free_tiles, make_pair<int,int>(floor(float(x)/4),floor(float(y)/4))))
+				map[y][x] = false;
+			else
+				map[y][x] = true;
 		}
 	}
 

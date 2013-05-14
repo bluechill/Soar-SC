@@ -32,7 +32,7 @@ namespace BWAPI
     template <typename _T>
     inline BestFilter<_PARAM> operator &&(const _T &other) const
     {
-      return [&](_PARAM p1, _PARAM p2)->_PARAM{ return other( (*this)(p1, p2) ); };
+      return [=](_PARAM p1, _PARAM p2)->_PARAM{ return other( (*this)(p1, p2) ); };
     };
 
     // call
@@ -46,12 +46,12 @@ namespace BWAPI
   template <typename _PARAM>
   BestFilter<_PARAM> Lowest(const CompareFilter<_PARAM,int> &filter)
   {
-    return [&](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) < filter(p1) ? p2 : p1; };
+    return [=](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) < filter(p1) ? p2 : p1; };
   };
   template <typename _PARAM>
   BestFilter<_PARAM> Highest(const CompareFilter<_PARAM,int> &filter)
   {
-    return [&](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) > filter(p1) ? p2 : p1; };
+    return [=](_PARAM p1, _PARAM p2)->_PARAM{ return filter(p2) > filter(p1) ? p2 : p1; };
   };
 
 }

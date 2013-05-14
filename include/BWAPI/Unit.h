@@ -143,9 +143,24 @@ namespace BWAPI
     /// @retval nullptr If the unit is inaccessible.
     ///
     /// @returns A pointer to a Region object that contains this unit.
+    ///
+    /// Example
+    /// @code
+    ///   Unitset myUnits = Broodwar->self()->getUnits();
+    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   {
+    ///     if ( u->isFlying() && u->isUnderAttack() ) // implies exists and isCompleted
+    ///     {
+    ///       Region *r = u->getRegion();
+    ///       if ( r )
+    ///         u->move(r->getClosestInaccessibleRegion()); // Retreat to inaccessible region
+    ///     }
+    ///   }
+    /// @endcode
+    /// @implies exists
     BWAPI::Region *getRegion() const;
 
-    /// Retrieves the X coordinate of the unit's left boundry, measured in pixels from the left
+    /// Retrieves the X coordinate of the unit's left boundary, measured in pixels from the left
     /// side of the map.
     ///
     /// @returns An integer representing the position of the left side of the unit.
@@ -153,7 +168,7 @@ namespace BWAPI
     /// @see getTop, getRight, getBottom
     int getLeft() const;
 
-    /// Retrieves the Y coordinate of the unit's top boundry, measured in pixels from the top of
+    /// Retrieves the Y coordinate of the unit's top boundary, measured in pixels from the top of
     /// the map.
     ///
     /// @returns An integer representing the position of the top side of the unit.
@@ -161,7 +176,7 @@ namespace BWAPI
     /// @see getLeft, getRight, getBottom
     int getTop() const;
 
-    /// Retrieves the X coordinate of the unit's right boundry, measured in pixels from the left
+    /// Retrieves the X coordinate of the unit's right boundary, measured in pixels from the left
     /// side of the map.
     ///
     /// @returns An integer representing the position of the right side of the unit.
@@ -169,7 +184,7 @@ namespace BWAPI
     /// @see getLeft, getTop, getBottom
     int getRight() const;
 
-    /// Retrieves the Y coordinate of the unit's bottom boundry, measured in pixels from the top
+    /// Retrieves the Y coordinate of the unit's bottom boundary, measured in pixels from the top
     /// of the map.
     ///
     /// @returns An integer representing the position of the bottom side of the unit.
@@ -206,9 +221,11 @@ namespace BWAPI
     virtual int getEnergy() const = 0;
 
     /// Retrieves the resource amount from a resource container, such as a Mineral Field and
-    /// Vespene Geyser.
+    /// Vespene Geyser. If the unit is inaccessible, then the last known resource amount is
+    /// returned.
     ///
-    /// @returns An integer representing the amount of resources remaining in this resource.
+    /// @returns An integer representing the last known amount of resources remaining in this
+    /// resource.
     ///
     /// @see getInitialResources
     virtual int getResources() const = 0;
@@ -241,8 +258,8 @@ namespace BWAPI
     /// the given target.
     ///
     /// @note This function only takes into account the terrain data, and does not include
-    /// buildings when determining if a path is available. However, the time it takes to execute
-    /// this function is O(1), and no extensive calculations are necessary.
+    /// buildings when determining if a path is available. However, the complexity of this
+    /// function is constant ( O(1) ), and no extensive calculations are necessary.
     ///
     /// @note If the current unit is an air unit, then this function will always return true.
     ///
@@ -254,26 +271,53 @@ namespace BWAPI
     /// island).
     bool hasPath(PositionOrUnit target) const;
 
-    /** Returns the frame of the last successful command. Frame is comparable to Game::getFrameCount(). */
+    /// Retrieves the frame number that sent the last successful command.
+    /// 
+    /// @note This value is comparable to Game::getFrameCount.
+    ///
+    /// @returns The frame number that sent the last successfully processed command to BWAPI.
+    /// @see Game::getFrameCount, getLastCommand
     virtual int getLastCommandFrame() const = 0;
 
-    /** Returns the last successful command. */
+    /// Retrieves the last successful command that was sent to BWAPI.
+    ///
+    /// @returns A UnitCommand object containing information about the command that was processed.
+    /// @see getLastCommandFrame
     virtual UnitCommand getLastCommand() const = 0;
 
-    /** Returns the player that last attacked this unit. */
+    /// Retrieves the Player that last attacked this unit.
+    /// 
+    /// @returns Player interface object representing the player that last attacked this unit.
+    /// @retval nullptr If this unit was not attacked.
+    /// @implies exists()
     virtual BWAPI::Player *getLastAttackingPlayer() const = 0;
 
-    /** Returns the initial type of the unit or Unknown if it wasn't a neutral unit at the beginning of the
-     * game. */
+    /// Retrieves the initial type of the unit. This is the type that the unit starts as in the
+    /// beginning of the game. This is used to access the types of static neutral units such as
+    /// mineral fields when they are not visible.
+    ///
+    /// @returns UnitType of this unit as it was when it was created.
+    /// @retval UnitTypes::Unknown if this unit was not a static neutral unit in the beginning of
+    /// the game.
     virtual UnitType getInitialType() const = 0;
 
-    /** Returns the initial position of the unit on the map, or Positions::Unknown if the unit wasn't a
-     * neutral unit at the beginning of the game. */
+    /// Retrieves the initial position of this unit. This is the position that the unit starts at
+    /// in the beginning of the game. This is used to access the positions of static neutral units
+    /// such as mineral fields when they are not visible.
+    ///
+    /// @returns Position indicating the unit's initial position when it was created.
+    /// @retval Positions::Unknown if this unit was not a static neutral unit in the beginning of
+    /// the game.
     virtual Position getInitialPosition() const = 0;
 
-    /** Returns the initial build tile position of the unit on the map, or TilePositions::Unknown if the
-     * unit wasn't a neutral unit at the beginning of the game. The tile position is of the top left corner
-     * of the building. */
+    /// Retrieves the initial build tile position of this unit. This is the tile position that the
+    /// unit starts at in the beginning of the game. This is used to access the tile positions of
+    /// static neutral units such as mineral fields when they are not visible. The build tile
+    /// position corresponds to the upper left corner of the unit.
+    ///
+    /// @returns TilePosition indicating the unit's initial tile position when it was created.
+    /// @retval TilePositions::Unknown if this unit was not a static neutral unit in the beginning of
+    /// the game.
     virtual TilePosition getInitialTilePosition() const = 0;
 
     /** Returns the unit's initial amount of hit points, or 0 if it wasn't a neutral unit at the beginning
@@ -429,17 +473,29 @@ namespace BWAPI
     virtual Unit* getNydusExit() const = 0;
 
     /// Retrieves the power-up that the worker unit is holding. Power-ups are special units such
-    /// as the flag in the Capture the Flag game type, which can be picked up by worker units.
+    /// as the @Flag in the @CTF game type, which can be picked up by worker units.
     ///
     /// @note If your bot is strictly melee/1v1, then this method is not necessary.
     ///
-    /// @return The Unit interface that represents the power-up.
+    /// @returns The Unit interface object that represents the power-up.
     /// @retval nullptr If the unit is not carrying anything.
+    ///
+    /// Example
+    /// @code
+    ///   BWAPI::Unitset myUnits = BWAPI::Broodwar->self()getUnits();
+    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   {
+    ///     // If we are carrying a flag
+    ///     if ( u->getPowerUp() && u->getPowerUp()->getType() == BWAPI::UnitTypes::Powerup_Flag )
+    ///       u->move( u->getClosestUnit(BWAPI::Filter::IsFlagBeacon && BWAPI::Filter::IsOwned) );  // return it to our flag beacon to score
+    ///   }
+    /// @endcode
+    /// @implies getType().isWorker(), isCompleted()
     virtual Unit* getPowerUp() const = 0;
 
     /// Retrieves the @Transport or @Bunker unit that has this unit loaded inside of it.
     ///
-    /// @returns @Transport containing this unit.
+    /// @returns Unit interface object representing the @Transport containing this unit.
     /// @retval nullptr if this unit is not in a @Transport.
     virtual Unit* getTransport() const = 0;
 
@@ -539,28 +595,70 @@ namespace BWAPI
     /// @see Unit::build, Unit::cancelConstruction, Unit::haltConstruction, Unit::isConstructing
     bool isBeingConstructed() const;
 
-    /** Returns true if the unit is a mineral patch or refinery that is being gathered. */
+    /// Checks this @Mineral_Field or @Refinery is currently being gathered from.
+    ///
+    /// @returns true if this unit is a resource container and being harvested by a worker, and
+    /// false otherwise
     virtual bool isBeingGathered() const = 0;
 
-    /** Returns true if the unit is currently being healed by a Terran Medic, or repaired by a Terran SCV. */
+    /// Checks if this unit is currently being healed by a @Medic or repaired by a @SCV.
+    ///
+    /// @returns true if this unit is being healed, and false otherwise.
     virtual bool isBeingHealed() const = 0;
 
-    /** Returns true if the unit is currently blind from a Medic's Optical Flare. */
+    /// Checks if this unit is currently blinded by a @Medic 's @Optical_Flare ability. Blinded
+    /// units have reduced sight range and cannot detect other units.
+    ///
+    /// @returns true if this unit is blind, and false otherwise
     virtual bool isBlind() const = 0;
 
-    /** Returns true if the unit is currently braking/slowing down. */
+    /// Checks if the current unit is slowing down to come to a stop.
+    ///
+    /// @returns true if this unit is breaking, false if it has stopped or is still moving at full
+    /// speed.
     virtual bool isBraking() const = 0;
 
-    /** Returns true if the unit is a Zerg unit that is current burrowed.
-     * \see Unit::burrow, Unit::unburrow. */
+    /// Checks if the current unit is burrowed, either using the @Burrow ability, or is an armed
+    /// @Spider_Mine .
+    ///
+    /// @returns true if this unit is burrowed, and false otherwise
+    /// @see burrow, unburrow
     virtual bool isBurrowed() const = 0;
 
-    /** Returns true if the unit is a worker that is carrying gas.
-     * \see Unit::returnCargo, Unit::isGatheringGas. */
+    /// Checks if this worker unit is carrying some vespene gas.
+    ///
+    /// @returns true if this is a worker unit carrying vespene gas, and false if it is either
+    /// not a worker, or not carrying gas.
+    ///
+    /// Example
+    /// @code
+    ///   BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
+    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   {
+    ///     if ( u->isIdle() && (u->isCarryingGas() || u->isCarryingMinerals()) )
+    ///       u->returnCargo();
+    ///   }
+    /// @endcode
+    /// @implies isCompleted(), getType().isWorker()
+    /// @see returnCargo, isGatheringGas, isCarryingMinerals
     virtual bool isCarryingGas() const = 0;
 
-    /** Returns true if the unit is a worker that is carrying minerals.
-     * \see Unit::returnCargo, Unit::isGatheringMinerals. */
+    /// Checks if this worker unit is carrying some minerals.
+    ///
+    /// @returns true if this is a worker unit carrying minerals, and false if it is either
+    /// not a worker, or not carrying minerals.
+    ///
+    /// Example
+    /// @code
+    ///   BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
+    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   {
+    ///     if ( u->isIdle() && (u->isCarryingGas() || u->isCarryingMinerals()) )
+    ///       u->returnCargo();
+    ///   }
+    /// @endcode
+    /// @implies isCompleted(), getType().isWorker()
+    /// @see returnCargo, isGatheringMinerals, isCarryingMinerals
     virtual bool isCarryingMinerals() const = 0;
 
     /** Returns true if the unit is cloaked.
@@ -587,11 +685,10 @@ namespace BWAPI
     /// @retval false if the unit is not ensnared
     bool isEnsnared() const;
 
-    /// This macro function checks if the units is in the air. That is, the unit is either a flyer
+    /// This macro function checks if this unit is in the air. That is, the unit is either a flyer
     /// or a flying building.
     ///
-    /// @retval true if it is in the air
-    /// @retval false if it is on the ground
+    /// @returns true if this unit is in the air, and false if it is on the ground
     /// @see UnitType::isFlyer, Unit::isLifted
     bool isFlying() const;
 
@@ -609,22 +706,22 @@ namespace BWAPI
      * \see Unit::isCarryingMinerals. */
     virtual bool isGatheringMinerals() const = 0;
 
-    /** Returns true for hallucinated units, false for normal units. Returns true for hallucinated enemy
-     * units only if Complete Map Information is enabled.
-     * \see Unit::getRemoveTimer. */
+    /// Checks if this unit is a hallucination. Hallucinations are created by the @High_Templar
+    /// using the @Hallucination ability. Enemy hallucinations are unknown if
+    /// Flag::CompleteMapInformation is disabled. Hallucinations have a time limit until they are
+    /// destroyed (see Unit::getRemoveTimer). 
+    ///
+    /// @returns true if the unit is a hallucination and false otherwise.
+    /// @see getRemoveTimer
     virtual bool isHallucination() const = 0;
 
     /** Returns true if the unit is holding position
      * \see Unit::holdPosition. */
+    /// @todo may currently be wrong
     bool isHoldingPosition() const;
 
-    /** Returns true if the unit is not doing anything.
-     * \see Unit::stop. */
     /// Checks if this unit is not doing anything. This function is particularly useful when
     /// checking for units that aren't doing any tasks.
-    ///
-    /// @note This implies that the unit is completed, so if this returns true, then
-    /// Unit::isCompleted should also return true.
     ///
     /// @code
     ///   BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
@@ -632,12 +729,13 @@ namespace BWAPI
     ///   {
     ///     // Order idle worker to gather from closest mineral field
     ///     if ( u->getType().isWorker() && u->isIdle() )
-    ///       u->gather( u->getClosestUnit( BWAPI::IsMineralField ) );
+    ///       u->gather( u->getClosestUnit( BWAPI::Filter::IsMineralField ) );
     ///   }
     /// @endcode
     ///
-    /// @retval true if this unit is idle
-    /// @retval false if this unit is performing some action such as moving or attacking
+    /// @returns true if this unit is idle, and false if this unit is performing any action, such
+    /// as moving or attacking
+    /// @implies isCompleted
     /// @see Unit::stop
     virtual bool isIdle() const = 0;
 
@@ -650,12 +748,33 @@ namespace BWAPI
     /** Returns true if the unit can attack a specified target from its current position. */
     bool isInWeaponRange(Unit *target) const;
 
-    /** Returns true if the unit is being irradiated by a Terran Science Vessel.
-     * \see Unit::getIrradiateTimer. */
+    /// Checks if this unit is irradiated by a @Science_Vessel 's @Irradiate ability.
+    ///
+    /// @returns true if this unit is irradiated, and false otherwise
+    ///
+    /// Example usage:
+    /// @code
+    ///   BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
+    ///   for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///   {
+    ///     if ( u->isIrradiated() && u->getIrradiateTimer > 50 && BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Restoration) )
+    ///     {
+    ///       BWAPI::Unit medic = u->getClosestUnit( BWAPI::Filter::GetType == BWAPI::UnitTypes::Terran_Medic &&
+    ///                                              BWAPI::Filter::Energy >= BWAPI::TechTypes::Restoration.energyCost() );
+    ///       if ( medic )
+    ///         medic->useTech(BWAPI::TechTypes::Restoration, *u);
+    ///     }
+    ///   }
+    /// @endcode
+    /// @see getIrradiateTimer
     bool isIrradiated() const;
 
-    /** Returns true if the unit is a Terran building that is currently lifted off the ground.
-     * \see Unit::lift,Unit::land. */
+    /// Checks if this unit is a @Terran building and lifted off the ground. This function
+    /// generally implies this->getType().isBuilding() and this->isCompleted() both return true.
+    ///
+    /// @returns true if this unit is a @Terran structure lifted off the ground.
+    /// @implies isCompleted, getType().isFlyingBuilding()
+    /// @see isFlying
     virtual bool isLifted() const = 0;
 
     /** Return true if the unit is loaded into a Terran Bunker, Terran Dropship, Protoss Shuttle, or Zerg
@@ -756,6 +875,15 @@ namespace BWAPI
      * units hidden by the fog of war will be accessible, but isVisible will still return false.
      * \see Unit::exists. */
     virtual bool isVisible(Player* player = nullptr) const = 0;
+
+    /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
+    /// be targetted as the target unit of an unspecified command.
+    ///
+    /// @retval true if BWAPI was unable to determine whether the unit can be a target.
+    /// @retval false if an error occurred and the unit can not be a target.
+    ///
+    /// @see Game::getLastError, Unit::canTargetUnit
+    virtual bool isTargetable() const = 0;
 
     /// This function issues a command to the unit(s), however it is used for interfacing only,
     /// and is recommended to use one of the more specific command functions when writing an AI.
@@ -932,19 +1060,20 @@ namespace BWAPI
      * \see Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded. */
     bool load(Unit* target, bool shiftQueueCommand = false);
 
-    /** Orders the unit to unload the target unit.
+    /** Orders the unit to unload the target unit. Unit should be a Terran Dropship, Protoss Shuttle,
+     *  Zerg Overlord, or a Terran Bunker.
      * \see Unit::load, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded, Unit::canUnload,
      * Unit::canUnloadAtPosition. */
     bool unload(Unit* target);
 
-    /** Orders the unit to unload all loaded units at the unit's current position.
+    /** Orders the unit to unload all loaded units at the unit's current position. Unit should be a
+     * Terran Dropship, Protoss Shuttle, or Zerg Overlord, or a Terran Bunker.
      * \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded,
      * Unit::canUnloadAll, Unit::canUnloadAtPosition. */
     bool unloadAll(bool shiftQueueCommand = false);
 
     /** Orders the unit to unload all loaded units at the specified location. Unit should be a Terran
-     * Dropship, Protoss Shuttle, or Zerg Overlord. If the unit is a Terran Bunker, the units will be
-     * unloaded right outside the bunker, like in the first version of unloadAll.
+     * Dropship, Protoss Shuttle, or Zerg Overlord (but not a Terran Bunker).
      * \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded,
      * Unit:canUnloadAllPosition, Unit::canUnloadAtPosition. */
     bool unloadAll(Position target, bool shiftQueueCommand = false);
@@ -1001,6 +1130,12 @@ namespace BWAPI
     ///
     /// @param command
     ///   A UnitCommand to check.
+    /// @param checkCanUseTechPositionOnPositions
+    ///   Only used if the command type is UnitCommandTypes::Enum::Use_Tech_Position. A boolean
+    ///   for whether to perform cheap checks for whether the unit is unable to target any
+    ///   positions using the command's TechType (i.e. regardless of what the other command
+    ///   parameters are). You can set this to false if you know this check has already just been
+    ///   performed.
     /// @param checkCanUseTechUnitOnUnits
     ///   Only used if the command type is UnitCommandTypes::Enum::Use_Tech_Unit. A boolean for
     ///   whether to perform cheap checks for whether the unit is unable to target any units using
@@ -1027,7 +1162,32 @@ namespace BWAPI
     ///
     /// @see UnitCommandTypes, Game::getLastError, Unit::canCommand, Unit::canIssueCommandType,
     /// Unit::canTargetUnit
-    virtual bool canIssueCommand(UnitCommand command, bool checkCanUseTechUnitOnUnits = true, bool checkCanBuildUnitType = true, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    virtual bool canIssueCommand(UnitCommand command, bool checkCanUseTechPositionOnPositions = true, bool checkCanUseTechUnitOnUnits = true, bool checkCanBuildUnitType = true, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute the given command as part of a Unitset
+    /// (even if none of the units in the Unitset are able to execute the command individually).
+    /// The reason this function exists is because some commands are valid for an individual unit
+    /// but not for those individuals as a group (e.g. buildings, critters) and some commands are
+    /// only valid for a unit if it is commanded as part of a unit group, e.g.:
+    ///   1. attackMove/attackUnit for a Unitset, some of which can't attack (e.g.
+    ///       @High_Templar ). This is supported simply for consistency with BW's behaviour - you
+    ///       could issue move command(s) individually instead.
+    ///   2. attackMove/move/patrol/rightClickPosition for air unit(s) + e.g. @Larva, as part of
+    ///      the air stacking technique. This is supported simply for consistency with BW's
+    ///      behaviour - you could issue move/patrol/rightClickPosition command(s) for them
+    ///     individually instead.
+    ///
+    /// @note BWAPI allows the following special cases to command a unit individually (rather than
+    /// only allowing it to be commanded as part of a Unitset). These commands are not available
+    /// to a user in BW when commanding units individually, but BWAPI allows them for convenience:
+    ///   - attackMove for @Medic, which is equivalent to Heal Move.
+    ///   - holdPosition for burrowed @Lurker, for ambushes.
+    ///   - stop for @Larva, to move it to a different side of the @Hatchery / @Lair / @Hive (e.g.
+    ///     so that @Drones morphed later morph nearer to minerals/gas).
+    ///
+    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommand,
+    /// Unit::canCommandGrouped, Unit::canIssueCommandTypeGrouped, Unit::canTargetUnit
+    virtual bool canIssueCommandGrouped(UnitCommand command, bool checkCanUseTechPositionOnPositions = true, bool checkCanUseTechUnitOnUnits = true, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
     /// execute any commands (eg the unit is stasised).
@@ -1037,6 +1197,15 @@ namespace BWAPI
     ///
     /// @see Game::getLastError, Unit::canIssueCommand
     virtual bool canCommand() const = 0;
+
+    /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
+    /// execute any commands as part of a Unitset (eg buildings, critters).
+    ///
+    /// @retval true if BWAPI was unable to determine whether the unit can be commanded grouped.
+    /// @retval false if an error occurred and the unit can not be commanded grouped.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canIssueCommand
+    virtual bool canCommandGrouped(bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
     /// execute the given command type (i.e. regardless of what other possible command parameters
@@ -1055,6 +1224,25 @@ namespace BWAPI
     virtual bool canIssueCommandType(UnitCommandType ct, bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
+    /// execute the given command type (i.e. regardless of what other possible command parameters
+    /// could be) as part of a Unitset.
+    ///
+    /// @param ct
+    ///   A UnitCommandType.
+    /// @param checkCommandibilityGrouped
+    ///   A boolean for whether to perform Unit::canCommandGrouped as a check. You can set this
+    ///   to false if you know this check has already just been performed.
+    /// @param checkCommandibility
+    ///   A boolean for whether to perform Unit::canCommand as a check. You can set this to false
+    ///   if you know this check has already just been performed.
+    ///
+    /// @retval true if BWAPI was unable to determine whether the command type is invalid.
+    /// @retval false if an error occurred and the command type is invalid.
+    ///
+    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommandGrouped
+    virtual bool canIssueCommandTypeGrouped(UnitCommandType ct, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
+    /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
     /// use the given unit as the target unit of an unspecified command.
     ///
     /// @param targetUnit
@@ -1066,13 +1254,19 @@ namespace BWAPI
     /// @retval true if BWAPI was unable to determine whether the unit can target the given unit.
     /// @retval false if an error occurred and the unit can not target the given unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand
+    /// @see Game::getLastError, Unit::canIssueCommand, Unit::isTargetable
     virtual bool canTargetUnit(const Unit* targetUnit, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an attack command to attack-move.
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::attack
     virtual bool canAttackMove(bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute an attack command to attack-move, as part of a
+    /// Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackMove
+    virtual bool canAttackMoveGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an attack command to attack a unit.
     ///
@@ -1083,6 +1277,18 @@ namespace BWAPI
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::attack
     virtual bool canAttackUnit(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute an attack command to attack a unit,
+    /// as part of a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackUnit
+    virtual bool canAttackUnitGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute an attack command to attack a unit, as part of
+    /// a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackUnit
+    virtual bool canAttackUnitGrouped(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a build command.
     ///
@@ -1170,10 +1376,20 @@ namespace BWAPI
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::move
     virtual bool canMove(bool checkCommandibility = true) const = 0;
 
+    /// Checks whether the unit is able to execute a move command, as part of a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canMove
+    virtual bool canMoveGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
     /// Checks whether the unit is able to execute a patrol command.
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::patrol
     virtual bool canPatrol(bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a patrol command, as part of a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canPatrol
+    virtual bool canPatrolGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a follow command.
     ///
@@ -1319,6 +1535,12 @@ namespace BWAPI
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
     virtual bool canRightClickPosition(bool checkCommandibility = true) const = 0;
 
+    /// Checks whether the unit is able to execute a rightClick command for a position, as part of
+    /// a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClick
+    virtual bool canRightClickPositionGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
     /// Cheap checks for whether the unit is able to execute a rightClick command to a unit.
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
@@ -1328,6 +1550,18 @@ namespace BWAPI
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
     virtual bool canRightClickUnit(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute a rightClick command to a unit, as
+    /// part of a Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClickUnit
+    virtual bool canRightClickUnitGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a rightClick command to a unit, as part of a
+    /// Unitset.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClickUnit
+    virtual bool canRightClickUnitGrouped(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a haltConstruction command.
     ///
@@ -1402,12 +1636,18 @@ namespace BWAPI
     /// Checks whether the unit is able to execute a useTech command with a target unit.
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
-    virtual bool canUseTechUnit(BWAPI::TechType tech, const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkTargetsUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    virtual bool canUseTechUnit(BWAPI::TechType tech, const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkTargetsUnits = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a useTech command with an unspecified target
+    /// position.
+    ///
+    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    virtual bool canUseTechPosition(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a useTech command with a target position.
     ///
     /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
-    virtual bool canUseTechPosition(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    virtual bool canUseTechPosition(Position target, BWAPI::TechType tech, bool checkTargetsPositions = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a placeCOP command.
     ///

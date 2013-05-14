@@ -110,9 +110,7 @@ namespace BWAPI
       virtual double getAverageFPS() const override;
       virtual BWAPI::Position getMousePosition() const override;
       virtual bool getMouseState(MouseButton button) const override;
-      virtual bool getMouseState(int button) const override;
       virtual bool getKeyState(Key key) const override;
-      virtual bool getKeyState(int key) const override;
       virtual BWAPI::Position getScreenPosition() const override;
       virtual void setScreenPosition(int x, int y) override;
       virtual void pingMinimap(int x, int y) override;
@@ -141,7 +139,7 @@ namespace BWAPI
       virtual bool hasPowerPrecise(int x, int y, UnitType unitType = UnitTypes::None ) const override;
 
       virtual bool canBuildHere(TilePosition position, UnitType type, const Unit* builder = nullptr, bool checkExplored = false) override;
-      virtual bool canMake(UnitType type, const Unit* builder = nullptr) override;
+      virtual bool canMake(UnitType type, const Unit* builder = nullptr) const override;
       virtual bool canResearch(TechType type, const Unit* unit = nullptr, bool checkCanIssueCommandType = true) override;
       virtual bool canUpgrade(UpgradeType type, const Unit* unit = nullptr, bool checkCanIssueCommandType = true) override;
       virtual const TilePosition::set& getStartLocations() const override;
@@ -149,14 +147,12 @@ namespace BWAPI
       virtual void vPrintf(const char* format, va_list arg) override;
       virtual void vSendTextEx(bool toAllies, const char *format, va_list arg) override;
 
-      virtual void changeRace(BWAPI::Race race) override;
       virtual bool isInGame() const override;
       virtual bool isMultiplayer() const override;
       virtual bool isBattleNet() const override;
       virtual bool isPaused() const override;
       virtual bool isReplay() const override;
 
-      virtual void startGame() override;
       virtual void pauseGame() override;
       virtual void resumeGame() override;
       virtual void leaveGame() override;
@@ -164,21 +160,21 @@ namespace BWAPI
       virtual void setLocalSpeed(int speed = -1) override;
       virtual bool issueCommand(const Unitset& units, UnitCommand command) override;
       virtual const Unitset& getSelectedUnits() const override;
-      virtual Player* self() override;
-      virtual Player* enemy() override;
-      virtual Player* neutral() override;
+      virtual Player* self() const override;
+      virtual Player* enemy() const override;
+      virtual Player* neutral() const override;
       virtual Playerset& allies() override;
       virtual Playerset& enemies() override;
       virtual Playerset& observers() override;
 
       virtual void setTextSize(int size = 1) override;
-      virtual void vDrawText(int ctype, int x, int y, const char *format, va_list arg) override;
-      virtual void drawBox(int ctype, int left, int top, int right, int bottom, Color color, bool isSolid = false) override;
-      virtual void drawTriangle(int ctype, int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) override;
-      virtual void drawCircle(int ctype, int x, int y, int radius, Color color, bool isSolid = false) override;
-      virtual void drawEllipse(int ctype, int x, int y, int xrad, int yrad, Color color, bool isSolid = false) override;
-      virtual void drawDot(int ctype, int x, int y, Color color) override;
-      virtual void drawLine(int ctype, int x1, int y1, int x2, int y2, Color color) override;
+      virtual void vDrawText(CoordinateType::Enum ctype, int x, int y, const char *format, va_list arg) override;
+      virtual void drawBox(CoordinateType::Enum ctype, int left, int top, int right, int bottom, Color color, bool isSolid = false) override;
+      virtual void drawTriangle(CoordinateType::Enum ctype, int ax, int ay, int bx, int by, int cx, int cy, Color color, bool isSolid = false) override;
+      virtual void drawCircle(CoordinateType::Enum ctype, int x, int y, int radius, Color color, bool isSolid = false) override;
+      virtual void drawEllipse(CoordinateType::Enum ctype, int x, int y, int xrad, int yrad, Color color, bool isSolid = false) override;
+      virtual void drawDot(CoordinateType::Enum ctype, int x, int y, Color color) override;
+      virtual void drawLine(CoordinateType::Enum ctype, int x1, int y1, int x2, int y2, Color color) override;
 
       virtual int  getLatencyFrames() const override;
       virtual int  getLatencyTime() const override;
@@ -203,7 +199,6 @@ namespace BWAPI
       virtual const Regionset &getAllRegions() const override;
       virtual BWAPI::Region *getRegionAt(int x, int y) const override;
       virtual int getLastEventTime() const override;
-      virtual bool setReplayVision(BWAPI::Player *player, bool enabled = true) override;
       virtual bool setRevealAll(bool reveal = true) override;
   };
 }

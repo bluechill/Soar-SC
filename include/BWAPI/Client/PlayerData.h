@@ -44,7 +44,6 @@ namespace BWAPI
     bool isResearching[TechTypes::Enum::MAX];
     bool isUpgrading[UpgradeTypes::Enum::MAX];
 
-    int colorByte;
     int color;
 
     int totalUnitScore;

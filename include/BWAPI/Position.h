@@ -1,7 +1,7 @@
 #pragma once
-#include <math.h>
+#include <cmath>
 #include <algorithm>
-#include <iostream>
+#include <iosfwd>
 #include <tuple>
 
 #include <BWAPI/Vectorset.h>
@@ -48,7 +48,7 @@ namespace BWAPI
   template<typename _T, int __Scale = 1>
   class Point;
 
-  // Restrictions
+  // Restrictions (no division by 0 or types too small to contain map positions)
   template<typename _T> class Point<_T, 0> {};
   template<int __Scale> class Point<char, __Scale> {};
   template<int __Scale> class Point<unsigned char, __Scale> {};
@@ -127,9 +127,7 @@ namespace BWAPI
     bool isValid() const;
 
     /// Checks if this point is within the game's map bounds, if not, then it will set the x and y
-    /// values to be within map bounds.
-    ///
-    /// @example If x is less than 0, then x is set to 0.
+    /// values to be within map bounds. (Example: If x is less than 0, then x is set to 0)
     ///
     /// @note If the Broodwar pointer is not initialized, this function will check validity
     /// against the largest (256x256) map size.
@@ -142,7 +140,8 @@ namespace BWAPI
     ///
     /// @note This function impedes performance. In most cases you should use getApproxDistance.
     ///
-    /// @param position The target position to get the distance to.
+    /// @param position
+    ///   The target position to get the distance to.
     ///
     /// @returns A double representing the distance between this point and \p position.
     /// @see getApproxDistance
@@ -207,7 +206,7 @@ namespace BWAPI
         y = max_y;
       return *this;
     };
-    /// @copydoc setMax
+    /// @overload
     Point &setMax(const Point<_T,__Scale> &max)
     {
       this->setMax(max.x, max.y);
@@ -224,15 +223,15 @@ namespace BWAPI
     ///
     /// @returns A reference to itself.
     /// @see setMax
-    Point &setMin(_T _x, _T _y)
+    Point &setMin(_T min_x, _T min_y)
     {
-      if ( x < _x )
-        x = _x;
-      if ( y < _y )
-        y = _y;
+      if ( x < min_x )
+        x = min_x;
+      if ( y < min_y )
+        y = min_y;
       return *this;
     };
-    /// @copydoc setMin
+    /// @overload
     Point &setMin(const Point<_T,__Scale> &min)
     {
       this->setMin(max.x, max.y);

@@ -86,6 +86,13 @@ public:
 
 	void update_fogOfWar(float x_start, float y_start, float size_x, float size_y);
 
+	typedef std::vector<std::pair<int,int> > map_array;
+	typedef std::pair<std::string, map_array> named_map;
+	
+	bool named_map_contains_point(named_map &map, std::pair<int,int> &point);
+	bool vector_named_map_contains_point(std::vector<named_map> &vector_map, std::pair<int,int> &point);
+	void flood_fill(std::pair<int,int> &location, std::vector<std::vector<bool> > &bool_map, bool target, named_map &fill_vector);
+
 private:
 	sml::Kernel* kernel; //Pointer to the soar kernel created
 	sml::Agent* agent; //Pointer to the soar agent created

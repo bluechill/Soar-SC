@@ -24,7 +24,7 @@ namespace BWAPI
     friend class GameImpl;
 
     // Function manages events and updates it for the given frame
-    void updateEvents(int currentFrame)
+    void updateEvents()
     {
       auto e = interfaceEvents.begin();
       while ( e != interfaceEvents.end() )
@@ -35,7 +35,7 @@ namespace BWAPI
         }
         else
         {
-          e->execute(static_cast<T*>(this), currentFrame);
+          e->execute(static_cast<T*>(this));
           ++e;
         }
       }
@@ -79,7 +79,7 @@ namespace BWAPI
     ///
     /// If client info at the given index has already been set, then it will be overwritten.
     ///
-    /// @param clientinfo
+    /// @param clientInfo
     ///   The data to associate with this interface.
     /// @param key
     ///   The key to use for this data. Default is 0.
@@ -116,11 +116,12 @@ namespace BWAPI
     {
       interfaceEvents.push_back( InterfaceEvent<T>(action,condition,timesToRun,framesToCheck) );
     };
-
+    /// @overload
     void registerEvent(const InterfaceEvent<T> &evt)
     {
       interfaceEvents.push_back( evt );
     };
+    /// @overload
     void registerEvent(InterfaceEvent<T> &&evt)
     {
       interfaceEvents.push_back( std::move(evt) );

@@ -20,9 +20,9 @@ namespace BWAPI
     virtual int getID() const override;
     virtual int getRegionGroupID() const override;
     virtual BWAPI::Position getCenter() const override;
-    virtual bool isHigherGround() const override;
-    virtual int getDefensePriority() const override;
-    virtual bool isWalkable() const override;
+    virtual bool  isHigherGround() const override;
+    virtual int   getDefensePriority() const override;
+    virtual bool  isAccessible() const override;
 
     virtual const Regionset &getNeighbors() const override;
 

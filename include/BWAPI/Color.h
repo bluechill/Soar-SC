@@ -12,7 +12,8 @@ namespace BWAPI
     public:
       /// A constructor that uses the color at the specified palette index.
       ///
-      /// @param id The index of the color in the palette.
+      /// @param id 
+      ///   The index of the color in the 256-color palette.
       Color(int id = 0);
 
       /// A constructor that uses the color index in the palette that is closest to the given rgb
@@ -20,9 +21,12 @@ namespace BWAPI
       ///
       /// @note This function computes the distance of the RGB values and may not be accurate.
       ///
-      /// @param red The amount of red.
-      /// @param green The amount of green.
-      /// @param blue The amount of blue.
+      /// @param red
+      ///   The amount of red.
+      /// @param green
+      ///   The amount of green.
+      /// @param blue
+      ///   The amount of blue.
       Color(int red, int green, int blue);
 
       /// Retrieves the red component of the color.
@@ -41,7 +45,7 @@ namespace BWAPI
       int blue() const;
   };
 
-  /// This namespace contains known colors.
+  /// Namespace containing known colors.
   namespace Colors
   {
     /// The default color for Player 1.
@@ -74,15 +78,18 @@ namespace BWAPI
     /// The default color for Neutral (Player 12).
     extern const Color Cyan;
     
+    /// The color black
     extern const Color Black;
+
+    /// The color grey
     extern const Color Grey;
   }
   
-  /// This namespace contains text formatting codes.
+  /// Namespace containing text formatting codes. Such codes are used in calls to Game::drawText,
+  /// Game::printf, and Broodwar::operator<<
   namespace Text
   {
-    /// This enumeration contains text formatting codes. Such codes are used in calls to
-    /// Game::drawText and Game::printf.
+    // Enumeration of text formatting codes
     enum Enum
     {
       /// Uses the previous color that was specified before the current one.
@@ -168,7 +175,15 @@ namespace BWAPI
       Turquoise    = 31
     };
 
+    /// Standard output stream operator for text formatting codes. This is used to correctly
+    /// format the codes for output.
+    ///
+    /// @param out
+    ///   Reference to destination output stream.
+    /// @param t
+    ///   Reference to the Text formatting code to insert into the output stream.
+    ///
+    /// @returns Reference to the \p out parameter that was passed in.
     std::ostream &operator << (std::ostream &out, const Text::Enum &t);
-
   }
 }

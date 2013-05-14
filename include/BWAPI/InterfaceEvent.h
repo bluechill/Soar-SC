@@ -13,7 +13,7 @@ namespace BWAPI
       , execProc(nullptr)
       , runCount(0)
       , runFreq(0)
-      , lastFrame(0)
+      , step(0)
     {};
 
     // expected ctor
@@ -22,7 +22,7 @@ namespace BWAPI
       , execProc( action )
       , runCount( timesToRun )
       , runFreq( framesToCheck )
-      , lastFrame( -100000 )
+      , step( framesToCheck )
     {};
     // copy ctor
     InterfaceEvent(const InterfaceEvent<T> &other)
@@ -30,41 +30,32 @@ namespace BWAPI
       , execProc( other.execProc )
       , runFreq( other.runFreq )
       , runCount( other.runCount )
-      , lastFrame( other.lastFrame )
+      , step( other.step )
     {};
     // move ctor
     InterfaceEvent(InterfaceEvent<T> &&other)
       : condProc( std::move(other.condProc) )
       , execProc( std::move(other.execProc) )
-      , runFreq( other.runFreq )
-      , runCount( other.runCount )
-      , lastFrame( other.lastFrame )
+      , runFreq( std::move(other.runFreq) )
+      , runCount( std::move(other.runCount) )
+      , step( std::move(other.step) )
     {};
     // copy assignment
-    InterfaceEvent &operator =(const InterfaceEvent<T> &other)
+    InterfaceEvent &operator =(InterfaceEvent<T> other)
     {
-      condProc  = other.condProc;
-      execProc  = other.execProc;
-      runFreq   = other.runFreq;
-      runCount  = other.runCount;
-      lastFrame = other.lastFrame;
+      swap(*this, other);
       return *this;
     };
     // move assignment
     InterfaceEvent &operator =(InterfaceEvent<T> &&other)
     {
-      condProc  = std::move(other.condProc);
-      execProc  = std::move(other.execProc);
-      runFreq   = other.runFreq;
-      runCount  = other.runCount;
-      lastFrame = other.lastFrame;
+      swap(*this, other);
       return *this;
     };
 
     // dtor
     virtual ~InterfaceEvent()
-    {
-    };
+    {};
 
     /// Checks if the event has finished its execution and is marked for removal.
     ///
@@ -81,16 +72,18 @@ namespace BWAPI
       this->runCount = 0;
     };
 
+    friend void swap(InterfaceEvent<T> &a, InterfaceEvent<T> &b);
+
   protected:
     template < typename U >
     friend class Interface;
 
     // Function that runs the event, checkings its conditions and running its action, then
     // decrementing the run count.
-    bool execute(T *instance, int currentFrame)
+    bool execute(T *instance)
     {
       // condition check
-      if ( !this->isConditionMet(instance, currentFrame) )
+      if ( !this->isConditionMet(instance) )
         return false;
 
       // There must be an exec proc!
@@ -108,16 +101,17 @@ namespace BWAPI
 
     // Function to check if the condition associated with the event is true. Includes frame and
     // run count checking.
-    bool isConditionMet(T *instance, int currentFrame)
+    bool isConditionMet(T *instance)
     {
       // Validity check
       if ( this->isFinished() )
         return false;
 
       // Frame check
-      if ( this->lastFrame + this->runFreq >= currentFrame )
+      --step;
+      if ( step > 0 )
         return false;
-      this->lastFrame = currentFrame;
+      this->step = this->runFreq;
 
       // Conditional check
       if ( this->condProc )
@@ -131,7 +125,18 @@ namespace BWAPI
     std::function<void(T*)> execProc;
     int runFreq;  // Frequency of runs, in frames (0 means every frame, 1 means every other frame)
     int runCount; // Number of times that the action can occur (-1 being infinite)
-    int lastFrame;
+    int step;     // Current step. Executes when reaches 0, then reset to runFreq.
+  };
+
+  // Note: This is down here to prevent intellisense errors
+  template <typename T>
+  inline void swap(InterfaceEvent<T> &a, InterfaceEvent<T> &b)
+  {
+    std::swap(a.condProc, b.condProc);
+    std::swap(a.execProc, b.execProc);
+    std::swap(a.runFreq, b.runFreq);
+    std::swap(a.runCount, b.runCount);
+    std::swap(a.step, b.step);
   };
 
 }

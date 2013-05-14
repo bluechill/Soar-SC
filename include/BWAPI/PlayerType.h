@@ -5,8 +5,10 @@ namespace BWAPI
 {
   namespace PlayerTypes
   {
+    /// Enumeration of player types (player controllers)
     namespace Enum
     {
+      /// Enumeration of player types (player controllers)
       enum Enum
       {
         None = 0,
@@ -29,26 +31,35 @@ namespace BWAPI
   class PlayerType : public Type<PlayerType, PlayerTypes::Enum::Unknown>
   {
     public:
+      /// @copydoc Type::Type(int)
       PlayerType(int id = PlayerTypes::Enum::None);
 
       bool isLobbyType() const;
       bool isGameType() const;
   };
+  /// Namespace containing player types (player controllers)
   namespace PlayerTypes
   {
-    /** Returns the set of all the PlayerTypes. */
+    /// Retrieves the set of all the PlayerTypes.
+    ///
+    /// @returns Set consisting of all valid PlayerTypes.
     const PlayerType::const_set& allPlayerTypes();
     
-    extern const PlayerType None;
-    extern const PlayerType Computer;
-    extern const PlayerType Player;
-    extern const PlayerType RescuePassive;
-    extern const PlayerType EitherPreferComputer;
-    extern const PlayerType EitherPreferHuman;
-    extern const PlayerType Neutral;
-    extern const PlayerType Closed;
-    extern const PlayerType PlayerLeft;
-    extern const PlayerType ComputerLeft;
-    extern const PlayerType Unknown;
+#ifdef BWAPI_DECL
+#undef BWAPI_DECL
+#endif
+#define BWAPI_DECL(x) /** x */ extern const PlayerType x
+    BWAPI_DECL(None);
+    BWAPI_DECL(Computer);
+    BWAPI_DECL(Player);
+    BWAPI_DECL(RescuePassive);
+    BWAPI_DECL(EitherPreferComputer);
+    BWAPI_DECL(EitherPreferHuman);
+    BWAPI_DECL(Neutral);
+    BWAPI_DECL(Closed);
+    BWAPI_DECL(PlayerLeft);
+    BWAPI_DECL(ComputerLeft);
+    BWAPI_DECL(Unknown);
+#undef BWAPI_DECL
   }
 }

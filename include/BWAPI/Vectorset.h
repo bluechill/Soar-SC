@@ -48,7 +48,7 @@ namespace BWAPI
     { 
       memcpy(this->pStartArr, (void*)other, other.size()*sizeof(_T));
     };
-    
+    /// @overload
     Vectorset(const ConstVectorset<_T> &other)
       : ConstVectorset<_T>( (_T*)malloc( other.size()*sizeof(_T)), other.size() )
       , pEndAlloc( pEndArr )
@@ -96,9 +96,8 @@ namespace BWAPI
       }
     };
   // ----------------------------------------------------------------- Operators
-    /// @copydoc push_back(const Vectorset<_T> &)
-    ///
-    /// @note The Vectorset is emptied before the contents of other are copied.
+    /// This is the copy assignment operator. The contents of the current container are erased
+    /// and replaced with the contents of other.
     ///
     /// @returns A reference to the current object.
     Vectorset<_T> &operator =(const Vectorset<_T> &other)
@@ -107,12 +106,17 @@ namespace BWAPI
       this->push_back(other);
       return *this;
     };
-    /*Vectorset<_T> &operator =(const ConstVectorset<_T> &other)
+    /// @overload
+    Vectorset<_T> &operator =(const ConstVectorset<_T> &other)
     {
       this->clear();
       this->push_back(other);
       return *this;
-    };*/
+    };
+    /// This is the move assignment operator. The contents of the current container are discarded,
+    /// and the contents of other moved into this.
+    ///
+    /// @returns A reference to the current object.
     Vectorset &operator =(Vectorset<_T> &&other)
     {
       if ( this->pStartArr != nullptr )
@@ -126,7 +130,7 @@ namespace BWAPI
 
       return *this;
     };
-    /// @copydoc push_back(const Vectorset<_T> &)
+    /// @copydoc push_back(const ConstVectorset<_T> &other)
     ///
     /// @returns A reference to the current object.
     ///
@@ -136,7 +140,7 @@ namespace BWAPI
       this->push_back(other);
       return *this;
     };
-    /// @copydoc insert(const Vectorset<_T> &)
+    /// @copydoc insert(const ConstVectorset<_T> &other)
     ///
     /// @returns A reference to the current object.
     ///

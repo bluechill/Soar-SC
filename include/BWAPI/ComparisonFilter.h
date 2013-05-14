@@ -1,40 +1,49 @@
 #pragma once
+// Prevent warnings if someone includes windows.h
+#ifdef max
+#undef max
+#endif
+
 #include <functional>
-#include <limits.h>
+#include <limits>
 
 #include "UnaryFilter.h"
 
-#define BWAPI_COMPARE_FILTER_OP(op) UnaryFilter<_Param> operator op(const _Cmp &cmp) const               \
-                                    {   return [&](_Param u)->bool{ return (*this)(u) op cmp; };   }
+#define BWAPI_COMPARE_FILTER_OP(op) UnaryFilter<PType> operator op(const RType &cmp) const               \
+                                    {   return [=](PType v)->bool{ return (*this)(v) op cmp; };   }
 
-#define BWAPI_ARITHMATIC_FILTER_OP(op) template <typename _T>                                            \
-                                       CompareFilter<_Param,_Cmp> operator op(const _T &other) const     \
-                                       {   return [&](_Param u)->int{ return (*this)(u) op other(u); };   }
+#define BWAPI_ARITHMATIC_FILTER_OP(op) template <typename T>                                            \
+                                       CompareFilter<PType,RType,std::function<RType(PType)> > operator op(const T &other) const     \
+                                       {   return [=](PType v)->int{ return (*this)(v) op other(v); };   }    \
+                                       CompareFilter<PType,RType,std::function<RType(PType)> > operator op(RType other) const     \
+                                       {   return [=](PType v)->int{ return (*this)(v) op other; };   }
 
 namespace BWAPI
 {
-  /// The CompareFilter is a temporary container in which the stored function predicate returns a
-  /// value. If any relational operators are used, then it becomes a UnaryFilter.
-  template<typename _Param, typename _Cmp = int>
+  /// The CompareFilter is a container in which a stored function predicate returns a value.
+  /// Arithmetic and bitwise operators will return a new CompareFilter that applies the operation
+  /// to the result of the original functor. If any relational operators are used, then it creates
+  /// a UnaryFilter that returns the result of the operation.
+  ///
+  /// @tparam PType
+  ///   The parameter type, which is the type passed into the functor.
+  /// @tparam RType (optional)
+  ///   The functor's return type. It is int by default.
+  /// @tparam Container (optional)
+  ///   Storage container for the function predicate. It is std::function<RType(PType)> by default.
+  template < typename PType, typename RType=int, class Container = std::function<RType(PType)> >
   class CompareFilter
   {
   private:
-    std::function<_Cmp(_Param)> pred;
+    Container pred;
   public:
-    // Constructor
-    template <typename _T>
-    CompareFilter(const _T &predicate) : pred(predicate)
-    {};
+    // ctor
+    template <typename T>
+    CompareFilter(const T &predicate) : pred(predicate) {}
 
-    // Assignment
-    template <typename _T>
-    CompareFilter &operator =(const _T& other)
-    {
-      this->pred.assign(other);
-      return *this;
-    };
+    // Default copy/move ctor/assign and dtor
 
-    // Comparisons
+    // Comparison operators
     BWAPI_COMPARE_FILTER_OP(==);
     BWAPI_COMPARE_FILTER_OP(!=);
     BWAPI_COMPARE_FILTER_OP(<=);
@@ -42,6 +51,7 @@ namespace BWAPI
     BWAPI_COMPARE_FILTER_OP(<);
     BWAPI_COMPARE_FILTER_OP(>);
 
+    // Arithmetic operators
     BWAPI_ARITHMATIC_FILTER_OP(+);
     BWAPI_ARITHMATIC_FILTER_OP(-);
     BWAPI_ARITHMATIC_FILTER_OP(|);
@@ -49,23 +59,26 @@ namespace BWAPI
     BWAPI_ARITHMATIC_FILTER_OP(*);
     BWAPI_ARITHMATIC_FILTER_OP(^);
 
-    template <typename _T>
-    CompareFilter<_Param,_Cmp> operator /(const _T &other) const
+    // Division
+    template <typename T>
+    CompareFilter<PType,RType,std::function<RType(PType)> > operator /(const T &other) const
     {   
-      return [&](_Param u)->int{ int rval = other(u);
-                                 return rval == 0 ? INT_MAX : (*this)(u) / rval;
+      return [=](PType v)->int{ int rval = other(v);
+                                 return rval == 0 ? std::numeric_limits<int>::max() : (*this)(v) / rval;
                                };
     };
-    template <typename _T>
-    CompareFilter<_Param,_Cmp> operator %(const _T &other) const
+
+    // Modulus
+    template <typename T>
+    CompareFilter<PType,RType,std::function<RType(PType)> > operator %(const T &other) const
     {   
-      return [&](_Param u)->int{ int rval = other(u);
-                                 return rval == 0 ? 0 : (*this)(u) % rval;
+      return [=](PType v)->int{ int rval = other(v);
+                                 return rval == 0 ? 0 : (*this)(v) % rval;
                                };
     };
 
     // call
-    inline _Cmp operator()(_Param u) const
+    inline RType operator()(PType u) const
     {
       return pred(u);
     };
