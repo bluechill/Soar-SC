@@ -31,7 +31,7 @@ Soar_Event::Soar_Event(BWAPI::Unit* unit) //Constructor of the event
 std::string* Soar_Event::get_command() //Return a pointer to the string of the command
 {
 	if (type != SVS_Command && type != Console_Input) //If this event is not a SVS Command or Console Input
-		return NULL; //Then return NULL because the command isn't a string command
+		return nullptr; //Then return nullptr because the command isn't a string command
 	else //Otherwise
 		return &command; //Return a pointer to the command
 }
@@ -39,7 +39,7 @@ std::string* Soar_Event::get_command() //Return a pointer to the string of the c
 sml::WMElement* Soar_Event::get_element() //Return a pointer to the WMElement
 {
 	if (type != WME_Destroy) //If the type isn't a WME_Destroy type
-		return NULL; //Return NULL because this isn't the correct type (not WME_Destroy)
+		return nullptr; //Return nullptr because this isn't the correct type (not WME_Destroy)
 	else //Otherwise
 		return element; //Return our variable pointer
 }
@@ -47,7 +47,7 @@ sml::WMElement* Soar_Event::get_element() //Return a pointer to the WMElement
 sml::Identifier* Soar_Event::get_identifier() //Return a pointer to the WMElement
 {
 	if (type != Status_Update) //If the type isn't a Status_Update type
-		return NULL; //Return NULL because this isn't the correct type (not Status_Update)
+		return nullptr; //Return nullptr because this isn't the correct type (not Status_Update)
 	else //Otherwise
 		return identifier; //Return our variable pointer
 }
@@ -63,7 +63,7 @@ bool Soar_Event::get_status()
 BWAPI::Unit* Soar_Event::get_unit() //Return a pointer to the unit to be added
 {
 	if (type != New_Unit) //If this isn't a new unit event type
-		return NULL; //Return NULL
+		return nullptr; //Return nullptr
 	else //Otherwise
 		return bw_unit; //return the internal variable pointer
 }

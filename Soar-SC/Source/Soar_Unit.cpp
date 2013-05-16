@@ -42,13 +42,13 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 	if (unit->isConstructing())
 	{
 		Unit* unit_building = unit->getBuildUnit();
-		if (unit_building != NULL)
+		if (unit_building != nullptr)
 		{
 			constructing = unit_building->getType().getID();
 		}
 	}
 
-	if (unit->getTarget() != NULL)
+	if (unit->getTarget() != nullptr)
 		targetID = unit->getTarget()->getID();
 	else
 		targetID = 0;
@@ -120,7 +120,7 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 
 	unit_id->CreateStringWME("svsobject", svsobject_id.c_str());
 
-	build = NULL;
+	build = nullptr;
 }
 
 Soar_Unit::~Soar_Unit()
@@ -130,17 +130,17 @@ void Soar_Unit::update()
 {
 	using namespace sml;
 
-	Identifier* unit_id = NULL;
+	Identifier* unit_id = nullptr;
 
 	bool idle = unit->isIdle();
 	if (this->idle != idle)
 	{
 		this->idle = idle;
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 		{
 			cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 			return;
@@ -155,10 +155,10 @@ void Soar_Unit::update()
 	{
 		this->carrying = carrying;
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 		{
 			cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 			return;
@@ -173,7 +173,7 @@ void Soar_Unit::update()
 	if (unit->isConstructing())
 	{
 		Unit* unit_building = unit->getBuildUnit();
-		if (unit_building != NULL)
+		if (unit_building != nullptr)
 		{
 			constructing = unit_building->getType().getID();
 		}
@@ -183,10 +183,10 @@ void Soar_Unit::update()
 	{
 		this->constructing = constructing;
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 		{
 			cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 			return;
@@ -200,21 +200,21 @@ void Soar_Unit::update()
 	{
 		WMElement* elem = build->build_id->FindByAttribute("status", 0);
 
-		if (elem == NULL && build->type.getID() == constructing)
+		if (elem == nullptr && build->type.getID() == constructing)
 		{
 			build->build_id->AddStatusComplete();
 
 			delete build;
-			build = NULL;
+			build = nullptr;
 
 			cerr << "NULLing Build from Complete!" << endl;
 		}
-		else if (elem == NULL && unit->isIdle())
+		else if (elem == nullptr && unit->isIdle())
 		{
 			build->build_id->AddStatusError();
 
 			delete build;
-			build = NULL;
+			build = nullptr;
 
 			cerr << "NULLing Build from ERROR!" << endl;
 		}
@@ -232,10 +232,10 @@ void Soar_Unit::update()
 		{
 			this->full_queue = full_queue;
 
-			if (unit_id == NULL)
+			if (unit_id == nullptr)
 				unit_id = get_unit_identifier(false, isEnemy);
 
-			if (unit_id == NULL)
+			if (unit_id == nullptr)
 			{
 				cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 				return;
@@ -256,10 +256,10 @@ void Soar_Unit::update()
 	{
 		this->pos = pos;
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
 
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 		{
 			cerr << "Unable to get unit identifier: '" << id << "'.  So I was unable to update the unit.  Exiting the update function." <<endl;
 			return;
@@ -276,19 +276,19 @@ void Soar_Unit::update()
 
 	Unit* target = unit->getTarget();
 	int newTargetID = 0;
-	if (target != NULL)
+	if (target != nullptr)
 		newTargetID = target->getID();
 	else
 	{
 		target = unit->getOrderTarget();
 
-		if (target != NULL)
+		if (target != nullptr)
 			newTargetID = target->getID();
 	}
 
 	if (newTargetID != targetID)
 	{
-		if (unit_id == NULL)
+		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
 
 		targetID = newTargetID;
@@ -335,7 +335,7 @@ sml::Identifier* Soar_Unit::get_unit_identifier(bool create_unit, bool enemy)
 			units = input_link->FindByAttribute("enemy-units", 0)->ConvertToIdentifier();
 	}
 
-	Identifier* unit = NULL;
+	Identifier* unit = nullptr;
 
 	for (int i = 0;i < units->GetNumberChildren();i++)
 	{
@@ -363,7 +363,7 @@ sml::Identifier* Soar_Unit::get_unit_identifier(bool create_unit, bool enemy)
 		return unit;
 	}
 	else
-		return NULL;
+		return nullptr;
 }
 
 void Soar_Unit::delete_unit()
@@ -378,7 +378,7 @@ void Soar_Unit::delete_unit()
 
 void Soar_Unit::will_build(build_struct* build)
 {
-	if (this->build != NULL || build == NULL)
+	if (this->build != nullptr || build == nullptr)
 		return;
 
 	this->build = build;

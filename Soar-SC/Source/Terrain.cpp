@@ -42,8 +42,8 @@ Terrain::~Terrain() //Deconstructor
 
 	if (thread)
 	{
-		SDL_WaitThread(thread,NULL);
-		thread = NULL;
+		SDL_WaitThread(thread,nullptr);
+		thread = nullptr;
 	}
 }
 

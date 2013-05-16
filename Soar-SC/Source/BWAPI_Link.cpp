@@ -268,7 +268,7 @@ void BWAPI_Link::update_units() //Update all player units
 				else
 					soar_unit = enemy_units[unit];
 
-				if (soar_unit == NULL)
+				if (soar_unit == nullptr)
 					add_unit(unit, isEnemy);
 				else
 					soar_unit->update();

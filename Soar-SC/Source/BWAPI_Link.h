@@ -32,7 +32,7 @@ public:
 	void onUnitComplete(BWAPI::Unit *unit);
 
 	BWAPI::Unit* getUnitFromID(std::string id); //Get a unit from a string containing the id, converts the string to an int then calls the int version
-	BWAPI::Unit* getUnitFromID(int id); //Returns the unit (in the list of units it has) associated with an ID, if it can't finds it returns NULL
+	BWAPI::Unit* getUnitFromID(int id); //Returns the unit (in the list of units it has) associated with an ID, if it can't finds it returns nullptr
 
 	bool contains_id(int id, BWAPI::Unitset units); //Check whether a given set of units has a unit with the ID given
 

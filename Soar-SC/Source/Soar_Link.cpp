@@ -28,7 +28,7 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 	soar_sc_link->add_event(Soar_Event("halt", false)); //Execute a stop command to stop the agent
 
-	SDL_WaitThread(soar_thread, NULL); //Wait for the soar agent run thread to die if it's till running
+	SDL_WaitThread(soar_thread, nullptr); //Wait for the soar agent run thread to die if it's till running
 	SDL_DestroyMutex(mu); //Then destroy the mutex
 
 	kernel->DestroyAgent(agent); //Shut down the agent
@@ -37,24 +37,15 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	//Timer timer;
-	//timer.StartTimer();
-
 	int commands = a->GetNumberCommands();
-
-	//cout << "Time (0): " << timer.GetTimeMiliseconds() << endl;
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
 	{
 		int j = 0;
 
-		//cout << "Time (1-0): " << timer.GetTimeMiliseconds() << endl;
-
 		Identifier* output_command = a->GetCommand(i);
 
         string name  = output_command->GetCommandName();
-
-		//cout << "Time (1-1): " << timer.GetTimeMiliseconds() << endl;
 
 		if (name == "move") //Move command
 		{
@@ -71,7 +62,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			WMElement* destination_wme = output_command->FindByAttribute("dest", 0);
 			WMElement* location_string_wme = output_command->FindByAttribute("location-string", 0);
-			if (destination_wme == NULL && location_string_wme == NULL)
+			if (destination_wme == nullptr && location_string_wme == nullptr)
 			{
 				IntElement* x_wme = output_command->FindByAttribute("x", 0)->ConvertToIntElement();
 				IntElement* y_wme = output_command->FindByAttribute("y", 0)->ConvertToIntElement();
@@ -83,7 +74,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 				action = false;
 			}
-			else if (destination_wme == NULL && location_string_wme != NULL)
+			else if (destination_wme == nullptr && location_string_wme != nullptr)
 			{
 				string location = location_string_wme->ConvertToStringElement()->GetValue();
 
@@ -126,15 +117,13 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			
 			if (action)
 			{
-				if (unit != NULL && dest != NULL)
+				if (unit != nullptr && dest != nullptr)
 					soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, soar_sc_link));
 				else
 					output_command->AddStatusError();
 			}
 			else
 				soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit, Position(int(x),int(y))), output_command, soar_sc_link));
-
-			//cout << "Time (1-2-0): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-building") //Build command
 		{
@@ -163,11 +152,9 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			Unit* worker = soar_sc_link->get_bwapi_link()->getUnitFromID(worker_id);
 
 			if (!worker->isIdle())
-				soar_sc_link->add_event(BWAPI_Event(UnitCommand::stop(worker), NULL, soar_sc_link));
+				soar_sc_link->add_event(BWAPI_Event(UnitCommand::stop(worker), nullptr, soar_sc_link));
 
 			soar_sc_link->add_event(BWAPI_Event(UnitCommand::build(worker, TilePosition(x,y), unit_type), output_command, soar_sc_link));
-
-			//cout << "Time (1-2-1): " << timer.GetTimeMiliseconds() << endl;
 		}
 		else if (name == "build-unit")
 		{
@@ -309,7 +296,7 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 
 				WMElement* tile_wme = fog_tiles->FindByAttribute(string(ss_x.str() + ":" + ss_y.str()).c_str(), 0);
 
-				if (tile_wme == NULL)
+				if (tile_wme == nullptr)
 					continue; //Ignore it, probably should but oh well, TODO: fix ME!
 
 				Identifier* child = tile_wme->ConvertToIdentifier();

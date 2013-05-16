@@ -10,7 +10,7 @@ BWAPI_Event::BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_S
 {
 	internal_command = command;
 
-	if (internal_command.getTarget() != NULL)
+	if (internal_command.getTarget() != nullptr)
 		this->id = internal_command.getTarget()->getID();
 	else
 		this->id = -1;
@@ -46,7 +46,7 @@ void BWAPI_Event::execute_command()
 			{
 				cerr << "Got error trying to execute unit command: " << e.toString() << endl;
 
-				if (internal_id != NULL)
+				if (internal_id != nullptr)
 					soar_sc_link->add_event(Soar_Event(internal_id, false));
 
 				return;
@@ -56,16 +56,16 @@ void BWAPI_Event::execute_command()
 		{
 			cerr << "Got error trying to execute unit command: " << e.toString() << endl;
 
-			if (internal_id != NULL)
+			if (internal_id != nullptr)
 				soar_sc_link->add_event(Soar_Event(internal_id, false));
 
 			return;
 		}
 	}
 
-	if (internal_command.getType() != UnitCommandTypes::Build && internal_id != NULL)
+	if (internal_command.getType() != UnitCommandTypes::Build && internal_id != nullptr)
 		soar_sc_link->add_event(Soar_Event(internal_id, true));
-	else if (internal_command.getType() == UnitCommandTypes::Build && internal_id != NULL)
+	else if (internal_command.getType() == UnitCommandTypes::Build && internal_id != nullptr)
 	{
 		Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
 		build->type = internal_command.getUnitType();
