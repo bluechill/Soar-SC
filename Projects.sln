@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-SC-Rectilinear", "Soar
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Soar-Console-Input", "Soar-Console-Input\Soar-Console-Input.vcxproj", "{3821F76E-686D-4547-9EF8-AA17D257C07B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SVS_Grid_Filter_Test_App", "SVS_Grid_Filter_Test_App\SVS_Grid_Filter_Test_App.vcxproj", "{F75F097B-EDE3-4DC5-9B07-396DACD91C00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,10 @@ Global
 		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Debug|Win32.Build.0 = Debug|Win32
 		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Release|Win32.ActiveCfg = Release|Win32
 		{3821F76E-686D-4547-9EF8-AA17D257C07B}.Release|Win32.Build.0 = Release|Win32
+		{F75F097B-EDE3-4DC5-9B07-396DACD91C00}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F75F097B-EDE3-4DC5-9B07-396DACD91C00}.Debug|Win32.Build.0 = Debug|Win32
+		{F75F097B-EDE3-4DC5-9B07-396DACD91C00}.Release|Win32.ActiveCfg = Release|Win32
+		{F75F097B-EDE3-4DC5-9B07-396DACD91C00}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

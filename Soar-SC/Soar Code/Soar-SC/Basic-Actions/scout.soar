@@ -37,6 +37,7 @@ sp {apply*new-scout
 -->
    (<scv> ^scouting 1
           ^last-scout-tile |-1 -1 0|)
+   (write |Created new scout (| <scv-id> |)| (crlf) )
 }
 
 sp {propose*scouting
@@ -212,4 +213,5 @@ sp {apply*scouting
    (<output-link> ^move <command>)
    (<command> ^object <scv-id>
               ^location-string <fog-tile>)
+   (write |Scouting using scout | <scv-id> | at | <fog-tile> (crlf) )
 }

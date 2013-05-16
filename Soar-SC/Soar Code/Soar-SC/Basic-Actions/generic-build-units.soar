@@ -24,6 +24,7 @@ sp {apply*build-unit
         ^gas-used (+ <gas-used> <gas-cost>))
    (<unit-limit> ^count <count> -
                  ^count (+ <count> 1))
+   (write |Building unit of type | <type-id> | at | <id> (crlf) )
 }
 
 #Preference rules

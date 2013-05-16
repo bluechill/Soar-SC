@@ -12,14 +12,7 @@
 using namespace std;
 using namespace sml;
 
-int thread_runner(void* data) //Terrain Analyzer thread
-{
-	reinterpret_cast<Terrain*>(data)->mapping_function(); //Calls the mapping function to generate the svs representation of the map
-
-	return 0;
-}
-
-Terrain::Terrain(const std::vector<std::vector<bool> > &map, sml::Agent* agent, SDL_mutex* mu) //Main constructor
+Terrain::Terrain(const std::vector<std::vector<bool> > &map, sml::Agent* agent) //Main constructor
 	: out("bwapi-data/logs/test_input-terrain.txt") //Output file for the map
 {
 	if (!out.is_open()) //Check to make sure it is open otherwise stop working on the map
@@ -29,8 +22,6 @@ Terrain::Terrain(const std::vector<std::vector<bool> > &map, sml::Agent* agent, 
 
 	this->agent = agent;
 
-	this->mu = mu;
-
 	this->should_die = false;
 	this->done_svs = false;
 }
@@ -39,12 +30,6 @@ Terrain::~Terrain() //Deconstructor
 {
 	if (!out.is_open())
 		return;
-
-	if (thread)
-	{
-		SDL_WaitThread(thread,nullptr);
-		thread = nullptr;
-	}
 }
 
 void Terrain::analyze() //Main analyzer function, just creates a thread of the analyzer
@@ -52,7 +37,7 @@ void Terrain::analyze() //Main analyzer function, just creates a thread of the a
 	if (!out.is_open())
 		return;
 
-	thread = SDL_CreateThread(thread_runner, this);
+	mapping_function();
 }
 
 bool Terrain::rectangle_contains(const int x,const int y,vector<SVS_Rectangle> &rectangles) //Check whether a rectangle contains the given point
@@ -143,8 +128,6 @@ void Terrain::generate_rectangle(const int x_start,const int y_start,vector<vect
 
 void Terrain::mapping_function() //Main map function generates the rectangles of the map
 {
-	SetThreadName("Map Analyzer", GetCurrentThreadId());
-
 	vector<SVS_Rectangle> rectangles;
 
 	vector<bool>* start_y = &map[0];
@@ -183,29 +166,12 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 		ss.str("");
 
 		string svs_command = "a rect" + id + " world v " + Terrain::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
-		out << "SVS-Actual: " << svs_command << endl;
-
-		SDL_mutexP(mu);
 		agent->SendSVSInput(svs_command);
-		SDL_mutexV(mu);
 	}
 
 	cout << "Rectangles: " << rectangles.size() << endl;
 
-	SDL_mutexP(mu);
 	done_svs = true;
-	SDL_mutexV(mu);
-}
-
-bool Terrain::done_sending_svs() //Returns whether the analyzer is done create the map and putting it in svs
-{
-	if (should_die)
-		return true;
-
-	SDL_mutexP(mu);
-	bool done = done_svs;
-	SDL_mutexV(mu);
-	return done;
 }
 
 

@@ -50,3 +50,8 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+.metadata
+ipch
+Debug
+Release

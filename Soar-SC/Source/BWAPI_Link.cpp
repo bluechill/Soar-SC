@@ -24,13 +24,43 @@ void BWAPI_Link::onStart()
 void BWAPI_Link::onEnd(bool isWinner)
 {}
 
+float BWAPI_Link::get_average_decisions()
+{
+	float total_frames = 0;
+	int frame_count = last_50_decisions.size();
+
+	if (frame_count < 24)
+		return 0.0f;
+
+	for (int i = 0;i < frame_count;++i)
+		total_frames += last_50_decisions[i];
+
+	total_frames /= frame_count;
+
+	return total_frames;
+}
+
 void BWAPI_Link::onFrame()
 {
 	// Called once every game frame
 
+	int decisions_last_frame = soar_sc_link->get_soar_link()->get_decisions();
+
+	last_50_decisions.push_back(decisions_last_frame);
+
+	if (last_50_decisions.size() > 50)
+		last_50_decisions.erase(last_50_decisions.begin());
+
+	float average_fps = Broodwar->getAverageFPS();
+	int fps = Broodwar->getFPS();
+
 	// Display the game frame rate as text in the upper left area of the screen
-	Broodwar->drawTextScreen(200, 0,  "FPS: %d", Broodwar->getFPS() );
-	Broodwar->drawTextScreen(200, 20, "Average FPS: %f", Broodwar->getAverageFPS() );
+	Broodwar->drawTextScreen(10, 0,  "\x7 FPS: %d", fps );
+	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %f", average_fps);
+	Broodwar->drawTextScreen(10, 30, "\x7 Decisions Per Second: %d", decisions_last_frame * fps);
+	Broodwar->drawTextScreen(10, 45, "\x7 Average Decisions Per Second: %f", get_average_decisions() * average_fps);
+
+	soar_sc_link->get_soar_link()->set_decisions(0);
 
 	// Return if the game is a replay or is paused
 	if ( Broodwar->isReplay() || Broodwar->isPaused() )

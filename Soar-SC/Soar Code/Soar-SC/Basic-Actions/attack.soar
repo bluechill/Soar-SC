@@ -52,6 +52,7 @@ sp {apply*attack
    (<output-link> ^move <attack>)
    (<attack> ^object <marine-id>
              ^dest <enemy-id>)
+   (write |Attacking | <enemy-id> | with | <marine-id> (crlf) )
 }
 
 sp {propose*counter-attack
@@ -120,11 +121,11 @@ sp {pref*counter-attacks-better-than-regular-attacks
    (<s> ^operator <ca> > <a>)
 }
 
-sp {apply*secondary
+sp {apply*secondary-attack-apply-for-counters
    (state <s> ^name Soar-SC
               ^operator <ca>)
    (<ca> ^name attack
          ^counter-attack)
 -->
-   (write |Counter Attack!| (crlf))
+   (write |Counter Attacking!| (crlf) )
 }

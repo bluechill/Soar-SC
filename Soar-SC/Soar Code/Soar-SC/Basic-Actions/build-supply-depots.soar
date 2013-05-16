@@ -21,8 +21,7 @@ sp {propose*build-supply-depot
          -^scouting)
    (<supply-depot-type> ^name |Terran Supply Depot|
                         ^id <supply-depot-type-id>
-                        ^mineral-cost { <= <minerals-budget> }
-                        ^gas-cost { <= <gas-budget> })
+                        ^mineral-cost { <= <minerals-budget> })
    (<supply-depot-count> ^type <supply-depot-type-id>
                          ^count { <l> < 9 })
   -{ (<input-link> ^units.unit <scv>)

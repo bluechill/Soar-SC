@@ -56,6 +56,9 @@ private:
 
 	BWAPI::Unitset minerals; //A set for containing all the minerals seen
 	BWAPI::Unitset vesp_gas; //A set for containing all the vesp gas geysers seen
+
+	std::vector<int> last_50_decisions;
+	float get_average_decisions();
 };
 
 #endif

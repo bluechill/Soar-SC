@@ -47,6 +47,8 @@ public:
 	void ExecuteCommandLine(std::string input);
 	sml::Identifier* GetOutputLink();
 	sml::Identifier* GetInputLink();
+	sml::Kernel* GetKernel() { return kernel; }
+
 	//Soar Handlers
 	void add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type);
 	void delete_resource(int bw_id);
@@ -55,7 +57,12 @@ public:
 	void start_soar_run();
 	void send_base_input(sml::Agent* agent, bool wait_for_analyzer);
 
+	int get_decisions();
+	void set_decisions(int new_count);
+
 private:
+	int decisions; //Should use #pragma omp atomic for this
+
 	Soar_SC* soar_sc_link;
 
 	sml::Kernel* kernel; //Pointer to the soar kernel created

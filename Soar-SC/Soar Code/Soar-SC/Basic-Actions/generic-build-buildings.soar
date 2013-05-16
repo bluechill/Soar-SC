@@ -104,6 +104,7 @@ sp {apply*build-building
         ^gas-used <gas-used> -
         ^minerals-used (+ <minerals-used> <mineral-cost>)
         ^gas-used (+ <gas-used> <gas-cost>))
+   (write |Building building of type | <type-id> | at location (| <x> |,| <y> |) with worker | <id> (crlf) )
 }
 
 #Preference rules

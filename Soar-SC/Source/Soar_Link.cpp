@@ -13,7 +13,7 @@ Soar_Link::Soar_Link(Soar_SC* soar_sc_link) //Constructor for the Soar Link clas
 {
 	this->soar_sc_link = soar_sc_link;
 
-	kernel = Kernel::CreateKernelInNewThread(); //Create a new Soar kernel (agent spawner) in a new thread
+	kernel = Kernel::CreateKernelInCurrentThread(true); //Create a new Soar kernel (agent spawner) in a new thread
 	//kernel = Kernel::CreateRemoteConnection(false, "127.0.0.1", 12121);
 
 	mu = SDL_CreateMutex(); //Create a new mutex to prevent simultanous access to shared objects
@@ -37,6 +37,11 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
+	kernel->CheckForIncomingCommands();
+
+#pragma omp atomic
+	decisions++;
+
 	int commands = a->GetNumberCommands();
 
 	for (int i = 0;i < commands;i++) //Parse all the agent's commands
@@ -222,7 +227,6 @@ void Soar_Link::misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml:
 
 void Soar_Link::start_soar_run()
 {
-	
 	if (kernel->HadError()) //Check if the kernel had an error
 	{ //It did
 		const char* msg = kernel->GetLastErrorDescription(); //Get the description of the error
@@ -250,9 +254,9 @@ void Soar_Link::start_soar_run()
 	agent->RegisterForRunEvent(smlEVENT_AFTER_RUN_ENDS, misc_global_handler, this); //Called whenever the run ends for any reason, halt, interrupt, stop-soar, etc.
 	agent->RegisterForRunEvent(smlEVENT_BEFORE_RUN_STARTS, misc_global_handler, this); //Called just before the run starts after a run or step etc. command
 
-	agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this); //Register for the print event to handle all output from the agent and other misc info like which thing is running etc.
-
-	agent->ExecuteCommandLine("watch 1"); //Not strictly needed but for being verbose, watch 1 outputs all the decision stuff like what the agent is doing along with outputs via write etc.
+	//agent->RegisterForPrintEvent(smlEVENT_PRINT, printcb, this); //Register for the print event to handle all output from the agent and other misc info like which thing is running etc.
+	
+	agent->ExecuteCommandLine("watch 0"); //Not strictly needed but for being verbose, watch 1 outputs all the decision stuff like what the agent is doing along with outputs via write etc.
 	agent->ExecuteCommandLine("source Soar-SC/Soar-SC.soar"); //Load our agent's source into memory
 
 	send_base_input(agent, false);
@@ -492,18 +496,12 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	}
 
 	//Create a new terrain analyzer
-	terrain = new Terrain(map, agent, mu);
+	terrain = new Terrain(map, agent);
 	terrain->analyze(); //Start analyzing the terrain
 
 	soar_sc_link->get_bwapi_link()->update_units();
 	soar_sc_link->get_bwapi_link()->update_resources();
 	update_fogOfWar(0.0f, 0.0f, float(Broodwar->mapWidth()), float(Broodwar->mapHeight()));
-
-	if (wait_for_analyzer)
-	{
-		while(!terrain->done_sending_svs())
-			Sleep(10);
-	}
 }
 
 void Soar_Link::SendSVSInput(std::string input)
@@ -672,11 +670,19 @@ int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 
 	soar_sc_link->get_bwapi_link()->update_units();
 	soar_sc_link->get_bwapi_link()->update_resources();
-
-	while (!terrain->done_sending_svs())
-		Sleep(10);
 	
 	agent->RunSelfForever();
 
 	return 0;
+}
+
+int Soar_Link::get_decisions()
+{
+	return decisions;
+}
+
+void Soar_Link::set_decisions(int new_count)
+{
+#pragma omp atomic
+	decisions = new_count;
 }

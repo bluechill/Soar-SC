@@ -18,7 +18,7 @@ public:
 
 	typedef std::vector<std::vector<bool> > map_bool_array;
 
-	Terrain(const map_bool_array &map, sml::Agent* agent, SDL_mutex* mu); //Constructor, takes a vector of a vector of bools as to whether a single tile is walkable or not.  Also takes a pointer to the Soar Agent and a pointer to the SDL mutex used by the Soar Link class
+	Terrain(const map_bool_array &map, sml::Agent* agent); //Constructor, takes a vector of a vector of bools as to whether a single tile is walkable or not.  Also takes a pointer to the Soar Agent and a pointer to the SDL mutex used by the Soar Link class
 	~Terrain(); //Deconstructor
 
 	void analyze(); //Start analyzing the map.  Creates a thread to do all the work.
@@ -38,9 +38,6 @@ private:
 	std::ofstream out; //Output to a file the terrain SVS commands
 
 	std::vector<std::vector<bool> > map; //Internal variable for the map
-
-	SDL_Thread *thread; //Thread variable for the analyzer thread
-	SDL_mutex *mu; //Soar Link mutex
 
 	bool should_die; //Set to true to kill the analyzer thread if it's still running.
 

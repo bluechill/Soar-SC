@@ -43,6 +43,7 @@ sp {apply*gather-minerals
    (<move-command> ^object <scv>
                    ^dest <mineral-field>)
    (<command> ^extract <extract-command> -)
+   (write |Gathering minerals at | <mineral-field> | with | <scv> (crlf) )
 }
 
 sp {propose*initialize-gather-minerals-substate
