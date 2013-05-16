@@ -36,7 +36,6 @@ public:
 
 	bool contains_id(int id, BWAPI::Unitset units); //Check whether a given set of units has a unit with the ID given
 
-	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type);
 	void delete_resource(int id);
 
 	void add_unit(BWAPI::Unit* unit, bool enemy);

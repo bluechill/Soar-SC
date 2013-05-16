@@ -539,6 +539,146 @@ sml::Identifier* Soar_Link::GetInputLink()
 	return agent->GetInputLink();
 }
 
+void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type)
+{
+	Identifier* input_link = agent->GetInputLink(); //Get the input link
+
+	Identifier* id; //Variable for the resources identifier
+	if (!input_link->FindByAttribute("resources", 0)) //Check if it exits
+	{ //If it doesn't then create it 
+		Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else //Otherwise
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier(); //Use the first existing one
+
+	string name; //Variable for the type
+
+	if (type.getName().find("Mineral") != string::npos) //If it's a mineral
+		name = "mineral"; //Set the name to mineral
+	else //Otherwise
+		name = "vesp-gas"; //Set the name to vesp gas
+
+	Identifier* resource = id->CreateIdWME(name.c_str()); //Create a new resource Identifier for the resrouce
+
+	resource->CreateIntWME("id", bw_id); //Set the id
+	resource->CreateIntWME("count", count); //Set the number of minerals it holds
+
+	string svs_object_id = type.getName(); //Set the svs id to be the type's name
+	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end()); //Remove all the spaces
+
+	//Add the id of the resource to the id
+	stringstream ss;
+	ss << bw_id;
+	svs_object_id += ss.str();
+	ss.str("");
+	//Flip the point so "north" isn't negative y
+	ss << ((float)position.x)/32.0f << " " << Terrain::flip_one_d_point(((float)position.y)/32.0f, false) << " 0";
+	string position_svs = ss.str();
+	ss.str("");
+
+	ss << ((float)(type.dimensionLeft() + type.dimensionRight() + 1))/32.0f << " " << ((float)(type.dimensionUp() + type.dimensionDown() + 1))/32.0f << " 1";
+	string size = ss.str();
+	ss.str("");
+
+	//Create the svs add command
+	string svs_command = "a " + svs_object_id + " world v " + Terrain::unit_box_verts + " p " + position_svs + " s " + size + " r 0 0 0";
+	//Broodwar->printf("%s", svs_command.c_str());
+	cout << svs_command << endl;
+
+	//Send the svs command to the agent
+	soar_sc_link->get_soar_link()->SendSVSInput(svs_command);
+
+	//Create the svs object id on the input link
+	resource->CreateStringWME("svsobject", svs_object_id.c_str());
+}
+
+void Soar_Link::delete_resource(int bw_id)
+{
+	Identifier* input_link = agent->GetInputLink(); //Get the input link
+
+	//Check for the existence of the resources identifier, if it doesn't exist, create it
+
+	Identifier* id;
+
+	if (!input_link->FindByAttribute("resources", 0))
+	{
+		cout << "ERROR: No 'resources' identifier on the input link! Creating...." << endl;
+
+		id = input_link->CreateIdWME("resources");
+	}
+	else
+		id = input_link->FindByAttribute("resources", 0)->ConvertToIdentifier();
+
+	for (int j = 0;j < id->GetNumberChildren();j++) //Search for the existence of the given id in the resource list
+	{
+		Identifier* unit;
+		if (!id->GetChild(j)->IsIdentifier())
+			continue;
+		else
+			unit = id->GetChild(j)->ConvertToIdentifier();
+
+		//Check the id against the given one
+		if (unit->FindByAttribute("id", 0)->ConvertToIntElement()->GetValue() == bw_id)
+		{
+			//It is the same so delete the resource from svs and the input link
+			string svs_object_id = unit->FindByAttribute("svsobject", 0)->ConvertToStringElement()->GetValue();
+
+			string svs_command = "d " + svs_object_id;
+
+			soar_sc_link->add_event(Soar_Event(svs_command, true)); //Add the svs command to the queue
+			soar_sc_link->add_event(Soar_Event(id->GetChild(j))); //And add the wme to destroy to the queue
+
+			break; //Break because we're done
+		}
+	}
+
+	soar_sc_link->get_bwapi_link()->delete_resource(bw_id); //Remove the middleware links
+}
+
+void Soar_Link::update_resource_count(int minerals, int gas, int total_supplies, int used_supplies)
+{
+	Identifier* input_link = agent->GetInputLink();
+	
+	IntElement* minerals_id;
+	if (!input_link->FindByAttribute("minerals", 0))
+		minerals_id = input_link->CreateIntWME("minerals", 0)->ConvertToIntElement();
+	else
+		minerals_id = input_link->FindByAttribute("minerals", 0)->ConvertToIntElement();
+
+	IntElement* gas_id;
+	if (!input_link->FindByAttribute("gas", 0))
+		gas_id = input_link->CreateIntWME("gas", 0)->ConvertToIntElement();
+	else
+		gas_id = input_link->FindByAttribute("gas", 0)->ConvertToIntElement();
+
+	IntElement* max_supplies_id;
+	if (!input_link->FindByAttribute("total-supplies", 0))
+		max_supplies_id = input_link->CreateIntWME("total-supplies", 0)->ConvertToIntElement();
+	else
+		max_supplies_id = input_link->FindByAttribute("total-supplies", 0)->ConvertToIntElement();
+
+	IntElement* used_supplies_id;
+	if (!input_link->FindByAttribute("used-supplies", 0))
+		used_supplies_id = input_link->CreateIntWME("used-supplies", 0)->ConvertToIntElement();
+	else
+		used_supplies_id = input_link->FindByAttribute("used-supplies", 0)->ConvertToIntElement();
+
+	if (minerals_id->GetValue() != minerals)
+		minerals_id->Update(minerals);
+
+	if (gas_id->GetValue() != gas)
+		gas_id->Update(gas);
+
+	if (max_supplies_id->GetValue() != total_supplies)
+		max_supplies_id->Update(total_supplies);
+
+	if (used_supplies_id->GetValue() != used_supplies)
+		used_supplies_id->Update(used_supplies);
+}
+
 int Soar_Link::soar_agent_thread() //Thread for initial run of the soar agent
 {
 	SetThreadName("Soar Run Thread", GetCurrentThreadId());

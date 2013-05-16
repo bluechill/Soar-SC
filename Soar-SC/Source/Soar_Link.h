@@ -41,10 +41,16 @@ public:
 
 	void update_fogOfWar(float x_start, float y_start, float size_x, float size_y);
 
+	//BWAPI Link Stuff
+	//Getters & Setters
 	void SendSVSInput(std::string input);
 	void ExecuteCommandLine(std::string input);
 	sml::Identifier* GetOutputLink();
 	sml::Identifier* GetInputLink();
+	//Soar Handlers
+	void add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type);
+	void delete_resource(int bw_id);
+	void update_resource_count(int minerals, int gas, int total_supplies, int used_supplies);
 
 	void start_soar_run();
 	void send_base_input(sml::Agent* agent, bool wait_for_analyzer);
