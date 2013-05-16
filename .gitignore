@@ -13,6 +13,9 @@
 *.lib
 *.pdb
 *.sdf
+*.log
+*.*log
+*.txt
 *.opensdf
 *.lastbuildstate
 
