@@ -1,0 +1,150 @@
+#Initialize build-building substate
+#Decide on the location for building the building
+
+sp {propose*initialize-building-substate
+   (state <s> ^superstate <super>
+             -^name
+              ^impasse no-change)
+   (<super> ^operator <o>)
+   (<o> ^name build-building
+        ^type <type-id>)
+-->
+   (<s> ^operator <init-operator> + >)
+   (<init-operator> ^name initialize-building-substate)
+}
+
+sp {apply*initialize-building-substate
+   (state <s> ^operator <init-operator>)
+   (<init-operator> ^name initialize-building-substate)
+-->
+   (<s> ^name build-building-substate)
+}
+
+sp {propose*generate-grid-svs-action
+   (state <s> ^superstate <super>
+              ^name build-building-substate)
+   (<super> ^io.input-link.units.building <building>)
+   (<building> -^grid
+                ^id <id>)
+-->
+   (<s> ^operator <generate-grid> +)
+   (<generate-grid> ^name generate-grid
+                    ^building <id>)
+}
+
+sp {apply*generate-grid-svs-action
+   (state <s> ^superstate <superstate>
+              ^operator <generate-grid-operator>)
+   (<superstate> ^svs.command <commands>)
+   (<generate-grid-operator> ^name generate-grid
+                             ^building <id>)
+-->
+   (<commands> ^extract <extract-command>)
+   (<extract-command> ^type bbox ^a <node1>)
+   (<node1> ^type combine
+            ^building <building>)
+   (<building> ^type node ^id <id>)
+}
+
+sp {propose*generate-grid
+   (state <s> ^superstate <superstate>
+              ^operator <generate-grid-operator>)
+   (<superstate> ^svs.command <command-link>)
+   (<command-link> ^extract <extract>)
+   (<extract> ^status success
+              ^result.record.params.a <building-position>)
+-->
+   (write |interrupt|)
+   (interrupt)
+}
+
+sp {apply*build-building
+   (state <s> ^operator <op>
+              ^io.output-link <o>
+              ^io.input-link.types.type <building-type>
+              ^buildings.building <building>
+              ^minerals-used <minerals-used>
+              ^gas-used <gas-used>)
+   (<op> ^name build-building
+         ^worker <id>
+         ^location-x <x>
+         ^location-y <y>
+         ^type <type-id>)
+   (<building> ^type <type-id>
+               ^count <c>)
+   (<building-type> ^id <type-id>
+                    ^mineral-cost <mineral-cost>
+                    ^gas-cost <gas-cost>)
+   -{(<o> ^<attr>.status)}
+-->
+   (<o> ^build-building <build>)
+   (<build> ^type <type-id>
+            ^location-x <x>
+            ^location-y <y>
+            ^worker <id>)
+   (<building> ^count <c> -
+               ^count (+ <c> 1))
+   (<s> ^minerals-used <minerals-used> -
+        ^gas-used <gas-used> -
+        ^minerals-used (+ <minerals-used> <mineral-cost>)
+        ^gas-used (+ <gas-used> <gas-cost>))
+}
+
+#Preference rules
+#sp {pref*buildings-better-than-units
+#   (state <s> ^operator <o1> +
+#              ^operator <o2> +)
+#   (<o1> ^name build-unit)
+#   (<o2> ^name build-building)
+#-->
+#   (<s> ^operator <o2> > <o2>)
+#}
+
+sp {pref*idle-better-than-non-idle
+   (state <s> ^operator <o1> +
+              ^operator <o2> +
+              ^io.input-link.units <units>)
+   (<o1> ^name build-building
+         ^worker <id1>)
+   (<o2> ^name build-building
+         ^worker <id2>)
+   (<units> ^unit <u1>
+            ^unit <u2>)
+   (<u1> ^id <id1>
+         ^idle 1)
+   (<u2> ^id <id2>
+         ^idle 0)
+-->
+   (<s> ^operator <o1> > <o2>)
+}
+
+#sp {pref*non-carrying-better-than-carrying
+#   (state <s> ^operator <o1> +
+#              ^operator <o2> +
+#              ^io.input-link.units <units>)
+#   (<o1> ^name build-building
+#         ^worker <id1>)
+#   (<o2> ^name build-building
+#         ^worker <id2>)
+#   (<units> ^unit <u1>
+#            ^unit <u2>)
+#   (<u1> ^id <id1>
+#         ^carrying 0)
+#   (<u2> ^id <id2>
+#         ^carrying 1)
+#-->
+#   (<s> ^operator <o1> > <o2>)
+#}
+
+sp {pref*force-wait-for-build-command-done
+   (state <state> ^name Soar-SC
+                  ^operator <gather-minerals-operator> +
+                  ^io.output-link <output-link>)
+   (<gather-minerals-operator> ^name gather-minerals
+                               ^scv <scv-id>)
+   (<output-link> ^build-building <building>)
+   (<building> ^worker <scv-id>
+              -^status)
+-->
+   (<state> ^operator <gather-minerals-operator> -)
+}

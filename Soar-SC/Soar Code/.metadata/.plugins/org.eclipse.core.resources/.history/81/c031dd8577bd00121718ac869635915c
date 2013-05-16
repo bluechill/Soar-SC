@@ -1,0 +1,54 @@
+sp {propose*build-barracks
+   (state <state> ^name Soar-SC
+              ^superstate nil
+              ^io.input-link <input-link>
+              ^io.output-link <output-link>
+              ^buildings.building <building>
+              ^minerals-budget <minerals-budget>
+              ^gas-budget <gas-budget>)
+   (<input-link> ^minerals <minerals> > 149
+                 ^units.unit <build-unit>
+                 ^types.type <scv-type>
+                 ^types.type <barracks-type>)
+   (<scv-type> ^name |Terran SCV|
+               ^id <type-id>)
+   (<build-unit> ^type <type-id>
+                 ^idle <idle>
+                 ^carrying <carrying>
+                 ^id <id>
+                -^scouting)
+   (<barracks-type> ^name |Terran Barracks|
+                    ^id <barracks-id>
+                    ^mineral-cost { <= <minerals-budget> }
+                    ^gas-cost { <= <gas-budget> })
+   (<building> ^type <barracks-id>
+               ^count { <l> < 4 })
+   -{(<input-link> ^units.unit <unit>)
+     (<unit> ^constructing <barracks-id>)}
+   -{(<output-link> ^build-building <build-building>)
+     (<build-building> ^type <barracks-id>
+                         -^status)}
+-->
+   (<state> ^operator <operator> + =)
+   (<operator> ^name build-building
+               ^worker <id>
+               ^idle <idle>
+               ^carrying <carrying>
+               ^location <l>
+               ^type <barracks-id>)
+}
+
+#Preference rules
+
+sp {pref*building-barracks-better-than-gather-minerals
+   (state <s> ^operator <o1> +
+              ^operator <o2> +
+              ^io.input-link.types.type <t>)
+   (<t> ^name |Terran Barracks|
+        ^id <type-id>)
+   (<o1> ^name build-building
+         ^type <type-id>)
+   (<o2> ^name gather-minerals)
+-->
+   (<s> ^operator <o1> > <o2>)
+}

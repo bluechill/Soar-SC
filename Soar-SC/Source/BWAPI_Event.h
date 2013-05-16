@@ -2,20 +2,19 @@
 #define BWAPI_EVENT_H
 
 #include "BWAPI.h"
-
 #include "sml_Client.h"
 
-class Events;
+class Soar_SC;
 class Soar_Link;
 
 class BWAPI_Event
 {
 public:
-	BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_Link* link); //Construct a BWAPI_Event around a command for a unit
+	BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_SC* link); //Construct a BWAPI_Event around a command for a unit
 
 	BWAPI::Unit* get_unit();
 
-	void execute_command(Events* events);
+	void execute_command();
 
 private:
 	int id;
@@ -23,7 +22,7 @@ private:
 	BWAPI::Position pos;
 	BWAPI::UnitCommand internal_command;
 	sml::Identifier *internal_id;
-	Soar_Link* internal_link;
+	Soar_SC* soar_sc_link;
 };
 
 #endif

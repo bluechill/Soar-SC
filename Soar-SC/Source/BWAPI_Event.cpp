@@ -1,13 +1,12 @@
 #include "BWAPI_Event.h"
 
-#include "Soar_Link.h"
+#include "Soar_SC.h"
 #include "Soar_Unit.h"
-
-#include "Events.h"
+#include "BWAPI_Link.h"
 
 #include <iostream>
 
-BWAPI_Event::BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_Link* link)
+BWAPI_Event::BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_SC* link)
 {
 	internal_command = command;
 
@@ -17,10 +16,10 @@ BWAPI_Event::BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_L
 		this->id = -1;
 
 	internal_id = id;
-	internal_link = link;
+	soar_sc_link = link;
 }
 
-void BWAPI_Event::execute_command(Events* events)
+void BWAPI_Event::execute_command()
 {
 	using namespace BWAPI;
 	using namespace std;
@@ -34,13 +33,13 @@ void BWAPI_Event::execute_command(Events* events)
 		
 		if (e == Errors::Unit_Does_Not_Exist)
 		{
-			std::map<int, BWAPI::Position> copyHiddenMap = internal_link->get_last_positions();
+			std::map<int, BWAPI::Position> copyHiddenMap = soar_sc_link->get_bwapi_link()->get_hidden_map();
 			std::map<int, BWAPI::Position>::iterator hidden_it = copyHiddenMap.find(id);
 			if (hidden_it != copyHiddenMap.end())
 			{
 				internal_command = UnitCommand::move(internal_command.getUnit(), hidden_it->second);
 
-				this->execute_command(events);
+				this->execute_command();
 				return;
 			}
 			else
@@ -48,7 +47,7 @@ void BWAPI_Event::execute_command(Events* events)
 				cerr << "Got error trying to execute unit command: " << e.toString() << endl;
 
 				if (internal_id != NULL)
-					events->add_event(Soar_Event(internal_id, false));
+					soar_sc_link->add_event(Soar_Event(internal_id, false));
 
 				return;
 			}
@@ -58,21 +57,21 @@ void BWAPI_Event::execute_command(Events* events)
 			cerr << "Got error trying to execute unit command: " << e.toString() << endl;
 
 			if (internal_id != NULL)
-				events->add_event(Soar_Event(internal_id, false));
+				soar_sc_link->add_event(Soar_Event(internal_id, false));
 
 			return;
 		}
 	}
 
 	if (internal_command.getType() != UnitCommandTypes::Build && internal_id != NULL)
-		events->add_event(Soar_Event(internal_id, true));
+		soar_sc_link->add_event(Soar_Event(internal_id, true));
 	else if (internal_command.getType() == UnitCommandTypes::Build && internal_id != NULL)
 	{
 		Soar_Unit::build_struct* build = new Soar_Unit::build_struct;
 		build->type = internal_command.getUnitType();
 		build->build_id = internal_id;
 
-		internal_link->get_units()[internal_command.getUnit()]->will_build(build);
+		soar_sc_link->get_bwapi_link()->get_units()[internal_command.getUnit()]->will_build(build);
 	}
 }
 

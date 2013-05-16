@@ -5,8 +5,7 @@ sp {propose*build-supply-depot
                   ^io.output-link <output-link>
                   ^buildings.building <supply-depot-count>
                   ^supply-depot-unit-total <sdut>
-                  ^minerals-budget <minerals-budget>
-                  ^gas-budget <gas-budget>)
+                  ^minerals-budget <minerals-budget>)
    (<input-link> ^minerals <m> > 99
                  ^units.unit <scv>
                  ^types.type <scv-type>

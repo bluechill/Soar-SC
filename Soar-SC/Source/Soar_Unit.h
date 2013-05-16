@@ -1,23 +1,24 @@
 #ifndef SOAR_UNIT_H
 #define SOAR_UNIT_H 1
 
-#include "BWAPI.h"
+//BWAPI Headers
+#include <BWAPI.h>
 
+//SML Headers
 #include "sml_Client.h"
 
-#include "Events.h"
-
-class Soar_Link;
+//Soar SC Headers & Stubs
+class Soar_SC;
 
 class Soar_Unit
 {
 public:
-	Soar_Unit(sml::Agent* agent, BWAPI::Unit* unit, Soar_Link* link, bool enemy);
+	Soar_Unit(Soar_SC* soar_sc_link, BWAPI::Unit* unit, bool enemy);
 	~Soar_Unit();
 
-	void delete_unit(Events *event_queue, sml::Agent* agent);
+	void delete_unit();
 
-	void update(sml::Agent* agent);
+	void update();
 
 	const int get_id();
 
@@ -36,7 +37,7 @@ public:
 	Position lastPosition() { return pos; }
 
 private:
-	Soar_Link* link;
+	Soar_SC* soar_sc_link;
 
 	BWAPI::Unit* unit;
 
@@ -59,7 +60,7 @@ private:
 
 	std::string svsobject_id;
 
-	sml::Identifier* get_unit_identifier(sml::Agent* agent, bool create_unit = false, bool enemy = false);
+	sml::Identifier* get_unit_identifier(bool create_unit = false, bool enemy = false);
 
 	bool deleted;
 

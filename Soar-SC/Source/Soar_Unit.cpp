@@ -1,19 +1,25 @@
-#include "Soar_Unit.h"
-
-#include "Soar_Link.h"
-#include "Event.h"
-
+//C++ Standard Library Headers
 #include <sstream>
 #include <string>
 
+//C Standard Library Headers
 #include <ctime>
+
+//BWAPI Headers
+#include <BWAPI.h>
+
+//Soar SC Headers
+#include "Soar_Unit.h"
+#include "Soar_SC.h"
+#include "Soar_Link.h"
+#include "Terrain.h"
 
 using namespace BWAPI;
 using namespace std;
 
-Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
+Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 {
-	this->link = link;
+	this->soar_sc_link = soar_sc_link;
 	this->isEnemy = enemy;
 
 	using namespace sml;
@@ -68,7 +74,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 
 	//Set the position
 	pos.x = ((float)unit->getLeft()/32.0f);
-	pos.y = Soar_Link::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
+	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
 
 	//Set the svsobject id
 	if (enemy)
@@ -87,7 +93,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 	//
 
 	//Create the units
-	Identifier* unit_id = get_unit_identifier(agent, true, enemy);
+	Identifier* unit_id = get_unit_identifier(true, enemy);
 
 	unit_id->CreateIntWME("id", id);
 
@@ -107,11 +113,9 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 	ss << pos.x << " " << pos.y << " 0";
 	string position = ss.str();
 
-	string svs_command = "a " + svsobject_id + " world v " + Soar_Link::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
-	agent->SendSVSInput(svs_command);
+	string svs_command = "a " + svsobject_id + " world v " + Terrain::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
+	soar_sc_link->get_soar_link()->SendSVSInput(svs_command);
 
-	link->output_to_test_file(svs_command);
-	
 	unit_id->CreateIntWME("type", type.getID());
 
 	unit_id->CreateStringWME("svsobject", svsobject_id.c_str());
@@ -122,7 +126,7 @@ Soar_Unit::Soar_Unit(sml::Agent* agent, Unit* unit, Soar_Link* link, bool enemy)
 Soar_Unit::~Soar_Unit()
 {}
 
-void Soar_Unit::update(sml::Agent* agent)
+void Soar_Unit::update()
 {
 	using namespace sml;
 
@@ -134,7 +138,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->idle = idle;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent, false, isEnemy);
+			unit_id = get_unit_identifier(false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -152,7 +156,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->carrying = carrying;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent, false, isEnemy);
+			unit_id = get_unit_identifier(false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -180,7 +184,7 @@ void Soar_Unit::update(sml::Agent* agent)
 		this->constructing = constructing;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent, false, isEnemy);
+			unit_id = get_unit_identifier(false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -229,7 +233,7 @@ void Soar_Unit::update(sml::Agent* agent)
 			this->full_queue = full_queue;
 
 			if (unit_id == NULL)
-				unit_id = get_unit_identifier(agent, false, isEnemy);
+				unit_id = get_unit_identifier(false, isEnemy);
 
 			if (unit_id == NULL)
 			{
@@ -247,54 +251,13 @@ void Soar_Unit::update(sml::Agent* agent)
 	int size_y = type.dimensionUp() + type.dimensionDown() + 1;
 
 	pos.x = ((float)unit->getLeft()/32.0f);
-	pos.y = Soar_Link::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
+	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
 	if (this->pos.x != pos.x || this->pos.y != pos.y)
 	{
-		/*float left_boundary = 0;
-		float right_boundary = 0;
-		float top_boundary = 0;
-		float bottom_boundary = 0;
-
-		if (pos.x > this->pos.x)
-		{
-			right_boundary = pos.x;
-			left_boundary = this->pos.x;
-		}
-		else
-		{
-			right_boundary = this->pos.x;
-			left_boundary = pos.x;
-		}
-
-		if (pos.y > this->pos.y)
-		{
-			top_boundary = pos.y;
-			bottom_boundary = this->pos.y;
-		}
-		else
-		{
-			top_boundary = this->pos.y;
-			bottom_boundary = pos.y;
-		}
-
-		float sight = (float(this->unit->getType().sightRange()) / 32.0f) + 4.0f;
-
-		right_boundary += sight;
-		left_boundary -= sight;
-		top_boundary += sight;
-		bottom_boundary -= sight;
-
-		float x_start = left_boundary;
-		float y_start =  Soar_Link::flip_one_d_point(bottom_boundary, false);
-		float x_size = right_boundary - left_boundary;
-		float y_size = top_boundary - bottom_boundary;
-
-		link->update_fogOfWar(pos.x - sight/2, pos.y - sight/2, sight, sight);*/
-
 		this->pos = pos;
 
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent, false, isEnemy);
+			unit_id = get_unit_identifier(false, isEnemy);
 
 		if (unit_id == NULL)
 		{
@@ -307,9 +270,8 @@ void Soar_Unit::update(sml::Agent* agent)
 		string position = ss.str();
 
 		string svs_command = "c " + svsobject_id + " p " + position + "\n";
-		link->output_to_test_file(svs_command);
 
-		agent->SendSVSInput(svs_command);
+		soar_sc_link->get_soar_link()->SendSVSInput(svs_command);
 	}
 
 	Unit* target = unit->getTarget();
@@ -327,7 +289,7 @@ void Soar_Unit::update(sml::Agent* agent)
 	if (newTargetID != targetID)
 	{
 		if (unit_id == NULL)
-			unit_id = get_unit_identifier(agent, false, isEnemy);
+			unit_id = get_unit_identifier(false, isEnemy);
 
 		targetID = newTargetID;
 
@@ -341,11 +303,11 @@ const int Soar_Unit::get_id()
 	return id;
 }
 
-sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_unit, bool enemy)
+sml::Identifier* Soar_Unit::get_unit_identifier(bool create_unit, bool enemy)
 {
 	using namespace sml;
 
-	Identifier* input_link = agent->GetInputLink();
+	Identifier* input_link = soar_sc_link->get_soar_link()->GetInputLink();
 
 	Identifier* units;
 	if (!enemy)
@@ -404,15 +366,14 @@ sml::Identifier* Soar_Unit::get_unit_identifier(sml::Agent* agent, bool create_u
 		return NULL;
 }
 
-void Soar_Unit::delete_unit(Events *event_queue, sml::Agent* agent)
+void Soar_Unit::delete_unit()
 {
-	sml::Identifier* unit = get_unit_identifier(agent, false, isEnemy);
+	sml::Identifier* unit = get_unit_identifier(false, isEnemy);
 
 	string svs_command = "d " + svsobject_id + "\n";
-	link->output_to_test_file(svs_command);
 
-	event_queue->add_event(Soar_Event(svs_command, true));
-	event_queue->add_event(Soar_Event(unit));
+	soar_sc_link->add_event(Soar_Event(svs_command, true));
+	soar_sc_link->add_event(Soar_Event(unit));
 }
 
 void Soar_Unit::will_build(build_struct* build)

@@ -1,132 +1,67 @@
-#ifndef SOAR_LINK_H //Make sure this header is never included more than once to prevent multiple definitions
+#ifndef SOAR_LINK_H
 #define SOAR_LINK_H 1
 
-#include <BWAPI.h> //For connection to Starcraft
+//SDL Headers
+#include "SDL/SDL_thread.h"
+#include "SDL/SDL_mutex.h"
 
-#include "sml_Client.h" //For SML Agent functions (Soar functions)
+//SML Headers
+#include "sml_Client.h"
 
-#include <iostream> //For io functions and classes like cout and cerr
-#include <fstream> //For file functions like fstream
+//C++ Standard Library Headers
+#include <iostream>
+#include <fstream>
+#include <vector>
 
-#include <vector> //For std::vector
-
+//Windows Headers
 #include <windows.h> //For windows related fuctions
 
+//C Standard Library Headers
 #include <time.h>
 
-#include "SDL/SDL_thread.h" //For SDL threading
-#include "SDL/SDL_mutex.h" //For SDL mutexes
+//Soar SC Headers
+#include "Terrain.h"
 
-#include "Terrain-Analyzer.h" //For the Terrain Analyzer
-#include "Soar_Console.h" //For the Soar Console
+class Soar_SC;
 
-#include "Events.h" //For the event queuee
-
-#include "Soar_Unit.h"
-
-#include "Timer.h"
-
-// Remember not to use "Broodwar" in any global class constructor!
-
-class Soar_Link : public BWAPI::AIModule //The AI class.  Inherits from AIModule to use BWAPI functions.
+class Soar_Link //The AI class.  Inherits from AIModule to use BWAPI functions.
 {
 public:
-	// Virtual functions for callbacks from BWAPI.
-	virtual void onStart();
-	virtual void onEnd(bool isWinner);
-	virtual void onFrame();
-	virtual void onSendText(std::string text);
-	virtual void onReceiveText(BWAPI::Player* player, std::string text);
-	virtual void onPlayerLeft(BWAPI::Player* player);
-	virtual void onNukeDetect(BWAPI::Position target);
-	virtual void onUnitDiscover(BWAPI::Unit* unit);
-	virtual void onUnitEvade(BWAPI::Unit* unit);
-	virtual void onUnitShow(BWAPI::Unit* unit);
-	virtual void onUnitHide(BWAPI::Unit* unit);
-	virtual void onUnitCreate(BWAPI::Unit* unit);
-	virtual void onUnitDestroy(BWAPI::Unit* unit);
-	virtual void onUnitMorph(BWAPI::Unit* unit);
-	virtual void onUnitRenegade(BWAPI::Unit* unit);
-	virtual void onSaveGame(std::string gameName);
-	virtual void onUnitComplete(BWAPI::Unit *unit);
+	//Class stuff
+	Soar_Link(Soar_SC* soar_sc_link);
+	~Soar_Link();
 
-	Soar_Link(); //Constructor for class.  Takes nothing. 
-	~Soar_Link(); //Deconstructor
+	//Soar agent thread
+	int soar_agent_thread();
 
-	//Sends all the resources to Soar.
-	void add_resource(int id, int count, BWAPI::Position, BWAPI::UnitType type); //Add a resource in SVS and on the input link
-	void delete_resource(int id); //Delete a resource from SVS and the input link
-
-	void add_unit(BWAPI::Unit* unit, bool enemy); //Add a unit to the input link and SVS
-	void delete_unit(BWAPI::Unit* unit, bool enemy); //Delete a unit from the input link and SVS
-
-	void update_resources(); //Update the resources of the player (AI) (Agent)
-	void update_units(); //Update the units of the player (AI) (Agent) (and eventually visible enemy positions etc.)
-
-	bool should_die; //Set to true to kill the threads spawned
-
-	int soar_agent_thread(); //Initial thread for running the agent.  Spawned after the Terrain Analyzer is done
-
-	const static std::string unit_box_verts; //A string for a generic unit box verts
-
-	static float flip_one_d_point(const float &point, const bool &x_axis); //Flip a point from Starcraft Top Left being 0,0 to Bottom Left being 0,0 for sending stuff to the SVS Viewer
-
-	void print_soar(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m); //Function to handle print events from Soar
-
-	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for handling the output phase of the Agent
-	void misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase); //Function for misc events like when a run ends or starts
-
-	void send_base_input(sml::Agent* agent, bool wait_for_analyzer = false);
-
-	void output_to_test_file(std::string &output) { test_input_file << output; }
-
-	std::map<BWAPI::Unit*, Soar_Unit*> get_units() { return my_units; }
-	std::map<BWAPI::Unit*, Soar_Unit*> get_enemy_units() { return enemy_units; }
-	std::map<int, BWAPI::Position> get_last_positions() { return hiddenUnitsPositions; }
+	//Soar agent handlers
+	void print_soar(sml::smlPrintEventId id, void *d, sml::Agent *a, char const *m);
+	void output_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
+	void misc_handler(sml::smlRunEventId id, void* d, sml::Agent *a, sml::smlPhase phase);
 
 	void update_fogOfWar(float x_start, float y_start, float size_x, float size_y);
 
-	typedef std::vector<std::pair<int,int> > map_array;
-	typedef std::pair<std::string, map_array> named_map;
-	
-	bool named_map_contains_point(named_map &map, std::pair<int,int> &point);
-	bool vector_named_map_contains_point(std::vector<named_map> &vector_map, std::pair<int,int> &point);
-	void flood_fill(std::pair<int,int> &location, std::vector<std::vector<bool> > &bool_map, bool target, named_map &fill_vector);
+	void SendSVSInput(std::string input);
+	void ExecuteCommandLine(std::string input);
+	sml::Identifier* GetOutputLink();
+	sml::Identifier* GetInputLink();
+
+	void start_soar_run();
+	void send_base_input(sml::Agent* agent, bool wait_for_analyzer);
 
 private:
+	Soar_SC* soar_sc_link;
+
 	sml::Kernel* kernel; //Pointer to the soar kernel created
 	sml::Agent* agent; //Pointer to the soar agent created
 
-	std::ofstream cout_redirect; //Used for redirecting cout to a file
-	std::streambuf* cout_orig_buffer; //The original buffer of cout
-
-	std::ofstream cerr_redirect; //Used for redirecting cerr to a file
-	std::streambuf* cerr_orig_buffer; //The original buffer of cerr
-
-	std::ofstream test_input_file; //File for test input to SVS
-
-	std::map<BWAPI::Unit*, Soar_Unit*> my_units; //A set containing all the units of the player (AI) (Agent)
-	std::map<BWAPI::Unit*, Soar_Unit*> enemy_units; //A set for containing all the enemy units, currently not used
-	std::map<int, BWAPI::Position> hiddenUnitsPositions;
-
-	BWAPI::Unitset minerals; //A set for containing all the minerals seen
-	BWAPI::Unitset vesp_gas; //A set for containing all the vesp gas geysers seen
-
 	SDL_Thread* soar_thread; //Variable for the thread for initially running the agent
-
 	SDL_mutex* mu; //Variable for holding the mutex used by this classes's threads and event calls
 
-	Events event_queue; //The event queue variable
+	bool kill_threads;
 	bool had_interrupt; //Used for detecting when the agent is stopped, set to true when it is by the misc handler, then it tells the event queue to update forever
-	
-	TerrainAnalyzer* analyzer; //Terrain analyzer thread, analyzes the map and puts everything into SVS
 
-	BWAPI::Unit* getUnitFromID(std::string id); //Get a unit from a string containing the id, converts the string to an int then calls the int version
-	BWAPI::Unit* getUnitFromID(int id); //Returns the unit (in the list of units it has) associated with an ID, if it can't finds it returns NULL
-
-	bool contains_id(int id, BWAPI::Unitset units); //Check whether a given set of units has a unit with the ID given
-
-	Soar_Console* console; //Pointer to the Soar console class
+	Terrain* terrain; //Terrain analyzer thread, analyzes the map and puts everything into SVS
 };
 
 //Global stuff, all just calls the respective Soar_Link function
