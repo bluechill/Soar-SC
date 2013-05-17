@@ -23,36 +23,60 @@ typedef struct {
 	size building_size;
 } building;
 
-vector<pos> generate_grid(pos location, int tile_buffer, size shape)
+vector<building> generate_grid(pos location, size grid_size, int tile_buffer, size shape)
 {
-	vector<pos> grid;
+	vector<building> grid;
 
-	//Left Side Corners
-	grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second + shape.second - 1 + tile_buffer));
-	grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second - tile_buffer));
-
-	//Right Side Corners
-	grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second + shape.second - 1 + tile_buffer));
-	grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second - tile_buffer));
-
-	for (int i = 0;i < shape.second;i += (shape.second % 2 == 0 ? 3 : 2))
+	for (int y = (location.second - tile_buffer - grid_size.second + 1);y < (location.second + shape.second - 1 + tile_buffer + grid_size.second - 1*(grid_size.second-1));y++)
 	{
-		grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second + i));
-		grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second + i));
+		for (int x = (location.first - tile_buffer - grid_size.first + 1);x < (location.first + shape.first - 1 + tile_buffer + grid_size.first - 1*(grid_size.first-1));x++)
+		{
+			building temp_building;
+
+			temp_building.building_position = make_pair<int,int>(x,y);
+			temp_building.building_size = grid_size;
+
+			grid.push_back(temp_building);
+		}
 	}
 
-	for (int i = 0;i < shape.first;i += (shape.first % 2 == 0 ? 3 : 2))
-	{
-		grid.push_back(make_pair<int,int>(location.first + i, location.second - tile_buffer));
-		grid.push_back(make_pair<int,int>(location.first + i, location.second + shape.second - 1 + tile_buffer));
-	}
+	////Left Side Corners
+	//grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second + shape.second - 1 + tile_buffer));
+	//grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second - tile_buffer));
+
+	////Right Side Corners
+	//grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second + shape.second - 1 + tile_buffer));
+	//grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second - tile_buffer));
+
+	//for (int i = 0;i < shape.second;i += (shape.second % 2 == 0 ? 3 : 2))
+	//{
+	//	grid.push_back(make_pair<int,int>(location.first - tile_buffer, location.second + i));
+	//	grid.push_back(make_pair<int,int>(location.first + shape.first - 1 + tile_buffer, location.second + i));
+	//}
+
+	//for (int i = 0;i < shape.first;i += (shape.first % 2 == 0 ? 3 : 2))
+	//{
+	//	grid.push_back(make_pair<int,int>(location.first + i, location.second - tile_buffer));
+	//	grid.push_back(make_pair<int,int>(location.first + i, location.second + shape.second - 1 + tile_buffer));
+	//}
 
 	return grid;
 }
 
+bool buildings_are_the_same(building i, building j)
+{
+	return (i.building_position == j.building_position &&
+		i.building_size == j.building_size);
+}
+
+bool buildings_are_greater(building i, building j)
+{
+	return (i.building_position < j.building_position);
+}
+
 int main(int argc, char* argv[])
 {
-	srand(time(NULL));
+	srand(size_t(time(NULL)));
 
 	vector<building> building_locations;
 	/*
@@ -106,39 +130,45 @@ int main(int argc, char* argv[])
 	temp_building.building_size = make_pair<int,int>(2,1);
 	building_locations.push_back(temp_building);
 
-	vector<pos> final_grid;
+	vector<building> final_grid;
 
-	for (int i = 0;i < building_locations.size();i++)
+	for (size_t i = 0;i < building_locations.size();i++)
 	{
-		vector<pos> grid = generate_grid(building_locations[i].building_position, 2, building_locations[i].building_size);
+		vector<building> grid = generate_grid(building_locations[i].building_position, make_pair<int,int>(1,1), 2, building_locations[i].building_size);
 
 		final_grid.insert(final_grid.end(), grid.begin(), grid.end());
 	}
 
 	//Remove duplicates
-	sort(final_grid.begin(), final_grid.end());
-	final_grid.erase(unique(final_grid.begin(), final_grid.end()), final_grid.end());
+	sort(final_grid.begin(), final_grid.end(), buildings_are_greater);
+	final_grid.erase(unique(final_grid.begin(), final_grid.end(), buildings_are_the_same), final_grid.end());
 
 	//Remove building locations as free
-	for (int i = 0;i < building_locations.size();i++)
+	for (size_t i = 0;i < building_locations.size();i++)
 	{
-		int left_edge = building_locations[i].building_position.first - 1;
-		int right_edge = building_locations[i].building_position.first + building_locations[i].building_size.first;
+		int building_left_edge = building_locations[i].building_position.first;
+		int building_right_edge = building_locations[i].building_position.first + building_locations[i].building_size.first;
 
-		int top_edge = building_locations[i].building_position.second - 1;
-		int bottom_edge = building_locations[i].building_position.second + building_locations[i].building_size.second;
+		int building_top_edge = building_locations[i].building_position.second;
+		int building_bottom_edge = building_locations[i].building_position.second + building_locations[i].building_size.second;
 
-		for (vector<pos>::iterator it = final_grid.begin();it != final_grid.end();)
+		for (vector<building>::iterator it = final_grid.begin();it != final_grid.end();)
 		{
-			if (it->first >= left_edge		&&
-				it->first <= right_edge		&&
-				it->second >= top_edge		&&
-				it->second <= bottom_edge	)
+			int grid_left_edge = it->building_position.first;
+			int grid_right_edge = it->building_position.first + it->building_size.first;
+
+			int grid_top_edge = it->building_position.second;
+			int grid_bottom_edge = it->building_position.second + it->building_size.second;
+
+			if (grid_right_edge < building_left_edge ||
+				grid_left_edge > building_right_edge ||
+				grid_bottom_edge < building_top_edge ||
+				grid_top_edge > building_bottom_edge ) //No collision exists, no overlap
 			{
-				it = final_grid.erase(it);
+				it++;
 			}
 			else
-				it++;
+				it = final_grid.erase(it);
 		}
 	}
 
@@ -163,7 +193,7 @@ int main(int argc, char* argv[])
 		file_to_output.push_back(line);
 	}
 
-	for (int i = 0;i < building_locations.size();i++)
+	for (size_t i = 0;i < building_locations.size();i++)
 	{
 		for (int y = 0;y < building_locations[i].building_size.second;y++)
 		{
@@ -172,12 +202,18 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	for (int i = 0;i < final_grid.size();i++)
-		file_to_output[final_grid[i].second][final_grid[i].first] = 'G';
-
-	for (int y = 0;y < file_to_output.size();y++)
+	for (size_t i = 0;i < final_grid.size();i++)
 	{
-		for (int x = 0;x < file_to_output[y].size();x++)
+		for (int y = 0;y < final_grid[i].building_size.second;y++)
+		{
+			for (int x = 0;x < final_grid[i].building_size.first;x++)
+				file_to_output[final_grid[i].building_position.second + y][final_grid[i].building_position.first + x] = 'G';
+		}
+	}
+
+	for (size_t y = 0;y < file_to_output.size();y++)
+	{
+		for (size_t x = 0;x < file_to_output[y].size();x++)
 			file << file_to_output[y][x];
 
 		file << endl;
