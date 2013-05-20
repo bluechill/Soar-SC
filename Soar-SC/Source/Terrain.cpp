@@ -147,12 +147,27 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 
 	stringstream ss;
 
+	Identifier* input_link = agent->GetInputLink();
+
+	Identifier* terrain_store;
+
+	if (!input_link->FindByAttribute("units", 0))
+	{
+		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
+		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
+
+		terrain_store = input_link->CreateIdWME("terrain");
+	}
+	else
+		terrain_store = input_link->FindByAttribute("terrain", 0)->ConvertToIdentifier();
+
 	int i = 0;
 	for (vector<SVS_Rectangle>::iterator it = rectangles.begin();it != rectangles.end() && !should_die;i++, it++)
 	{
 		ss << i;
 		string id = ss.str();
 		ss.str("");
+		string terrain_name = "terrain" + id;
 
 		SVS_Rectangle rect = *it;
 		
@@ -165,8 +180,10 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 		string size = ss.str();
 		ss.str("");
 
-		string svs_command = "a rect" + id + " world v " + Terrain::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
+		string svs_command = "a " + terrain_name + " world v " + Terrain::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
 		agent->SendSVSInput(svs_command);
+
+		terrain_store->CreateStringWME("object", terrain_name.c_str());
 	}
 
 	cout << "Rectangles: " << rectangles.size() << endl;
