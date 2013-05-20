@@ -1,78 +1,486 @@
 #Initialize build-building substate
 #Decide on the location for building the building
 
-#sp {propose*initialize-building-substate
-#   (state <s> ^superstate <super>
-#             -^name
-#              ^impasse no-change)
-#   (<super> ^operator <o>)	
-#   (<o> ^name build-building
-#        ^type <type-id>)
-#-->
-#   (<s> ^operator <init-operator> + >)
-#   (<init-operator> ^name initialize-building-substate)
-#}
-#
-#sp {apply*initialize-building-substate
-#   (state <s> ^operator <init-operator>)
-#   (<init-operator> ^name initialize-building-substate)
-#-->
-#   (<s> ^name build-building-substate)
-#}
+sp {propose*initialize-building-substate
+   (state <s> ^superstate <super>
+             -^name
+              ^impasse no-change)
+   (<super> ^operator <o>)	
+   (<o> ^name build-building
+        ^type <type-id>)
+-->
+   (<s> ^operator <init-operator> + >)
+   (<init-operator> ^name initialize-building-substate
+                    ^type <type-id>)
+}
 
-#Generate the grids on all buildings currently without one
+sp {apply*initialize-building-substate
+   (state <s> ^operator <init-operator>)
+   (<init-operator> ^name initialize-building-substate
+                    ^type <type-id>)
+-->
+   (<s> ^name build-building-substate
+        ^type <type-id>)
+}
 
-#Propose getting the building center if it doesn't have a grid
-#sp {propose*generate-grid-svs-action
-#   (state <s> ^superstate <super>
-#              ^name build-building-substate)
-#   (<super> ^io.input-link.units.building <building>)
-#   (<building> -^grid
-#                ^id <id>)
-#-->
-#   (<s> ^operator <generate-grid> +)
-#   (<generate-grid> ^name generate-grid
-#                    ^building <id>)
-#}
-#
-#sp {apply*generate-grid-svs-action
-#   (state <s> ^superstate <superstate>
-#              ^operator <generate-grid-operator>)
-#   (<superstate> ^svs.command <commands>)
-#   (<generate-grid-operator> ^name generate-grid
-#                             ^building <id>)
-#-->
-#   (<commands> ^extract <extract-command>)
-#   (<extract-command> ^type node_centroid ^a <node1>)
-#   (<node1> ^type combine
-#            ^building <building>)
-#   (<building> ^type node ^id <id>)
-#}
+#Generate a grid around all the buildings
+sp {propose*generate-grid
+   (state <s> ^superstate <super>
+              ^name build-building-substate)
+-->
+   (<s> ^operator <generate-grid-operator>)
+   (<generate-grid-operator> ^name generate-grid)
+}
 
-#Generate the grid
+sp {apply*generate-grid-create-svs-command
+   (state <s> ^name build-building-substate
+              ^operator.name generate-grid
+              ^superstate <superstate>
+              ^type <type-id>)
+   (<superstate> ^svs.command <command>
+                 ^io.input-link.types.type <building-type>)
+   (<building-type> ^type <type-id>
+                    ^x-size <x>
+                    ^y-size <y>)
+-->
+   (<commands> ^extract <extract-command>)
+   (<extract-command> ^type generate_grid
+                      ^a <node1>
+                      ^x-size <x>
+                      ^y-size <y>)
+   (<node1> ^type combine)
+}
 
-#sp {propose*generate-grid
-#   (state <s> ^superstate <superstate>)
-#   (<superstate> ^svs.command <command-link>
-#                 ^operator <build-building-operator>)
-#   (<command-link> ^extract <extract>)
-#   (<extract> ^status success
-#              ^result.record.params.a <building-position>)
-#   (<build-building-operator> ^name build-building)
-#-->
-#   (<s> ^operator <generate-grid> + )
-#   (<generate-grid> ^name generate-grid)
-#}
-#
-#sp {apply*generate-grid
-#   :interrupt
-#   (state <s> ^operator <generate-grid>)
-#   (<generate-grid> ^name generate-grid)
-#-->
-#   (write |interrupt|)
-#}
+sp {apply*generate-grid-add-all-buildings
+   (state <s> ^name build-building-substate
+              ^operator.name generate-grid
+              ^superstate <superstate>)
+   (<superstate> ^svs.command.extract.a <node1>
+                 ^io.input-link.buildings.building.svsobject <svsobject>)
+-->
+   (<node1> ^building <building>)
+   (<building> ^type node
+               ^id <svsobject>)
+}
 
-#Apply building the building
+sp {apply*generate-grid-add-all-resources
+   (state <s> ^name build-building-substate
+              ^operator.name generate-grid
+              ^superstate <superstate>)
+   (<superstate> ^svs.command.extract.a <node1>
+                 ^io.input-link.resources ^<attr> <svsobject>)
+-->
+   (<node1> ^resource <resource>)
+   (<resource> ^type node
+               ^id <svsobject>)
+}
+
+sp {apply*generate-grid-add-terrain
+   (state <s> ^name build-building-substate
+              ^operator.name generate-grid
+              ^superstate <superstate>)
+   (<superstate> ^svs.command.extract.a <node1>
+                 ^io.input-link.terrain ^object <svsobject>)
+-->
+   (<node1> ^terrain-format <terrain>)
+   (<terrain> ^type node
+               ^id <svsobject>)
+}
+
+#Fetch the grid and place it on the state
+sp {propose*fetch-grid
+   (state <s> ^name build-building-substate
+              ^superstate <superstate>)
+   (<superstate> ^svs.command.extract <extract>)
+   (<extract> ^status success
+              ^result.record.params.grid <grid>)
+-->
+   (<s> ^operator <fetch-grid>)
+   (<fetch-grid> ^name fetch-grid
+                 ^grid <grid>)
+}
+
+sp {apply*fetch-grid
+   (state <s> ^name build-building-substate
+              ^operator <fetch-grid>)
+   (<fetch-grid> ^name fetch-grid
+                 ^grid <grid>)
+-->
+   (<s> ^grid <grid>)
+}
+
+#Propose to place the building at all grid locations
+sp {propose*build-at-location
+   (state <s> ^name build-building-substate
+              ^grid <grid>)
+   (<grid> ^<attr> <pos>)
+   (<pos> ^x <x>
+          ^y <y>
+          ^x-size <x-size>
+          ^y-size <y-size>)
+-->
+   (<s> ^operator <set-build-location>)
+   (<set-build-location> ^name set-build-location
+                         ^x <x>
+                         ^y <y>
+                         ^x-size <x-size>
+                         ^y-size <y-size>)
+}
+
+#Now go into the second substate to reason about which ones aren't valid
+
+#Initialize the substate
+sp {propose*initialize-invalidate-grid-location-substate
+   (state <s> ^superstate <superstate>
+             -^name)
+   (<superstate> ^superstate <ss>
+                 ^name build-building-substate)
+   (<ss> ^operator <build-location>)
+   (<build-location> ^name build-building
+                     ^type <type>)
+-->
+   (<s> ^operator <initialize> + >)
+   (<initialize> ^name initialize-invalidate-grid-location-substate)
+}
+
+sp {apply*initialize-invalidate-grid-location-substate
+   (state <s> ^superstate <superstate>
+             -^name
+              ^operator.name initialize-invalidate-grid-location-substate)
+   (<superstate> ^superstate <topstate>)
+   (<topstate> ^io.input-link.types.type <type>
+               ^io.input-link.resources <resources>)
+   (<type> ^name |Terran Command Center|
+           ^id <type-id>)
+-->
+   (<s> ^name invalidate-grid-location-substate
+        ^top-state <topstate>
+        ^command-center-type <type-id>
+        ^resources <resources>)
+}
+
+#Find all resources that are within 5 build tiles of the command center
+sp {propose*find-all-resources-within-5-of-cc
+   (state <s> ^name invalidate-grid-location-substate
+              ^top-state <topstate>
+              ^command-center-type <type>
+              ^resources <resources>)
+-->
+   (<s> ^operator <find-all-minerals> + )
+   (<find-all-minerals> ^name find-all-resources)
+}
+
+sp {apply*find-all-resources-create-svs-link
+   (state <s> ^operator.name find-all-resources
+              ^top-state <top-state>)
+   (<top-state> ^svs.command <command-link>)
+-->
+   (<command-link> ^extract <extract>)
+   (<extract> ^type choose_within_set_distance ^a <combine-node> ^b <cc> ^distance 5)
+   (<combine-node> ^type combine)
+   (<cc> ^type combine)
+}
+
+sp {apply*add-all-ccs
+   (state <s> ^operator.name find-all-resources
+              ^top-state <top-state>
+              ^command-center-type <cc-type>)
+   (<top-state> ^io.input-link.units.building <cc>
+                ^svs.command.extract.b <cc-combine>)
+   (<cc> ^type <cc-type>
+         ^svsobject <svsobject>)
+-->
+   (<cc-combine> ^cc <cc-node>)
+   (<cc-node> ^type node
+              ^id <svsobject>)
+}
+
+sp {apply*add-all-resources
+   (state <s> ^operator.name find-all-resources
+              ^top-state <top-state>
+              ^resources <resources>)
+   (<top-state> ^svs.command.extract.a <combine-node>)
+   (<resources> ^<attr> <resource>)
+   (<resource> ^svsobject <svsobject>)
+-->
+   (<combine-node> ^resource-patch <resource-patch>)
+   (<resource-patch> ^type node
+                     ^id <svsobject>)
+}
+
+#Check for intersects with the grids and the lines from the command center to the
+#resources with a fuzziness of 1 (that is generate an infinitely small width line
+#from the command center to each resource and then expand it by 1/2 build tile in
+#each direct for a total width of 1) 
+
+sp {propose*fuzzy-line-intersect
+   (state <s> ^name invalidate-grid-location-substate
+              ^top-state <top-state>)
+   (<top-state> ^svs.command.extract <extract>)
+   (<extract> ^status success
+              ^result.record.params.valid-list <v-list>)
+-->
+   (<s> ^operator <fuzzy-operator> +)
+   (<fuzzy-operator> ^name fuzzy-line-intersect
+                     ^v-list <v-list>)
+}
+
+sp {apply*fuzzy-line-intersect*generate-structure
+   (state <s> ^operator <fuzzy-operator>
+              ^top-state <top-state>
+              ^command-center-type <type>)
+   (<fuzzy-operator> ^name fuzzy-line-intersect
+                     ^v-list <v-list>)
+   (<top-state> ^svs.command <command-link>
+                ^io.input-link.units.building <cc>)
+   (<cc> ^type <type>
+         ^svsobject <id>)
+-->
+   (<command-link> ^extract <extract>)
+   (<extract> ^type multi_fuzzy_line_intersect
+              ^main <id>
+              ^line-objects <line-combine-node>
+              ^fuzziness 1
+              ^collision-objects <collision-combine-node>)
+   (<line-combine-node> ^type combine)
+   (<collision-combine-node> ^type combine)
+}
+
+sp {apply*fuzzy-line-intersect*generate-line-combines
+   (state <s> ^operator <fuzzy-operator>
+              ^top-state <top-state>)
+   (<fuzzy-operator> ^name fuzzy-line-intersect
+                     ^v-list <v-list>)
+   (<v-list> ^<attr> <svsobject>)
+   (<top-state> ^svs.command.extract.line-objects <line-combine-node>)
+-->
+   (<line-combine-node> ^resource <resource>)
+   (<resource> ^type node
+               ^id <svsobject>)
+}
+
+sp {apply*fuzzy-line-intersect*generate-collision-combines
+   (state <s> ^operator <fuzzy-operator>
+              ^superstate <superstate>
+              ^top-state <top-state>)
+   (<fuzzy-operator> ^name fuzzy-line-intersect)
+   (<top-state> ^svs.command.extract.collision-objects <collision-combine-node>)
+   (<superstate> ^operator <set-build-location-operator>)
+   (<set-build-location-operator> ^name set-build-location
+                                  ^x <x>
+                                  ^y <y>
+                                  ^x-size <x-size>
+                                  ^y-size <y-size>)
+-->
+   (<collision-combine-node> ^type generation-node
+                             ^shape rectangle
+                             ^x-pos <x>
+                             ^y-pos <y>
+                             ^x-size <x-size>
+                             ^y-size <y-size>
+                             ^name grid)
+}
+
+#Mark all grids that intersect as unacceptable
+
+sp {propose*mark-unacceptable-grids-from-fuzzy
+   (state <s> ^name invalidate-grid-location-substate
+              ^superstate <superstate>
+              ^top-state <top-state>)
+   (<top-state> ^svs.command.extract <extract>)
+   (<extract> ^status success
+              ^result.record.params.eliminate-list <e-list>)
+-->
+   (<s> ^operator <unacceptable-operator> +)
+   (<unacceptable-operator> ^name mark-unacceptable
+                            ^e-list <e-list>)
+}
+
+sp {apply*mark-unacceptable-grids-from-fuzzy
+   (state <s> ^operator <unacceptable-operator>
+              ^superstate <super-state>)
+   (<unacceptable-operator> ^name mark-unacceptable
+                            ^e-list <e-list>)
+   (<e-list> ^<attr> <grid-object>)
+   (<grid-object> ^x <x>
+                  ^y <y>)
+   (<super-state> ^operator <set-build-location>)
+   (<set-build-location> ^name set-build-location
+                         ^x <x>
+                         ^y <y>)
+-->
+   (<superstate> ^operator <set-build-location> -)
+}
+
+#Go into a third substate to do one final reasoning
+#This should have triggered a substate because there
+#should be multiple ones left, if there isn't it'll
+#either go into a forever chain of substates (should
+#be impossible but perhaps not) or it will resolve
+ 
+sp {propose*initialize-closest-or-equal-substate
+   (state <s> ^superstate <superstate>
+             -^name)
+   (<superstate> ^superstate <ss>
+                 ^top-state <top-state>
+                 ^name invalidate-grid-location-substate)
+   (<top-state> ^operator <build-building>)
+   (<build-building> ^name build-building
+                     ^type <type>)
+-->
+   (<s> ^operator <initialize-closest-or-equal-substate> + >)
+   (<initialize-closest-or-equal-substate> ^name initialize-closest-or-equal-substate)
+}
+
+sp {apply*initialize-closest-or-equal-substate
+   (state <s> ^operator.name initialize-closest-or-equal-substate
+             -^name)
+-->
+   (<s> ^name closest-or-equal)
+}
+
+#If there are existing building(s) with the same type I'm trying to place,
+#propose to place the building at the at grid closest to that building (if
+#there are multiple grids within 1 1/2 build tiles of a building of the same
+#type, mark them all as equal)
+sp {propose*eliminate-all-not-within-1-5-of-existing-type
+   (state <s> ^name closest-or-equal
+              ^top-state <topstate>)
+   (<topstate> ^operator <build-building>
+               ^io.input-link.units.building <building-of-type>)
+   (<build-building> ^name build-building
+                     ^type <type>)
+   (<building-of-type> ^type <type>)
+-->
+   (<s> ^operator <eliminate> + =)
+   (<eliminate> ^name eliminate-not-within)
+}
+
+sp {apply*eliminate-all*create-svs-link
+   (state <s> ^operator.name eliminate-not-within
+              ^top-state <top-state>)
+   (<top-state> ^svs.command <command-link>)
+-->
+   (<command-link> ^extract <extract>)
+   (<extract> ^type multi_choose_within_set_distance ^a <combine-node> ^b <buildings-node> ^distance 1.5)
+   (<combine-node> ^type combine)
+   (<buildings-node> ^type combine)
+}
+
+sp {apply*eliminate-all*add-existing-types
+   (state <s> ^operator.name eliminate-not-within
+              ^top-state <top-state>)
+   (<top-state> ^operator <build-building>
+				^io.input-link.units.building <building>
+                ^svs.command.extract.b <building-node>)
+   (<build-building> ^name build-building
+                     ^type <type>)
+   (<building> ^type <type>
+         	   ^svsobject <svsobject>)
+-->
+   (<building-node> ^building <build-node>)
+   (<build-node> ^type node
+                 ^id <svsobject>)
+}
+
+sp {apply*eliminate-all*add-all-grids
+   (state <s> ^operator.name eliminate-not-within
+              ^top-state <top-state>
+              ^superstate <one-level-higher>)
+   (<one-level-higher> ^superstate <grid-state>)
+   (<grid-state> ^operator <grid-operator>)
+   (<grid-operator> ^name set-build-location
+                    ^x <x>
+                    ^y <y>
+                    ^x-size <x-size>
+                    ^y-size <y-size>)
+   (<top-state> ^svs.command.extract.a <combine-node>)
+-->
+   (<combine-node> ^grid <grid-node>)
+   (<grid-node> ^type generate-node
+                ^shape rect
+                ^x <x>
+                ^y <y>
+                ^x-size <x-size>
+                ^y-size <y-size>)
+}
+
+sp {propose*eliminate-operators-from-grid
+   (state <s> ^name closest-or-equal
+              ^topstate <topstate>)
+   (<topstate> ^svs.command.extract <extract-command>)
+   (<extract-command> ^status success
+                      ^result.record.params.eliminate-list <e-list>)
+-->
+   (<s> ^operator <eliminate-operators> +)
+   (<eliminate-operators> ^name eliminate-operators-outside-of-grid
+                          ^e-list <e-list>)
+}
+
+sp {apply*eliminate-operator-from-grid
+   (state <s> ^operator <eliminate-operator>
+              ^superstate <one-level-up>)
+   (<eliminate-operator> ^name eliminate-operators-outside-of-grid
+                         ^e-list <e-list>)
+   (<one-leve-up> ^superstate <grid-state>)
+   (<e-list> ^<attr> <grid-object>)
+   (<grid-object> ^x <x>
+                  ^y <y>)
+   (<grid-state> ^operator <set-build-location>)
+   (<set-build-location> ^name set-build-location
+                         ^x <x>
+                         ^y <y>)
+-->
+   (<grid-state> ^operator <set-build-location> -)
+}
+
+#If there aren't buildings of the same type already, mark all remain grids as equal.
+sp {propose*mark-all-remaining-equal
+   (state <s> ^name closest-or-equal
+              ^superstate <one-level-up>
+              ^topstate <top-state>)
+   (<one-level-up> ^superstate <grid-state>)
+   (<grid-state> ^operator <set-build-location>)
+   (<set-build-location> ^name set-build-location)
+   (<top-state> -^svs.command.extract)
+-->
+   (<s> ^operator <mark-equal> + <)
+   (<mark-equal> ^name mark-equal)
+}
+
+sp {apply*mark-all-remaining-equal
+   (state <s> ^operator.name mark-equal
+              ^superstate <one-level-up>)
+   (<one-level-up> ^superstate <grid-state>)
+   (<grid-state> ^operator <set-build-one>
+                 ^operator <set-build-two>)
+   (<set-build-one> ^name set-build-location)
+   (<set-build-two> ^name set-build-location)
+-->
+   (<grid-state> ^operator <set-build-one> = <set-build-two>)
+}
+
+#Solved impasse
+#Bottom two substates blow away
+#Set the final grid to choose on the build-building operator
+
+sp {apply*build-at-location
+   (state <s> ^name build-building-substate
+              ^superstate <top-state>
+              ^operator <set-build-location>
+              ^type <type-id>)
+   (<set-build-location> ^name set-build-location
+                         ^x <x>
+                         ^y <y>)
+   (<top-state> ^operator <build-building>)
+   (<build-building> ^name build-building
+                     ^type <type-id>)
+-->
+   (<build-building> ^location-x <x>
+                     ^location-y <y>)
+}
+
+#Apply the build-building operator
 
 sp {apply*build-building
    (state <s> ^operator <op>
@@ -108,14 +516,6 @@ sp {apply*build-building
 }
 
 #Preference rules
-#sp {pref*buildings-better-than-units
-#   (state <s> ^operator <o1> +
-#              ^operator <o2> +)
-#   (<o1> ^name build-unit)
-#   (<o2> ^name build-building)
-#-->
-#   (<s> ^operator <o2> > <o2>)
-#}
 
 sp {pref*idle-better-than-non-idle
    (state <s> ^operator <o1> +
@@ -134,24 +534,6 @@ sp {pref*idle-better-than-non-idle
 -->
    (<s> ^operator <o1> > <o2>)
 }
-
-#sp {pref*non-carrying-better-than-carrying
-#   (state <s> ^operator <o1> +
-#              ^operator <o2> +
-#              ^io.input-link.units <units>)
-#   (<o1> ^name build-building
-#         ^worker <id1>)
-#   (<o2> ^name build-building
-#         ^worker <id2>)
-#   (<units> ^unit <u1>
-#            ^unit <u2>)
-#   (<u1> ^id <id1>
-#         ^carrying 0)
-#   (<u2> ^id <id2>
-#         ^carrying 1)
-#-->
-#   (<s> ^operator <o1> > <o2>)
-#}
 
 sp {pref*force-wait-for-build-command-done
    (state <state> ^name Soar-SC
