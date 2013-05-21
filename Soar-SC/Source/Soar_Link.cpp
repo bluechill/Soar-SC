@@ -307,7 +307,7 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 
 				soar_sc_link->add_event(Soar_Event(child));
 
-				std::string svsobject_id = "fog:" + ss_x.str() + ":" + ss_y.str();
+				std::string svsobject_id = "BaseFogTile:" + ss_x.str() + ":" + ss_y.str();
 
 				std::string command = "d " + svsobject_id;
 
