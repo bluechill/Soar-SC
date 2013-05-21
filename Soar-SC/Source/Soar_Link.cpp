@@ -336,7 +336,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	for (UnitType::set::iterator it = types.begin();it != types.end();it++)
 	{
 		char* name = const_cast<char*>((*it).getName().c_str());
-		replace(&name[0], &name[strlen(name)], '_', ' ');
+		//replace(&name[0], &name[strlen(name)], '_', ' ');
 
 		Identifier* type = types_id->CreateIdWME("type")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 		type->CreateStringWME("name", name); //Create a string WME with the type's name
