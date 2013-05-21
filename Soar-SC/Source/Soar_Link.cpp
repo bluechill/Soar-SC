@@ -356,22 +356,22 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	ss.str(""); //Clear the string stream once more
 
 	//Bottom barrier
-	string svs_command_1 = "a -x0 world v " + Terrain::unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
+	string svs_command_1 = "a TerrainBorder1 terrain_object world v " + Terrain::unit_box_verts + " p 0 -1 0 s " + map_width_as_string + " 1 1";
 
 	agent->SendSVSInput(svs_command_1); //Send the SVS command to the agent
 
 	//Top barrier
-	string svs_command_2 = "a x0 world v " + Terrain::unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
+	string svs_command_2 = "a TerrainBorder3 terrain_object world v " + Terrain::unit_box_verts + " p 0 " + map_height_as_string + " 0 s " + map_width_as_string + " 1 1";
 
 	agent->SendSVSInput(svs_command_2);
 
 	//Left barrier
-	string svs_command_3 = "a -y0 world v " + Terrain::unit_box_verts + " p -1 0 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_3 = "a TerrainBorder4 terrain_object world v " + Terrain::unit_box_verts + " p -1 0 0 s 1 " + map_height_as_string + " 1";
 
 	agent->SendSVSInput(svs_command_3);
 
 	//Right barrier
-	string svs_command_4 = "a y0 world v " + Terrain::unit_box_verts + " p " + map_width_as_string + " 0 0 s 1 " + map_height_as_string + " 1";
+	string svs_command_4 = "a TerrainBorder2 terrain_object world v " + Terrain::unit_box_verts + " p " + map_width_as_string + " 0 0 s 1 " + map_height_as_string + " 1";
 
 	agent->SendSVSInput(svs_command_4);
 
@@ -485,9 +485,9 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 			ss_x << x;
 			ss_y << size_t(Terrain::flip_one_d_point(float(y), false));
 
-			std::string svsobject_id = "fog:" + ss_x.str() + ":" + ss_y.str();
+			std::string svsobject_id = "BaseFogTile:" + ss_x.str() + ":" + ss_y.str();
 
-			std::string svs_command = "a " + svsobject_id + " world v " + Terrain::unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
+			std::string svs_command = "a " + svsobject_id + " fog_tile world v " + Terrain::unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
 			agent->SendSVSInput(svs_command);
 
 			Identifier* fogTile = fog_tiles->CreateIdWME(string(ss_x.str() + ":" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
@@ -551,7 +551,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	resource->CreateIntWME("id", bw_id); //Set the id
 	resource->CreateIntWME("count", count); //Set the number of minerals it holds
 
-	string svs_object_id = type.getName(); //Set the svs id to be the type's name
+	string svs_object_id = "Resource" + (name == "mineral" ? "Mineral" : "Vesp"); //Set the svs id to be the type's name
 	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end()); //Remove all the spaces
 
 	//Add the id of the resource to the id
@@ -569,7 +569,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	ss.str("");
 
 	//Create the svs add command
-	string svs_command = "a " + svs_object_id + " world v " + Terrain::unit_box_verts + " p " + position_svs + " s " + size + " r 0 0 0";
+	string svs_command = "a " + svs_object_id + " resource world v " + Terrain::unit_box_verts + " p " + position_svs + " s " + size + " r 0 0 0";
 	//Broodwar->printf("%s", svs_command.c_str());
 	cout << svs_command << endl;
 

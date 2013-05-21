@@ -167,7 +167,7 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 		ss << i;
 		string id = ss.str();
 		ss.str("");
-		string terrain_name = "terrain" + id;
+		string terrain_name = "TerrainRect" + id;
 
 		SVS_Rectangle rect = *it;
 		
@@ -180,7 +180,7 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 		string size = ss.str();
 		ss.str("");
 
-		string svs_command = "a " + terrain_name + " world v " + Terrain::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
+		string svs_command = "a " + terrain_name + " terrain_object world v " + Terrain::unit_box_verts + " p " + pos + " 0 s " + size + " 1";
 		agent->SendSVSInput(svs_command);
 
 		terrain_store->CreateStringWME("object", terrain_name.c_str());

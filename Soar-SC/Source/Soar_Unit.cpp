@@ -76,11 +76,16 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 	pos.x = ((float)unit->getLeft()/32.0f);
 	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
 
+	if (building)
+		svsobject_id = "Building";
+	else
+		svsobject_id = "Unit";
+
 	//Set the svsobject id
 	if (enemy)
-		svsobject_id = "Enemy";
+		svsobject_id += "Enemy";
 	else
-		svsobject_id = "";
+		svsobject_id += "Friend";
 
 	svsobject_id += type.getName();
 	svsobject_id.erase(remove_if(svsobject_id.begin(), svsobject_id.end(), isspace), svsobject_id.end());
@@ -113,7 +118,7 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 	ss << pos.x << " " << pos.y << " 0";
 	string position = ss.str();
 
-	string svs_command = "a " + svsobject_id + " world v " + Terrain::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
+	string svs_command = "a " + svsobject_id + " bwapi_unit world v " + Terrain::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
 	soar_sc_link->get_soar_link()->SendSVSInput(svs_command);
 
 	unit_id->CreateIntWME("type", type.getID());
