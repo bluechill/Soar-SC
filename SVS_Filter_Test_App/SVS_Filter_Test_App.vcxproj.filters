@@ -30,6 +30,18 @@
     <ClInclude Include="Filter_Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Choose_Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Multi_Choose_Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fuzzy_Line_Intersect_Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Multi_Fuzzy_Line_Intersect_Filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +51,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Grid_Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Choose_Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multi_Choose_Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fuzzy_Line_Intersect_Filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multi_Fuzzy_Line_Intersect_Filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
