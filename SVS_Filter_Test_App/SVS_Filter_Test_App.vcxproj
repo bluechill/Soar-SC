@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClCompile Include="Choose_Filter.cpp" />
     <ClCompile Include="Fuzzy_Line_Intersect_Filter.cpp" />
+    <ClCompile Include="generate_grid.cpp" />
     <ClCompile Include="Grid_Filter.cpp" />
     <ClCompile Include="Multi_Choose_Filter.cpp" />
     <ClCompile Include="Multi_Fuzzy_Line_Intersect_Filter.cpp" />
