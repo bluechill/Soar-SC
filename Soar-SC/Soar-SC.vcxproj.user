@@ -6,9 +6,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerSQLDebugging>false</LocalDebuggerSQLDebugging>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(SolutionDir)RunChaosLauncher.exe</LocalDebuggerCommand>
-    <LocalDebuggerWorkingDirectory>$(ProgramFiles)\Starcraft</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>C:\Users\bluechill\Developer\Soar-SVN\out\test_svs.exe</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>..\..\Soar-SVN\Core\SVS</LocalDebuggerWorkingDirectory>
     <ShowAllFiles>false</ShowAllFiles>
+    <LocalDebuggerCommandArguments>tests.txt</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)RunChaosLauncher.exe</LocalDebuggerCommand>
