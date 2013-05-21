@@ -60,7 +60,7 @@ public:
 		if (!get_filter_param(this, p, "y-size", shape_size.y))
 			return false;
 
-		if (!get_filter_param(this, p, "type", type))
+		if (!get_filter_param(this, p, "building-type", type))
 			return false;
 
 		//Middleware puts everything into SVS in the following ways
