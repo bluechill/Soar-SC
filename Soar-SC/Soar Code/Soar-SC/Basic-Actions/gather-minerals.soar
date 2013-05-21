@@ -6,7 +6,7 @@ sp {propose*gather-minerals
    (<input-link> ^resources.mineral <mineral-field>
                  ^units.unit <scv>
                  ^types.type <scv-type>)
-   (<scv-type> ^name |Terran SCV|
+   (<scv-type> ^name |Terran_SCV|
           ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
           ^idle 1

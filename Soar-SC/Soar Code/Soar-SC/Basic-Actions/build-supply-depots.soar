@@ -12,14 +12,14 @@ sp {propose*build-supply-depot
                  ^types.type <supply-depot-type>
                  ^total-supplies <ts>
                  ^used-supplies { >= <sdut> <= <ts> <us> } )
-   (<scv-type> ^name |Terran SCV|
+   (<scv-type> ^name |Terran_SCV|
                ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
           ^idle <scv-idle>
           ^carrying <scv-carrying>
           ^id <scv-id>
          -^scouting)
-   (<supply-depot-type> ^name |Terran Supply Depot|
+   (<supply-depot-type> ^name |Terran_Supply_Depot|
                         ^id <supply-depot-type-id>
                         ^mineral-cost { <= <minerals-budget> })
 #   (<supply-depot-count> ^type <supply-depot-type-id>
@@ -52,7 +52,7 @@ sp {pref*building-supply-depot-better-than-gather-minerals
    (state <s> ^operator <o1> +
               ^operator <o2> +
               ^io.input-link.types.type <t>)
-   (<t> ^name |Terran Supply Depot|
+   (<t> ^name |Terran_Supply_Depot|
         ^id <type-id>)
    (<o1> ^name build-building
          ^type <type-id>)
@@ -65,7 +65,7 @@ sp {pref*building-supply-depot-better-than-build-building
    (state <s> ^operator <o1> +
               ^operator <o2> +
               ^io.input-link.types.type <t>)
-   (<t> ^name |Terran Supply Depot|
+   (<t> ^name |Terran_Supply_Depot|
         ^id <type-id>)
    (<o1> ^name build-building
          ^type <type-id>)
@@ -80,7 +80,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-0
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -93,7 +93,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-1
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -106,7 +106,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-2
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -119,7 +119,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-3
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -132,7 +132,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-4
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -145,7 +145,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-5
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -158,7 +158,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-6
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -171,7 +171,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-7
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>
@@ -184,7 +184,7 @@ sp {pref*building-supply-depot-better-than-build-building
 #sp {elaboration*supply-depots*location-to-x-y-8
 #   (state <s> ^operator <o> +
 #              ^io.input-link.types.type <t>)
-#   (<t> ^name |Terran Supply Depot|
+#   (<t> ^name |Terran_Supply Depot|
 #        ^id <type-id>)
 #   (<o> ^name build-building
 #        ^type <type-id>

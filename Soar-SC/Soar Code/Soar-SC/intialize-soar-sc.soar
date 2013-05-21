@@ -14,13 +14,13 @@ sp {apply*initialize-soar-sc
         ^types.type <t-s>
         ^types.type <t-scv>
         ^types.type <t-m>)
-   (<t-b> ^name |Terran Barracks| 
+   (<t-b> ^name |Terran_Barracks| 
           ^id <barracks-id>)
-   (<t-s> ^name |Terran Supply Depot|
+   (<t-s> ^name |Terran_Supply_Depot|
           ^id <supply-id>)
-   (<t-scv> ^name |Terran SCV|
+   (<t-scv> ^name |Terran_SCV|
             ^id <scv-type>)
-   (<t-m> ^name |Terran Marine|
+   (<t-m> ^name |Terran_Marine|
           ^id <marine-type>)
 -->
    (<s> ^name Soar-SC

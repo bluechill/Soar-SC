@@ -9,9 +9,9 @@ sp {propose*build-scv
         ^units.building <b>
         ^types.type <scv-type>
         ^types.type <command-center>)
-   (<command-center> ^name |Terran Command Center|
+   (<command-center> ^name |Terran_Command_Center|
                      ^id <command-center-id>)
-   (<scv-type> ^name |Terran SCV|
+   (<scv-type> ^name |Terran_SCV|
                ^id <type-id>)
    (<b> ^type <command-center-id>
         ^id <id>
@@ -38,9 +38,9 @@ sp {propose*build-marines
         ^units.building <b>
         ^types.type <marine-type>
         ^types.type <barracks-type>)
-   (<barracks-type> ^name |Terran Barracks|
+   (<barracks-type> ^name |Terran_Barracks|
                     ^id <barracks-id>)
-   (<marine-type> ^name |Terran Marine|
+   (<marine-type> ^name |Terran_Marine|
                ^id <type-id>)
    (<b> ^type <barracks-id>
         ^id <id>
@@ -61,9 +61,9 @@ sp {pref*marines-better-than-scv
               ^operator <o2> +
               ^io.input-link.types.type <t1>
               ^io.input-link.types.type <t2>)
-   (<t1> ^name |Terran Marine|
+   (<t1> ^name |Terran_Marine|
          ^id <marine-id>)
-   (<t2> ^name |Terran SCV|
+   (<t2> ^name |Terran_SCV|
          ^id <scv-id>)
    (<o1> ^name build-unit
          ^type <marine-id>)

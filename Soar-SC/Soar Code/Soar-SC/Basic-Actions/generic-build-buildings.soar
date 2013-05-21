@@ -37,7 +37,7 @@ sp {apply*generate-grid*create-svs-command
               ^operator.name generate-grid
               ^superstate <superstate>
               ^type <type-id>)
-   (<superstate> ^svs.command <command>
+   (<superstate> ^svs.command <commands>
                  ^io.input-link.types.type <building-type>)
    (<building-type> ^type <type-id>
                     ^x-size <x>

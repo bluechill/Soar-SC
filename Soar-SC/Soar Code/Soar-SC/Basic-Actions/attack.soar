@@ -6,7 +6,7 @@ sp {propose*attack
               ^io.output-link <output-link>)
    (<enemy-units> ^<attr> <enemy>)
    (<enemy> ^id <enemy-id>)
-   (<marine-type> ^name |Terran Marine|
+   (<marine-type> ^name |Terran_Marine|
                   ^id <type-id>)
    (<my-units> ^unit <my-unit>)
    (<my-unit> ^type <type-id>
@@ -67,7 +67,7 @@ sp {propose*counter-attack
    (<marine> ^id <marine-id>
              ^type <marine-type-id>
              ^target { <> <enemy-id> })
-   (<marine-type> ^name |Terran Marine|
+   (<marine-type> ^name |Terran_Marine|
                   ^id <marine-type-id>)
 -->
    (<s> ^operator <counter-attack>)
@@ -87,7 +87,7 @@ sp {pref*remove-new-counter-attack-if-already-counter-attacking
    (<input-link> ^units.unit <marine>
                  ^enemy-units.unit <enemy-marine>
                  ^types.type <marine-type>)
-   (<marine-type> ^name |Terran Marine|
+   (<marine-type> ^name |Terran_Marine|
                   ^id <marine-type-id>)
    (<marine> ^id <marine-id>
              ^target <target-id>)

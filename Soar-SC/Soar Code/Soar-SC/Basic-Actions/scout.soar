@@ -4,7 +4,7 @@ sp {propose*new-scout
    (<input-link> ^fog-tiles <fog-tiles>
                  ^units.unit <scv>
                  ^types.type <scv-type>)
-   (<scv-type> ^name |Terran SCV|
+   (<scv-type> ^name |Terran_SCV|
                ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
          -^scouting
