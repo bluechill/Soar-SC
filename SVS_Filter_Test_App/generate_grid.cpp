@@ -1,3 +1,5 @@
+#ifdef SVS
+
 #include <iostream>
 #include <map>
 #include "filter.h"
@@ -886,3 +888,5 @@ filter_table_entry *generate_grid_fill_entry() {
 	e->calc = NULL;
 	return e;
 }
+
+#endif
