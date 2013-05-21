@@ -551,7 +551,7 @@ void Soar_Link::add_resource(int bw_id, int count, BWAPI::Position position, BWA
 	resource->CreateIntWME("id", bw_id); //Set the id
 	resource->CreateIntWME("count", count); //Set the number of minerals it holds
 
-	string svs_object_id = "Resource" + (name == "mineral" ? "Mineral" : "Vesp"); //Set the svs id to be the type's name
+	string svs_object_id = "Resource" + string(name == "mineral" ? "Mineral" : "Vesp"); //Set the svs id to be the type's name
 	svs_object_id.erase(remove_if(svs_object_id.begin(), svs_object_id.end(), isspace), svs_object_id.end()); //Remove all the spaces
 
 	//Add the id of the resource to the id
