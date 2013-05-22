@@ -1,6 +1,7 @@
 sp {propose*wait
    (state <s> ^name Soar-SC
              -^operator.name wait)
--->   (<s> ^operator <o> + <)
+-->
+   (<s> ^operator <o> + <)
    (<o> ^name wait)
 }

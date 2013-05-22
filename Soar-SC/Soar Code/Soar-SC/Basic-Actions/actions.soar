@@ -7,6 +7,25 @@ source generic-build-operators.soar
 #source scout.soar
 #source attack.soar
 
+sp {propose*remove-output-commands
+   (state <s> ^name Soar-SC
+              ^io.output-link <output>)
+   -{(<s> ^io)
+     (<output> -^<attr> <object>)}
+-->
+   (<s> ^operator <o> + <)
+   (<o> ^name remove-output-commands)
+}
+
+sp {pref*wait-worse-than-cleanup
+   (state <s> ^operator <wait> +
+              ^operator <remove-output-commands> +)
+   (<wait> ^name wait)
+   (<remove-output-comands> ^name remove-output-commands)
+-->
+   (<s> ^operator <wait> < <remove-output-commands>)
+}
+
 sp {remove*output-commands
    (state <s> ^name Soar-SC
               ^operator <op>
