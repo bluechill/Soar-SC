@@ -74,7 +74,7 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 
 	//Set the position
 	pos.x = ((float)unit->getLeft()/32.0f);
-	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
+	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y - 1)/32.0f, false);
 
 	if (building)
 		svsobject_id = "Building";

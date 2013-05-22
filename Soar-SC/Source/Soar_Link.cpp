@@ -187,6 +187,9 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			stringstream l_y(location_y);
 			l_y >> y;
 
+			//Flip the y axis around
+			y = Terrain::flip_one_d_point(y, false);
+
 			Unit* worker = soar_sc_link->get_bwapi_link()->getUnitFromID(worker_id);
 
 			if (!worker->isIdle())
