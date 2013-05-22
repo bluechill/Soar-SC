@@ -16,7 +16,8 @@ sp {propose*build-barracks
                  ^idle <idle>
                  ^carrying <carrying>
                  ^id <id>
-                -^scouting)
+                -^scouting
+                 ^constructing -1)
    (<barracks-type> ^name |Terran_Barracks|
                     ^id <barracks-id>
                     ^mineral-cost { <= <minerals-budget> }

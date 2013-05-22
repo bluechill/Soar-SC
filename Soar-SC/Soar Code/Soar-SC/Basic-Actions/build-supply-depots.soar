@@ -18,7 +18,8 @@ sp {propose*build-supply-depot
           ^idle <scv-idle>
           ^carrying <scv-carrying>
           ^id <scv-id>
-         -^scouting)
+         -^scouting
+          ^constructing -1)
    (<supply-depot-type> ^name |Terran_Supply_Depot|
                         ^id <supply-depot-type-id>
                         ^mineral-cost { <= <minerals-budget> })
@@ -27,7 +28,6 @@ sp {propose*build-supply-depot
   -{ (<output-link> ^build-building <command-to-build>)
      (<command-to-build> ^type <supply-depot-type-id>
                         -^status)}
-  -{ (<output-link> ^build-building.worker <scv-id>) }
 -->
    (<state> ^operator <build-supply-depot-operator> + =)
    (<build-supply-depot-operator> ^name build-building
