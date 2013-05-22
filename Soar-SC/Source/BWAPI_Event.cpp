@@ -52,7 +52,7 @@ void BWAPI_Event::execute_command()
 				return;
 			}
 		}
-		else
+		else if (e != Errors::None)
 		{
 			cerr << "Got error trying to execute unit command: " << e.toString() << endl;
 
