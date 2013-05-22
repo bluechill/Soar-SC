@@ -26,7 +26,8 @@ sp {apply*initialize-building-substate
 #Generate a grid around all the buildings
 sp {propose*generate-grid
    (state <s> ^superstate <super>
-              ^name build-building-substate)
+              ^name build-building-substate
+             -^svs.command.extract)
 -->
    (<s> ^operator <generate-grid-operator>)
    (<generate-grid-operator> ^name generate-grid)
@@ -36,10 +37,10 @@ sp {apply*generate-grid*create-svs-command
    (state <s> ^name build-building-substate
               ^operator.name generate-grid
               ^superstate <superstate>
-              ^type <type-id>)
-   (<superstate> ^svs.command <commands>
-                 ^io.input-link.types.type <building-type>)
-   (<building-type> ^type <type-id>
+              ^type <type-id>
+              ^svs.command <commands>)
+   (<superstate> ^io.input-link.types.type <building-type>)
+   (<building-type> ^id <type-id>
                     ^x-size <x>
                     ^y-size <y>
                     ^name <type-name>)
@@ -55,10 +56,10 @@ sp {apply*generate-grid*add-type-size-to-state
    (state <s> ^name build-building-substate
               ^operator.name generate-grid
               ^superstate <superstate>
-              ^type <type-id>)
-   (<superstate> ^svs.command <command>
-                 ^io.input-link.types.type <building-type>)
-   (<building-type> ^type <type-id>
+              ^type <type-id>
+              ^svs.command <command>)
+   (<superstate> ^io.input-link.types.type <building-type>)
+   (<building-type> ^id <type-id>
                     ^x-size <x>
                     ^y-size <y>
                     ^name <type-name>)
@@ -72,11 +73,10 @@ sp {apply*generate-grid*add-type-size-to-state
 #Fetch the grid and place it on the state
 sp {propose*fetch-grid
    (state <s> ^name build-building-substate
-              ^superstate <superstate>)
-   (<superstate> ^svs.command.extract <extract>)
+              ^svs.command.extract <extract>)
    (<extract> ^status success
-              ^result.record.params <params>)
-   (<params> ^x <x>
+              ^result.record.value <value>)
+   (<value> ^x <x>
              ^y <y>)
 -->
    (<s> ^operator <fetch-grid>)
@@ -198,3 +198,14 @@ sp {pref*force-wait-for-build-command-done
 -->
    (<state> ^operator <gather-minerals-operator> -)
 }
+
+sp {pref*reject-fetch-if-set-build-location
+   (state <s> ^name build-building-substate
+              ^operator <set-build-location> +
+              ^operator <fetch-grid> +)
+   (<set-build-location> ^name set-build-location)
+   (<fetch-grid> ^name fetch-grid)
+-->
+   (<s> ^operator <fetch-grid> -)
+}
+

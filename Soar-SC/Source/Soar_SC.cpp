@@ -155,8 +155,14 @@ void Soar_SC::soar_thread_update(bool direct_call)
 		while (!run_forever && !direct_call)
 		{
 			SDL_CondWaitTimeout(soar_thread_condition, soar_event_mutex, 1000);
-			soar_link->GetKernel()->CheckForIncomingCommands();
+			//soar_link->GetKernel()->CheckForIncomingCommands();
 		}
+
+		/*if (run_forever && !direct_call)
+		{
+			soar_link->GetKernel()->CheckForIncomingCommands();
+			soar_link->GetKernel()->CheckForIncomingEvents();
+		}*/
 
 		if (kill_threads)
 		{

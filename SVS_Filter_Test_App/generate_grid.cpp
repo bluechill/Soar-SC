@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #ifdef SVS
-
 #include <iostream>
 #include <map>
 #include "filter.h"
@@ -80,17 +79,17 @@ public:
 		//<Type> is something like Terran_Marine
 		//<BWAPI ID> is just a number like 5 or 99
 
-		//Fog of War Tile: BaseFogTile<Middleware ID>
-		//<Middleware ID> is just a number like 5 or 99
+		//Fog of War Tile: BaseFogTile:<Middleware ID>
+		//<Middleware ID> is just a number like 5:5 or 99:99 or 5:99
 
 		//Terrain: TerrainRect<Middleware ID>
 		//<Middleware ID> is just a number like 5 or 99
 
 		//Terrain Borders: TerrainBorder<1-4>
 		//<1-4> is the side the border is on
-		//1 is the very bottom or "basessouth" border
+		//1 is the very bottom or "south" border
 		//2 is the right or "east" border
-		//3 is the top border or "noth" border
+		//3 is the top border or "north" border
 		//4 is the left or "west" border
 
 		vector<sgnode*> nodes;
@@ -133,7 +132,10 @@ public:
 							pos_x = points[i](0);
 					}
 					else
+					{
+						set_x = true;
 						neg_x = pos_x = points[i](0);
+					}
 
 					if (set_y)
 					{
@@ -143,7 +145,10 @@ public:
 							pos_y = points[i](1);
 					}
 					else
+					{
+						set_y = true;
 						neg_y = pos_y = points[i](1);
+					}
 				}
 
 				building object;
@@ -303,10 +308,10 @@ public:
 		for (size_t i = 0;i < terrain.size();i++)
 		{
 			int terrain_left_edge = terrain[i].position.x;
-			int terrain_right_edge = terrain[i].position.x + resources[i].size.x;
+			int terrain_right_edge = terrain[i].position.x + terrain[i].size.x;
 
 			int terrain_top_edge = terrain[i].position.y;
-			int terrain_bottom_edge = terrain[i].position.y + resources[i].size.y;
+			int terrain_bottom_edge = terrain[i].position.y + terrain[i].size.y;
 
 			for (vector<building>::iterator it = grid.begin();it != grid.end();)
 			{
@@ -330,32 +335,35 @@ public:
 
 		//Do a fuzzy line intersect to make sure nothing conflicts with the paths to the resources, but if they do, remove them
 
-		vector<building> bases;
-
-		for (int i = 0;i < buildings.size();i++)
+		if (resources.size() > 0)
 		{
-			if (buildings[i].type == "Terran_Command_Center")
-				bases.push_back(buildings[i]);
-		}
+			vector<building> bases;
 
-		for (int i = 0;i < bases.size();i++)
-		{
-			building cc = bases[i];
-
-			pair<vector<building>, vector<building> > resources_within_5_of_cc = choose_within_distance_of(resources, cc, 5.0f);
-
-			pair<vector<building>, vector<building> > list_pair = multi_fuzzy_line_intersect(cc, resources_within_5_of_cc.second, 1, grid);
-
-			vector<building> to_eliminate = list_pair.first;
-
-			for (vector<building>::iterator it = to_eliminate.begin();it != to_eliminate.end();it++)
+			for (int i = 0;i < buildings.size();i++)
 			{
-				for (vector<building>::iterator jt = grid.begin();jt != grid.end();)
+				if (buildings[i].type == "Terran_Command_Center")
+					bases.push_back(buildings[i]);
+			}
+
+			for (int i = 0;i < bases.size();i++)
+			{
+				building cc = bases[i];
+
+				pair<vector<building>, vector<building> > resources_within_5_of_cc = choose_within_distance_of(resources, cc, 5.0f);
+
+				pair<vector<building>, vector<building> > list_pair = multi_fuzzy_line_intersect(cc, resources_within_5_of_cc.second, 1, grid);
+
+				vector<building> to_eliminate = list_pair.first;
+
+				for (vector<building>::iterator it = to_eliminate.begin();it != to_eliminate.end();it++)
 				{
-					if (buildings_are_the_same(*it, *jt))
-						jt = grid.erase(jt);
-					else
-						jt++;
+					for (vector<building>::iterator jt = grid.begin();jt != grid.end();)
+					{
+						if (buildings_are_the_same(*it, *jt))
+							jt = grid.erase(jt);
+						else
+							jt++;
+					}
 				}
 			}
 		}
@@ -406,6 +414,9 @@ private:
 	{
 		vector<building> final_grid;
 
+		if (building_locations.size() == 0 || shape_size.x == 0 || shape_size.y == 0)
+			return final_grid;
+
 		for (size_t i = 0;i < building_locations.size();i++)
 		{
 			vector<building> grid = generate_individual_grid(building_locations[i].position, shape_size, 2, building_locations[i].size);
@@ -453,6 +464,9 @@ private:
 	{
 		vector<building> grid;
 
+		if (grid_size.x == 0 || grid_size.y == 0 || shape.x == 0 || shape.y == 0)
+			return grid;
+
 		for (int y = (location.y - tile_buffer - grid_size.y + 1);y < (location.y + shape.y - 1 + tile_buffer + grid_size.y - 1*(grid_size.y-1));y++)
 		{
 			for (int x = (location.x - tile_buffer - grid_size.x + 1);x < (location.x + shape.x - 1 + tile_buffer + grid_size.x - 1*(grid_size.x-1));x++)
@@ -474,6 +488,9 @@ private:
 	{
 		vector<building> eliminate_list;
 		vector<building> valid_list;
+
+		if (generation_objects.size() == 0 || grids.size() == 0)
+			return make_pair<vector<building>, vector<building> >(eliminate_list, valid_list);
 
 		for (vector<building>::iterator it = generation_objects.begin();it != generation_objects.end();it++)
 		{
@@ -513,6 +530,9 @@ private:
 	{
 		vector<building> eliminate_list;
 		vector<building> valid_list;
+
+		if (grids.size() == 0)
+			return make_pair<vector<building>, vector<building> >(eliminate_list, valid_list);
 
 		//Generate the rotated rectangle for doing collision tests
 		Rotated_Rectangle line_rect;
@@ -606,6 +626,9 @@ private:
 		vector<building> eliminate_list;
 		vector<building> valid_list;
 
+		if (grid.size() == 0 || within.size() == 0)
+			return make_pair<vector<building>, vector<building> >(eliminate_list, valid_list);
+
 		for (vector<building>::iterator it = within.begin();it != within.end();it++)
 		{
 			vector<building> one_valid_list = this->choose_within_distance_of(grid, *it, distance).second;
@@ -644,6 +667,9 @@ private:
 	{
 		vector<building> eliminate_list;
 		vector<building> valid_list;
+
+		if (grid.size() == 0)
+			return make_pair<vector<building>, vector<building> >(eliminate_list, valid_list);
 
 		float building_left_edge = within.position.x - distance;
 		float building_right_edge = within.position.x + within.size.x + distance;
@@ -882,8 +908,9 @@ filter *make_generate_grid(Symbol *root, soar_interface *si, scene *scn, filter_
 filter_table_entry *generate_grid_fill_entry() {
 	filter_table_entry *e = new filter_table_entry;
 	e->name = "generate_grid";
-	e->parameters.push_back("a");
-	e->parameters.push_back("b");
+	e->parameters.push_back("x-size");
+	e->parameters.push_back("y-size");
+	e->parameters.push_back("building-type");
 	e->ordered = false;
 	e->allow_repeat = false;
 	e->create = &make_generate_grid;

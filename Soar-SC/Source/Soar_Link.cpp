@@ -13,8 +13,11 @@ Soar_Link::Soar_Link(Soar_SC* soar_sc_link) //Constructor for the Soar Link clas
 {
 	this->soar_sc_link = soar_sc_link;
 
-	kernel = Kernel::CreateKernelInCurrentThread(true); //Create a new Soar kernel (agent spawner) in a new thread
+	//kernel = Kernel::CreateKernelInCurrentThread(true); //Create a new Soar kernel (agent spawner) in a new thread
+	//kernel->StopEventThread();
+	
 	//kernel = Kernel::CreateRemoteConnection(false, "127.0.0.1", 12121);
+	kernel = Kernel::CreateKernelInNewThread();
 
 	mu = SDL_CreateMutex(); //Create a new mutex to prevent simultanous access to shared objects
 
@@ -37,7 +40,9 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	kernel->CheckForIncomingCommands();
+	/*kernel->CheckForIncomingCommands();
+	kernel->CheckForIncomingEvents();*/
+	
 
 #pragma omp atomic
 	decisions++;
@@ -72,8 +77,36 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				IntElement* x_wme = output_command->FindByAttribute("x", 0)->ConvertToIntElement();
 				IntElement* y_wme = output_command->FindByAttribute("y", 0)->ConvertToIntElement();
 
-				x = float(x_wme->GetValue());
-				y = float(y_wme->GetValue());
+				if (x_wme != NULL)
+					x = float(x_wme->GetValue());
+				else
+				{
+					StringElement* x_wme_string = output_command->FindByAttribute("x", 0)->ConvertToStringElement();
+
+					assert (x_wme_string != NULL);
+
+					stringstream ss(x_wme_string->GetValue());
+					int value;
+					ss >> value;
+
+					x = float(value);
+				}
+
+				if (y_wme != NULL)
+					y = float(y_wme->GetValue());
+				else
+				{
+					StringElement* y_wme_string = output_command->FindByAttribute("y", 0)->ConvertToStringElement();
+
+					assert (y_wme_string != NULL);
+
+					stringstream ss(y_wme_string->GetValue());
+					int value;
+					ss >> value;
+
+					y = float(value);
+				}
+
 
 				cout << "Moving " << unit->getType().getName() << " to X: " << x << " " << "Y: " << y << " from " << unit->getPosition().x << " " << Terrain::flip_one_d_point(float(unit->getPosition().y), false) << endl;
 
@@ -343,6 +376,8 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 		type->CreateIntWME("id", (*it).getID()); //Create an Int WME with the type's unique ID
 		type->CreateIntWME("mineral-cost", (*it).mineralPrice());
 		type->CreateIntWME("gas-cost", (*it).gasPrice());
+		type->CreateIntWME("x-size", (*it).tileWidth());
+		type->CreateIntWME("y-size", (*it).tileHeight());
 		type->CreateIntWME("building", (*it).isBuilding());
 	}
 
