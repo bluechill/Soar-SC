@@ -59,7 +59,8 @@ sp {apply*attack
 
 sp {propose*counter-attack
    (state <s> ^name Soar-SC
-              ^io.input-link <input-link>)
+              ^io.input-link <input-link>
+              ^io.output-link <output-link>)
    (<input-link> ^units.unit <marine>
                  ^enemy-units.unit <enemy>
                  ^types.type <marine-type>)

@@ -147,7 +147,8 @@ sp {pref*fog-tile-over-key-location-scouting
 sp {apply*scout-location
    (state <s> ^name Soar-SC
               ^operator <scout>
-              ^io.input-link.units.unit <unit>)
+              ^io.input-link.units.unit <unit>
+              ^io.output-link <output-link>)
    (<scout> ^type scout
             ^location <location-string>
             ^id <unit-id>)
