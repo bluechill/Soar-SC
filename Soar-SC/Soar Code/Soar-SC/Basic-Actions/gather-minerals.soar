@@ -41,7 +41,9 @@ sp {apply*gather-minerals
 -->
    (<output-link> ^move <move-command>)
    (<move-command> ^object <scv>
-                   ^dest <mineral-field>)
+                   ^svs-object <mineral-field>
+                   ^position center
+                   ^type svs-object)
    (<command> ^extract <extract-command> -)
    (write |Gathering minerals at | <mineral-field> | with | <scv> (crlf) )
 }

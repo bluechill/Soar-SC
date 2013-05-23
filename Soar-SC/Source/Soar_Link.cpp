@@ -66,106 +66,151 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			string object_to_move = output_command->GetParameterValue("object");
 			Unit* unit = soar_sc_link->get_bwapi_link()->getUnitFromID(object_to_move);
 
-			bool action = true;
+			WMElement* type_wme = output_command->FindByAttribute("type", 0);
 
-			string destination;
-			Unit* dest;
+			assert(type_wme != nullptr);
 
-			float x;
-			float y;
+			StringElement* type_string = type_wme->ConvertToStringElement();
 
-			WMElement* destination_wme = output_command->FindByAttribute("dest", 0);
-			WMElement* location_string_wme = output_command->FindByAttribute("location-string", 0);
-			if (destination_wme == nullptr && location_string_wme == nullptr)
+			if (string(type_string->GetValue()) == "svs-coordinates" ||
+				string(type_string->GetValue()) == "svs-object")
 			{
-				IntElement* x_wme = output_command->FindByAttribute("x", 0)->ConvertToIntElement();
-				IntElement* y_wme = output_command->FindByAttribute("y", 0)->ConvertToIntElement();
+				//svs-coordinates
+				//This move command is to move to the coordinates of the svs object (or try to)
+				//But NOT to attack them or anything
 
-				if (x_wme != NULL)
-					x = float(x_wme->GetValue());
-				else
+				//svs-object
+				//This move command is to move to the svs object by doing the equivelent of a *right click* on it
+				//This will attack units for instance
+				WMElement* svsobject_wme = output_command->FindByAttribute("svsobject", 0); //The SVS Object ID
+				WMElement* position_wme = output_command->FindByAttribute("position", 0); //Whether to move the the upper left, center, etc. of the object
+
+				StringElement* svsobject_string_wme = svsobject_wme->ConvertToStringElement();
+				StringElement* position_string_wme = position_wme->ConvertToStringElement();
+
+				if (svsobject_string_wme == nullptr || position_string_wme == nullptr)
 				{
-					StringElement* x_wme_string = output_command->FindByAttribute("x", 0)->ConvertToStringElement();
-
-					assert (x_wme_string != NULL);
-
-					stringstream ss(x_wme_string->GetValue());
-					int value;
-					ss >> value;
-
-					x = float(value);
+					output_command->AddStatusError();
+					continue;
 				}
 
-				if (y_wme != NULL)
-					y = float(y_wme->GetValue());
-				else
+				string svsobject_string = svsobject_string_wme->GetValue();
+				string position_string = position_string_wme->GetValue();
+
+				Soar_Unit* soar_unit = soar_unit_from_svsobject_id(svsobject_string);
+
+				if (soar_unit == nullptr)
 				{
-					StringElement* y_wme_string = output_command->FindByAttribute("y", 0)->ConvertToStringElement();
-
-					assert (y_wme_string != NULL);
-
-					stringstream ss(y_wme_string->GetValue());
-					int value;
-					ss >> value;
-
-					y = float(value);
+					output_command->AddStatusError();
+					continue;
 				}
 
+				BWAPI::Position pos;
 
-				cout << "Moving " << unit->getType().getName() << " to X: " << x << " " << "Y: " << y << " from " << unit->getPosition().x << " " << Terrain::flip_one_d_point(float(unit->getPosition().y), false) << endl;
+				if (position_string == "center")
+				{
+					Soar_Unit::Position upper_left = soar_unit->lastPosition();
+					Soar_Unit::Size size = soar_unit->get_size();
 
-				action = false;
+					pos.x = int(upper_left.x) + int(size.x/2.0f);
+					pos.y = int(upper_left.y) + int(size.y/2.0f);
+				}
+				else if (position_string == "upper_left")
+				{
+					Soar_Unit::Position upper_left = soar_unit->lastPosition();
+
+					pos.x = int(upper_left.x);
+					pos.y = int(upper_left.y);
+				}
+				else if (position_string == "upper_right")
+				{
+					Soar_Unit::Position upper_left = soar_unit->lastPosition();
+					Soar_Unit::Size size = soar_unit->get_size();
+
+					pos.x = int(upper_left.x + size.x);
+					pos.y = int(upper_left.y);
+				}
+				else if (position_string == "lower_left")
+				{
+					Soar_Unit::Position upper_left = soar_unit->lastPosition();
+					Soar_Unit::Size size = soar_unit->get_size();
+
+					pos.x = int(upper_left.x);
+					pos.y = int(upper_left.y + size.y);
+				}
+				else if (position_string == "lower_right")
+				{
+					Soar_Unit::Position upper_left = soar_unit->lastPosition();
+					Soar_Unit::Size size = soar_unit->get_size();
+					
+					pos.x = int(upper_left.x + size.x);
+					pos.y = int(upper_left.y + size.y);
+				}
+				else
+				{
+					output_command->AddStatusError();
+					continue;
+				}
+
+				pos.y = int(Terrain::flip_one_d_point(float(pos.y), false))*32;
+				pos.x *= 32;
+				
+				if (string(type_string->GetValue()) == "svs-coordinates")
+					soar_sc_link->add_event(BWAPI_Event(UnitCommand::move(unit, pos), output_command, soar_sc_link));
+				else
+					soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit, pos), output_command, soar_sc_link));
 			}
-			else if (destination_wme == nullptr && location_string_wme != nullptr)
+			else if (string(type_string->GetValue()) == "coordinates")
 			{
-				string location = location_string_wme->ConvertToStringElement()->GetValue();
+				//This move command is to move to the coordinates specified
+				//It's given in x and y
+				//Not a right click!
+				WMElement* x_wme = output_command->FindByAttribute("x", 0);
+				WMElement* y_wme = output_command->FindByAttribute("y", 0);
 
-				cout << "Fog Tile Location: " << location << endl;
+				string buffer;
 
-				int x_start = location.find(':', 0)+1;
-				int x_end = location.find(':', x_start);
-				int y_start = x_end+1;
-				int y_end = location.size();
+				string x_string = x_wme->GetValueAsString(buffer);
+				string y_string = y_wme->GetValueAsString(buffer);
 
-				string x_cord = location.substr(x_start, x_end-x_start);
-				string y_cord = location.substr(y_start, y_end-y_start);
+				int x;
+				int y;
 
-				cout << "Moving " << unit->getType().getName() << " to X: " << x_cord << " " << "Y: " << y_cord << " from " << float(unit->getPosition().x)/32.0f << " " << Terrain::flip_one_d_point(float(unit->getPosition().y), false)/32.0f << endl;
-
-				x = 0;
-				y = 0;
-
-				stringstream ss;
-				ss << x_cord;
+				stringstream ss(x_string);
 				ss >> x;
 
-				stringstream ss2;
+				ss.str("");
+				ss.clear();
 
-				ss2 << y_cord;
-				ss2 >> y;
+				ss.str(y_string);
+				ss >> y;
 
-				action = false;
+				y = int(Terrain::flip_one_d_point(float(y), false))*32;
+				x *= 32;
+
+				soar_sc_link->add_event(BWAPI_Event(UnitCommand::move(unit, BWAPI::Position(x,y)), output_command, soar_sc_link));
+			}
+			else if (string(type_string->GetValue()) == "bwapi-object")
+			{
+				//This move command is to move to the bwapi-object by performing a right click
+				//This will attack the object for instance
+				WMElement* bwapi_object_wme = output_command->FindByAttribute("bwapi-object", 0);
+
+				string buffer;
+
+				string id_string = bwapi_object_wme->GetValueAsString(buffer);
+
+				stringstream ss(id_string);
+
+				int id_int;
+				ss >> id_string;
+
+				BWAPI::Unit* target = soar_sc_link->get_bwapi_link()->getUnitFromID(id_int);
+
+				soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit,target), output_command, soar_sc_link));
 			}
 			else
-			{
-				destination = output_command->GetParameterValue("dest");
-				dest = soar_sc_link->get_bwapi_link()->getUnitFromID(destination);
-			}
-
-			y = Terrain::flip_one_d_point(y, false)*32.0f;
-			x *= 32.0f;
-
-			cout << "Moving to final position (" << x << "," << y << ") from (" << unit->getPosition().x << "," << unit->getPosition().y << ")" << endl;
-			
-			if (action)
-			{
-				if (unit != nullptr && dest != nullptr)
-					soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit, dest), output_command, soar_sc_link));
-				else
-					output_command->AddStatusError();
-			}
-			else
-				soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit, Position(int(x),int(y))), output_command, soar_sc_link));
+				output_command->AddStatusError();
 		}
 		else if (name == "build-building") //Build command
 		{
@@ -192,7 +237,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			l_y >> y;
 
 			//Flip the y axis around
-			y = Terrain::flip_one_d_point(y, false);
+			y = int(Terrain::flip_one_d_point(float(y), false));
 
 			Unit* worker = soar_sc_link->get_bwapi_link()->getUnitFromID(worker_id);
 
@@ -423,8 +468,16 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 	agent->SendSVSInput(svs_command_4);
 
-	cout << "Soar-SC is running." << endl; //Tell the user everything is working perfectly so far
-	Broodwar->printf("Soar-SC is running.");
+	//Send the corners
+	string corner_north_west = "a TerrainCornerNW terrain_object world v " + Terrain::unit_box_verts + " p 1 1 0 s 1 1 1";
+	string corner_south_west = "a TerrainCornerSW terrain_object world v " + Terrain::unit_box_verts + " p 1 " + map_height_as_string + " 0 s 1 1 1";
+	string corner_north_east = "a TerrainCornerNE terrain_object world v " + Terrain::unit_box_verts + " p " + map_width_as_string + " 1 0 s 1 1 1";
+	string corner_south_east = "a TerrainCornerSE terrain_object world v " + Terrain::unit_box_verts + " p " + map_width_as_string + " " + map_height_as_string + " 0 s 1 1 1";
+
+	agent->SendSVSInput(corner_north_west);
+	agent->SendSVSInput(corner_south_west);
+	agent->SendSVSInput(corner_north_east);
+	agent->SendSVSInput(corner_south_east);
 
 	vector<vector<bool> > initial_base_map; //Variable for containing the map and whether a tile is walkable or not
 	size_t map_size_x = Broodwar->mapWidth() * 4; //Set the size to the number of walkable tiles, build tiles times 4
@@ -550,6 +603,9 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	soar_sc_link->get_bwapi_link()->update_units();
 	soar_sc_link->get_bwapi_link()->update_resources();
 	update_fogOfWar(0.0f, 0.0f, float(Broodwar->mapWidth()), float(Broodwar->mapHeight()));
+
+	cout << "Soar-SC is running." << endl; //Tell the user everything is working perfectly so far
+	Broodwar->printf("Soar-SC is running.");
 }
 
 void Soar_Link::SendSVSInput(std::string input)
@@ -733,4 +789,19 @@ void Soar_Link::set_decisions(int new_count)
 {
 #pragma omp atomic
 	decisions = new_count;
+}
+
+Soar_Unit* Soar_Link::soar_unit_from_svsobject_id(std::string svsobject_id)
+{
+	map<BWAPI::Unit*, Soar_Unit*> units = soar_sc_link->get_bwapi_link()->get_units();
+
+	for (map<BWAPI::Unit*, Soar_Unit*>::iterator it = units.begin();it != units.end();it++)
+	{
+		Soar_Unit* unit = it->second;
+
+		if (unit->get_svsobject_id() == svsobject_id)
+			return unit;
+	}
+
+	return nullptr;
 }

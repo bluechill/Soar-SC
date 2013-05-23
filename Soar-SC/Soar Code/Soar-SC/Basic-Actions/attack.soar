@@ -52,7 +52,8 @@ sp {apply*attack
 -->
    (<output-link> ^move <attack>)
    (<attack> ^object <marine-id>
-             ^dest <enemy-id>)
+             ^bwapi-object <enemy-id>
+             ^type bwapi-object)
    (write |Attacking | <enemy-id> | with | <marine-id> (crlf) )
 }
 

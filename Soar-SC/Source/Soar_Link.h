@@ -22,7 +22,10 @@
 //Soar SC Headers
 #include "Terrain.h"
 
+#include <BWAPI.h>
+
 class Soar_SC;
+class Soar_Unit;
 
 class Soar_Link //The AI class.  Inherits from AIModule to use BWAPI functions.
 {
@@ -59,6 +62,8 @@ public:
 
 	int get_decisions();
 	void set_decisions(int new_count);
+
+	Soar_Unit* soar_unit_from_svsobject_id(std::string svsobject_id);
 
 private:
 	int decisions; //Should use #pragma omp atomic for this

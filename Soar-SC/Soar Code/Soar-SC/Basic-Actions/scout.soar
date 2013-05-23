@@ -1,217 +1,327 @@
-sp {propose*new-scout
+#Propose the scouts
+#Can use either a marine or an SCV but prefer a marine
+sp {propose*new-scout-scv
    (state <s> ^name Soar-SC
               ^io.input-link <input-link>)
-   (<input-link> ^fog-tiles <fog-tiles>
-                 ^units.unit <scv>
+   (<input-link> ^units.unit <scv>
                  ^types.type <scv-type>)
-   (<scv-type> ^name |Terran_SCV|
+   (<scv-type> ^name |Terrain_SCV|
                ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
-         -^scouting
-          ^idle 1
           ^id <scv-id>)
-   -{(<input-link> ^units.unit <other-scv>)
-     (<other-scv> ^scouting)}
+   -{(<input-link> ^units.unit <scout>)
+     (<scout> ^scouting 1)}
 -->
    (<s> ^operator <scout-operator> + >)
-   (<scout-operator> ^name scout
-                     ^id <scv-id>)
+   (<scout-operator> ^name new-scout-scv
+                     ^id <scv-id>
+                     ^type scout)
 }
 
-sp {pref*all-scouts-are-equal
+sp {propose*new-scout-marine
+   (state <s> ^name Soar-SC
+              ^io.input-link <input-link>)
+   (<input-link> ^units.unit <marine>
+                 ^types.type <marine-type>)
+   (<marine-type> ^name |Terrain_Marine|
+                  ^id <marine-type-id>)
+   (<marine> ^type <marine-type-id>
+             ^id <marine-id>)
+   -{(<input-link> ^units.unit <scout>)
+     (<scout> ^scouting 1
+              ^type <marine-type-id>)}
+-->
+   (<s> ^operator <scout-operator> + >)
+   (<scout-operator> ^name new-scout-marine
+                     ^id <marine-id>
+                     ^type scout)
+}
+
+#preference marine over scv
+sp {pref*marine-over-scv-scout
+   (state <s> ^operator <scv-scout> +
+              ^operator <marine-scout> +)
+   (<scv-scout> ^name new-scout-scv)
+   (<marine-scout> ^name new-scout-marine)
+-->
+   (<s> ^operator <marine-scout> > <scv-scout>)
+}
+
+sp {pref*all-scouts-of-same-type-are-equal
    (state <s> ^name Soar-SC
               ^operator <scout1> +
               ^operator <scout2> +)
-   (<scout1> ^name scout)
-   (<scout2> ^name scout)
+   (<scout1> ^type scout
+             ^name <name>)
+   (<scout2> ^type scout
+             ^name <name>)
 -->
    (<s> ^operator <scout1> = <scout2>)
 }
 
+#Create the scout
+#Don't care if there is a previous scout like an SCV,
+#that'll die eventually... but until then it's useful
+
 sp {apply*new-scout
    (state <s> ^operator <o>
-              ^io.input-link.units.unit <scv>)
-   (<o> ^name scout
-        ^id <scv-id>)
-   (<scv> ^id <scv-id>)
+              ^io.input-link.units.unit <unit>)
+   (<o> ^type scout
+        ^id <unit-id>)
+   (<unit> ^id <unit-id>)
 -->
-   (<scv> ^scouting 1
-          ^last-scout-tile |-1 -1 0|)
-   (write |Created new scout (| <scv-id> |)| (crlf) )
+   (<unit> ^scouting 1)
+   (write |Created new scout (| <unit-id> |)| (crlf) )
 }
 
-sp {propose*scouting
-   (state <s> ^name Soar-SC
-              ^io.input-link.units.unit <scv>
-              ^io.input-link.fog-tiles <fog-tiles>)
-   (<scv> ^scouting 1
-          ^idle 1
-          ^id <scv-id>)
--->
-   (<s> ^operator <start-scouting> + >)
-   (<start-scouting> ^name scouting
-                     ^id <scv-id>)
-}
+#Actual scouting code
 
-sp {pref*stop-scouting-if-none-left
+#Fog tile scouting
+sp {propose*scout-fog-tile
    (state <s> ^name Soar-SC
-              ^operator <scout-operator> +
+              ^io.input-link.units.unit <scout>
               ^io.input-link.fog-tiles <fog-tiles>)
-   -{(<fog-tiles> ^<attr> <tile>)
+   (<scout> ^scouting 1
+            ^idle 1
+            ^id <unit-id>)
+   -{(<s> ^io)
+     (<fog-tiles> ^<attr> <tile>)
      (<tile> -^timeout)}
-	(<scout-operator> ^name scouting)
 -->
-   (<s> ^operator <scout-operator> -)
+   (<s> ^operator <scout-fog-tile> + =)
+   (<scout-fog-tile> ^name scout-fog-tile
+                     ^id <unit-id>
+                     ^type scout)
 }
 
-sp {pref*stop-scouting-if-none-left-that-arent-timed-out
+#Key location scouting
+
+#Enemy building scouting
+sp {propose*scout-key-location*building
    (state <s> ^name Soar-SC
-              ^operator <scout-operator> +
-              ^io.input-link.fog-tiles <fog-tiles>)
-   -{(<fog-tiles> ^<attr> <tile>)}
-	(<scout-operator> ^name scouting)
+              ^io.input-link.units.unit <scout>
+              ^io.input-link.enemy-units.building <building>)
+   (<scout> ^scouting 1
+            ^idle 1
+            ^id <unit-id>)
+   (<building> ^svsobject <svsobject>)
+   -{(<scout> ^last-scout-location <svsobject>)}
 -->
-   (<s> ^operator <scout-operator> -)
+   (<s> ^operator <scout-key-location> + =)
+   (<scout-key-location> ^name scout-key-location
+                         ^id <unit-id>
+                         ^building <building>
+                         ^type scout)
 }
 
-#substate
+#Map scouting
+sp {propose*scout-key-location*map
+   (state <s> ^name Soar-SC
+              ^io.input-link.units.unit <scout>
+              ^io.input-link.map-corners.corner <corner>)
+   (<scout> ^scouting 1
+            ^idle 1
+            ^id <unit-id>)
+    (<corner> ^svsobject <svsobject>)
+   -{(<scout> ^last-scout-location <svsobject>)}
+-->
+   (<s> ^operator <scout-key-location> + =)
+   (<scout-key-location> ^name scout-key-location
+                         ^id <unit-id>
+                         ^corner <corner>
+                         ^type scout)
+}
 
+#Preference fog tile scouting over key location scouting
+sp {pref*fog-tile-over-key-location-scouting
+   (state <s> ^name Soar-SC
+              ^operator <scout-fog-tile> +
+              ^operator <scout-key-location> +)
+   (<scout-fog-tile> ^name scout-fog-tile)
+   (<scout-key-location> ^name scout-key-location)
+-->
+   (<s> ^operator <scout-fog-tile> > <scout-key-location>)
+}
+
+#Apply scouting
+sp {apply*scout-location
+   (state <s> ^name Soar-SC
+              ^operator <scout>
+              ^io.input-link.units.unit <unit>)
+   (<scout> ^type scout
+            ^location <location-string>
+            ^id <unit-id>)
+   (<unit> ^id <unit-id>
+           ^last-scout-location <last-scout-location>)
+-->
+   (<output-link> ^move <command>) #Move command
+   (<command> ^object <unit-id>
+              ^svsobject <location-string>
+              ^type svs-coordinates #Tell the middleware that this is an svs coordinates request and it needs to retrieve it's position
+              ^position center) #Move to the center, defaults to the upper left
+   (<unit> ^last-scout-location <last-scout-location> -
+           ^last-scout-location <location-string>)
+   (write |Scouting using scout | <unit-id> | at | <location-string> (crlf) )
+}
+
+#Substate
+#Initially the scout operators don't have the building position or the fog tile position
+#Find it and put it on the operator
+
+#Initialize the substate
 sp {propose*initialize-scouting-substate
    (state <s> -^name
-               ^superstate <ss>)
-   (<ss> ^operator <operator>)
-   (<operator> ^name scouting)
+               ^superstate <super>)
+   (<super> ^name Soar-SC
+            ^operator <scout>)
+   (<scout> ^type scout)
 -->
-   (<s> ^operator <op> + >)
-   (<op> ^name init-scouting)
+   (<s> ^operator <init-scouting-substate> + >)
+   (<init-scouting-substate> ^name init-scouting-substate)
 }
 
 sp {apply*initialize-scouting-substate
-   (state <s> ^operator.name init-scouting
-              ^superstate <ss>)
-   (<ss> ^operator <operator>
-         ^io.input-link.units.unit <scv>)
-   (<operator> ^name scouting
-               ^id <scv-id>)
-   (<scv> ^id <scv-id>)
+   (state <s> -^name
+               ^operator <init-scouting-substate>
+               ^superstate <super>)
+   (<init-scouting-substate> ^name init-scouting-substate)
+   (<super> ^operator <scout>
+            ^io.input-link.units.unit <unit>)
+   (<scout> ^type scout
+            ^id <unit-id>)
+   (<unit> ^id <unit-id>
+           ^svsobject <svsobject>
+           ^last-scout-location <last-location>)
 -->
    (<s> ^name scouting-substate
-        ^selected-unit <scv>)
+        ^scout <svsobject>
+        ^last-location <last-location>)
 }
 
+#If we already know the object to go to, as in it's a key location,
+#set the location attribute on the state to skip looking for a fog tile
+sp {apply*initialize-scouting-substate*location
+   (state <s> ^name scouting-substate
+              ^operator <init-scouting-substate>
+              ^superstate <super>)
+   (<init-scouting-substate> ^name init-scouting-substate)
+   (<super> ^name Soar-SC
+            ^operator <scout-key-location>)
+   (<scout-key-location> ^name scout-key-location
+                         ^<attr> <location>)
+   (<location> ^svsobject <svsobject>)
+-->
+   (<s> ^location <svsobject>)
+}
+
+#Find the fog tile
+#Propose to find it
 sp {propose*find-closest-fog-tile
    (state <s> ^name scouting-substate
-              ^superstate <ss>)
-   (<ss> ^svs.command <command>
-         ^operator <scouting-operator>)
-   (<scouting-operator> ^name scouting
-                       -^tile)
-   -{(<command> ^extract <extract-command>)
-     (<extract-command> ^type closest
-                        ^status success)}
+             -^location
+             -^svs.command.extract.status)
 -->
-   (<s> ^operator <find-closest> + =)
-   (<find-closest> ^name find-closest)
+   (<s> ^operator <find-closest-fog-tile> +)
+   (<find-closest-fog-tile> ^name find-closest-fog-tile)
 }
 
-sp {apply*find-closest-fog-tile
-   (state <s> ^name scouting-substate
-              ^superstate <ss>
-              ^selected-unit <scv-unit>
-              ^operator.name find-closest)
-   (<ss> ^svs.command <commands>)
-   (<scv-unit> ^svsobject <svsobject>)
+#Create the svs command link
+sp {apply*find-closest-fog-tile*create-svs-commands
+   (state <s> ^operator.name find-closest-fog-tile
+              ^svs.command <command-link>
+              ^scout <scout-svsobject>)
 -->
-   (<commands> ^extract <extract-command>)
-   (<extract-command> ^type closest ^a <node1> ^b <node2>)
-   (<node1> ^type combine
-            ^scv <scv>)
-   (<node2> ^type combine)
-   (<scv> ^type node ^id <svsobject>)
+   (<command-link> ^extract <extract>)
+   (<extract> ^type closest
+              ^a <scout-node>
+              ^b <tile-node>)
+   (<scout-node> ^type combine
+            ^scout <scout>)
+   (<scout> ^type node
+            ^id <scout-svsobject>)
+   (<tile-node> ^type combine)
 }
 
-sp {apply*find-closest-fog-tile-create-tile
-   (state <s> ^name scouting-substate
-              ^superstate <ss>
-              ^operator.name find-closest)
-   (<ss> ^svs.command.extract <extract-command>
-         ^io.input-link.fog-tiles <fog-tiles>)
-   (<extract-command> ^type closest
-                      ^b <node2>)
+#Add the fog tiles
+sp {apply*find-closest-fog-tile*add-fog-tiles
+   (state <s> ^operator.name find-closest-fog-tile
+              ^svs.command.extract.b <tile-node>
+              ^superstate <super>)
+   (<super> ^io.input-link.fog-tiles <fog-tiles>)
    (<fog-tiles> ^<attr> <tile>)
-   (<tile> ^svsobject <id>
+   (<tile> ^svsobject <svsobject>
           -^timeout)
 -->
-   (<node2> ^tile <tile-svs>)
-   (<tile-svs> ^type node ^id <id>)
+   (<tile-node> ^tile <tile>)
+   (<tile> ^type node
+           ^id <svsobject>)
 }
 
-sp {propose*check-prior-use-of-scout-tile
+#Propose to check if it's a valid selection
+sp {propose*check-fog-tile-valid
    (state <s> ^name scouting-substate
-              ^superstate <ss>)
-   (<ss> ^svs.command.extract <extract>)
+              ^svs.command.extract <extract>)
    (<extract> ^type closest
               ^status success
               ^result.record.params.b <tile>)
 -->
-   (<s> ^operator <check-operator>)
-   (<check-operator> ^name scouting-tile-check
-                     ^tile <tile>)
+   (<s> ^operator <check-fog-tile-valid> +)
+   (<check-fog-tile-valid> ^name check-fog-tile-valid
+                           ^tile <tile>)
 }
 
-sp {apply*check-prior-use-of-scout-tile-scout-incorrect
-   (state <s> ^superstate <ss>
-              ^operator <check-operator>
-              ^selected-unit <scv>)
-   (<ss> ^operator <scout-operator>
-         ^io.input-link.fog-tiles <fog-tiles>
-         ^svs.command <command>)
-   (<fog-tiles> ^<temp-attr> <fog-tile>)
-   (<command> ^extract <extract>)
-   (<scv> ^last-scout-tile <tile>)
-   (<check-operator> ^tile <tile>)
-   (<scout-operator> ^name scouting)
-   (<fog-tile> ^svsobject <tile>)
-   (<extract> ^type closest
-              ^status success)
+#This fires when it is a valid selection
+#This creates a ^location WME on the state
+#just like what would happen for a key location
+#operator earlier
+sp {apply*check-fog-tile-valid*valid
+   (state <s> ^operator <check-fog-tile-valid>
+              ^last-location <last-location>
+              ^svs.command <command-link>)
+   (<check-fog-tile-valid> ^name check-fog-tile-valid
+                           ^tile { <> <last-location> <tile> })
+   (<command-link> ^extract <extract>)
+-->
+   (<s> ^location <tile>)
+   (<command-link> ^extract <extract> -)
+}
+
+#This fires when it is not a valid selection
+#It sets a timeout on the tile
+#And then removes the extract command.  This
+#lets the find fog tile fire again
+sp {apply*check-fog-tile-valid*invalid
+   (state <s> ^operator <check-fog-tile-valid>
+              ^superstate <super>
+              ^last-location <last-location>
+              ^svs.command <command-link>)
+   (<check-fog-tile-valid> ^name check-fog-tile-valid
+                           ^tile <last-location>)
+   (<super> ^io.input-link.fog-tiles <fog-tiles>)
+   (<fog-tiles> ^<attr> <fog-tile>)
+   (<fog-tile> ^svsobject <last-location>)
+   (<command-link> ^extract <extract>)
 -->
    (<fog-tile> ^timeout 1)
-   (<command> ^extract <extract> -)
+   (<command-link> ^extract <extract> -)
 }
 
-sp {apply*check-prior-use-of-scout-tile-scout-correct
-   (state <s> ^superstate <ss>
-              ^operator <check-operator>
-              ^selected-unit <scv>)
-   (<ss> ^operator <scout-operator>
-         ^svs.command <command>)
-   (<command> ^extract <extract>)
-   (<scv> ^last-scout-tile <tile>)
-   (<check-operator> ^tile { <> <tile> <new-tile> })
-   (<scout-operator> ^name scouting)
-   (<extract> ^type closest
-              ^status success)
+#Propose to find the location's coordinates since
+#we have a location now
+sp {propose*set-scout-location
+   (state <s> ^name scouting-substate
+              ^location <svsobject>)
 -->
-   (<scout-operator> ^tile <new-tile>)
-   (<command> ^extract <extract> -)
+   (<s> ^operator <set-scout-location> +)
+   (<set-scout-location> ^name set-scout-location)
 }
 
-sp {apply*scouting
-   (state <s> ^name Soar-SC
-              ^operator <scouting>
-              ^io.output-link <output-link>
-              ^io.input-link <input-link>)
-   (<scouting> ^name scouting
-               ^id <scv-id>
-               ^tile <fog-tile>)
-   (<input-link> ^units.unit <scv>)
-   (<scv> ^id <scv-id>
-          ^last-scout-tile <old-tile>)
+sp {apply*set-scout-location
+   (state <s> ^operator.name find-location-coordinates
+              ^superstate <super>
+              ^location <location>)
+   (<super> ^operator <scout>)
+   (<scout> ^type scout)
 -->
-   (<scv> ^last-scout-tile <old-tile> -
-          ^last-scout-tile <fog-tile>)
-   (<output-link> ^move <command>)
-   (<command> ^object <scv-id>
-              ^location-string <fog-tile>)
-   (write |Scouting using scout | <scv-id> | at | <fog-tile> (crlf) )
+   (<scout> ^location <location>)
 }

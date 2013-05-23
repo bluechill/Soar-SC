@@ -54,13 +54,13 @@ void BWAPI_Link::onFrame()
 	if (last_50_decisions.size() > 50)
 		last_50_decisions.erase(last_50_decisions.begin());
 
-	float average_fps = Broodwar->getAverageFPS();
+	double average_fps = Broodwar->getAverageFPS();
 	int fps = Broodwar->getFPS();
 
 	// Display the game frame rate as text in the upper left area of the screen
 	Broodwar->drawTextScreen(10, 0,  "\x7 FPS: %d", fps );
-	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %f", average_fps);
-	Broodwar->drawTextScreen(10, 30, "\x7 Decisions Per Second: %d", decisions_last_frame * fps);
+	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %d", average_fps);
+	Broodwar->drawTextScreen(10, 30, "\x7 Decisions Per Second: %i", decisions_last_frame * fps);
 	Broodwar->drawTextScreen(10, 45, "\x7 Average Decisions Per Second: %f", get_average_decisions() * average_fps);
 
 	soar_sc_link->get_soar_link()->set_decisions(0);

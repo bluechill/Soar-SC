@@ -34,7 +34,12 @@ public:
 		float y;
 	} Position;
 
+	typedef Position Size;
+
 	Position lastPosition() { return pos; }
+	Size get_size() { return size; }
+
+	std::string get_svsobject_id() { return svsobject_id; }
 
 private:
 	Soar_SC* soar_sc_link;
@@ -51,8 +56,6 @@ private:
 
 	bool can_produce;
 	bool full_queue;
-
-	typedef Position Size;
 
 	Position pos;
 	Size size;
