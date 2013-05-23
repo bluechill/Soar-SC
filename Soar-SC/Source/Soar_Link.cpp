@@ -85,17 +85,10 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				WMElement* svsobject_wme = output_command->FindByAttribute("svsobject", 0); //The SVS Object ID
 				WMElement* position_wme = output_command->FindByAttribute("position", 0); //Whether to move the the upper left, center, etc. of the object
 
-				StringElement* svsobject_string_wme = svsobject_wme->ConvertToStringElement();
-				StringElement* position_string_wme = position_wme->ConvertToStringElement();
+				string buffer;
 
-				if (svsobject_string_wme == nullptr || position_string_wme == nullptr)
-				{
-					output_command->AddStatusError();
-					continue;
-				}
-
-				string svsobject_string = svsobject_string_wme->GetValue();
-				string position_string = position_string_wme->GetValue();
+				string svsobject_string = svsobject_wme->GetValueAsString(buffer);
+				string position_string = position_wme->GetValueAsString(buffer);
 
 				Soar_Unit* soar_unit = soar_unit_from_svsobject_id(svsobject_string);
 
@@ -203,7 +196,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				stringstream ss(id_string);
 
 				int id_int;
-				ss >> id_string;
+				ss >> id_int;
 
 				BWAPI::Unit* target = soar_sc_link->get_bwapi_link()->getUnitFromID(id_int);
 

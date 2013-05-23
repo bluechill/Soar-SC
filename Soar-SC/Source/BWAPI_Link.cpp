@@ -176,7 +176,31 @@ Unit* BWAPI_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, 
 
 Unit* BWAPI_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
 {
-	return Broodwar->getUnit(id);
+	Unit* result = Broodwar->getUnit(id);
+
+	if (result == nullptr)
+	{
+		//Check if it's a resource
+		for (Unitset::iterator it = minerals.begin();it != minerals.end();it++)
+		{
+			if (it->getID() == id)
+			{
+				result = *it;
+				break;
+			}
+		}
+
+		for (Unitset::iterator it = vesp_gas.begin();it != vesp_gas.end();it++)
+		{
+			if (it->getID() == id)
+			{
+				result = *it;
+				break;
+			}
+		}
+	}
+
+	return result;
 }
 
 void BWAPI_Link::delete_resource(int bw_id)
