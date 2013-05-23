@@ -12,6 +12,7 @@ sp {propose*attack
    (<my-unit> ^type <type-id>
               ^id <marine-id>
               ^idle 1)
+   (<output-link> -^move.object <marine-id>)
 -->
    (<s> ^operator <attack-operator> + >)
    (<attack-operator> ^name attack
@@ -69,6 +70,7 @@ sp {propose*counter-attack
              ^target { <> <enemy-id> })
    (<marine-type> ^name |Terran_Marine|
                   ^id <marine-type-id>)
+   (<output-link> -^move.object <marine-id>)
 -->
    (<s> ^operator <counter-attack>)
    (<counter-attack> ^name attack

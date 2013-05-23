@@ -23,8 +23,9 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 		}
 	case DLL_PROCESS_DETACH:
 		{
-			if (global_soar_sc_instance)
-				delete global_soar_sc_instance;
+			std::cout << "Exiting..." << std::endl;
+			/*if (global_soar_sc_instance)
+				delete global_soar_sc_instance;*/
 			break;
 		}
 	}

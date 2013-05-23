@@ -22,12 +22,9 @@ sp {propose*build-barracks
                     ^id <barracks-id>
                     ^mineral-cost { <= <minerals-budget> }
                     ^gas-cost { <= <gas-budget> })
-   -{(<input-link> ^units.unit <unit>)
-     (<unit> ^constructing <barracks-id>)}
    -{(<output-link> ^build-building <build-building>)
      (<build-building> ^type <barracks-id>
                          -^status)}
-   -{(<output-link> ^build-building.worker <scv-id>) }
 -->
    (<state> ^operator <operator> + =)
    (<operator> ^name build-building

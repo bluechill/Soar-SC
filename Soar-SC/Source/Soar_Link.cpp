@@ -5,6 +5,8 @@
 #include "Terrain.h"
 #include "Soar_Unit.h"
 
+#include "Timer.h"
+
 using namespace sml;
 using namespace std;
 using namespace BWAPI;
@@ -43,6 +45,8 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	/*kernel->CheckForIncomingCommands();
 	kernel->CheckForIncomingEvents();*/
 	
+	Timer time;
+	time.StartTimer();
 
 #pragma omp atomic
 	decisions++;
@@ -228,6 +232,12 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	soar_sc_link->soar_thread_update(); //Then have the events in the queue execute
 
 	SDL_mutexV(mu);
+
+	double seconds = time.GetTime();
+	if (seconds > 0.02)
+		Broodwar->printf("Time: %f", seconds);
+
+	cout << "Time: " << seconds << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent

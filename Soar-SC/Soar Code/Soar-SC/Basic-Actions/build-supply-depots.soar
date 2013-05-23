@@ -23,8 +23,6 @@ sp {propose*build-supply-depot
    (<supply-depot-type> ^name |Terran_Supply_Depot|
                         ^id <supply-depot-type-id>
                         ^mineral-cost { <= <minerals-budget> })
-  -{ (<input-link> ^units.unit <scv>)
-     (<scv> ^constructing <supply-depot-type-id>)}
   -{ (<output-link> ^build-building <command-to-build>)
      (<command-to-build> ^type <supply-depot-type-id>
                         -^status)}

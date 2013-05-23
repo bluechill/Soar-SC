@@ -18,6 +18,9 @@ BWAPI_Link::~BWAPI_Link()
 // functions for callbacks from BWAPI.
 void BWAPI_Link::onStart()
 {
+	//Broodwar->setLocalSpeed(2);
+	//Broodwar->setGUI(false);
+
 	soar_sc_link->get_soar_link()->start_soar_run();
 }
 

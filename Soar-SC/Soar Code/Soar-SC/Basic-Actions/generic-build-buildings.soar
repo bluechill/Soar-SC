@@ -168,23 +168,23 @@ sp {apply*build-building
 
 #Preference rules
 
-sp {pref*idle-better-than-non-idle
-   (state <s> ^operator <o1> +
-              ^operator <o2> +
-              ^io.input-link.units <units>)
-   (<o1> ^name build-building
-         ^worker <id1>)
-   (<o2> ^name build-building
-         ^worker <id2>)
-   (<units> ^unit <u1>
-            ^unit <u2>)
-   (<u1> ^id <id1>
-         ^idle 1)
-   (<u2> ^id <id2>
-         ^idle 0)
--->
-   (<s> ^operator <o1> > <o2>)
-}
+#sp {pref*idle-better-than-non-idle
+#   (state <s> ^operator <o1> +
+#              ^operator <o2> +
+#              ^io.input-link.units <units>)
+#   (<o1> ^name build-building
+#         ^worker <id1>)
+#   (<o2> ^name build-building
+#         ^worker <id2>)
+#   (<units> ^unit <u1>
+#            ^unit <u2>)
+#   (<u1> ^id <id1>
+#         ^idle 1)
+#   (<u2> ^id <id2>
+#         ^idle 0)
+#-->
+#   (<s> ^operator <o1> > <o2>)
+#}
 
 sp {pref*force-wait-for-build-command-done
    (state <state> ^name Soar-SC
