@@ -272,6 +272,8 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	SDL_mutexV(mu);
 
 	double seconds = time.GetTime();
+	cout << "Time (0): " << seconds << endl;
+	
 	if (seconds > 0.02)
 		Broodwar->printf("Time: %f", seconds);
 
@@ -382,10 +384,10 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 				std::stringstream ss_y;
 				ss_y << id_y;
 
-				WMElement* tile_wme = fog_tiles->FindByAttribute(string(ss_x.str() + ":" + ss_y.str()).c_str(), 0);
+				WMElement* tile_wme = fog_tiles->FindByAttribute(string("fog-tile").c_str(), 0);
 
 				if (tile_wme == nullptr)
-					continue; //Ignore it, probably should but oh well, TODO: fix ME!
+					continue;
 
 				Identifier* child = tile_wme->ConvertToIdentifier();
 
@@ -398,7 +400,7 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 				soar_sc_link->add_event(Soar_Event(command, true));
 
 				visible_tiles.push_back(block);
-				sort(visible_tiles.begin(), visible_tiles.end());
+				//sort(visible_tiles.begin(), visible_tiles.end());
 			}
 		}
 	}
@@ -584,7 +586,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 			std::string svs_command = "a " + svsobject_id + " fog_tile world v " + Terrain::unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
 			agent->SendSVSInput(svs_command);
 
-			Identifier* fogTile = fog_tiles->CreateIdWME(string(ss_x.str() + ":" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
+			Identifier* fogTile = fog_tiles->CreateIdWME("fog-tile")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
 		}
 	}

@@ -146,7 +146,8 @@ void Soar_SC::set_should_run_forever(bool forever)
 
 void Soar_SC::soar_thread_update(bool direct_call)
 {
-	SetThreadName("Soar Event Queue Thread", GetCurrentThreadId());
+	if (!direct_call)
+		SetThreadName("Soar Event Queue Thread", GetCurrentThreadId());
 
 	while (true)
 	{
@@ -200,6 +201,8 @@ void Soar_SC::soar_thread_update(bool direct_call)
 				}
 			case Soar_Event::WME_Destroy: //If it's a destroy command
 				{
+					assert(event.get_element()->GetAgent() == soar_link->GetAgent());
+
 					event.get_element()->DestroyWME(); //Destroy the WMElement
 
 					break; //Then break
@@ -253,7 +256,8 @@ void Soar_SC::soar_thread_update(bool direct_call)
 
 void Soar_SC::bwapi_thread_update(bool direct_call)
 {
-	SetThreadName("BWAPI Event Queue Thread", GetCurrentThreadId());
+	if (!direct_call)
+		SetThreadName("BWAPI Event Queue Thread", GetCurrentThreadId());
 
 	while (true)
 	{

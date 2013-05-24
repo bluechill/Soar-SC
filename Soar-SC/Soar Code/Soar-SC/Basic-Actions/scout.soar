@@ -5,7 +5,7 @@ sp {propose*new-scout-scv
               ^io.input-link <input-link>)
    (<input-link> ^units.unit <scv>
                  ^types.type <scv-type>)
-   (<scv-type> ^name |Terrain_SCV|
+   (<scv-type> ^name |Terran_SCV|
                ^id <scv-type-id>)
    (<scv> ^type <scv-type-id>
           ^id <scv-id>)
@@ -23,7 +23,7 @@ sp {propose*new-scout-marine
               ^io.input-link <input-link>)
    (<input-link> ^units.unit <marine>
                  ^types.type <marine-type>)
-   (<marine-type> ^name |Terrain_Marine|
+   (<marine-type> ^name |Terran_Marine|
                   ^id <marine-type-id>)
    (<marine> ^type <marine-type-id>
              ^id <marine-id>)
@@ -85,8 +85,7 @@ sp {propose*scout-fog-tile
             ^idle 1
             ^id <unit-id>)
    -{(<s> ^io)
-     (<fog-tiles> ^<attr> <tile>)
-     (<tile> -^timeout)}
+     (<fog-tiles> -^fog-tile.timeout)}
 -->
    (<s> ^operator <scout-fog-tile> + =)
    (<scout-fog-tile> ^name scout-fog-tile

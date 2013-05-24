@@ -51,6 +51,7 @@ public:
 	sml::Identifier* GetOutputLink();
 	sml::Identifier* GetInputLink();
 	sml::Kernel* GetKernel() { return kernel; }
+	sml::Agent* GetAgent() { return agent; }
 
 	//Soar Handlers
 	void add_resource(int bw_id, int count, BWAPI::Position position, BWAPI::UnitType type);
