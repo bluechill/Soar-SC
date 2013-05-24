@@ -86,6 +86,8 @@ sp {propose*scout-fog-tile
             ^idle 1
             ^id <unit-id>)
    -{(<fog-tiles> ^<attr>.timeout)}
+   -{(<s> ^io)
+     (<fog-tiles> -^<attr>)}
 -->
    (<s> ^operator <scout-fog-tile> + =)
    (<scout-fog-tile> ^name scout-fog-tile
@@ -201,9 +203,9 @@ sp {apply*initialize-scouting-substate
 #If we already know the object to go to, as in it's a key location,
 #set the location attribute on the state to skip looking for a fog tile
 sp {apply*initialize-scouting-substate*location
-   (state <s> ^name scouting-substate
-              ^operator <init-scouting-substate>
-              ^superstate <super>)
+   (state <s> ^operator <init-scouting-substate>
+              ^superstate <super>
+             -^location)
    (<init-scouting-substate> ^name init-scouting-substate)
    (<super> ^name Soar-SC
             ^operator <scout-key-location>)
