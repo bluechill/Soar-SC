@@ -28,6 +28,9 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 
 	this->unit = unit;
 
+	if (unit == nullptr)
+		return; //This is just a container for something like a fog tile
+
 	//Variable used a lot for conversion of ints to strings and strings to ints
 	stringstream ss;
 
@@ -134,6 +137,9 @@ Soar_Unit::~Soar_Unit()
 void Soar_Unit::update()
 {
 	using namespace sml;
+
+	if (unit == nullptr)
+		return; //This is just a container for something like a fog tile
 
 	Identifier* unit_id = nullptr;
 
@@ -305,6 +311,9 @@ void Soar_Unit::update()
 
 const int Soar_Unit::get_id()
 {
+	if (unit == nullptr)
+		return -1; //This is just a container for something like a fog tile
+
 	return id;
 }
 
@@ -373,6 +382,9 @@ sml::Identifier* Soar_Unit::get_unit_identifier(bool create_unit, bool enemy)
 
 void Soar_Unit::delete_unit()
 {
+	if (unit == nullptr)
+		return; //This is just a container for something like a fog tile
+
 	sml::Identifier* unit = get_unit_identifier(false, isEnemy);
 
 	string svs_command = "d " + svsobject_id + "\n";
@@ -383,10 +395,37 @@ void Soar_Unit::delete_unit()
 
 void Soar_Unit::will_build(build_struct* build)
 {
+	if (unit == nullptr)
+		return; //This is just a container for something like a fog tile
+
 	if (this->build != nullptr || build == nullptr)
 		return;
 
 	this->build = build;
 
 	cerr << "Set build." << endl;
+}
+
+void Soar_Unit::set_svsobject_id(std::string svsobject_id)
+{
+	if (this->svsobject_id != "")
+		return; //Only allow this if the unit doesn't have an svs object id
+
+	this->svsobject_id = svsobject_id;
+}
+
+void Soar_Unit::set_position(Position pos)
+{
+	if (svsobject_id != "")
+		return; //Only allow this if the unit doesn't have an svs object id
+
+	this->pos = pos;
+}
+
+void Soar_Unit::set_size(Size size)
+{
+	if (svsobject_id != "")
+		return; //Only allow this if the unit doesn't have an svs object id
+
+	this->size = size;
 }

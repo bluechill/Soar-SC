@@ -36,9 +36,13 @@ public:
 
 	typedef Position Size;
 
+	void set_position(Position pos);
 	Position lastPosition() { return pos; }
+
+	void set_size(Size size);
 	Size get_size() { return size; }
 
+	void set_svsobject_id(std::string svsobject_id);
 	std::string get_svsobject_id() { return svsobject_id; }
 
 private:

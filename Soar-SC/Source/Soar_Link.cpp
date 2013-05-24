@@ -38,6 +38,9 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 	kernel->DestroyAgent(agent); //Shut down the agent
 	kernel->Shutdown(); //Then shut down the soar kernel
+
+	for (size_t i = 0;i < fog_tiles.size();i++)
+		delete fog_tiles[i];
 }
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
@@ -358,11 +361,6 @@ void Soar_Link::start_soar_run()
 
 void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, float size_y)
 {
-	Timer time;
-	vector<pair<string, double>> output;
-
-	time.StartTimer();
-
 	static vector<pair<int, int> > visible_tiles;
 
 	Identifier* input_link = agent->GetInputLink();
@@ -370,8 +368,6 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 	assert(elem == nullptr);
 
 	Identifier* fog_tiles = elem->ConvertToIdentifier();
-
-	output.push_back(make_pair("Fog-Time (0): ", time.GetTime()));
 
 	for (size_t x = size_t(x_start);x < size_x+x_start;x++)
 	{
@@ -400,11 +396,7 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 				std::stringstream ss_y;
 				ss_y << id_y;
 
-				output.push_back(make_pair("Fog-Time (4): ", time.GetTime()));
-
 				WMElement* tile_wme = fog_tiles->FindByAttribute(string("fog-tile-" + ss_x.str() + "-" + ss_y.str()).c_str(), 0);
-
-				output.push_back(make_pair("Fog-Time (5): ", time.GetTime()));
 
 				if (tile_wme == nullptr)
 					continue;
@@ -419,18 +411,20 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 
 				soar_sc_link->add_event(Soar_Event(command, true));
 
-				visible_tiles.push_back(block);
-				//sort(visible_tiles.begin(), visible_tiles.end());
+				for (vector<Soar_Unit*>::iterator it = this->fog_tiles.begin();it != this->fog_tiles.end();it++)
+				{
+					if ((*it)->get_svsobject_id() == svsobject_id)
+					{
+						delete *it;
+						this->fog_tiles.erase(it);
+						break; //Remove the Soar Unit*
+					}
+				}
 
-				output.push_back(make_pair("Fog-Time (6): ", time.GetTime()));
+				visible_tiles.push_back(block);
 			}
 		}
 	}
-
-	output.push_back(make_pair("Fog-Time (7): ", time.GetTime()));
-
-	for (vector<pair<string, double> >::iterator it = output.begin();it != output.end();it++)
-		cout << it->first << it->second << endl;
 }
 
 void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
@@ -615,6 +609,23 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 			Identifier* fogTile = fog_tiles->CreateIdWME(("fog-tile-" + ss_x.str() + "-" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
+
+			//Create a Soar_Unit container for the tile
+			Soar_Unit* soar_tile = new Soar_Unit(soar_sc_link, nullptr, false);
+			Soar_Unit::Position temp;
+
+			temp.x = float(x);
+			temp.y = Terrain::flip_one_d_point(float(y), false);
+
+			soar_tile->set_position(temp);
+
+			temp.x = 4.0f;
+			temp.y = 4.0f;
+
+			soar_tile->set_size(temp);
+			soar_tile->set_svsobject_id(svsobject_id); //REMEMBER TO DO THIS LAST NOT FIRST.  IF YOU SET IT FIRST NOTHING ELSE LIKE POSITION WILL ACTUALLY BE SET
+
+			this->fog_tiles.push_back(soar_tile);
 		}
 	}
 
@@ -815,14 +826,26 @@ void Soar_Link::set_decisions(int new_count)
 
 Soar_Unit* Soar_Link::soar_unit_from_svsobject_id(std::string svsobject_id)
 {
-	map<BWAPI::Unit*, Soar_Unit*> units = soar_sc_link->get_bwapi_link()->get_units();
-
-	for (map<BWAPI::Unit*, Soar_Unit*>::iterator it = units.begin();it != units.end();it++)
+	//Slight optimization/hack
+	if (strncmp(svsobject_id.c_str(), "BaseFogTile:", 12) == 0)
 	{
-		Soar_Unit* unit = it->second;
+		for (size_t i = 0;i < fog_tiles.size();i++)
+		{
+			if (fog_tiles[i]->get_svsobject_id() == svsobject_id)
+				return fog_tiles[i];
+		}
+	}
+	else
+	{
+		map<BWAPI::Unit*, Soar_Unit*> units = soar_sc_link->get_bwapi_link()->get_units();
 
-		if (unit->get_svsobject_id() == svsobject_id)
-			return unit;
+		for (map<BWAPI::Unit*, Soar_Unit*>::iterator it = units.begin();it != units.end();it++)
+		{
+			Soar_Unit* unit = it->second;
+
+			if (unit->get_svsobject_id() == svsobject_id)
+				return unit;
+		}
 	}
 
 	return nullptr;

@@ -67,6 +67,8 @@ public:
 	Soar_Unit* soar_unit_from_svsobject_id(std::string svsobject_id);
 
 private:
+	std::vector<Soar_Unit*> fog_tiles;
+
 	int decisions; //Should use #pragma omp atomic for this
 
 	Soar_SC* soar_sc_link;

@@ -15,7 +15,7 @@ sp {propose*new-scout-scv
    (<s> ^operator <scout-operator> + >)
    (<scout-operator> ^name new-scout-scv
                      ^id <scv-id>
-                     ^type scout)
+                     ^type scout-create)
 }
 
 sp {propose*new-scout-marine
@@ -34,7 +34,7 @@ sp {propose*new-scout-marine
    (<s> ^operator <scout-operator> + >)
    (<scout-operator> ^name new-scout-marine
                      ^id <marine-id>
-                     ^type scout)
+                     ^type scout-create)
 }
 
 #preference marine over scv
@@ -51,9 +51,9 @@ sp {pref*all-scouts-of-same-type-are-equal
    (state <s> ^name Soar-SC
               ^operator <scout1> +
               ^operator <scout2> +)
-   (<scout1> ^type scout
+   (<scout1> ^type scout-create
              ^name <name>)
-   (<scout2> ^type scout
+   (<scout2> ^type scout-create
              ^name <name>)
 -->
    (<s> ^operator <scout1> = <scout2>)
@@ -66,11 +66,12 @@ sp {pref*all-scouts-of-same-type-are-equal
 sp {apply*new-scout
    (state <s> ^operator <o>
               ^io.input-link.units.unit <unit>)
-   (<o> ^type scout
+   (<o> ^type scout-create
         ^id <unit-id>)
    (<unit> ^id <unit-id>)
 -->
-   (<unit> ^scouting 1)
+   (<unit> ^scouting 1
+           ^last-scout-location -1)
    (write |Created new scout (| <unit-id> |)| (crlf) )
 }
 
@@ -84,8 +85,7 @@ sp {propose*scout-fog-tile
    (<scout> ^scouting 1
             ^idle 1
             ^id <unit-id>)
-   -{(<s> ^io)
-     (<fog-tiles> -^fog-tile.timeout)}
+   -{(<fog-tiles> ^<attr>.timeout)}
 -->
    (<s> ^operator <scout-fog-tile> + =)
    (<scout-fog-tile> ^name scout-fog-tile
@@ -317,7 +317,7 @@ sp {propose*set-scout-location
 }
 
 sp {apply*set-scout-location
-   (state <s> ^operator.name find-location-coordinates
+   (state <s> ^operator.name set-scout-location
               ^superstate <super>
               ^location <location>)
    (<super> ^operator <scout>)
