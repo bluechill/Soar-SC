@@ -72,8 +72,8 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 	full_queue = (queue_size >= 5);
 
 	//Set the size
-	size.y = float(type.dimensionUp()) + float(type.dimensionDown()) + 1.0f;
-	size.x = float(type.dimensionLeft()) + float(type.dimensionRight()) + 1.0f;
+	size.y = float(type.tileHeight());
+	size.x = float(type.tileWidth());
 
 	//Set the position
 	pos.x = ((float)unit->getLeft()/32.0f);

@@ -25,7 +25,9 @@ void BWAPI_Link::onStart()
 }
 
 void BWAPI_Link::onEnd(bool isWinner)
-{}
+{
+	soar_sc_link->onUnload();
+}
 
 float BWAPI_Link::get_average_decisions()
 {

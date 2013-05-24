@@ -31,6 +31,8 @@ class Soar_SC //Class which coordinates the events and the two links (Soar and B
 {
 public:
 	Soar_SC();
+
+	void onUnload();
 	~Soar_SC();
 
 	Soar_Link* get_soar_link() { return soar_link; }

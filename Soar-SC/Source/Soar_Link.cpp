@@ -31,7 +31,7 @@ Soar_Link::~Soar_Link() //Deconstructor
 {
 	kill_threads = true; //Tell the soar agent run thread to die if it is still running
 
-	soar_sc_link->add_event(Soar_Event("halt", false)); //Execute a stop command to stop the agent
+	soar_sc_link->add_event(Soar_Event("stop-soar", false));
 
 	SDL_WaitThread(soar_thread, nullptr); //Wait for the soar agent run thread to die if it's till running
 	SDL_DestroyMutex(mu); //Then destroy the mutex
@@ -45,9 +45,6 @@ Soar_Link::~Soar_Link() //Deconstructor
 
 void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase phase) //The after output phase handler
 {
-	/*kernel->CheckForIncomingCommands();
-	kernel->CheckForIncomingEvents();*/
-	
 	Timer time;
 	time.StartTimer();
 
@@ -433,7 +430,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	UnitType::set types = UnitTypes::allUnitTypes(); //Get them all
 
 	Identifier* input_link = agent->GetInputLink(); //Grab the input link
-	Identifier* types_id; //Create a variable for holding the types Identifier
+	Identifier* types_id = nullptr; //Create a variable for holding the types Identifier
 	if (!input_link->FindByAttribute("types", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
 		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier(); //It doesn't exist so create it
 	else //Otherwise
@@ -494,6 +491,33 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	agent->SendSVSInput(corner_south_west);
 	agent->SendSVSInput(corner_north_east);
 	agent->SendSVSInput(corner_south_east);
+
+	Identifier* corners_id = nullptr;
+
+	if (!input_link->FindByAttribute("corners", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
+		corners_id = input_link->CreateIdWME("corners")->ConvertToIdentifier(); //It doesn't exist so create it
+	else //Otherwise
+		corners_id = input_link->FindByAttribute("corners", 0)->ConvertToIdentifier(); //Grab the existing one
+
+	{
+		Identifier* corner = corners_id->CreateIdWME("corner");
+		corner->CreateStringWME("svsobject", "TerrainCornerNW");
+	}
+
+	{
+		Identifier* corner = corners_id->CreateIdWME("corner");
+		corner->CreateStringWME("svsobject", "TerrainCornerSW");
+	}
+
+	{
+		Identifier* corner = corners_id->CreateIdWME("corner");
+		corner->CreateStringWME("svsobject", "TerrainCornerNE");
+	}
+
+	{
+		Identifier* corner = corners_id->CreateIdWME("corner");
+		corner->CreateStringWME("svsobject", "TerrainCornerSE");
+	}
 
 	vector<vector<bool> > initial_base_map; //Variable for containing the map and whether a tile is walkable or not
 	size_t map_size_x = Broodwar->mapWidth() * 4; //Set the size to the number of walkable tiles, build tiles times 4

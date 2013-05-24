@@ -55,23 +55,22 @@ Soar_SC::Soar_SC()
 	kill_threads = false;
 	run_forever = false;
 
-	SDL_CreateThread(soar_sc_soar_event_thread, this);
-	SDL_CreateThread(soar_sc_bwapi_event_thread, this);
+	soar_event_thread = SDL_CreateThread(soar_sc_soar_event_thread, this);
+	bwapi_event_thread = SDL_CreateThread(soar_sc_bwapi_event_thread, this);
 
 	soar_link = new Soar_Link(this);
 	bwapi_link = new BWAPI_Link(this);
 }
 
-Soar_SC::~Soar_SC()
+void Soar_SC::onUnload()
 {
 	delete soar_link;
-	delete bwapi_link;
 
 	kill_threads = true;
 
 	SDL_CondSignal(soar_thread_condition);
 	SDL_CondSignal(bwapi_thread_condition);
-
+	
 	SDL_WaitThread(soar_event_thread, nullptr); //Wait until the thread has executed
 	SDL_WaitThread(bwapi_event_thread, nullptr); //Wait until the thread has executed
 
@@ -90,6 +89,9 @@ Soar_SC::~Soar_SC()
 	cout.rdbuf(cout_orig_buffer); //Redirect the cout buffer back to prevent errors after deallocation
 	cerr.rdbuf(cerr_orig_buffer); //Do the same for the cerr buffer
 }
+
+Soar_SC::~Soar_SC()
+{} //Do nothing here.  The "real" destructor is above
 
 void Soar_SC::add_event(Soar_Event event)
 {
