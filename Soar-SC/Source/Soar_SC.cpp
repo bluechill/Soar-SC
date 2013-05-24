@@ -203,6 +203,8 @@ void Soar_SC::soar_thread_update(bool direct_call)
 				{
 					assert(event.get_element()->GetAgent() == soar_link->GetAgent());
 
+					cout << "Deleting: " << event.get_element() << endl;
+					cout << "Time Tag:" << event.get_element()->GetTimeTag() << endl;
 					event.get_element()->DestroyWME(); //Destroy the WMElement
 
 					break; //Then break

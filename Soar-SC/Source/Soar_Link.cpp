@@ -358,6 +358,11 @@ void Soar_Link::start_soar_run()
 
 void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, float size_y)
 {
+	Timer time;
+	vector<pair<string, double>> output;
+
+	time.StartTimer();
+
 	static vector<pair<int, int> > visible_tiles;
 
 	Identifier* input_link = agent->GetInputLink();
@@ -366,16 +371,27 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 
 	Identifier* fog_tiles = elem->ConvertToIdentifier();
 
+	output.push_back(make_pair("Fog-Time (0): ", time.GetTime()));
+
 	for (size_t x = size_t(x_start);x < size_x+x_start;x++)
 	{
 		for (size_t y = size_t(y_start);y < size_y+y_start;y++)
 		{
+			//output.push_back(make_pair("Fog-Time (1): ", time.GetTime()));
+
 			int id_x = x - x % 4;
 			int id_y = size_t(Terrain::flip_one_d_point(float(y - y % 4), false));
 			pair<int, int> block = make_pair(id_x, id_y);
 
+			//output.push_back(make_pair("Fog-Time (2): ", time.GetTime()));
+
 			if (find(visible_tiles.begin(), visible_tiles.end(), block) != visible_tiles.end())
+			{
+				//output.push_back(make_pair("Fog-Time (3-1): ", time.GetTime()));
 				continue;
+			}
+
+			//output.push_back(make_pair("Fog-Time (3-2): ", time.GetTime()));
 
 			if (Broodwar->isExplored(x, y) || Broodwar->isVisible(x,y))
 			{
@@ -384,7 +400,11 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 				std::stringstream ss_y;
 				ss_y << id_y;
 
-				WMElement* tile_wme = fog_tiles->FindByAttribute(string("fog-tile").c_str(), 0);
+				output.push_back(make_pair("Fog-Time (4): ", time.GetTime()));
+
+				WMElement* tile_wme = fog_tiles->FindByAttribute(string("fog-tile-" + ss_x.str() + "-" + ss_y.str()).c_str(), 0);
+
+				output.push_back(make_pair("Fog-Time (5): ", time.GetTime()));
 
 				if (tile_wme == nullptr)
 					continue;
@@ -401,9 +421,16 @@ void Soar_Link::update_fogOfWar(float x_start, float y_start, float size_x, floa
 
 				visible_tiles.push_back(block);
 				//sort(visible_tiles.begin(), visible_tiles.end());
+
+				output.push_back(make_pair("Fog-Time (6): ", time.GetTime()));
 			}
 		}
 	}
+
+	output.push_back(make_pair("Fog-Time (7): ", time.GetTime()));
+
+	for (vector<pair<string, double> >::iterator it = output.begin();it != output.end();it++)
+		cout << it->first << it->second << endl;
 }
 
 void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
@@ -586,7 +613,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 			std::string svs_command = "a " + svsobject_id + " fog_tile world v " + Terrain::unit_box_verts + " p " + ss_x.str() + " " + ss_y.str() + " 10 s 4 4 1";
 			agent->SendSVSInput(svs_command);
 
-			Identifier* fogTile = fog_tiles->CreateIdWME("fog-tile")->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
+			Identifier* fogTile = fog_tiles->CreateIdWME(("fog-tile-" + ss_x.str() + "-" + ss_y.str()).c_str())->ConvertToIdentifier(); //Create a new type Identifier on the types Identifier
 			fogTile->CreateStringWME("svsobject", svsobject_id.c_str()); //Create a string WME with the type's name
 		}
 	}
