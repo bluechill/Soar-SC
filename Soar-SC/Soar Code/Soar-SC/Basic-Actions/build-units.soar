@@ -1,8 +1,7 @@
 sp {propose*build-scv
    (state <s> ^name Soar-SC
               ^io.input-link <i>
-              ^io.output-link <output-link>
-              ^unit-limits.unit-limit <scv-limit>)
+              ^io.output-link <output-link>)
    (<i> ^minerals <m> > 49
         ^total-supplies <ts>
         ^used-supplies <us> < <ts>
@@ -12,15 +11,14 @@ sp {propose*build-scv
    (<command-center> ^name |Terran_Command_Center|
                      ^id <command-center-id>)
    (<scv-type> ^name |Terran_SCV|
-               ^id <type-id>)
+               ^id <type-id>
+               ^my_count { <limit> < 10 })
    (<b> ^type <command-center-id>
         ^id <id>
         ^full-queue 0)
    -{ (<output-link> ^build-unit <command-to-build>)
       (<command-to-build> ^type <type-id>
                          -^status)}
-   (<scv-limit> ^type <type-id>
-                ^count { <l> < 10 })
 -->
    (<s> ^operator <o> + =)
    (<o> ^name build-unit

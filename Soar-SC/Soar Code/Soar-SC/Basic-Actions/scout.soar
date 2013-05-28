@@ -84,7 +84,8 @@ sp {apply*new-scout
 sp {propose*scout-fog-tile
    (state <s> ^name Soar-SC
               ^io.input-link.units.unit <scout>
-              ^io.input-link.fog-tiles <fog-tiles>)
+              ^io.input-link.fog-tiles <fog-tiles>
+              ^io.output-link <output-link>)
    (<scout> ^scouting 1
             ^idle 1
             ^id <unit-id>)
@@ -130,7 +131,8 @@ sp {propose*scout-key-location*building
 sp {propose*scout-key-location*map
    (state <s> ^name Soar-SC
               ^io.input-link.units.unit <scout>
-              ^io.input-link.map-corners.corner <corner>)
+              ^io.input-link.map-corners.corner <corner>
+              ^io.output-link <output-link>)
    (<scout> ^scouting 1
             ^idle 1
             ^id <unit-id>)
@@ -199,7 +201,7 @@ sp {elaboration*creates-the-name-of-the-scouting-substate*no-location
    (<super> ^name Soar-SC
             ^operator <scout>)
    (<scout> ^type scout
-           -^<<corner building>> <location>)
+           -^<< corner building >> <location>)
 -->
    (<s> ^name scouting-substate)
 }
