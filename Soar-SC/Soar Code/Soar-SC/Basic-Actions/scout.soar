@@ -79,19 +79,27 @@ sp {apply*new-scout
 }
 
 #Actual scouting code
+#Elaboration to make sure there is a valid fog-tile
+sp {elaboration*has-valid-fog-tiles
+   (state <s> ^name Soar-SC
+              ^io.input-link <input-link>)
+   (<input-link> ^fog-tiles <fog-tiles>)
+   (<fog-tiles> ^<attr> <no-timeout>)
+   (<no-timeout> -^timeout)
+-->
+   (<s> ^has-valid-fog-tiles true)
+}
 
 #Fog tile scouting
 sp {propose*scout-fog-tile
    (state <s> ^name Soar-SC
               ^io.input-link.units.unit <scout>
               ^io.input-link.fog-tiles <fog-tiles>
-              ^io.output-link <output-link>)
+              ^io.output-link <output-link>
+              ^has-valid-fog-tiles true)
    (<scout> ^scouting 1
             ^idle 1
             ^id <unit-id>)
-   -{(<fog-tiles> ^<attr>.timeout)}
-   -{(<s> ^io)
-     (<fog-tiles> -^<attr>)}
    -{(<output-link> ^move <move-command>)
      (<move-command> -^status
                       ^object <unit-id>)}
