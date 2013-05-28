@@ -74,7 +74,7 @@ sp {apply*new-scout
            ^last-locations <locations>)
    (<locations> ^first -1
                 ^second -1
-                ^third -1)
+                ^third -1)	
    (write |Created new scout (| <unit-id> |)| (crlf) )
 }
 
@@ -91,6 +91,9 @@ sp {propose*scout-fog-tile
    -{(<fog-tiles> ^<attr>.timeout)}
    -{(<s> ^io)
      (<fog-tiles> -^<attr>)}
+   -{(<output-link> ^move <move-command>)
+     (<move-command> -^status
+                      ^object <unit-id>)}
 -->
    (<s> ^operator <scout-fog-tile> + =)
    (<scout-fog-tile> ^name scout-fog-tile
@@ -112,9 +115,9 @@ sp {propose*scout-key-location*building
    (<building> ^svsobject <svsobject>)
    -{(<scout> ^last-locations <locations>)
      (<locations> ^first <svsobject>)}
-   -{(<s> ^io)
-     (<output-link> -^status
-                     ^move.object <unit-id>)}
+   -{(<output-link> ^move <move-command>)
+     (<move-command> -^status
+                      ^object <unit-id>)}
 -->
    (<s> ^operator <scout-key-location> + =)
    (<scout-key-location> ^name scout-key-location
@@ -134,9 +137,9 @@ sp {propose*scout-key-location*map
     (<corner> ^svsobject <svsobject>)
    -{(<scout> ^last-locations <locations>)
      (<locations> ^first <svsobject>)}
-   -{(<s> ^io)
-     (<output-link> -^status
-                     ^move.object <unit-id>)}
+   -{(<output-link> ^move <move-command>)
+     (<move-command> -^status
+                      ^object <unit-id>)}
 -->
    (<s> ^operator <scout-key-location> + =)
    (<scout-key-location> ^name scout-key-location
@@ -190,23 +193,31 @@ sp {apply*scout-location*move-unit
 #Initially the scout operators don't have the building position or the fog tile position
 #Find it and put it on the operator
 
-#Initialize the substate
-sp {propose*initialize-scouting-substate
-   (state <s> -^name
-               ^superstate <super>)
+#Elaborate the name down
+sp {elaboration*creates-the-name-of-the-scouting-substate*no-location
+   (state <s> ^superstate <super>)
    (<super> ^name Soar-SC
             ^operator <scout>)
-   (<scout> ^type scout)
+   (<scout> ^type scout
+           -^<<corner building>> <location>)
 -->
-   (<s> ^operator <init-scouting-substate> + >)
-   (<init-scouting-substate> ^name init-scouting-substate)
+   (<s> ^name scouting-substate)
 }
 
-sp {apply*initialize-scouting-substate
-   (state <s> -^name
-               ^operator <init-scouting-substate>
-               ^superstate <super>)
-   (<init-scouting-substate> ^name init-scouting-substate)
+sp {elaboration*creates-the-name-of-the-scouting-substate*location
+   (state <s> ^superstate <super>)
+   (<super> ^name Soar-SC
+            ^operator <scout>)
+   (<scout> ^type scout
+            ^<< corner building >> <location>)
+   (<location> ^svsobject <svsobject>)
+-->
+   (<s> ^name scouting-substate
+        ^location <svsobject>)
+}
+
+sp {elaboration*create-scout-and-locations-on-substate
+   (state <s> ^superstate <super>)
    (<super> ^operator <scout>
             ^io.input-link.units.unit <unit>)
    (<scout> ^type scout
@@ -215,25 +226,8 @@ sp {apply*initialize-scouting-substate
            ^svsobject <svsobject>
            ^last-locations <locations>)
 -->
-   (<s> ^name scouting-substate
-        ^scout <svsobject>
+   (<s> ^scout <svsobject>
         ^last-locations <locations>)
-}
-
-#If we already know the object to go to, as in it's a key location,
-#set the location attribute on the state to skip looking for a fog tile
-sp {apply*initialize-scouting-substate*location
-   (state <s> ^operator <init-scouting-substate>
-              ^superstate <super>
-             -^location)
-   (<init-scouting-substate> ^name init-scouting-substate)
-   (<super> ^name Soar-SC
-            ^operator <scout-key-location>)
-   (<scout-key-location> ^name scout-key-location
-                         ^<attr> <location>)
-   (<location> ^svsobject <svsobject>)
--->
-   (<s> ^location <svsobject>)
 }
 
 #Find the fog tile
@@ -318,7 +312,9 @@ sp {apply*check-fog-tile-valid*invalid
               ^superstate <super>
               ^last-locations <last-locations>
               ^svs.command <command-link>)
-   (<last-locations> ^third <last-location>)
+   (<last-locations> ^first <last-location>
+                     ^second <last-location>
+                     ^third <last-location>)
    (<check-fog-tile-valid> ^name check-fog-tile-valid
                            ^tile <last-location>)
    (<super> ^io.input-link.fog-tiles <fog-tiles>)
