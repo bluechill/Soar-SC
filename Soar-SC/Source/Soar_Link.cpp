@@ -430,6 +430,18 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 	UnitType::set types = UnitTypes::allUnitTypes(); //Get them all
 
 	Identifier* input_link = agent->GetInputLink(); //Grab the input link
+
+	WMElement* my_race_wme = get_child("my_race", input_link);
+
+	if (my_race_wme == nullptr)
+		my_race_wme = input_link->CreateStringWME("my_race", "unknown");
+
+	StringElement* my_race_str = my_race_wme->ConvertToStringElement();
+
+	assert(my_race_str != nullptr);
+
+	my_race_str->Update(BWAPI::Broodwar->self()->getRace().getName().c_str());
+
 	Identifier* types_id = nullptr; //Create a variable for holding the types Identifier
 	if (!input_link->FindByAttribute("types", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
 		types_id = input_link->CreateIdWME("types")->ConvertToIdentifier(); //It doesn't exist so create it
