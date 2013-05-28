@@ -1,4 +1,5 @@
 #pragma once
+#include <BWAPI/InterfaceEvent.h>
 #include <BWAPI/Interface.h>
 #include <BWAPI/AIModule.h>
 #include <BWAPI/Bullet.h>

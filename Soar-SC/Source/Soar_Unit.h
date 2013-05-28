@@ -13,7 +13,7 @@ class Soar_SC;
 class Soar_Unit
 {
 public:
-	Soar_Unit(Soar_SC* soar_sc_link, BWAPI::Unit* unit, bool enemy);
+	Soar_Unit(Soar_SC* soar_sc_link, BWAPI::Unit unit, bool enemy);
 	~Soar_Unit();
 
 	void delete_unit();
@@ -48,7 +48,7 @@ public:
 private:
 	Soar_SC* soar_sc_link;
 
-	BWAPI::Unit* unit;
+	BWAPI::Unit unit;
 
 	int id;
 

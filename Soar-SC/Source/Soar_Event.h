@@ -13,13 +13,13 @@ public:
 	Soar_Event(std::string command, bool svs_command = true); //Construct an event around console commands or agent svs input
 	Soar_Event(sml::WMElement* element); //Construct an event around destroying a working memory element
 	Soar_Event(sml::Identifier* element, bool status); //False is Failure, True is Completed
-	Soar_Event(BWAPI::Unit* bw_unit); //Construct an event around adding a unit
+	Soar_Event(BWAPI::Unit bw_unit); //Construct an event around adding a unit
 
 	std::string* get_command(); //Get the console or SVS command
 	sml::WMElement* get_element(); //Get the WME to be destroyed
 	sml::Identifier* get_identifier(); //Get the WME to be destroyed
 	bool get_status(); //Get the status to add
-	BWAPI::Unit* get_unit(); //Get the unit to add
+	BWAPI::Unit get_unit(); //Get the unit to add
 
 	//All the event types
 	typedef enum {
@@ -37,7 +37,7 @@ private:
 	sml::WMElement* element; //Internal WME pointer variable to hold the WME to destroy
 	sml::Identifier* identifier;
 	bool status; //The internal status representation
-	BWAPI::Unit* bw_unit; //Internal pointer to the unit to add
+	BWAPI::Unit bw_unit; //Internal pointer to the unit to add
 
 	Event_Type type; //Internal event type object
 };

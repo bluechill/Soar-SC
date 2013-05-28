@@ -71,6 +71,9 @@ namespace BWAPI
 
         // erase-remove idiom, eliminates spaces and underscores from the string
         n.erase( std::remove_if(n.begin(), n.end(), [](char const &c){ return isspace(c) || c == '_'; }), n.end() );
+        
+        // Make lowercase
+        std::transform(n.begin(), n.end(), n.begin(), ::tolower);
 
         result.insert( typeMapT::value_type(n, T(i)) );
       }
@@ -152,6 +155,9 @@ namespace BWAPI
     
       // erase-remove idiom, eliminates spaces and underscores from the string to search
       name.erase( std::remove_if(name.begin(), name.end(), [](char const &c){ return isspace(c) || c == '_'; }), name.end() );
+      
+      // Make lowercase
+      std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
       // Find the type
       auto it = typeMap.find(name);

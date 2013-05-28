@@ -8,7 +8,9 @@ namespace BWAPI
 {
   class Regionset;
   class Unitset;
-  class Unit;
+
+  class RegionInterface;
+  typedef RegionInterface *Region;
 
   /// Region objects are created by Starcraft: Broodwar to contain several tiles with the same
   /// properties, and create a node in pathfinding and other algorithms. Regions may not contain
@@ -18,11 +20,11 @@ namespace BWAPI
   ///
   /// Most parameters that are available are explicitly assigned by Broodwar itself.
   ///
-  /// @see Game::getAllRegions, Game::getRegionAt, Unit::getRegion
-  class Region : public Interface<Region>
+  /// @see Game::getAllRegions, Game::getRegionAt, UnitInterface::getRegion
+  class RegionInterface : public Interface<RegionInterface>
   {
   protected:
-    virtual ~Region() {};
+    virtual ~RegionInterface() {};
   public:
     /// Retrieves a unique identifier for this region.
     ///
@@ -96,19 +98,19 @@ namespace BWAPI
     /// Retrieves the closest accessible neighbor region.
     ///
     /// @returns The closest Region that is accessible.
-    virtual BWAPI::Region *getClosestAccessibleRegion() const = 0;
+    virtual BWAPI::Region getClosestAccessibleRegion() const = 0;
 
     /// Retrieves the closest inaccessible neighbor region.
     ///
     /// @returns The closest Region that is inaccessible.
-    virtual BWAPI::Region *getClosestInaccessibleRegion() const = 0;
+    virtual BWAPI::Region getClosestInaccessibleRegion() const = 0;
 
     /// Retrieves the center-to-center distance between two regions.
     ///
     /// @param other
     ///   The target Region to calculate distance to.
     /// @returns The integer distance from this Region to \p other.
-    int getDistance(BWAPI::Region *other) const;
+    int getDistance(BWAPI::Region other) const;
 
     /// Retrieves a Unitset containing all the units that are in this region. Also has the ability
     /// to filter the units before the creation of the Unitset.

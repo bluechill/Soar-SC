@@ -6,20 +6,22 @@
 namespace BWAPI
 {
   // Forward Declarations
-  class Region;
+  class RegionInterface;
+  typedef RegionInterface *Region;
+
   class Unitset;
 
-  class Regionset : public Vectorset<BWAPI::Region*>
+  class Regionset : public Vectorset<BWAPI::Region>
   {
   public:
     Regionset(size_t initialSize = 16);
     Regionset(const Regionset &other);
     Regionset(Regionset &&other);
 
-    /// @copydoc Region::getCenter
+    /// @copydoc RegionInterface::getCenter
     Position getCenter() const;
 
-    /// @copydoc Region::getUnits
+    /// @copydoc RegionInterface::getUnits
     Unitset getUnits(const UnitFilter &pred = nullptr) const;
   };
 }

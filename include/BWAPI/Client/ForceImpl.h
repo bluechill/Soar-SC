@@ -6,9 +6,10 @@
 namespace BWAPI
 {
   class Game;
-  class Player;
-  class Unit;
-  class ForceImpl : public Force
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
+
+  class ForceImpl : public ForceInterface
   {
     private:
       const ForceData* self;

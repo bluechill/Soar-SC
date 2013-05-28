@@ -12,7 +12,7 @@ class BWAPI_Event
 public:
 	BWAPI_Event(BWAPI::UnitCommand command, sml::Identifier* id, Soar_SC* link); //Construct a BWAPI_Event around a command for a unit
 
-	BWAPI::Unit* get_unit();
+	BWAPI::Unit get_unit();
 
 	void execute_command();
 

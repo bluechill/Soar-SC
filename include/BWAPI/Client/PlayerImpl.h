@@ -7,9 +7,10 @@
 
 namespace BWAPI
 {
-  class Unit;
-  class Force;
-  class PlayerImpl : public Player
+  class ForceInterface;
+  typedef ForceInterface *Force;
+
+  class PlayerImpl : public PlayerInterface
   {
     private:
       int id;
@@ -23,9 +24,9 @@ namespace BWAPI
       virtual const Unitset &getUnits() const override;
       virtual Race getRace() const override;
       virtual PlayerType getType() const override;
-      virtual Force* getForce() const override;
-      virtual bool isAlly(Player* player) const override;
-      virtual bool isEnemy(Player* player) const override;
+      virtual Force getForce() const override;
+      virtual bool isAlly(Player player) const override;
+      virtual bool isEnemy(Player player) const override;
       virtual bool isNeutral() const override;
       virtual TilePosition getStartLocation() const override;
       virtual bool isVictorious() const override;

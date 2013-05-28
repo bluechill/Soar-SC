@@ -1,13 +1,15 @@
 #pragma once
-#include <BWAPI/Position.h>
-#include <BWAPI/Interface.h>
+#include <BWAPI.h>
 
 namespace BWAPI
 {
   // Forward declarations
-  class Player;
-  class Unit;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class BulletType;
+
+  class BulletInterface;
+  typedef BulletInterface *Bullet;
 
   /// An interface object representing a bullet or missile spawned from an attack.
   ///
@@ -27,11 +29,11 @@ namespace BWAPI
   /// If Flag::CompleteMapInformation is disabled, then a Bullet is accessible if and only if
   /// it is visible. Otherwise if Flag::CompleteMapInformation is enabled, then all Bullets
   /// in the game are accessible.
-  /// @see Game::getBullets, Bullet::exists
-  class Bullet : public Interface<Bullet>
+  /// @see Game::getBullets, BulletInterface::exists
+  class BulletInterface : public Interface<BulletInterface>
   {
   protected:
-    virtual ~Bullet() {};
+    virtual ~BulletInterface() {};
   public:
     /// Retrieves a unique identifier for the current Bullet.
     ///
@@ -50,7 +52,7 @@ namespace BWAPI
     ///
     /// If Flag::CompleteMapInformation is enabled, then this function is accurate for all
     /// Bullet information.
-    /// @see isVisible, Unit::exists
+    /// @see isVisible, UnitInterface::exists
     virtual bool exists() const = 0;
 
     /// Retrieves the Player interface that owns the Bullet.
@@ -58,8 +60,8 @@ namespace BWAPI
     /// @retval nullptr If the Player object for this Bullet is inaccessible.
     ///
     /// @returns
-    ///   A pointer to the owning Player object.
-    virtual Player* getPlayer() const = 0;
+    ///   The owning Player interface object.
+    virtual Player getPlayer() const = 0;
 
     /// Retrieves the type of this Bullet.
     ///
@@ -74,10 +76,9 @@ namespace BWAPI
     /// @retval nullptr If the source can not be identified or is inaccessible.
     ///
     /// @returns
-    ///   A pointer to the owning Unit object.
-    ///
+    ///   The owning Unit interface object.
     /// @see getTarget
-    virtual Unit* getSource() const = 0;
+    virtual Unit getSource() const = 0;
 
     /// Retrieves the Bullet's current position.
     ///
@@ -85,7 +86,6 @@ namespace BWAPI
     ///
     /// @returns
     ///   A Position containing the Bullet's current coordinates.
-    ///
     /// @see getTargetPosition
     virtual Position getPosition() const = 0;
 
@@ -124,9 +124,9 @@ namespace BWAPI
     /// ground, or if the Bullet itself is inaccessible.
     ///
     /// @returns
-    ///   A pointer to the target Unit object, if one exists.
+    ///   The target Unit interface object, if one exists.
     /// @see getTargetPosition, getSource
-    virtual Unit* getTarget() const = 0;
+    virtual Unit getTarget() const = 0;
 
     /// Retrieves the target position that the Bullet is heading to.
     ///
@@ -162,6 +162,6 @@ namespace BWAPI
     ///
     /// @retval true If the Bullet is visible to the specified player.
     /// @retval false If the Bullet is not visible to the specified player.
-    virtual bool isVisible(Player* player = nullptr) const = 0;
+    virtual bool isVisible(Player player = nullptr) const = 0;
   };
 }

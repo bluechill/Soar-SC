@@ -75,7 +75,7 @@ void BWAPI_Event::execute_command()
 	}
 }
 
-BWAPI::Unit* BWAPI_Event::get_unit()
+BWAPI::Unit BWAPI_Event::get_unit()
 {
 	return internal_command.getUnit();
 }

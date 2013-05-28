@@ -7,10 +7,11 @@
 namespace BWAPI
 {
   // Forward Declarations
-  class Player;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class Unitset;
 
-  class Playerset : public Vectorset<BWAPI::Player*>
+  class Playerset : public Vectorset<BWAPI::Player>
   {
   public:
     Playerset(size_t initialSize = 16);
@@ -21,14 +22,14 @@ namespace BWAPI
     /// player in this set owns.
     ///
     /// @returns Unitset containing Playerset's units
-    /// @see Player::getUnits
+    /// @see PlayerInterface::getUnits
     Unitset getUnits() const;
 
     /// Returns the list of races that each player
     /// in the set is.
     ///
     /// @returns Race::set containing Playerset's races
-    /// @see Player::getRace
+    /// @see PlayerInterface::getRace
     Race::set getRaces() const;
 
     /// Sets the alliance status with all players

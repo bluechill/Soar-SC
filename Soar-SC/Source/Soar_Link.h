@@ -68,6 +68,7 @@ public:
 
 private:
 	std::vector<Soar_Unit*> fog_tiles;
+	std::vector<Soar_Unit*> terrain_corners;
 
 	int decisions; //Should use #pragma omp atomic for this
 

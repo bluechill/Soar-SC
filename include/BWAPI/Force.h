@@ -7,15 +7,18 @@ namespace BWAPI
   // Forward Declarations
   class Playerset;
 
+  class ForceInterface;
+  typedef ForceInterface *Force;
+
   /// The Force class is used to get information about each force in a match. Normally this is
   /// considered a team.
   ///
   /// @note It is not called a team because players on the same force do not necessarily need
   /// to be allied at the beginning of a match.
-  class Force : public Interface<Force>
+  class ForceInterface : public Interface<ForceInterface>
   {
   protected:
-    virtual ~Force() {};
+    virtual ~ForceInterface() {};
   public :
     /// Retrieves the unique ID that represents this Force.
     ///
@@ -30,7 +33,7 @@ namespace BWAPI
     ///
     /// Example usage:
     /// @code
-    ///   BWAPI::Force *myForce = BWAPI::Broodwar->self()->getForce();
+    ///   BWAPI::Force myForce = BWAPI::Broodwar->self()->getForce();
     ///   if ( myForce->getName() == "Observers" )
     ///     BWAPI::Broodwar << "Looks like we're observing a match." << std::endl;
     /// @endcode
@@ -47,7 +50,7 @@ namespace BWAPI
     /// Example usage:
     /// @code
     ///   // Get the enemy force, but make sure we have an enemy
-    ///   BWAPI::Force *myEnemyForce = BWAPI::Broodwar->enemy() ? BWAPI::Broodwar->enemy()->getForce() : nullptr;
+    ///   BWAPI::Force myEnemyForce = BWAPI::Broodwar->enemy() ? BWAPI::Broodwar->enemy()->getForce() : nullptr;
     ///   if ( myEnemyForce != nullptr )
     ///   {
     ///     Broodwar << "The allies of my enemy are..." << std::endl;

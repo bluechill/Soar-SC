@@ -17,7 +17,7 @@
 using namespace BWAPI;
 using namespace std;
 
-Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
+Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit unit, bool enemy)
 {
 	this->soar_sc_link = soar_sc_link;
 	this->isEnemy = enemy;
@@ -44,7 +44,7 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit* unit, bool enemy)
 
 	if (unit->isConstructing())
 	{
-		Unit* unit_building = unit->getBuildUnit();
+		Unit unit_building = unit->getBuildUnit();
 		if (unit_building != nullptr)
 		{
 			constructing = unit_building->getType().getID();
@@ -183,7 +183,7 @@ void Soar_Unit::update()
 
 	if (unit->isConstructing())
 	{
-		Unit* unit_building = unit->getBuildUnit();
+		Unit unit_building = unit->getBuildUnit();
 		if (unit_building != nullptr)
 		{
 			constructing = unit_building->getType().getID();
@@ -285,7 +285,7 @@ void Soar_Unit::update()
 		soar_sc_link->get_soar_link()->SendSVSInput(svs_command);
 	}
 
-	Unit* target = unit->getTarget();
+	Unit target = unit->getTarget();
 	int newTargetID = 0;
 	if (target != nullptr)
 		newTargetID = target->getID();

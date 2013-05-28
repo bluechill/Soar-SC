@@ -19,16 +19,20 @@ namespace BWAPI
   class Bulletset;
   class Color;
   class Event;
-  class Force;
+  class ForceInterface;
+  typedef ForceInterface *Force;
   class Forceset;
   class GameType;
-  class Player;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class Playerset;
   class Race;
-  class Region;
+  
+  class RegionInterface;
+  typedef RegionInterface *Region;
+
   class Regionset;
   class TechType;
-  class Unit;
   class UnitCommand;
   class Unitset;
   class UpgradeType;
@@ -123,7 +127,7 @@ namespace BWAPI
     ///
     /// @returns Force interface object mapped to the given \p forceID.
     /// @retval nullptr if the given identifier is invalid.
-    virtual Force* getForce(int forceID) const = 0;
+    virtual Force getForce(int forceID) const = 0;
 
     /// Retrieves the Player interface object associated with a given identifier.
     ///
@@ -132,7 +136,7 @@ namespace BWAPI
     ///
     /// @returns Player interface object mapped to the given \p playerID.
     /// @retval nullptr if the given identifier is invalid.
-    virtual Player* getPlayer(int playerID) const = 0;
+    virtual Player getPlayer(int playerID) const = 0;
 
     /// Retrieves the Unit interface object associated with a given identifier.
     ///
@@ -141,7 +145,7 @@ namespace BWAPI
     ///
     /// @returns Unit interface object mapped to the given \p unitID.
     /// @retval nullptr if the given identifier is invalid.
-    virtual Unit* getUnit(int unitID) const = 0;
+    virtual Unit getUnit(int unitID) const = 0;
 
     /// Retrieves a Unit interface object from a given unit index. The value given as an index
     /// maps directly to Broodwar's unit array index and matches the index found in replay files.
@@ -152,7 +156,7 @@ namespace BWAPI
     ///
     /// @returns Unit interface object that matches the given \p unitIndex.
     /// @retval nullptr if the given index is invalid.
-    virtual Unit* indexToUnit(int unitIndex) const = 0;
+    virtual Unit indexToUnit(int unitIndex) const = 0;
 
     /// Retrieves the Region interface object associated with a given identifier.
     ///
@@ -161,7 +165,7 @@ namespace BWAPI
     ///
     /// @returns Region interface object mapped to the given \p regionID.
     /// @retval nullptr if the given ID is invalid.
-    virtual Region* getRegion(int regionID) const = 0;
+    virtual Region getRegion(int regionID) const = 0;
 
     /// Retrieves the GameType of the current game.
     ///
@@ -353,7 +357,7 @@ namespace BWAPI
     /// @retval nullptr If a suitable unit was not found.
     ///
     /// @see getBestUnit, UnitFilter
-    Unit *getClosestUnit(Position center, const UnitFilter &pred = nullptr, int radius = 999999) const;
+    Unit getClosestUnit(Position center, const UnitFilter &pred = nullptr, int radius = 999999) const;
 
     /// Retrieves the closest unit to center that matches the criteria of the callback pred within
     /// an optional rectangle.
@@ -373,7 +377,7 @@ namespace BWAPI
     ///   The bottom position of the rectangle. This value includes the entire map height by default.
     ///
     /// @see UnitFilter
-    virtual Unit *getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
+    virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const = 0;
 
     /// Compares all units with pred to determine which of them is the best. All units are checked.
     /// If center and radius are specified, then it will check all units that are within the radius
@@ -394,7 +398,7 @@ namespace BWAPI
     /// @retval nullptr if a suitable unit was not found.
     ///
     /// @see getClosestUnit, BestUnitFilter, UnitFilter
-    virtual Unit *getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::Origin, int radius = 999999) const = 0;
+    virtual Unit getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::Origin, int radius = 999999) const = 0;
 
     /// Returns the last error that was set using setLastError. If a function call in BWAPI has
     /// failed, you can use this function to retrieve the reason it failed.
@@ -615,7 +619,7 @@ namespace BWAPI
     ///
     /// @returns true indicating that the structure can be placed at the given tile position, and
     /// false if something may be obstructing the build location.
-    virtual bool canBuildHere(TilePosition position, UnitType type, const Unit *builder = nullptr, bool checkExplored = false) = 0;
+    virtual bool canBuildHere(TilePosition position, UnitType type, Unit builder = nullptr, bool checkExplored = false) = 0;
 
     /// Checks all the requirements in order to make a given unit type for the current player.
     /// These include resources, supply, technology tree, availability, and required units.
@@ -629,7 +633,7 @@ namespace BWAPI
     /// @returns true indicating that the type can be made. If \p builder is provided, then it is
     /// only true if \p builder can make the \p type. Otherwise it will return false, indicating
     /// that the unit type can not be made.
-    virtual bool canMake(UnitType type, const Unit *builder = nullptr) const = 0;
+    virtual bool canMake(UnitType type, Unit builder = nullptr) const = 0;
 
     /// Checks all the requirements in order to research a given technology type for the current
     /// player. These include resources, technology tree, availability, and required units.
@@ -645,7 +649,7 @@ namespace BWAPI
     /// @returns true indicating that the type can be researched. If \p unit is provided, then it is
     /// only true if \p unit can research the \p type. Otherwise it will return false, indicating
     /// that the technology can not be researched.
-    virtual bool canResearch(TechType type, const Unit *unit = nullptr, bool checkCanIssueCommandType = true) = 0;
+    virtual bool canResearch(TechType type, Unit unit = nullptr, bool checkCanIssueCommandType = true) = 0;
 
     /// Checks all the requirements in order to upgrade a given upgrade type for the current
     /// player. These include resources, technology tree, availability, and required units.
@@ -661,14 +665,14 @@ namespace BWAPI
     /// @returns true indicating that the type can be upgraded. If \p unit is provided, then it is
     /// only true if \p unit can upgrade the \p type. Otherwise it will return false, indicating
     /// that the upgrade can not be upgraded.
-    virtual bool canUpgrade(UpgradeType type, const Unit *unit = nullptr, bool checkCanIssueCommandType = true) = 0;
+    virtual bool canUpgrade(UpgradeType type, Unit unit = nullptr, bool checkCanIssueCommandType = true) = 0;
 
     /// Retrieves the set of all starting locations for the current map. A starting location is
     /// essentially a candidate for a player's spawn point.
     ///
     /// @returns A TilePosition::set containing all the TilePosition objects that indicate a start
     /// location.
-    /// @see Player::getStartLocation
+    /// @see PlayerInterface::getStartLocation
     virtual const TilePosition::set& getStartLocations() const = 0;
 
     /// Prints text to the screen as a notification. This function allows text formatting using
@@ -843,7 +847,7 @@ namespace BWAPI
     ///       BWAPI::Broodwar->sendText("Hello, my name is %s.", BWAPI::Broodwar->self()->getName().c_str());
     ///   }
     /// @endcode
-    virtual Player* self() const = 0;
+    virtual Player self() const = 0;
 
     /// Retrieves the Player interface that represents the enemy player. If there is more than one
     /// enemy, and that enemy is destroyed, then this function will still retrieve the same,
@@ -852,13 +856,13 @@ namespace BWAPI
     /// @returns Player interface representing an enemy player.
     /// @retval nullptr If there is no enemy or the current game is a replay.
     /// @see enemies
-    virtual Player* enemy() const = 0;
+    virtual Player enemy() const = 0;
 
-    /// Retrieves a pointer to the Player interface object representing the neutral player. The
-    /// neutral player owns all the resources and critters on the map by default.
+    /// Retrieves the Player interface object representing the neutral player. The neutral player
+    /// owns all the resources and critters on the map by default.
     ///
     /// @returns Player interface indicating the neutral player.
-    virtual Player* neutral() const = 0;
+    virtual Player neutral() const = 0;
 
     /// Retrieves a set of all the current player's remaining allies.
     ///
@@ -1251,7 +1255,7 @@ namespace BWAPI
     ///   Sets the state of "allied victory". If true, the game will end in a victory if all
     ///   allied players have eliminated their opponents. Otherwise, the game will only end if
     ///   no other players are remaining in the game. This value is true by default.
-    virtual bool setAlliance(BWAPI::Player *player, bool allied = true, bool alliedVictory = true) = 0;
+    virtual bool setAlliance(BWAPI::Player player, bool allied = true, bool alliedVictory = true) = 0;
 
     /// In a game, this function sets the vision of the current BWAPI player with the target
     /// player. In a replay, this function toggles the visibility of the target player.
@@ -1263,7 +1267,7 @@ namespace BWAPI
     ///   with the target player, otherwise it will unshare vision. If in a replay, the vision
     ///   of the target player will be shown, otherwise the target player will be hidden. This
     ///   value is true by default.
-    virtual bool setVision(BWAPI::Player *player, bool enabled = true) = 0;
+    virtual bool setVision(BWAPI::Player player, bool enabled = true) = 0;
 
     /// Retrieves current amount of time in seconds that the game has elapsed.
     ///
@@ -1397,9 +1401,9 @@ namespace BWAPI
     ///   The y coordinate, in pixels.
     ///
     /// @returns Pointer to the Region interface at the given position.
-    virtual BWAPI::Region *getRegionAt(int x, int y) const = 0;
+    virtual BWAPI::Region getRegionAt(int x, int y) const = 0;
     /// @overload
-    BWAPI::Region *getRegionAt(BWAPI::Position position) const;
+    BWAPI::Region getRegionAt(BWAPI::Position position) const;
 
     /// Retrieves the amount of time (in milliseconds) that has elapsed when running the last AI
     /// module callback. This is used by tournament modules to penalize AI modules that use too
@@ -1450,7 +1454,7 @@ namespace BWAPI
     ///
     /// @returns The amount of damage that fromType would deal to toType.
     /// @see getDamageTo
-    int getDamageFrom(UnitType fromType, UnitType toType, Player *fromPlayer = nullptr, Player *toPlayer = nullptr) const;
+    int getDamageFrom(UnitType fromType, UnitType toType, Player fromPlayer = nullptr, Player toPlayer = nullptr) const;
 
     /// Calculates the damage dealt for a given player. It can be understood as the damage to
     /// \p toType from \p fromType. Does not include shields in calculation. Includes upgrades if
@@ -1472,7 +1476,7 @@ namespace BWAPI
     ///
     /// @returns The amount of damage that fromType would deal to toType.
     /// @see getDamageFrom
-    int getDamageTo(UnitType toType, UnitType fromType, Player *toPlayer = nullptr, Player *fromPlayer = nullptr) const;
+    int getDamageTo(UnitType toType, UnitType fromType, Player toPlayer = nullptr, Player fromPlayer = nullptr) const;
   };
 
   extern Game *BroodwarPtr;

@@ -60,7 +60,7 @@ namespace BWAPI
     };
   }
   /// The TechType (or Technology Type, also referred to as an Ability) represents a Unit's ability
-  /// which can be researched with Unit::research or used with Unit::useTech. In order for a Unit
+  /// which can be researched with UnitInterface::research or used with UnitInterface::useTech. In order for a Unit
   /// to use its own specialized ability, it must first be available and researched.
   class TechType : public Type<TechType, TechTypes::Enum::Unknown>
   {
@@ -89,13 +89,13 @@ namespace BWAPI
       /// Retrieves the number of frames needed to research the tech type.
       ///
       /// @returns The time, in frames, it will take for the research to complete.
-      /// @see Unit::getRemainingResearchTime
+      /// @see UnitInterface::getRemainingResearchTime
       int researchTime() const;
 
       /// Retrieves the amount of energy needed to use this TechType as an ability.
       ///
       /// @returns Energy cost of the ability.
-      /// @see Unit::getEnergy
+      /// @see UnitInterface::getEnergy
       int energyCost() const;
 
       /// Retrieves the UnitType that can research this technology.

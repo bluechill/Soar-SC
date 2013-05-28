@@ -48,9 +48,7 @@ namespace BWAPI
     ///   The key containing the value to retrieve. Default is 0.
     /// 
     /// @retval nullptr if index is out of bounds.
-    ///
-    /// @returns A pointer to the client info at that index.
-    ///
+    /// @returns The client info at the given index.
     /// @see setClientInfo
     void *getClientInfo(int key = 0) const
     {
@@ -74,7 +72,7 @@ namespace BWAPI
     /// Associates one or more pointers or values with any BWAPI interface.
     ///
     /// This client information is managed entirely by the AI module. It is not modified by BWAPI.
-    /// If a pointer to allocated memory is used, then the AI module is responsible for
+    /// @warning If a pointer to allocated memory is used, then the AI module is responsible for
     /// deallocating the memory when the game ends.
     ///
     /// If client info at the given index has already been set, then it will be overwritten.

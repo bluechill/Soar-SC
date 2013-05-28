@@ -1,13 +1,14 @@
 #pragma once
 #include <BWAPI/Position.h>
 #include <BWAPI/TournamentAction.h>
+#include <BWAPI/Unit.h>
 #include <string>
 
 namespace BWAPI
 {
   // Forward declarations
-  class Unit;
-  class Player;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class Color;
 
   /// AIModule is a virtual class that is intended to be implemented or inherited by a custom AI
@@ -67,14 +68,14 @@ namespace BWAPI
       ///
       /// @note
       ///   Messages sent by the current player will never invoke this function.
-      virtual void onReceiveText(Player* player, std::string text);
+      virtual void onReceiveText(Player player, std::string text);
 
       /// Called when a Player leaves the game. All of their units are automatically given to the
       /// neutral player with their colour and alliance parameters preserved.
       ///
       /// @param player
       ///   The Player interface object representing the player that left the game.
-      virtual void onPlayerLeft(Player* player);
+      virtual void onPlayerLeft(Player player);
 
       /// Called when a @Nuke has been launched somewhere on the map.
       ///
@@ -93,7 +94,7 @@ namespace BWAPI
       ///   This function INCLUDES the state of Flag::CompleteMapInformation.
       ///
       /// @see onUnitShow
-      virtual void onUnitDiscover(Unit* unit);
+      virtual void onUnitDiscover(Unit unit);
 
       /// Called when a Unit becomes inaccessible.
       ///
@@ -104,7 +105,7 @@ namespace BWAPI
       ///   This function INCLUDES the state of Flag::CompleteMapInformation.
       ///
       /// @see onUnitHide
-      virtual void onUnitEvade(Unit* unit);
+      virtual void onUnitEvade(Unit unit);
 
       /// Called when a previously invisible unit becomes visible.
       ///
@@ -115,7 +116,7 @@ namespace BWAPI
       ///   This function EXCLUDES the state of Flag::CompleteMapInformation.
       ///
       /// @see onUnitDiscover
-      virtual void onUnitShow(Unit* unit);
+      virtual void onUnitShow(Unit unit);
 
       /// Called just as a visible unit is becoming invisible.
       ///
@@ -126,7 +127,7 @@ namespace BWAPI
       ///   This function EXCLUDES the state of Flag::CompleteMapInformation.
       ///
       /// @see onUnitEvade
-      virtual void onUnitHide(Unit* unit);
+      virtual void onUnitHide(Unit unit);
 
       /// Called when any unit is created.
       ///
@@ -138,7 +139,7 @@ namespace BWAPI
       ///   the construction of structures over a @Geyser .
       ///
       /// @see onUnitMorph
-      virtual void onUnitCreate(Unit* unit);
+      virtual void onUnitCreate(Unit unit);
 
       /// Called when a unit is removed from the game either through death or other means.
       ///
@@ -152,7 +153,7 @@ namespace BWAPI
       ///
       /// @note
       ///   If a unit is visible and destroyed, then onUnitHide is called just before this.
-      virtual void onUnitDestroy(Unit* unit);
+      virtual void onUnitDestroy(Unit unit);
 
       /// Called when a unit changes its UnitType. For example, when a @Drone transforms into a
       /// @Hatchery, a @SiegeTank uses @SiegeMode , or a @Geyser receives a @Refinery .
@@ -162,14 +163,14 @@ namespace BWAPI
       ///
       /// @note
       ///   This is NOT called if the unit type changes to or from UnitTypes::Unknown.
-      virtual void onUnitMorph(Unit* unit);
+      virtual void onUnitMorph(Unit unit);
 
       /// Called when a unit changes ownership. This occurs when the @Protoss ability @MindControl
       /// is used, or if a unit changes ownership in @UseMapSettings .
       ///
       /// @param unit
       ///   Unit interface object pertaining to the unit that has just changed ownership.
-      virtual void onUnitRenegade(Unit* unit);
+      virtual void onUnitRenegade(Unit unit);
 
       /// Called when the state of the Broodwar game is saved to file.
       ///
@@ -181,7 +182,7 @@ namespace BWAPI
       ///
       /// @param unit
       ///   The Unit object representing the Unit that has just finished training or constructing.
-      virtual void onUnitComplete(Unit *unit);
+      virtual void onUnitComplete(Unit unit);
   };
 
   /// TournamentModule is a virtual class that is intended to be implemented or inherited by a

@@ -22,7 +22,7 @@ Soar_Event::Soar_Event(sml::Identifier* element, bool status)
 	type = Status_Update;
 }
 
-Soar_Event::Soar_Event(BWAPI::Unit* unit) //Constructor of the event
+Soar_Event::Soar_Event(BWAPI::Unit unit) //Constructor of the event
 {
 	this->bw_unit = unit; //Set the internal variable pointer to the given one
 	type = New_Unit; //Set our type to be New_Unit
@@ -60,7 +60,7 @@ bool Soar_Event::get_status()
 	return status;
 }
 
-BWAPI::Unit* Soar_Event::get_unit() //Return a pointer to the unit to be added
+BWAPI::Unit Soar_Event::get_unit() //Return a pointer to the unit to be added
 {
 	if (type != New_Unit) //If this isn't a new unit event type
 		return nullptr; //Return nullptr

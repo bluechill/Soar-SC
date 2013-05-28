@@ -9,16 +9,23 @@
 namespace BWAPI
 {
   // Forwards
-  class Player;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class Order;
   class TechType;
   class UpgradeType;
-  class Region;
+
+  class RegionInterface;
+  typedef RegionInterface *Region;
+
   class UnitCommand;
   class UnitCommandType;
   class Unitset;
   class WeaponType;
 
+  class UnitInterface;
+  typedef UnitInterface *Unit;
+  
   /// The Unit class is used to get information about individual units as well as issue orders to units. Each
   /// unit in the game has a unique Unit object, and Unit objects are not deleted until the end of the match
   /// (so you don't need to worry about unit pointers becoming invalid).
@@ -29,23 +36,23 @@ namespace BWAPI
   ///
   /// If Flag::CompleteMapInformation is disabled, then a unit is accessible if and only if it is visible.
   /// @note Some properties of visible enemy units will not be made available to the AI (such as the
-  /// contents of visible enemy dropships). If a unit is not visible, Unit::exists will return false,
+  /// contents of visible enemy dropships). If a unit is not visible, UnitInterface::exists will return false,
   /// regardless of whether or not the unit exists. This is because absolutely no state information on
   /// invisible enemy units is made available to the AI. To determine if an enemy unit has been destroyed, the
   /// AI must watch for AIModule::onUnitDestroy messages from BWAPI, which is only called for visible units
   /// which get destroyed.
   ///
   /// If Flag::CompleteMapInformation is enabled, then all units that exist in the game are accessible, and
-  /// Unit::exists is accurate for all units. Similarly AIModule::onUnitDestroy messages are generated for all
+  /// UnitInterface::exists is accurate for all units. Similarly AIModule::onUnitDestroy messages are generated for all
   /// units that get destroyed, not just visible ones.
   ///
   /// If a Unit is not accessible, then only the getInitial__ functions will be available to the AI.
   /// However for units that were owned by the player, getPlayer and getType will continue to work for units
   /// that have been destroyed.
-  class Unit : public Interface<Unit>
+  class UnitInterface : public Interface<UnitInterface>
   {
   protected:
-    virtual ~Unit() {};
+    virtual ~UnitInterface() {};
   public:
     /// Retrieves a unique identifier for this unit.
     ///
@@ -85,13 +92,12 @@ namespace BWAPI
     ///
     /// @retval Game::neutral() If the unit is a neutral unit or inaccessible.
     ///
-    /// @returns A pointer to the owning Player object.
-    virtual Player* getPlayer() const = 0;
+    /// @returns The owning Player interface object.
+    virtual Player getPlayer() const = 0;
 
     /// Retrieves the unit's type.
     ///
     /// @retval UnitTypes::Unknown if this unit is inaccessible or cannot be determined.
-    ///
     /// @returns A UnitType objects representing the unit's type.
     ///
     /// @see getInitialType
@@ -142,7 +148,7 @@ namespace BWAPI
     ///
     /// @retval nullptr If the unit is inaccessible.
     ///
-    /// @returns A pointer to a Region object that contains this unit.
+    /// @returns The Region object that contains this unit.
     ///
     /// Example
     /// @code
@@ -151,14 +157,14 @@ namespace BWAPI
     ///   {
     ///     if ( u->isFlying() && u->isUnderAttack() ) // implies exists and isCompleted
     ///     {
-    ///       Region *r = u->getRegion();
+    ///       Region r = u->getRegion();
     ///       if ( r )
     ///         u->move(r->getClosestInaccessibleRegion()); // Retreat to inaccessible region
     ///     }
     ///   }
     /// @endcode
     /// @implies exists
-    BWAPI::Region *getRegion() const;
+    BWAPI::Region getRegion() const;
 
     /// Retrieves the X coordinate of the unit's left boundary, measured in pixels from the left
     /// side of the map.
@@ -290,7 +296,7 @@ namespace BWAPI
     /// @returns Player interface object representing the player that last attacked this unit.
     /// @retval nullptr If this unit was not attacked.
     /// @implies exists()
-    virtual BWAPI::Player *getLastAttackingPlayer() const = 0;
+    virtual BWAPI::Player getLastAttackingPlayer() const = 0;
 
     /// Retrieves the initial type of the unit. This is the type that the unit starts as in the
     /// beginning of the game. This is used to access the types of static neutral units such as
@@ -328,7 +334,9 @@ namespace BWAPI
      * at the beginning of the game. */
     virtual int getInitialResources() const = 0;
 
-    /** Returns the unit's current kill count. */
+    /// Retrieves the number of units that this unit has killed in total.
+    ///
+    /// @returns integer indicating this unit's kill count.
     virtual int getKillCount() const = 0;
 
     /** Returns the unit's acid spore count. */
@@ -353,7 +361,7 @@ namespace BWAPI
     virtual int getSpellCooldown() const = 0;
 
     /** Returns the remaining hit points of the defense matrix. Initially a defense Matrix has 250 points.
-     * \see Unit::getDefenseMatrixTimer, Unit::isDefenseMatrixed. */
+     * \see UnitInterface::getDefenseMatrixTimer, UnitInterface::isDefenseMatrixed. */
     virtual int getDefenseMatrixPoints() const = 0;
 
     /** Returns the time until the defense matrix wears off. 0 -> No defense Matrix present. */
@@ -393,17 +401,17 @@ namespace BWAPI
     virtual UnitType getBuildType() const = 0;
 
     /** Returns the list of units queued up to be trained.
-     * \see Unit::train, Unit::cancelTrain, Unit::isTraining. */
+     * \see UnitInterface::train, UnitInterface::cancelTrain, UnitInterface::isTraining. */
     virtual UnitType::set getTrainingQueue() const = 0;
 
     /** Returns the tech that the unit is currently researching. If the unit is not researching anything,
      * TechTypes::None is returned.
-     * \see Unit::research, Unit::cancelResearch, Unit::isResearching, Unit::getRemainingResearchTime. */
+     * \see UnitInterface::research, UnitInterface::cancelResearch, UnitInterface::isResearching, UnitInterface::getRemainingResearchTime. */
     virtual TechType getTech() const = 0;
 
     /** Returns the upgrade that the unit is currently upgrading. If the unit is not upgrading anything,
      * UpgradeTypes::None is returned.
-     * \see Unit::upgrade, Unit::cancelUpgrade, Unit::isUpgrading, Unit::getRemainingUpgradeTime. */
+     * \see UnitInterface::upgrade, UnitInterface::cancelUpgrade, UnitInterface::isUpgrading, UnitInterface::getRemainingUpgradeTime. */
     virtual UpgradeType getUpgrade() const = 0;
 
     /** Returns the remaining build time of a unit/building that is being constructed. */
@@ -416,23 +424,23 @@ namespace BWAPI
 
     /** Returns the amount of time until the unit is done researching its current tech. If the unit is not
      * researching anything, 0 is returned.
-     * \see Unit::research, Unit::cancelResearch, Unit::isResearching, Unit::getTech. */
+     * \see UnitInterface::research, UnitInterface::cancelResearch, UnitInterface::isResearching, UnitInterface::getTech. */
     virtual int getRemainingResearchTime() const = 0;
 
     /** Returns the amount of time until the unit is done upgrading its current upgrade. If the unit is not
      * upgrading anything, 0 is returned.
-     * \see Unit::upgrade, Unit::cancelUpgrade, Unit::isUpgrading, Unit::getUpgrade. */
+     * \see UnitInterface::upgrade, UnitInterface::cancelUpgrade, UnitInterface::isUpgrading, UnitInterface::getUpgrade. */
     virtual int getRemainingUpgradeTime() const = 0;
 
     /** If the unit is an SCV that is constructing a building, this will return the building it is
      * constructing. If the unit is a Terran building that is being constructed, this will return the SCV
      * that is constructing it. */
-    virtual Unit* getBuildUnit() const = 0;
+    virtual Unit getBuildUnit() const = 0;
 
     /** Generally returns the appropriate target unit after issuing an order that accepts a target unit
      * (i.e. attack, repair, gather, follow, etc.). To check for a target that has been acquired
      * automatically (without issuing an order) see getOrderTarget. */
-    virtual Unit* getTarget() const = 0;
+    virtual Unit getTarget() const = 0;
 
     /** Returns the target position the unit is moving to (provided a valid path to the target position
      * exists). */
@@ -445,7 +453,7 @@ namespace BWAPI
     /** This is usually set when the low level unit AI acquires a new target automatically. For example if
      * an enemy probe comes in range of your marine, the marine will start attacking it, and getOrderTarget
      * will be set in this case, but not getTarget. */
-    virtual Unit* getOrderTarget() const = 0;
+    virtual Unit getOrderTarget() const = 0;
 
   /** Returns the target position for the units order. For example for the move order getTargetPosition
    * returns the end of the units path but this returns the location the unit is trying to move to.  */
@@ -453,16 +461,16 @@ namespace BWAPI
 
     /** Returns the position the building is rallied to. If the building does not produce units,
      * Positions::None is returned.
-     * \see Unit::setRallyPoint, Unit::getRallyUnit. */
+     * \see UnitInterface::setRallyPoint, UnitInterface::getRallyUnit. */
     virtual Position getRallyPosition() const = 0;
 
     /** Returns the unit the building is rallied to. If the building is not rallied to any unit, NULL is
      * returned.
-     * \see Unit::setRallyPoint, Unit::getRallyPosition. */
-    virtual Unit* getRallyUnit() const = 0;
+     * \see UnitInterface::setRallyPoint, UnitInterface::getRallyPosition. */
+    virtual Unit getRallyUnit() const = 0;
 
     /** Returns the add-on of this unit, or NULL if the unit doesn't have an add-on. */
-    virtual Unit* getAddon() const = 0;
+    virtual Unit getAddon() const = 0;
 
     /// Retrieves the @Nydus_Canal that is attached to this one. Every @Nydus_Canal can place a
     /// "Nydus Exit" which, when connected, can be travelled through by @Zerg units.
@@ -470,7 +478,7 @@ namespace BWAPI
     /// @returns Unit interface representing the @Nydus_Canal connected to this one.
     /// @retval nullptr if the unit is not a @Nydus_Canal, is not owned, or has not placed a Nydus
     /// Exit.
-    virtual Unit* getNydusExit() const = 0;
+    virtual Unit getNydusExit() const = 0;
 
     /// Retrieves the power-up that the worker unit is holding. Power-ups are special units such
     /// as the @Flag in the @CTF game type, which can be picked up by worker units.
@@ -491,13 +499,13 @@ namespace BWAPI
     ///   }
     /// @endcode
     /// @implies getType().isWorker(), isCompleted()
-    virtual Unit* getPowerUp() const = 0;
+    virtual Unit getPowerUp() const = 0;
 
     /// Retrieves the @Transport or @Bunker unit that has this unit loaded inside of it.
     ///
     /// @returns Unit interface object representing the @Transport containing this unit.
     /// @retval nullptr if this unit is not in a @Transport.
-    virtual Unit* getTransport() const = 0;
+    virtual Unit getTransport() const = 0;
 
     /// Retrieves the set of units that are contained within this @Bunker or @Transport .
     ///
@@ -514,7 +522,7 @@ namespace BWAPI
 
     /** For Protoss Interceptors, this returns the Carrier unit this Interceptor is controlled by. For all
      * other unit types this function returns NULL. */
-    virtual Unit* getCarrier() const = 0;
+    virtual Unit getCarrier() const = 0;
 
     /** Returns the set of interceptors controlled by this unit. If the unit has no interceptors, or is not
      * a Carrier, this function returns an empty set. */
@@ -522,7 +530,7 @@ namespace BWAPI
 
     /** For Zerg Larva, this returns the Hatchery, Lair, or Hive unit this Larva was spawned from. For all
      * other unit types this function returns NULL. */
-    virtual Unit* getHatchery() const = 0;
+    virtual Unit getHatchery() const = 0;
 
     /** Returns the set of larva spawned by this unit. If the unit has no larva, or is not a Hatchery, Lair,
      * or Hive, this function returns an empty set. Equivalent to clicking "Select Larva" from the Starcraft
@@ -544,7 +552,7 @@ namespace BWAPI
     ///
     /// @code
     ///   // Get main building closest to start location.
-    ///   Unit *pMain = Broodwar->getClosestUnit( Broodwar->self()->getStartLocation(), IsResourceDepot );
+    ///   Unit pMain = Broodwar->getClosestUnit( Broodwar->self()->getStartLocation(), IsResourceDepot );
     ///   if ( pMain != nullptr ) // check if pMain is valid
     ///   {
     ///     // Get sets of resources and workers
@@ -571,7 +579,7 @@ namespace BWAPI
     Unitset getUnitsInWeaponRange(WeaponType weapon, const UnitFilter &pred = nullptr) const;
 
     // @TODO
-    Unit *getClosestUnit(const UnitFilter &pred = nullptr, int radius = 999999) const;
+    Unit getClosestUnit(const UnitFilter &pred = nullptr, int radius = 999999) const;
 
     /* Returns true if the Nuclear Missile Silo has a nuke */
     virtual bool hasNuke() const = 0;
@@ -592,7 +600,7 @@ namespace BWAPI
     /// being constructed by an attached SCV.
     /// @retval false if this is either completed, not a structure, or has no SCV constructing it
     ///
-    /// @see Unit::build, Unit::cancelConstruction, Unit::haltConstruction, Unit::isConstructing
+    /// @see UnitInterface::build, UnitInterface::cancelConstruction, UnitInterface::haltConstruction, UnitInterface::isConstructing
     bool isBeingConstructed() const;
 
     /// Checks this @Mineral_Field or @Refinery is currently being gathered from.
@@ -662,7 +670,7 @@ namespace BWAPI
     virtual bool isCarryingMinerals() const = 0;
 
     /** Returns true if the unit is cloaked.
-     * \see Unit::cloak, Unit::decloak. */
+     * \see UnitInterface::cloak, UnitInterface::decloak. */
     virtual bool isCloaked() const = 0;
 
     /** Returns true if the unit has been completed. */
@@ -670,7 +678,7 @@ namespace BWAPI
 
     /** Returns true when a unit has been issued an order to build a structure and is moving to the build
      * location. Also returns true for Terran SCVs while they construct a building.
-     * \see Unit::build, Unit::cancelConstruction, Unit::haltConstruction, Unit::isBeingConstructed. */
+     * \see UnitInterface::build, UnitInterface::cancelConstruction, UnitInterface::haltConstruction, UnitInterface::isBeingConstructed. */
     virtual bool isConstructing() const = 0;
 
     /** Returns true if the unit has a defense matrix from a Terran Science Vessel. */
@@ -689,34 +697,34 @@ namespace BWAPI
     /// or a flying building.
     ///
     /// @returns true if this unit is in the air, and false if it is on the ground
-    /// @see UnitType::isFlyer, Unit::isLifted
+    /// @see UnitType::isFlyer, UnitInterface::isLifted
     bool isFlying() const;
 
     /** Returns true if the unit is following another unit.
-     * \see Unit::follow, Unit::getTarget. */
+     * \see UnitInterface::follow, UnitInterface::getTarget. */
     bool isFollowing() const;
 
     /** Returns true if the unit is in one of the four states for gathering gas (MoveToGas, WaitForGas,
      * HarvestGas, ReturnGas).
-     * \see Unit::isCarryingGas. */
+     * \see UnitInterface::isCarryingGas. */
     virtual bool isGatheringGas() const = 0;
 
     /** Returns true if the unit is in one of the four states for gathering minerals (MoveToMinerals,
      * WaitForMinerals, MiningMinerals, ReturnMinerals).
-     * \see Unit::isCarryingMinerals. */
+     * \see UnitInterface::isCarryingMinerals. */
     virtual bool isGatheringMinerals() const = 0;
 
     /// Checks if this unit is a hallucination. Hallucinations are created by the @High_Templar
     /// using the @Hallucination ability. Enemy hallucinations are unknown if
     /// Flag::CompleteMapInformation is disabled. Hallucinations have a time limit until they are
-    /// destroyed (see Unit::getRemoveTimer). 
+    /// destroyed (see UnitInterface::getRemoveTimer). 
     ///
     /// @returns true if the unit is a hallucination and false otherwise.
     /// @see getRemoveTimer
     virtual bool isHallucination() const = 0;
 
     /** Returns true if the unit is holding position
-     * \see Unit::holdPosition. */
+     * \see UnitInterface::holdPosition. */
     /// @todo may currently be wrong
     bool isHoldingPosition() const;
 
@@ -736,7 +744,7 @@ namespace BWAPI
     /// @returns true if this unit is idle, and false if this unit is performing any action, such
     /// as moving or attacking
     /// @implies isCompleted
-    /// @see Unit::stop
+    /// @see UnitInterface::stop
     virtual bool isIdle() const = 0;
 
     /** Returns true if the unit can be interrupted. */
@@ -746,7 +754,7 @@ namespace BWAPI
     virtual bool isInvincible() const = 0;
 
     /** Returns true if the unit can attack a specified target from its current position. */
-    bool isInWeaponRange(Unit *target) const;
+    bool isInWeaponRange(Unit target) const;
 
     /// Checks if this unit is irradiated by a @Science_Vessel 's @Irradiate ability.
     ///
@@ -779,15 +787,15 @@ namespace BWAPI
 
     /** Return true if the unit is loaded into a Terran Bunker, Terran Dropship, Protoss Shuttle, or Zerg
      * Overlord.
-     * \see Unit::load, Unit::unload, Unit::unloadAll. */
+     * \see UnitInterface::load, UnitInterface::unload, UnitInterface::unloadAll. */
     bool isLoaded() const;
 
     /** Returns true if the unit is locked down by a Terran Ghost.
-     *  \see Unit::getLockdownTimer. */
+     *  \see UnitInterface::getLockdownTimer. */
     bool isLockedDown() const;
 
     /** Returns true if the unit is being maelstrommed.
-     * \see Unit::getMaelstromTimer. */
+     * \see UnitInterface::getMaelstromTimer. */
     bool isMaelstrommed() const;
 
     /// Finds out if the current unit is morphing or not. Zerg units and structures often have
@@ -797,22 +805,22 @@ namespace BWAPI
     /// @retval true if the unit is currently morphing.
     /// @retval false if the unit is not morphing
     ///
-    /// @see Unit::morph, Unit::cancelMorph, Unit::getBuildType, Unit::getRemainingBuildTime
+    /// @see UnitInterface::morph, UnitInterface::cancelMorph, UnitInterface::getBuildType, UnitInterface::getRemainingBuildTime
     virtual bool isMorphing() const = 0;
 
     /** Returns true if the unit is moving.
-     * \see Unit::attack, Unit::stop. */
+     * \see UnitInterface::attack, UnitInterface::stop. */
     virtual bool isMoving() const = 0;
 
     /** Returns true if the unit has been parasited by some other player. */
     virtual bool isParasited() const = 0;
 
     /** Returns true if the unit is patrolling between two positions.
-     * \see Unit::patrol. */
+     * \see UnitInterface::patrol. */
     bool isPatrolling() const;
 
     /** Returns true if the unit has been plagued by a Zerg Defiler.
-     * \see Unit::getPlagueTimer. */
+     * \see UnitInterface::getPlagueTimer. */
     bool isPlagued() const;
 
     /** Returns true if the unit is a Terran SCV that is repairing or moving to repair another unit. */
@@ -820,7 +828,7 @@ namespace BWAPI
 
     /** Returns true if the unit is a building that is researching tech. See TechTypes for the complete list
      * of available techs in Broodwar.
-     * \see Unit::research, Unit::cancelResearch, Unit::getTech, Unit::getRemainingResearchTime. */
+     * \see UnitInterface::research, UnitInterface::cancelResearch, UnitInterface::getTech, UnitInterface::getRemainingResearchTime. */
     bool isResearching() const;
 
     /** Returns true if the unit has been selected by the user via the starcraft GUI. Only available if you
@@ -829,26 +837,26 @@ namespace BWAPI
     virtual bool isSelected() const = 0;
 
     /** Returns true if the unit is a Terran Siege Tank that is currently in Siege mode.
-     * \see Unit::siege, Unit::unsiege. */
+     * \see UnitInterface::siege, UnitInterface::unsiege. */
     bool isSieged() const;
 
     /** Returns true if the unit is starting to attack.
-     * \see Unit::attackUnit, Unit::getGroundWeaponCooldown, Unit::getAirWeaponCooldown. */
+     * \see UnitInterface::attack, UnitInterface::getGroundWeaponCooldown, UnitInterface::getAirWeaponCooldown. */
     virtual bool isStartingAttack() const = 0;
 
     /** Returns true if the unit has been stasised by a Protoss Arbiter.
-     * \see Unit::getStasisTimer. */
+     * \see UnitInterface::getStasisTimer. */
     bool isStasised() const;
 
     /** Returns true if the unit is currently stimmed.
-     * \see Unit::getStimTimer. */
+     * \see UnitInterface::getStimTimer. */
     bool isStimmed() const;
 
     /** Returns true if the unit is being pushed off of another unit */
     virtual bool isStuck() const = 0;
 
     /** Returns true if the unit is training units (i.e. a Barracks training Marines).
-     * \see Unit::train, Unit::getTrainingQueue, Unit::cancelTrain, Unit::getRemainingTrainTime. */
+     * \see UnitInterface::train, UnitInterface::getTrainingQueue, UnitInterface::cancelTrain, UnitInterface::getRemainingTrainTime. */
     virtual bool isTraining() const = 0;
 
     /** Returns true if the unit was recently attacked. */
@@ -868,13 +876,13 @@ namespace BWAPI
 
     /** Returns true if the unit is a building that is upgrading. See UpgradeTypes for the complete list
      * of available upgrades in Broodwar.
-     * \see Unit::upgrade, Unit::cancelUpgrade, Unit::getUpgrade, Unit::getRemainingUpgradeTime. */
+     * \see UnitInterface::upgrade, UnitInterface::cancelUpgrade, UnitInterface::getUpgrade, UnitInterface::getRemainingUpgradeTime. */
     bool isUpgrading() const;
 
     /** Returns true if the unit is visible. If the CompleteMapInformation?  cheat flag is enabled, existing
      * units hidden by the fog of war will be accessible, but isVisible will still return false.
-     * \see Unit::exists. */
-    virtual bool isVisible(Player* player = nullptr) const = 0;
+     * \see UnitInterface::exists. */
+    virtual bool isVisible(Player player = nullptr) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
     /// be targetted as the target unit of an unspecified command.
@@ -882,7 +890,7 @@ namespace BWAPI
     /// @retval true if BWAPI was unable to determine whether the unit can be a target.
     /// @retval false if an error occurred and the unit can not be a target.
     ///
-    /// @see Game::getLastError, Unit::canTargetUnit
+    /// @see Game::getLastError, UnitInterface::canTargetUnit
     virtual bool isTargetable() const = 0;
 
     /// This function issues a command to the unit(s), however it is used for interfacing only,
@@ -894,10 +902,10 @@ namespace BWAPI
     /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
     /// @retval false if an error occured and the command could not be executed.
     ///
-    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommand
+    /// @see UnitCommandTypes, Game::getLastError, UnitInterface::canIssueCommand
     virtual bool issueCommand(UnitCommand command) = 0;
 
-    /// Orders the unit(s) to attack move to the specified location.
+    /// Orders the unit(s) to attack move to the specified position or attack the specified unit.
     ///
     /// @param target
     ///   A Position or a Unit to designate as the target. If a Position is used, the unit will
@@ -910,7 +918,7 @@ namespace BWAPI
     ///
     /// @note A @Medic will use Heal Move instead of attack.
     ///
-    /// @see Game::getLastError, Unit::canAttackMove, Unit::canAttackUnit
+    /// @see Game::getLastError, UnitInterface::canAttack
     bool attack(PositionOrUnit target, bool shiftQueueCommand = false);
 
     /// Orders the worker unit(s) to construct a structure at a target position.
@@ -928,7 +936,7 @@ namespace BWAPI
     /// @note You must have sufficient resources and meet the necessary requirements in order to
     /// build a structure.
     ///
-    /// @see Game::getLastError, Unit::train, Unit::cancelConstruction, Unit::canBuild
+    /// @see Game::getLastError, UnitInterface::train, UnitInterface::cancelConstruction, UnitInterface::canBuild
     bool build(UnitType type, TilePosition target = TilePositions::None);
 
     /// Orders the @Terran structure(s) to construct an add-on.
@@ -942,7 +950,7 @@ namespace BWAPI
     /// @note You must have sufficient resources and meet the necessary requirements in order to
     /// build a structure.
     ///
-    /// @see Game::getLastError, Unit::build, Unit::cancelAddon, Unit::canBuildAddon
+    /// @see Game::getLastError, UnitInterface::build, UnitInterface::cancelAddon, UnitInterface::canBuildAddon
     bool buildAddon(UnitType type);
 
     /// Orders the unit(s) to add a UnitType to its training queue, or morphs into the UnitType if
@@ -960,8 +968,8 @@ namespace BWAPI
     /// @note If you call this using a @Hatchery, @Lair, or @Hive, then it will automatically
     /// pass the command to one of its @Larvae.
     ///
-    /// @see Game::getLastError, Unit::build, Unit::morph, Unit::cancelTrain, Unit::isTraining,
-    /// Unit::canTrain
+    /// @see Game::getLastError, UnitInterface::build, UnitInterface::morph, UnitInterface::cancelTrain, UnitInterface::isTraining,
+    /// UnitInterface::canTrain
     bool train(UnitType type = UnitTypes::None);
 
     /// Orders the unit(s) to morph into a different UnitType.
@@ -972,154 +980,156 @@ namespace BWAPI
     /// @retval true if BWAPI determined that the command was valid and passed it to Starcraft.
     /// @retval false if an error occured and the command could not be executed.
     ///
-    /// @see Game::getLastError, Unit::build, Unit::morph, Unit::canMorph
+    /// @see Game::getLastError, UnitInterface::build, UnitInterface::morph, UnitInterface::canMorph
     bool morph(UnitType type);
 
     /** Orders the unit to research the given tech type.
-     * \see Unit::cancelResearch, Unit::Unit#isResearching, Unit::getRemainingResearchTime, Unit::getTech,
-     * Unit::canResearch. */
+     * \see UnitInterface::cancelResearch, UnitInterface::Unit#isResearching, UnitInterface::getRemainingResearchTime, UnitInterface::getTech,
+     * UnitInterface::canResearch. */
     bool research(TechType tech);
 
     /** Orders the unit to upgrade the given upgrade type.
-     * \see Unit::cancelUpgrade, Unit::Unit#isUpgrading, Unit::getRemainingUpgradeTime, Unit::getUpgrade,
-     * Unit::canUpgrade. */
+     * \see UnitInterface::cancelUpgrade, UnitInterface::Unit#isUpgrading, UnitInterface::getRemainingUpgradeTime, UnitInterface::getUpgrade,
+     * UnitInterface::canUpgrade. */
     bool upgrade(UpgradeType upgrade);
 
-    /** Orders the unit to set its rally position to the specified position.
-     * \see Unit::getRallyPosition, Unit::getRallyUnit, Unit::canSetRallyPosition, Unit::canSetRallyUnit. */
+    /** Orders the unit to set its rally position to the specified position or unit.
+     * \see UnitInterface::getRallyPosition, UnitInterface::getRallyUnit, UnitInterface::canSetRallyPoint, UnitInterface::canSetRallyPosition,
+     * UnitInterface::canSetRallyUnit. */
     bool setRallyPoint(PositionOrUnit target);
 
     /** Orders the unit to move from its current position to the specified position.
-     * \see Unit::isMoving, Unit::canMove. */
+     * \see UnitInterface::isMoving, UnitInterface::canMove. */
     bool move(Position target, bool shiftQueueCommand = false);
 
     /** Orders the unit to patrol between its current position and the specified position.
-     * \see Unit::isPatrolling, Unit::canPatrol. */
+     * \see UnitInterface::isPatrolling, UnitInterface::canPatrol. */
     bool patrol(Position target, bool shiftQueueCommand = false);
 
     /** Orders the unit to hold its position.
-     * \see Unit::canHoldPosition. */
+     * \see UnitInterface::canHoldPosition. */
     bool holdPosition(bool shiftQueueCommand = false);
 
     /** Orders the unit to stop.
-     * \see Unit::canStop. */
+     * \see UnitInterface::canStop. */
     bool stop(bool shiftQueueCommand = false);
 
     /** Orders the unit to follow the specified unit.
-     * \see Unit::isFollowing, Unit::canFollow. */
-    bool follow(Unit* target, bool shiftQueueCommand = false);
+     * \see UnitInterface::isFollowing, UnitInterface::canFollow. */
+    bool follow(Unit target, bool shiftQueueCommand = false);
 
     /** Orders the unit to gather the specified unit (must be mineral or refinery type).
-     * \see Unit::isGatheringGas, Unit::isGatheringMinerals, Unit::canGather. */
-    bool gather(Unit* target, bool shiftQueueCommand = false);
+     * \see UnitInterface::isGatheringGas, UnitInterface::isGatheringMinerals, UnitInterface::canGather. */
+    bool gather(Unit target, bool shiftQueueCommand = false);
 
     /** Orders the unit to return its cargo to a nearby resource depot such as a Command Center. Only
      * workers that are carrying minerals or gas can be ordered to return cargo.
-     * \see Unit::isCarryingGas, Unit::isCarryingMinerals, Unit::canReturnCargo. */
+     * \see UnitInterface::isCarryingGas, UnitInterface::isCarryingMinerals, UnitInterface::canReturnCargo. */
     bool returnCargo(bool shiftQueueCommand = false);
 
     /** Orders the unit to repair the specified unit. Only Terran SCVs can be ordered to repair, and the
      * target must be a mechanical Terran unit or building.
-     * \see Unit::isRepairing, Unit::canRepair. */
-    bool repair(Unit* target, bool shiftQueueCommand = false);
+     * \see UnitInterface::isRepairing, UnitInterface::canRepair. */
+    bool repair(Unit target, bool shiftQueueCommand = false);
 
     /** Orders the unit to burrow. Either the unit must be a Zerg Lurker, or the unit must be a Zerg ground
      * unit and burrow tech must be researched.
-     * \see: Unit::unburrow, Unit::isBurrowed, Unit::canBurrow. */
+     * \see: UnitInterface::unburrow, UnitInterface::isBurrowed, UnitInterface::canBurrow. */
     bool burrow();
 
     /** Orders the burrowed unit to unburrow.
-     * \see: Unit::burrow, Unit::isBurrowed, Unit::canUnburrow. */
+     * \see: UnitInterface::burrow, UnitInterface::isBurrowed, UnitInterface::canUnburrow. */
     bool unburrow();
 
     /** Orders the unit to cloak.
-     * \see: Unit::decloak, Unit::isCloaked, Unit::canCloak. */
+     * \see: UnitInterface::decloak, UnitInterface::isCloaked, UnitInterface::canCloak. */
     bool cloak();
 
     /** Orders the unit to decloak.
-     * \see: Unit::cloak, Unit::isCloaked, Unit::canDecloak. */
+     * \see: UnitInterface::cloak, UnitInterface::isCloaked, UnitInterface::canDecloak. */
     bool decloak();
 
     /** Orders the unit to siege. Note: unit must be a Terran siege tank.
-     * \see Unit::unsiege, Unit::isSieged, Unit::canSiege. */
+     * \see UnitInterface::unsiege, UnitInterface::isSieged, UnitInterface::canSiege. */
     bool siege();
 
     /** Orders the unit to unsiege. Note: unit must be a Terran siege tank.
-     * \see: Unit::unsiege, Unit::isSieged, Unit::canUnsiege. */
+     * \see: UnitInterface::unsiege, UnitInterface::isSieged, UnitInterface::canUnsiege. */
     bool unsiege();
 
     /** Orders the unit to lift. Note: unit must be a Terran building that can be lifted.
-     * \see Unit::land, Unit::isLifted, Unit::canLift. */
+     * \see UnitInterface::land, UnitInterface::isLifted, UnitInterface::canLift. */
     bool lift();
 
     /** Orders the unit to land. Note: unit must be a Terran building that is currently lifted.
-     * \see Unit::lift, Unit::isLifted, Unit::canLand. */
+     * \see UnitInterface::lift, UnitInterface::isLifted, UnitInterface::canLand. */
     bool land(TilePosition target);
 
     /** Orders the unit to load the target unit.
-     * \see Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded. */
-    bool load(Unit* target, bool shiftQueueCommand = false);
+     * \see UnitInterface::unload, UnitInterface::unloadAll, UnitInterface::getLoadedUnits, Unit:isLoaded. */
+    bool load(Unit target, bool shiftQueueCommand = false);
 
     /** Orders the unit to unload the target unit. Unit should be a Terran Dropship, Protoss Shuttle,
      *  Zerg Overlord, or a Terran Bunker.
-     * \see Unit::load, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded, Unit::canUnload,
-     * Unit::canUnloadAtPosition. */
-    bool unload(Unit* target);
+     * \see UnitInterface::load, UnitInterface::unloadAll, UnitInterface::getLoadedUnits, Unit:isLoaded, UnitInterface::canUnload,
+     * UnitInterface::canUnloadAtPosition. */
+    bool unload(Unit target);
 
     /** Orders the unit to unload all loaded units at the unit's current position. Unit should be a
      * Terran Dropship, Protoss Shuttle, or Zerg Overlord, or a Terran Bunker.
-     * \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded,
-     * Unit::canUnloadAll, Unit::canUnloadAtPosition. */
+     * \see UnitInterface::load, UnitInterface::unload, UnitInterface::unloadAll, UnitInterface::getLoadedUnits, Unit:isLoaded,
+     * UnitInterface::canUnloadAll, UnitInterface::canUnloadAtPosition. */
     bool unloadAll(bool shiftQueueCommand = false);
 
     /** Orders the unit to unload all loaded units at the specified location. Unit should be a Terran
      * Dropship, Protoss Shuttle, or Zerg Overlord (but not a Terran Bunker).
-     * \see Unit::load, Unit::unload, Unit::unloadAll, Unit::getLoadedUnits, Unit:isLoaded,
-     * Unit:canUnloadAllPosition, Unit::canUnloadAtPosition. */
+     * \see UnitInterface::load, UnitInterface::unload, UnitInterface::unloadAll, UnitInterface::getLoadedUnits, Unit:isLoaded,
+     * Unit:canUnloadAllPosition, UnitInterface::canUnloadAtPosition. */
     bool unloadAll(Position target, bool shiftQueueCommand = false);
 
     /** Works like the right click in the GUI.
-     * \see Unit::canRightClickPosition, Unit::canRightClickUnit. */
+     * \see UnitInterface::canRightClick, UnitInterface::canRightClickPosition, UnitInterface::canRightClickUnit. */
     bool rightClick(PositionOrUnit target, bool shiftQueueCommand = false);
 
     /** Orders the SCV to stop constructing the building, and the building is left in a partially complete
      * state until it is canceled, destroyed, or completed.
-     * \see Unit::isConstructing, Unit::canHaltConstruction. */
+     * \see UnitInterface::isConstructing, UnitInterface::canHaltConstruction. */
     bool haltConstruction();
 
     /** Orders the building to stop being constructed.
-     * \see Unit::beingConstructed, Unit::canCancelConstruction. */
+     * \see UnitInterface::beingConstructed, UnitInterface::canCancelConstruction. */
     bool cancelConstruction();
 
     /** Orders the unit to stop making the addon.
-     * \see Unit::canCancelAddon. */
+     * \see UnitInterface::canCancelAddon. */
     bool cancelAddon();
 
     /** Orders the unit to remove the specified unit from its training queue.
-     * \see Unit::train, Unit::cancelTrain, Unit::isTraining, Unit::getTrainingQueue.
-     * Unit::canCancelTrain, Unit::canCancelTrainSlot. */
+     * \see UnitInterface::train, UnitInterface::cancelTrain, UnitInterface::isTraining, UnitInterface::getTrainingQueue.
+     * UnitInterface::canCancelTrain, UnitInterface::canCancelTrainSlot. */
     bool cancelTrain(int slot = -2);
 
     /** Orders the unit to stop morphing.
-     * \see Unit::morph, Unit::isMorphing, Unit::canCancelMorph. */
+     * \see UnitInterface::morph, UnitInterface::isMorphing, UnitInterface::canCancelMorph. */
     bool cancelMorph();
 
     /** Orders the unit to cancel a research in progress.
-     * \see Unit::research, Unit::isResearching, Unit::getTech, Unit::canCancelResearch. */
+     * \see UnitInterface::research, UnitInterface::isResearching, UnitInterface::getTech, UnitInterface::canCancelResearch. */
     bool cancelResearch();
 
     /** Orders the unit to cancel an upgrade in progress.
-     * \see Unit::upgrade, Unit::isUpgrading, Unit::getUpgrade, Unit::canCancelUpgrade. */
+     * \see UnitInterface::upgrade, UnitInterface::isUpgrading, UnitInterface::getUpgrade, UnitInterface::canCancelUpgrade. */
     bool cancelUpgrade();
     
-    /** Orders the unit to use a tech requiring a position target (eg Dark Swarm). Returns true if it is a
-     * valid tech.
-     * \see Unit::canUseTechWithOrWithoutTarget, Unit::canUseTechWithoutTarget, Unit::canUseTechUnit,
-     * Unit::canUseTechPosition. */
+    /** Orders the unit to use a tech. The target may be a position, or a (non-null) unit, or
+     * nullptr (which means the tech does not target another position/unit, e.g. @Stim_Packs ).
+     * Returns true if it is a valid tech.
+     * \see UnitInterface::canUseTechWithOrWithoutTarget, UnitInterface::canUseTech,
+     * UnitInterface::canUseTechWithoutTarget, UnitInterface::canUseTechUnit, UnitInterface::canUseTechPosition. */
     bool useTech(TechType tech, PositionOrUnit target = nullptr);
 
     /** Moves a Flag Beacon to the target location.
-     * \see Unit::canPlaceCOP. */
+     * \see UnitInterface::canPlaceCOP. */
     bool placeCOP(TilePosition target);
 
     /// Checks whether the unit is able to execute the given command. If you are calling this
@@ -1148,20 +1158,20 @@ namespace BWAPI
     ///   you know this check has already just been performed.
     /// @param checkCanTargetUnit
     ///   Only used for command types that can target a unit. A boolean for whether to perform
-    ///   Unit::canTargetUnit as a check. You can set this to false if you know this check has
+    ///   UnitInterface::canTargetUnit as a check. You can set this to false if you know this check has
     ///   already just been performed.
     /// @param checkCanIssueCommandType
-    ///   A boolean for whether to perform Unit::canIssueCommandType as a check. You can set this
+    ///   A boolean for whether to perform UnitInterface::canIssueCommandType as a check. You can set this
     ///   to false if you know this check has already just been performed.
     /// @param checkCommandibility
-    ///   A boolean for whether to perform Unit::canCommand as a check. You can set this to false
+    ///   A boolean for whether to perform UnitInterface::canCommand as a check. You can set this to false
     ///   if you know this check has already just been performed.
     ///
     /// @retval true if BWAPI determined that the command is valid.
     /// @retval false if an error occurred and the command is invalid.
     ///
-    /// @see UnitCommandTypes, Game::getLastError, Unit::canCommand, Unit::canIssueCommandType,
-    /// Unit::canTargetUnit
+    /// @see UnitCommandTypes, Game::getLastError, UnitInterface::canCommand, UnitInterface::canIssueCommandType,
+    /// UnitInterface::canTargetUnit
     virtual bool canIssueCommand(UnitCommand command, bool checkCanUseTechPositionOnPositions = true, bool checkCanUseTechUnitOnUnits = true, bool checkCanBuildUnitType = true, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute the given command as part of a Unitset
@@ -1169,13 +1179,13 @@ namespace BWAPI
     /// The reason this function exists is because some commands are valid for an individual unit
     /// but not for those individuals as a group (e.g. buildings, critters) and some commands are
     /// only valid for a unit if it is commanded as part of a unit group, e.g.:
-    ///   1. attackMove/attackUnit for a Unitset, some of which can't attack (e.g.
-    ///       @High_Templar ). This is supported simply for consistency with BW's behaviour - you
-    ///       could issue move command(s) individually instead.
+    ///   1. attackMove/attackUnit for a Unitset, some of which can't attack, e.g. @High_Templar.
+    ///      This is supported simply for consistency with BW's behaviour - you
+    ///      could issue move command(s) individually instead.
     ///   2. attackMove/move/patrol/rightClickPosition for air unit(s) + e.g. @Larva, as part of
     ///      the air stacking technique. This is supported simply for consistency with BW's
     ///      behaviour - you could issue move/patrol/rightClickPosition command(s) for them
-    ///     individually instead.
+    ///      individually instead.
     ///
     /// @note BWAPI allows the following special cases to command a unit individually (rather than
     /// only allowing it to be commanded as part of a Unitset). These commands are not available
@@ -1185,8 +1195,8 @@ namespace BWAPI
     ///   - stop for @Larva, to move it to a different side of the @Hatchery / @Lair / @Hive (e.g.
     ///     so that @Drones morphed later morph nearer to minerals/gas).
     ///
-    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommand,
-    /// Unit::canCommandGrouped, Unit::canIssueCommandTypeGrouped, Unit::canTargetUnit
+    /// @see UnitCommandTypes, Game::getLastError, UnitInterface::canIssueCommand,
+    /// UnitInterface::canCommandGrouped, UnitInterface::canIssueCommandTypeGrouped, UnitInterface::canTargetUnit
     virtual bool canIssueCommandGrouped(UnitCommand command, bool checkCanUseTechPositionOnPositions = true, bool checkCanUseTechUnitOnUnits = true, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
@@ -1195,7 +1205,7 @@ namespace BWAPI
     /// @retval true if BWAPI was unable to determine whether the unit can be commanded.
     /// @retval false if an error occurred and the unit can not be commanded.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand
+    /// @see Game::getLastError, UnitInterface::canIssueCommand
     virtual bool canCommand() const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
@@ -1204,7 +1214,7 @@ namespace BWAPI
     /// @retval true if BWAPI was unable to determine whether the unit can be commanded grouped.
     /// @retval false if an error occurred and the unit can not be commanded grouped.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canIssueCommand
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canIssueCommand
     virtual bool canCommandGrouped(bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
@@ -1214,13 +1224,13 @@ namespace BWAPI
     /// @param ct
     ///   A UnitCommandType.
     /// @param checkCommandibility
-    ///   A boolean for whether to perform Unit::canCommand as a check. You can set this to false
+    ///   A boolean for whether to perform UnitInterface::canCommand as a check. You can set this to false
     ///   if you know this check has already just been performed.
     ///
     /// @retval true if BWAPI was unable to determine whether the command type is invalid.
     /// @retval false if an error occurred and the command type is invalid.
     ///
-    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommand
+    /// @see UnitCommandTypes, Game::getLastError, UnitInterface::canIssueCommand
     virtual bool canIssueCommandType(UnitCommandType ct, bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
@@ -1230,16 +1240,16 @@ namespace BWAPI
     /// @param ct
     ///   A UnitCommandType.
     /// @param checkCommandibilityGrouped
-    ///   A boolean for whether to perform Unit::canCommandGrouped as a check. You can set this
+    ///   A boolean for whether to perform UnitInterface::canCommandGrouped as a check. You can set this
     ///   to false if you know this check has already just been performed.
     /// @param checkCommandibility
-    ///   A boolean for whether to perform Unit::canCommand as a check. You can set this to false
+    ///   A boolean for whether to perform UnitInterface::canCommand as a check. You can set this to false
     ///   if you know this check has already just been performed.
     ///
     /// @retval true if BWAPI was unable to determine whether the command type is invalid.
     /// @retval false if an error occurred and the command type is invalid.
     ///
-    /// @see UnitCommandTypes, Game::getLastError, Unit::canIssueCommandGrouped
+    /// @see UnitCommandTypes, Game::getLastError, UnitInterface::canIssueCommandGrouped
     virtual bool canIssueCommandTypeGrouped(UnitCommandType ct, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Performs some cheap checks to attempt to quickly detect whether the unit is unable to
@@ -1248,415 +1258,487 @@ namespace BWAPI
     /// @param targetUnit
     ///   A target unit for an unspecified command.
     /// @param checkCommandibility
-    ///   A boolean for whether to perform Unit::canCommand as a check. You can set this to false
+    ///   A boolean for whether to perform UnitInterface::canCommand as a check. You can set this to false
     ///   if you know this check has already just been performed.
     ///
     /// @retval true if BWAPI was unable to determine whether the unit can target the given unit.
     /// @retval false if an error occurred and the unit can not target the given unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::isTargetable
-    virtual bool canTargetUnit(const Unit* targetUnit, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::isTargetable
+    virtual bool canTargetUnit(Unit targetUnit, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute an attack command to attack-move or attack a unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::attack,
+    /// UnitInterface::canAttackMove, UnitInterface::canAttackUnit
+    virtual bool canAttack(bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute an attack command to attack-move or attack a (non-null)
+    /// unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::attack,
+    /// UnitInterface::canAttackMove, UnitInterface::canAttackUnit
+    virtual bool canAttack(PositionOrUnit target, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute an attack command to attack-move or attack a unit,
+    /// as part of a Unitset.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canAttack
+    virtual bool canAttackGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute an attack command to attack-move or attack a
+    /// (non-null) unit, as part of a Unitset.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canAttack
+    virtual bool canAttackGrouped(PositionOrUnit target, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an attack command to attack-move.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::attack
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::attack
     virtual bool canAttackMove(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an attack command to attack-move, as part of a
     /// Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackMove
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canAttackMove
     virtual bool canAttackMoveGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an attack command to attack a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::attack
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::attack
     virtual bool canAttackUnit(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an attack command to attack a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::attack
-    virtual bool canAttackUnit(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::attack
+    virtual bool canAttackUnit(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an attack command to attack a unit,
     /// as part of a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackUnit
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canAttackUnit
     virtual bool canAttackUnitGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an attack command to attack a unit, as part of
     /// a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canAttackUnit
-    virtual bool canAttackUnitGrouped(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canAttackUnit
+    virtual bool canAttackUnitGrouped(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a build command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::build
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::build
     virtual bool canBuild(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a build command for the given
     /// UnitType.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::build
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::build
     virtual bool canBuild(UnitType uType, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a build command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::build
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::build
     virtual bool canBuild(UnitType uType, BWAPI::TilePosition tilePos, bool checkTargetUnitType = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a buildAddon command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::buildAddon
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::buildAddon
     virtual bool canBuildAddon(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a buildAddon command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::buildAddon
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::buildAddon
     virtual bool canBuildAddon(UnitType uType, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a train command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::train
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::train
     virtual bool canTrain(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a train command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::train
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::train
     virtual bool canTrain(UnitType uType, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a morph command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::morph
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::morph
     virtual bool canMorph(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a morph command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::morph
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::morph
     virtual bool canMorph(UnitType uType, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a research command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::research
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::research
     virtual bool canResearch(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a research command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::research
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::research
     virtual bool canResearch(TechType type, bool checkCanIssueCommandType = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an upgrade command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::upgrade
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::upgrade
     virtual bool canUpgrade(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an upgrade command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::upgrade
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::upgrade
     virtual bool canUpgrade(UpgradeType type, bool checkCanIssueCommandType = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute a setRallyPoint command to a
+    /// position or unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::setRallyPoint,
+    /// UnitInterface::canSetRallyPosition, UnitInterface::canSetRallyUnit.
+    virtual bool canSetRallyPoint(bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a setRallyPoint command to a position
+    /// or (non-null) unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::setRallyPoint,
+    /// UnitInterface::canSetRallyPosition, UnitInterface::canSetRallyUnit.
+    virtual bool canSetRallyPoint(PositionOrUnit target, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a setRallyPoint command to a position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::setRallyPoint
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::setRallyPoint
     virtual bool canSetRallyPosition(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a setRallyPoint command to a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::setRallyPoint
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::setRallyPoint
     virtual bool canSetRallyUnit(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a setRallyPoint command to a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::setRallyPoint
-    virtual bool canSetRallyUnit(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::setRallyPoint
+    virtual bool canSetRallyUnit(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a move command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::move
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::move
     virtual bool canMove(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a move command, as part of a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canMove
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canMove
     virtual bool canMoveGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a patrol command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::patrol
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::patrol
     virtual bool canPatrol(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a patrol command, as part of a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canPatrol
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canPatrol
     virtual bool canPatrolGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a follow command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::follow
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::follow
     virtual bool canFollow(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a follow command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::follow
-    virtual bool canFollow(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::follow
+    virtual bool canFollow(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a gather command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::gather
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::gather
     virtual bool canGather(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a gather command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::gather
-    virtual bool canGather(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::gather
+    virtual bool canGather(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a returnCargo command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::returnCargo
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::returnCargo
     virtual bool canReturnCargo(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a holdPosition command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::holdPosition
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::holdPosition
     virtual bool canHoldPosition(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a stop command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::stop
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::stop
     virtual bool canStop(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a repair command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::repair
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::repair
     virtual bool canRepair(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a repair command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::repair
-    virtual bool canRepair(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::repair
+    virtual bool canRepair(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a burrow command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::burrow
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::burrow
     virtual bool canBurrow(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an unburrow command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unburrow
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unburrow
     virtual bool canUnburrow(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cloak command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cloak
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cloak
     virtual bool canCloak(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a decloak command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::decloak
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::decloak
     virtual bool canDecloak(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a siege command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::siege
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::siege
     virtual bool canSiege(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an unsiege command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unsiege
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unsiege
     virtual bool canUnsiege(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a lift command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::lift
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::lift
     virtual bool canLift(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a land command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::land
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::land
     virtual bool canLand(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a land command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::land
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::land
     virtual bool canLand(TilePosition target, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a load command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::load
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::load
     virtual bool canLoad(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a load command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::load
-    virtual bool canLoad(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::load
+    virtual bool canLoad(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an unload command or unloadAll at
     /// current position command or unloadAll at a different position command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unload, Unit::unloadAll
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unload, UnitInterface::unloadAll
     virtual bool canUnloadWithOrWithoutTarget(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an unload command or unloadAll at
     /// current position command or unloadAll at a different position command, for a given
     /// position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unload, Unit::unloadAll
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unload, UnitInterface::unloadAll
     virtual bool canUnloadAtPosition(Position targDropPos, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an unload command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unload
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unload
     virtual bool canUnload(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an unload command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unload, Unit::canUnloadAtPosition
-    virtual bool canUnload(const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkPosition = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unload, UnitInterface::canUnloadAtPosition
+    virtual bool canUnload(Unit targetUnit, bool checkCanTargetUnit = true, bool checkPosition = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an unloadAll command for the current position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unloadAll
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unloadAll
     virtual bool canUnloadAll(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute an unloadAll command for a different
     /// position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unloadAll
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unloadAll
     virtual bool canUnloadAllPosition(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute an unloadAll command for a different position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::unloadAll
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::unloadAll
     virtual bool canUnloadAllPosition(Position targDropPos, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute a rightClick command to a position
+    /// or unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::rightClick,
+    /// UnitInterface::canRightClickPosition, UnitInterface::canRightClickUnit.
+    virtual bool canRightClick(bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a rightClick command to a position or (non-null)
+    /// unit.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::rightClick,
+    /// UnitInterface::canRightClickPosition, UnitInterface::canRightClickUnit.
+    virtual bool canRightClick(PositionOrUnit target, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Cheap checks for whether the unit is able to execute a rightClick command to a position
+    /// or unit, as part of a Unitset.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canRightClickUnit
+    virtual bool canRightClickGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a rightClick command to a position or (non-null)
+    /// unit, as part of a Unitset.
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canRightClickUnit
+    virtual bool canRightClickGrouped(PositionOrUnit target, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a rightClick command for a position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::rightClick
     virtual bool canRightClickPosition(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a rightClick command for a position, as part of
     /// a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClick
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canRightClick
     virtual bool canRightClickPositionGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a rightClick command to a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::rightClick
     virtual bool canRightClickUnit(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a rightClick command to a unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::rightClick
-    virtual bool canRightClickUnit(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::rightClick
+    virtual bool canRightClickUnit(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a rightClick command to a unit, as
     /// part of a Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClickUnit
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canRightClickUnit
     virtual bool canRightClickUnitGrouped(bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a rightClick command to a unit, as part of a
     /// Unitset.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommandGrouped, Unit::canRightClickUnit
-    virtual bool canRightClickUnitGrouped(Unit* targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommandGrouped, UnitInterface::canRightClickUnit
+    virtual bool canRightClickUnitGrouped(Unit targetUnit, bool checkCanTargetUnit = true, bool checkCanIssueCommandType = true, bool checkCommandibilityGrouped = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a haltConstruction command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::haltConstruction
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::haltConstruction
     virtual bool canHaltConstruction(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelConstruction command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelConstruction
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelConstruction
     virtual bool canCancelConstruction(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelAddon command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelAddon
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelAddon
     virtual bool canCancelAddon(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelTrain command for any slot.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelTrain
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelTrain
     virtual bool canCancelTrain(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a cancelTrain command for an
     /// unspecified slot.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelTrain
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelTrain
     virtual bool canCancelTrainSlot(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelTrain command for a specified slot.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelTrain
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelTrain
     virtual bool canCancelTrainSlot(int slot, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelMorph command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelMorph
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelMorph
     virtual bool canCancelMorph(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelResearch command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelResearch
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelResearch
     virtual bool canCancelResearch(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a cancelUpgrade command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::cancelUpgrade
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::cancelUpgrade
     virtual bool canCancelUpgrade(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a useTech command without a target or
     /// or a useTech command with a target position or a useTech command with a target unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
     virtual bool canUseTechWithOrWithoutTarget(bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a useTech command without a target or
     /// or a useTech command with a target position or a useTech command with a target unit, for a
     /// given TechType.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
     virtual bool canUseTechWithOrWithoutTarget(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+
+    /// Checks whether the unit is able to execute a useTech command for a specified position or
+    /// unit (only specify nullptr if the TechType does not target another position/unit).
+    ///
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech,
+    /// UnitInterface::canUseTechWithoutTarget, UnitInterface::canUseTechUnit, UnitInterface::canUseTechPosition
+    virtual bool canUseTech(BWAPI::TechType tech, PositionOrUnit target = nullptr, bool checkCanTargetUnit = true, bool checkTargetsType = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a useTech command without a target.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
     virtual bool canUseTechWithoutTarget(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a useTech command with an unspecified
     /// target unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
     virtual bool canUseTechUnit(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a useTech command with a target unit.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
-    virtual bool canUseTechUnit(BWAPI::TechType tech, const Unit* targetUnit, bool checkCanTargetUnit = true, bool checkTargetsUnits = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
+    virtual bool canUseTechUnit(BWAPI::TechType tech, Unit targetUnit, bool checkCanTargetUnit = true, bool checkTargetsUnits = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a useTech command with an unspecified target
     /// position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
     virtual bool canUseTechPosition(BWAPI::TechType tech, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a useTech command with a target position.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::useTech
-    virtual bool canUseTechPosition(Position target, BWAPI::TechType tech, bool checkTargetsPositions = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::useTech
+    virtual bool canUseTechPosition(BWAPI::TechType tech, Position target, bool checkTargetsPositions = true, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
 
     /// Cheap checks for whether the unit is able to execute a placeCOP command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::placeCOP
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::placeCOP
     virtual bool canPlaceCOP(bool checkCommandibility = true) const = 0;
 
     /// Checks whether the unit is able to execute a placeCOP command.
     ///
-    /// @see Game::getLastError, Unit::canIssueCommand, Unit::placeCOP
+    /// @see Game::getLastError, UnitInterface::canIssueCommand, UnitInterface::placeCOP
     virtual bool canPlaceCOP(TilePosition target, bool checkCanIssueCommandType = true, bool checkCommandibility = true) const = 0;
   };
 }

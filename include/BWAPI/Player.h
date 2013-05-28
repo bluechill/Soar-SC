@@ -11,25 +11,28 @@ namespace BWAPI
 {
   // Forwards
   class Color;
-  class Force;
+  class ForceInterface;
+  typedef ForceInterface *Force;
   class PlayerType;
   class TechType;
-  class Unit;
   class Unitset;
   class UpgradeType;
   class WeaponType;
 
   struct PlayerData;
 
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
+
   /// The Player represents a unique controller in the game. Each player in a match will have his
   /// or her own player instance. There is also a neutral player which owns all the neutral units
   /// (such as mineral patches and vespene geysers).
   ///
   /// @see Playerset, PlayerType, Race
-  class Player : public Interface<Player>
+  class PlayerInterface : public Interface<PlayerInterface>
   {
   protected:
-    virtual ~Player() {};
+    virtual ~PlayerInterface() {};
   public :
     /// Retrieves a unique ID that represents the player.
     ///
@@ -47,7 +50,7 @@ namespace BWAPI
     ///
     /// Example usage:
     /// @code
-    ///   BWAPI::Player *myEnemy = BWAPI::Broodwar->enemy();
+    ///   BWAPI::Player myEnemy = BWAPI::Broodwar->enemy();
     ///   if ( myEnemy != nullptr )   // Make sure there is an enemy!
     ///     BWAPI::Broodwar->sendText("Prepare to be crushed, %s!", myEnemy->getName().c_str());
     /// @endcode
@@ -113,7 +116,7 @@ namespace BWAPI
     ///
     /// @returns
     ///   The Force object that the player is part of.
-    virtual Force* getForce() const = 0;
+    virtual Force getForce() const = 0;
 
     /// Checks if this player is allied to the specified player.
     ///
@@ -127,7 +130,7 @@ namespace BWAPI
     /// if \p player is neutral or an observer.
     ///
     /// @see isEnemy
-    virtual bool isAlly(Player* player) const = 0;
+    virtual bool isAlly(Player player) const = 0;
 
     /// Checks if this player is unallied to the specified player.
     ///
@@ -141,7 +144,7 @@ namespace BWAPI
     /// \p player is neutral or an observer.
     ///
     /// @see isAlly
-    virtual bool isEnemy(Player* player) const = 0;
+    virtual bool isEnemy(Player player) const = 0;
 
     /// Checks if this player is the neutral player.
     ///
@@ -326,7 +329,7 @@ namespace BWAPI
     /// @code
     ///   bool obtainNextUpgrade(BWAPI::UpgradeType upgType)
     ///   {
-    ///     BWAPI::Player *self = BWAPI::Broodwar->self();
+    ///     BWAPI::Player self = BWAPI::Broodwar->self();
     ///     int maxLvl      = self->getMaxUpgradeLevel(upgType);
     ///     int currentLvl  = self->getUpgradeLevel(upgType);
     ///     if ( !self->isUpgrading(upgType) && currentLvl < maxLvl &&
@@ -383,7 +386,7 @@ namespace BWAPI
     /// @code
     ///   bool obtainNextUpgrade(BWAPI::UpgradeType upgType)
     ///   {
-    ///     BWAPI::Player *self = BWAPI::Broodwar->self();
+    ///     BWAPI::Player self = BWAPI::Broodwar->self();
     ///     int maxLvl      = self->getMaxUpgradeLevel(upgType);
     ///     int currentLvl  = self->getUpgradeLevel(upgType);
     ///     if ( !self->isUpgrading(upgType) && currentLvl < maxLvl &&
@@ -394,7 +397,7 @@ namespace BWAPI
     ///   }
     /// @endcode
     ///
-    /// @see Unit::upgrade, getMaxUpgradeLevel
+    /// @see UnitInterface::upgrade, getMaxUpgradeLevel
     virtual int getUpgradeLevel(UpgradeType upgrade) const = 0;
 
     /// Checks if the player has already researched a given technology.
@@ -403,7 +406,7 @@ namespace BWAPI
     ///   The TechType to query.
     ///
     /// @returns true if the player has obtained the given \p tech, or false if they have not
-    /// @see isResearching, Unit::research, isResearchAvailable
+    /// @see isResearching, UnitInterface::research, isResearchAvailable
     virtual bool hasResearched(TechType tech) const = 0;
 
     /// Checks if the player is researching a given technology type.
@@ -412,7 +415,7 @@ namespace BWAPI
     ///   The TechType to query.
     ///
     /// @returns true if the player is currently researching the \p tech, or false otherwise
-    /// @see Unit::research, hasResearched
+    /// @see UnitInterface::research, hasResearched
     virtual bool isResearching(TechType tech) const = 0;
 
     /// Checks if the player is upgrading a given upgrade type.
@@ -426,7 +429,7 @@ namespace BWAPI
     /// @code
     ///   bool obtainNextUpgrade(BWAPI::UpgradeType upgType)
     ///   {
-    ///     BWAPI::Player *self = BWAPI::Broodwar->self();
+    ///     BWAPI::Player self = BWAPI::Broodwar->self();
     ///     int maxLvl      = self->getMaxUpgradeLevel(upgType);
     ///     int currentLvl  = self->getUpgradeLevel(upgType);
     ///     if ( !self->isUpgrading(upgType) && currentLvl < maxLvl &&
@@ -437,7 +440,7 @@ namespace BWAPI
     ///   }
     /// @endcode
     ///
-    /// @see Unit::upgrade
+    /// @see UnitInterface::upgrade
     virtual bool isUpgrading(UpgradeType upgrade) const = 0;
 
     /// Retrieves the color value of the current player.
@@ -556,7 +559,7 @@ namespace BWAPI
     /// @code
     ///   bool obtainNextUpgrade(BWAPI::UpgradeType upgType)
     ///   {
-    ///     BWAPI::Player *self = BWAPI::Broodwar->self();
+    ///     BWAPI::Player self = BWAPI::Broodwar->self();
     ///     int maxLvl      = self->getMaxUpgradeLevel(upgType);
     ///     int currentLvl  = self->getUpgradeLevel(upgType);
     ///     if ( !self->isUpgrading(upgType) && currentLvl < maxLvl &&

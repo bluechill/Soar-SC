@@ -64,7 +64,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 		if (name == "move") //Move command
 		{
 			string object_to_move = output_command->GetParameterValue("object");
-			Unit* unit = soar_sc_link->get_bwapi_link()->getUnitFromID(object_to_move);
+			Unit unit = soar_sc_link->get_bwapi_link()->getUnitFromID(object_to_move);
 
 			WMElement* type_wme = output_command->FindByAttribute("type", 0);
 
@@ -198,7 +198,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 				int id_int;
 				ss >> id_int;
 
-				BWAPI::Unit* target = soar_sc_link->get_bwapi_link()->getUnitFromID(id_int);
+				BWAPI::Unit target = soar_sc_link->get_bwapi_link()->getUnitFromID(id_int);
 
 				soar_sc_link->add_event(BWAPI_Event(UnitCommand::rightClick(unit,target), output_command, soar_sc_link));
 			}
@@ -232,7 +232,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 			//Flip the y axis around
 			y = int(Terrain::flip_one_d_point(float(y), false));
 
-			Unit* worker = soar_sc_link->get_bwapi_link()->getUnitFromID(worker_id);
+			Unit worker = soar_sc_link->get_bwapi_link()->getUnitFromID(worker_id);
 
 			if (!worker->isIdle())
 				soar_sc_link->add_event(BWAPI_Event(UnitCommand::stop(worker), nullptr, soar_sc_link));
@@ -252,7 +252,7 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 
 			string location = output_command->GetParameterValue("building");
 
-			Unit* unit_location = soar_sc_link->get_bwapi_link()->getUnitFromID(location);
+			Unit unit_location = soar_sc_link->get_bwapi_link()->getUnitFromID(location);
 
 			soar_sc_link->add_event(BWAPI_Event(UnitCommand::train(unit_location, unit_type), output_command, soar_sc_link));
 		}
@@ -494,29 +494,93 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 
 	Identifier* corners_id = nullptr;
 
-	if (!input_link->FindByAttribute("corners", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
-		corners_id = input_link->CreateIdWME("corners")->ConvertToIdentifier(); //It doesn't exist so create it
+	if (!input_link->FindByAttribute("map-corners", 0)) //Check if there is a types Identifier, at this point there shouldn't be but it's fine (somewhat) if there is
+		corners_id = input_link->CreateIdWME("map-corners")->ConvertToIdentifier(); //It doesn't exist so create it
 	else //Otherwise
-		corners_id = input_link->FindByAttribute("corners", 0)->ConvertToIdentifier(); //Grab the existing one
+		corners_id = input_link->FindByAttribute("map-corners", 0)->ConvertToIdentifier(); //Grab the existing one
 
 	{
 		Identifier* corner = corners_id->CreateIdWME("corner");
 		corner->CreateStringWME("svsobject", "TerrainCornerNW");
+		
+		Soar_Unit* soar_tile = new Soar_Unit(soar_sc_link, nullptr, false);
+		Soar_Unit::Position temp;
+
+		temp.x = 0.0f;
+		temp.y = Terrain::flip_one_d_point(0.0f, false);
+
+		soar_tile->set_position(temp);
+
+		temp.x = 2.0f;
+		temp.y = 2.0f;
+
+		soar_tile->set_size(temp);
+		soar_tile->set_svsobject_id("TerrainCornerNW"); //REMEMBER TO DO THIS LAST NOT FIRST.  IF YOU SET IT FIRST NOTHING ELSE LIKE POSITION WILL ACTUALLY BE SET
+
+		terrain_corners.push_back(soar_tile);
 	}
 
 	{
 		Identifier* corner = corners_id->CreateIdWME("corner");
 		corner->CreateStringWME("svsobject", "TerrainCornerSW");
+
+		Soar_Unit* soar_tile = new Soar_Unit(soar_sc_link, nullptr, false);
+		Soar_Unit::Position temp;
+
+		temp.x = 0.0f;
+		temp.y = Terrain::flip_one_d_point(float(Broodwar->mapHeight()-1), false);
+
+		soar_tile->set_position(temp);
+
+		temp.x = 2.0f;
+		temp.y = 2.0f;
+
+		soar_tile->set_size(temp);
+		soar_tile->set_svsobject_id("TerrainCornerSW"); //REMEMBER TO DO THIS LAST NOT FIRST.  IF YOU SET IT FIRST NOTHING ELSE LIKE POSITION WILL ACTUALLY BE SET
+
+		terrain_corners.push_back(soar_tile);
 	}
 
 	{
 		Identifier* corner = corners_id->CreateIdWME("corner");
 		corner->CreateStringWME("svsobject", "TerrainCornerNE");
+
+		Soar_Unit* soar_tile = new Soar_Unit(soar_sc_link, nullptr, false);
+		Soar_Unit::Position temp;
+
+		temp.x = float(Broodwar->mapWidth()-1);
+		temp.y = Terrain::flip_one_d_point(0.0f, false);
+
+		soar_tile->set_position(temp);
+
+		temp.x = 2.0f;
+		temp.y = 2.0f;
+
+		soar_tile->set_size(temp);
+		soar_tile->set_svsobject_id("TerrainCornerNE"); //REMEMBER TO DO THIS LAST NOT FIRST.  IF YOU SET IT FIRST NOTHING ELSE LIKE POSITION WILL ACTUALLY BE SET
+
+		terrain_corners.push_back(soar_tile);
 	}
 
 	{
 		Identifier* corner = corners_id->CreateIdWME("corner");
 		corner->CreateStringWME("svsobject", "TerrainCornerSE");
+
+		Soar_Unit* soar_tile = new Soar_Unit(soar_sc_link, nullptr, false);
+		Soar_Unit::Position temp;
+
+		temp.x = float(Broodwar->mapWidth()-1);
+		temp.y = Terrain::flip_one_d_point(float(Broodwar->mapHeight()-1), false);
+
+		soar_tile->set_position(temp);
+
+		temp.x = 2.0f;
+		temp.y = 2.0f;
+
+		soar_tile->set_size(temp);
+		soar_tile->set_svsobject_id("TerrainCornerSE"); //REMEMBER TO DO THIS LAST NOT FIRST.  IF YOU SET IT FIRST NOTHING ELSE LIKE POSITION WILL ACTUALLY BE SET
+
+		terrain_corners.push_back(soar_tile);
 	}
 
 	vector<vector<bool> > initial_base_map; //Variable for containing the map and whether a tile is walkable or not
@@ -859,11 +923,19 @@ Soar_Unit* Soar_Link::soar_unit_from_svsobject_id(std::string svsobject_id)
 				return fog_tiles[i];
 		}
 	}
+	else if (strncmp(svsobject_id.c_str(), "TerrainCorner", 13) == 0)
+	{
+		for (size_t i = 0;i < terrain_corners.size();i++)
+		{
+			if (terrain_corners[i]->get_svsobject_id() == svsobject_id)
+				return terrain_corners[i];
+		}
+	}
 	else
 	{
-		map<BWAPI::Unit*, Soar_Unit*> units = soar_sc_link->get_bwapi_link()->get_units();
+		map<BWAPI::Unit, Soar_Unit*> units = soar_sc_link->get_bwapi_link()->get_units();
 
-		for (map<BWAPI::Unit*, Soar_Unit*>::iterator it = units.begin();it != units.end();it++)
+		for (map<BWAPI::Unit, Soar_Unit*>::iterator it = units.begin();it != units.end();it++)
 		{
 			Soar_Unit* unit = it->second;
 

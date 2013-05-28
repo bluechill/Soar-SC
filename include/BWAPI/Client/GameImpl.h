@@ -21,9 +21,10 @@
 
 namespace BWAPI
 {
-  class Force;
-  class Player;
-  class Unit;
+  class ForceInterface;
+  typedef ForceInterface *Force;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
 
   class GameImpl : public Game
   {
@@ -61,9 +62,9 @@ namespace BWAPI
       TilePosition::set startLocations;
       std::list< Event > events;
       bool flagEnabled[2];
-      Player* thePlayer;
-      Player* theEnemy;
-      Player* theNeutral;
+      Player thePlayer;
+      Player theEnemy;
+      Player theNeutral;
       Playerset _allies;
       Playerset _enemies;
       Playerset _observers;
@@ -79,7 +80,7 @@ namespace BWAPI
       void onMatchEnd();
       void onMatchFrame();
       const GameData* getGameData() const;
-      Unit *_unitFromIndex(int index);
+      Unit _unitFromIndex(int index);
 
       virtual const Forceset& getForces() const override;
       virtual const Playerset& getPlayers() const override;
@@ -96,11 +97,11 @@ namespace BWAPI
       virtual const Position::set& getNukeDots() const override;
       virtual const std::list< Event>& getEvents() const override;
 
-      virtual Force*  getForce(int forceID) const override;
-      virtual Player* getPlayer(int playerID) const override;
-      virtual Unit*   getUnit(int unitID) const override;
-      virtual Unit*   indexToUnit(int unitIndex) const override;
-      virtual Region* getRegion(int regionID) const override;
+      virtual Force   getForce(int forceID) const override;
+      virtual Player  getPlayer(int playerID) const override;
+      virtual Unit    getUnit(int unitID) const override;
+      virtual Unit    indexToUnit(int unitIndex) const override;
+      virtual Region  getRegion(int regionID) const override;
 
       virtual GameType getGameType() const override;
       virtual int getLatency() const override;
@@ -118,8 +119,8 @@ namespace BWAPI
       virtual bool      isFlagEnabled(int flag) const override;
       virtual void      enableFlag(int flag) override;
       virtual Unitset   getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred = nullptr) const override;
-      virtual Unit      *getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const override;
-      virtual Unit      *getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::None, int radius = 999999) const override;
+      virtual Unit getClosestUnitInRectangle(Position center, const UnitFilter &pred = nullptr, int left = 0, int top = 0, int right = 999999, int bottom = 999999) const override;
+      virtual Unit getBestUnit(const BestUnitFilter &best, const UnitFilter &pred, Position center = Positions::None, int radius = 999999) const override;
       virtual Error     getLastError() const override;
       virtual bool      setLastError(BWAPI::Error e = Errors::None) const override;
 
@@ -138,10 +139,10 @@ namespace BWAPI
       virtual bool hasCreep(int x, int y) const override;
       virtual bool hasPowerPrecise(int x, int y, UnitType unitType = UnitTypes::None ) const override;
 
-      virtual bool canBuildHere(TilePosition position, UnitType type, const Unit* builder = nullptr, bool checkExplored = false) override;
-      virtual bool canMake(UnitType type, const Unit* builder = nullptr) const override;
-      virtual bool canResearch(TechType type, const Unit* unit = nullptr, bool checkCanIssueCommandType = true) override;
-      virtual bool canUpgrade(UpgradeType type, const Unit* unit = nullptr, bool checkCanIssueCommandType = true) override;
+      virtual bool canBuildHere(TilePosition position, UnitType type, Unit builder = nullptr, bool checkExplored = false) override;
+      virtual bool canMake(UnitType type, Unit builder = nullptr) const override;
+      virtual bool canResearch(TechType type, Unit unit = nullptr, bool checkCanIssueCommandType = true) override;
+      virtual bool canUpgrade(UpgradeType type, Unit unit = nullptr, bool checkCanIssueCommandType = true) override;
       virtual const TilePosition::set& getStartLocations() const override;
 
       virtual void vPrintf(const char* format, va_list arg) override;
@@ -160,9 +161,9 @@ namespace BWAPI
       virtual void setLocalSpeed(int speed = -1) override;
       virtual bool issueCommand(const Unitset& units, UnitCommand command) override;
       virtual const Unitset& getSelectedUnits() const override;
-      virtual Player* self() const override;
-      virtual Player* enemy() const override;
-      virtual Player* neutral() const override;
+      virtual Player self() const override;
+      virtual Player enemy() const override;
+      virtual Player neutral() const override;
       virtual Playerset& allies() override;
       virtual Playerset& enemies() override;
       virtual Playerset& observers() override;
@@ -191,13 +192,13 @@ namespace BWAPI
       virtual bool setMap(const char *mapFileName) override;
       virtual void setFrameSkip(int frameSkip) override;
       virtual bool hasPath(Position source, Position destination) const override;
-      virtual bool setAlliance(BWAPI::Player *player, bool allied = true, bool alliedVictory = true) override;
-      virtual bool setVision(BWAPI::Player *player, bool enabled = true) override;
+      virtual bool setAlliance(BWAPI::Player player, bool allied = true, bool alliedVictory = true) override;
+      virtual bool setVision(BWAPI::Player player, bool enabled = true) override;
       virtual int  elapsedTime() const override;
       virtual void setCommandOptimizationLevel(int level) override;
       virtual int  countdownTimer() const override;
       virtual const Regionset &getAllRegions() const override;
-      virtual BWAPI::Region *getRegionAt(int x, int y) const override;
+      virtual BWAPI::Region getRegionAt(int x, int y) const override;
       virtual int getLastEventTime() const override;
       virtual bool setRevealAll(bool reveal = true) override;
   };

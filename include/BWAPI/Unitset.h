@@ -7,7 +7,6 @@
 namespace BWAPI
 {
   // Forward declarations
-  class Unit;
   class UnitType;
   class Regionset;
   class UnitCommand;
@@ -20,7 +19,7 @@ namespace BWAPI
   /// containers.
   ///
   /// @see Unit, UnitType, UnitSizeType
-  class Unitset : public Vectorset<BWAPI::Unit*>
+  class Unitset : public Vectorset<BWAPI::Unit >
   {
   public:
     /// A blank Unitset containing no elements. This is typically used as a return value for BWAPI
@@ -47,21 +46,21 @@ namespace BWAPI
     ///
     /// @returns Average Position of all units in the set.
     ///
-    /// @see Unit::getPosition
+    /// @see UnitInterface::getPosition
     Position getPosition() const;
 
     /// Creates a single set containing all units that are loaded into units of this set.
     ///
     /// @returns The set of all loaded units.
     ///
-    /// @see Unit::getLoadedUnits
+    /// @see UnitInterface::getLoadedUnits
     Unitset getLoadedUnits() const;
 
     /// Creates a single set containing all the @Interceptors of all @Carriers in this set.
     ///
     /// @returns The set of all @Interceptors .
     /// 
-    /// @see Unit::getInterceptors
+    /// @see UnitInterface::getInterceptors
     Unitset getInterceptors() const;
 
     /// Creates a single set containing all the @Larvae of all @Hatcheries, @Lairs, and @Hives in
@@ -69,7 +68,7 @@ namespace BWAPI
     ///
     /// @returns The set of all @Larvae .
     ///
-    /// @see Unit::getLarva
+    /// @see UnitInterface::getLarva
     Unitset getLarva() const;
 
     /// Sets the client info for every unit in this set.
@@ -77,115 +76,115 @@ namespace BWAPI
     /// @param clientInfo A pointer to client information, managed by the AI module, or nullptr if
     /// client information is to be cleared.
     ///
-    /// @see Unit::setClientInfo
+    /// @see UnitInterface::setClientInfo
     void setClientInfo(void *clientInfo = nullptr, int index = 0) const;
 
     /// @overload
     void setClientInfo(int clientInfo = 0, int index = 0) const;
 
     Unitset getUnitsInRadius(int radius, const UnitFilter &pred = nullptr) const;
-    Unit    *getClosestUnit(const UnitFilter &pred = nullptr, int radius = 999999) const;
+    Unit getClosestUnit(const UnitFilter &pred = nullptr, int radius = 999999) const;
 
-    /// @copydoc Unit::issueCommand
+    /// @copydoc UnitInterface::issueCommand
     bool issueCommand(UnitCommand command) const;
     
-    /// @copydoc Unit::attack
+    /// @copydoc UnitInterface::attack
     bool attack(PositionOrUnit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::build
+    /// @copydoc UnitInterface::build
     bool build(UnitType type, TilePosition target = TilePositions::None) const;
 
-    /// @copydoc Unit::buildAddon
+    /// @copydoc UnitInterface::buildAddon
     bool buildAddon(UnitType type) const;
 
-    /// @copydoc Unit::train
+    /// @copydoc UnitInterface::train
     bool train(UnitType type) const;
 
-    /// @copydoc Unit::morph
+    /// @copydoc UnitInterface::morph
     bool morph(UnitType type) const;
 
-    /// @copydoc Unit::setRallyPoint
+    /// @copydoc UnitInterface::setRallyPoint
     bool setRallyPoint(PositionOrUnit target) const;
 
-    /// @copydoc Unit::move
+    /// @copydoc UnitInterface::move
     bool move(Position target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::patrol
+    /// @copydoc UnitInterface::patrol
     bool patrol(Position target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::holdPosition
+    /// @copydoc UnitInterface::holdPosition
     bool holdPosition(bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::stop
+    /// @copydoc UnitInterface::stop
     bool stop(bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::follow
-    bool follow(Unit* target, bool shiftQueueCommand = false) const;
+    /// @copydoc UnitInterface::follow
+    bool follow(Unit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::gather
-    bool gather(Unit* target, bool shiftQueueCommand = false) const;
+    /// @copydoc UnitInterface::gather
+    bool gather(Unit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::returnCargo
+    /// @copydoc UnitInterface::returnCargo
     bool returnCargo(bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::repair
-    bool repair(Unit* target, bool shiftQueueCommand = false) const;
+    /// @copydoc UnitInterface::repair
+    bool repair(Unit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::burrow
+    /// @copydoc UnitInterface::burrow
     bool burrow() const;
 
-    /// @copydoc Unit::unburrow
+    /// @copydoc UnitInterface::unburrow
     bool unburrow() const;
 
-    /// @copydoc Unit::cloak
+    /// @copydoc UnitInterface::cloak
     bool cloak() const;
 
-    /// @copydoc Unit::decloak
+    /// @copydoc UnitInterface::decloak
     bool decloak() const;
 
-    /// @copydoc Unit::siege
+    /// @copydoc UnitInterface::siege
     bool siege() const;
 
-    /// @copydoc Unit::unsiege
+    /// @copydoc UnitInterface::unsiege
     bool unsiege() const;
 
-    /// @copydoc Unit::lift
+    /// @copydoc UnitInterface::lift
     bool lift() const;
 
-    /// @copydoc Unit::load
-    bool load(Unit* target, bool shiftQueueCommand = false) const;
+    /// @copydoc UnitInterface::load
+    bool load(Unit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::unloadAll(bool)
+    /// @copydoc UnitInterface::unloadAll(bool)
     bool unloadAll(bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::unloadAll(Position,bool)
+    /// @copydoc UnitInterface::unloadAll(Position,bool)
     bool unloadAll(Position target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::rightClick
+    /// @copydoc UnitInterface::rightClick
     bool rightClick(PositionOrUnit target, bool shiftQueueCommand = false) const;
 
-    /// @copydoc Unit::haltConstruction
+    /// @copydoc UnitInterface::haltConstruction
     bool haltConstruction() const;
 
-    /// @copydoc Unit::cancelConstruction
+    /// @copydoc UnitInterface::cancelConstruction
     bool cancelConstruction() const;
 
-    /// @copydoc Unit::cancelAddon
+    /// @copydoc UnitInterface::cancelAddon
     bool cancelAddon() const;
 
-    /// @copydoc Unit::cancelTrain
+    /// @copydoc UnitInterface::cancelTrain
     bool cancelTrain(int slot = -2) const;
 
-    /// @copydoc Unit::cancelMorph
+    /// @copydoc UnitInterface::cancelMorph
     bool cancelMorph() const;
 
-    /// @copydoc Unit::cancelResearch
+    /// @copydoc UnitInterface::cancelResearch
     bool cancelResearch() const;
 
-    /// @copydoc Unit::cancelUpgrade
+    /// @copydoc UnitInterface::cancelUpgrade
     bool cancelUpgrade() const;
     
-    /// @copydoc Unit::useTech
+    /// @copydoc UnitInterface::useTech
     bool useTech(TechType tech, PositionOrUnit target = nullptr) const;
   };
 }

@@ -264,7 +264,7 @@ namespace BWAPI
   /// The UnitType is used to get information about a particular type of unit, such as its cost,
   /// build time, weapon, hit points, abilities, etc.
   ///
-  /// @see Unit::getType
+  /// @see UnitInterface::getType
   class UnitType : public Type<UnitType, UnitTypes::Enum::Unknown>
   {
   public:
@@ -372,7 +372,7 @@ namespace BWAPI
     /// @note This value may not necessarily match the value seen in the @UMS game type.
     ///
     /// @returns Number of frames needed in order to build the unit.
-    /// @see Unit::getRemainingBuildTime
+    /// @see UnitInterface::getRemainingBuildTime
     int buildTime() const;
 
     /// Retrieves the amount of supply that this unit type will use when created. It will use the
@@ -382,7 +382,7 @@ namespace BWAPI
     /// in the game. The reason for this is because @Zerglings use 0.5 visible supply.
     ///
     /// @returns Integer containing the supply required to build this unit.
-    /// @see supplyProvided, Player::supplyTotal, Player::supplyUsed
+    /// @see supplyProvided, PlayerInterface::supplyTotal, PlayerInterface::supplyUsed
     int supplyRequired() const;
 
     /// Retrieves the amount of supply that this unit type produces for its appropriate Race's
@@ -391,7 +391,7 @@ namespace BWAPI
     /// @note In Starcraft programming, the managed supply values are double than what they appear
     /// in the game. The reason for this is because @Zerglings use 0.5 visible supply.
     ///
-    /// @see supplyRequired, Player::supplyTotal, Player::supplyUsed
+    /// @see supplyRequired, PlayerInterface::supplyTotal, PlayerInterface::supplyUsed
     int supplyProvided() const;
 
     /// Retrieves the amount of space required by this unit type to fit inside a @Bunker or
@@ -599,23 +599,79 @@ namespace BWAPI
     /// @returns true if this unit type has the robotic property, and false otherwise.
     bool isRobotic() const;
 
-    /** Returns true for the seven units that can detect cloaked units - Terran Science Vessel, Spell
-     * Scanner Sweep, Zerg Overlord, Protoss Observer, Terran Missile Turret, Zerg Spore Colony, and Protoss
-     * Photon Cannon. */
+    /// Checks if this unit type is capable of detecting units that are cloaked or burrowed.
+    ///
+    /// @returns true if this unit type is a detector by default, false if it does not have this
+    /// property
     bool isDetector() const;
 
-    /** Returns true for the five units that hold resources - Mineral Field, Vespene Geyser,
-     * Terran Refinery, Zerg Extractor, and Protoss Assimilator. */
+    /// Checks if this unit type is capable of storing resources such as @minerals . Resources
+    /// are harvested from resource containers.
+    ///
+    /// @returns true if this unit type may contain resources that can be harvested, false
+    /// otherwise.
     bool isResourceContainer() const;
 
-    /** Returns true for the five units that can accept resources - Terran Command Center, Protoss Nexus,
-     * Zerg Hatchery, Zerg Lair, and Zerg Hive. */
+    /// Checks if this unit type is a resource depot. Resource depots must be placed a certain
+    /// distance from resources. Resource depots are typically the main building for any
+    /// particular race. Workers will return resources to the nearest resource depot.
+    ///
+    /// Example:
+    /// @code
+    ///   if ( BWAPI::Broodwar->self() )
+    ///   {
+    ///     BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
+    ///     for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///     {
+    ///       if ( u->isIdle() && u->getType().isResourceDepot() )
+    ///         u->train( u->getType().getRace().getWorker() );
+    ///     }
+    ///   }
+    /// @endcode
+    /// @returns true if the unit type is a resource depot, false if it is not.
     bool isResourceDepot() const;
 
-    /** Returns true for Terran Refinery, Zerg Extractor, and Protoss Assimilator. */
+    /// Checks if this unit type is a refinery. A refinery is a structure that is placed on top of
+    /// a @geyser . Refinery types are @refinery , @extractor , and @assimilator.
+    ///
+    /// Example:
+    /// @code
+    ///   if ( BWAPI::Broodwar->self() )
+    ///   {
+    ///     BWAPI::Unitset myUnits = BWAPI::Broodwar->self()->getUnits();
+    ///     for ( auto u = myUnits.begin(); u != myUnits.end(); ++u )
+    ///     {
+    ///       if ( u->getType().isRefinery() )
+    ///       {
+    ///         int nWorkersAssigned = u->getClientInfo<int>('work');
+    ///         if ( nWorkersAssigned < 3 )
+    ///         {
+    ///           Unit pClosestIdleWorker = u->getClosestUnit(BWAPI::Filter::IsWorker && BWAPI::Filter::IsIdle);
+    ///           if ( pClosestIdleWorker )
+    ///           {
+    ///             // gather from the refinery (and check if successful)
+    ///             if ( pClosestIdleWorker->gather(*u) )
+    ///             {
+    ///               // set a back reference for when the unit is killed or re-assigned (code not provided)
+    ///               pClosestIdleWorker->setClientInfo(*u, 'ref');
+    ///
+    ///               // Increment the number of workers assigned and associate it with the refinery
+    ///               ++nWorkersAssigned;
+    ///               u->setClientInfo(nWorkersAssigned, 'work');
+    ///             }
+    ///           }
+    ///         } // workers < 3
+    ///       } // isRefinery
+    ///     } // for
+    ///   }
+    /// @endcode
+    /// @returns true if this unit type is a refinery, and false if it is not.
     bool isRefinery() const;
 
-    /** Returns true for Protoss Probe, Terran SCV, and Zerg Drone. */
+    /// Checks if this unit type is a worker unit. Worker units can harvest resources and build
+    /// structures. Worker unit types include the @SCV , @probe, and @drone.
+    ///
+    /// @returns true if this unit type is a worker, and false if it is not.
     bool isWorker() const;
 
     /** Returns true for buildings that must be near a pylon to be constructed. */
@@ -682,7 +738,7 @@ namespace BWAPI
     ///   {
     ///     if ( u->getType().isCritter() && !u->isInvincible() )
     ///     {
-    ///       BWAPI::Unit *myQueen = u->getClosestUnit(BWAPI::Filter::GetType == BWAPI::UnitTypes::Zerg_Queen && BWAPI::Filter::IsOwned);
+    ///       BWAPI::Unit myQueen = u->getClosestUnit(BWAPI::Filter::GetType == BWAPI::UnitTypes::Zerg_Queen && BWAPI::Filter::IsOwned);
     ///       if ( myQueen )
     ///         myQueen->useTech(BWAPI::TechTypes::Parasite, *u);
     ///     }

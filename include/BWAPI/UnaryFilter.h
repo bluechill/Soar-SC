@@ -6,7 +6,7 @@ namespace BWAPI
   /// UnaryFilter allows for logical functor combinations.
   ///
   /// @code
-  ///   Unit *myUnit;
+  ///   Unit myUnit;
   ///   // The following two if statements are equivalent
   ///   if ( myUnit->getType().isWorker() && myUnit->isCompleted() && myUnit->isIdle() )
   ///   {}

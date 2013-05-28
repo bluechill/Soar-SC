@@ -11,15 +11,17 @@
 namespace BWAPI
 {
   // forwards
-  class Unit;
-  class Player;
+  class PlayerInterface;
+  typedef PlayerInterface *Player;
   class UnitType;
+  class UnitInterface;
+  typedef UnitInterface *Unit;
 
   // typedefs
-  typedef UnaryFilter<Unit*> UnitFilter;
-  typedef UnaryFilter<Unit*,bool (*)(Unit*)> PtrUnitFilter;
-  typedef BestFilter<Unit*>  BestUnitFilter;
-  typedef CompareFilter<Unit*,int,int(*)(Unit*)> PtrIntCompareUnitFilter;
+  typedef UnaryFilter<Unit > UnitFilter;
+  typedef UnaryFilter<Unit ,bool (*)(Unit )> PtrUnitFilter;
+  typedef BestFilter<Unit >  BestUnitFilter;
+  typedef CompareFilter<Unit ,int,int(*)(Unit )> PtrIntCompareUnitFilter;
 
   namespace Filter
   {
@@ -74,7 +76,7 @@ namespace BWAPI
     extern const PtrIntCompareUnitFilter Energy_Percent;
 
     extern const PtrIntCompareUnitFilter Armor;
-    extern const CompareFilter<Unit*,UpgradeType,UpgradeType (*)(Unit*)> ArmorUpgrade;
+    extern const CompareFilter<Unit ,UpgradeType,UpgradeType (*)(Unit )> ArmorUpgrade;
 
     extern const PtrIntCompareUnitFilter MineralPrice;
     extern const PtrIntCompareUnitFilter GasPrice;
@@ -90,17 +92,17 @@ namespace BWAPI
     extern const PtrIntCompareUnitFilter BuildScore;
     extern const PtrIntCompareUnitFilter DestroyScore;
 
-    extern const CompareFilter<Unit*,double,double (*)(Unit*)> TopSpeed;
+    extern const CompareFilter<Unit ,double,double (*)(Unit )> TopSpeed;
     extern const PtrIntCompareUnitFilter SightRange;
     extern const PtrIntCompareUnitFilter WeaponCooldown;
-    extern const CompareFilter<Unit*,UnitSizeType,UnitSizeType (*)(Unit*)> SizeType;
+    extern const CompareFilter<Unit ,UnitSizeType,UnitSizeType (*)(Unit )> SizeType;
 
-    extern const CompareFilter<Unit*,WeaponType,WeaponType (*)(Unit*)> GroundWeapon;
-    extern const CompareFilter<Unit*,WeaponType,WeaponType (*)(Unit*)> AirWeapon;
+    extern const CompareFilter<Unit ,WeaponType,WeaponType (*)(Unit )> GroundWeapon;
+    extern const CompareFilter<Unit ,WeaponType,WeaponType (*)(Unit )> AirWeapon;
 
-    extern const CompareFilter<Unit*,UnitType,UnitType (*)(Unit*)> GetType;
-    extern const CompareFilter<Unit*,Race,Race (*)(Unit*)> GetRace;
-    extern const CompareFilter<Unit*,Player*,Player* (*)(Unit*)> GetPlayer;
+    extern const CompareFilter<Unit ,UnitType,UnitType (*)(Unit )> GetType;
+    extern const CompareFilter<Unit ,Race,Race (*)(Unit )> GetRace;
+    extern const CompareFilter<Unit ,Player,Player (*)(Unit )> GetPlayer;
   
     extern const PtrIntCompareUnitFilter Resources;
     extern const PtrIntCompareUnitFilter ResourceGroup;
@@ -122,13 +124,13 @@ namespace BWAPI
     extern const PtrIntCompareUnitFilter RemoveTime;
     extern const PtrIntCompareUnitFilter StasisTime;
     extern const PtrIntCompareUnitFilter StimTime;
-    extern const CompareFilter<Unit*,UnitType,UnitType (*)(Unit*)> BuildType;
+    extern const CompareFilter<Unit ,UnitType,UnitType (*)(Unit )> BuildType;
     extern const PtrIntCompareUnitFilter RemainingBuildTime;
     extern const PtrIntCompareUnitFilter RemainingTrainTime;
-    extern const CompareFilter<Unit*,Unit*,Unit* (*)(Unit*)> Target;
-    extern const CompareFilter<Unit*,Order,Order (*)(Unit*)> CurrentOrder;
-    extern const CompareFilter<Unit*,Order,Order (*)(Unit*)> SecondaryOrder;
-    extern const CompareFilter<Unit*,Unit*,Unit* (*)(Unit*)> OrderTarget;
+    extern const CompareFilter<Unit ,Unit ,Unit (*)(Unit )> Target;
+    extern const CompareFilter<Unit ,Order,Order (*)(Unit )> CurrentOrder;
+    extern const CompareFilter<Unit ,Order,Order (*)(Unit )> SecondaryOrder;
+    extern const CompareFilter<Unit ,Unit ,Unit (*)(Unit )> OrderTarget;
     extern const PtrIntCompareUnitFilter GetLeft;
     extern const PtrIntCompareUnitFilter GetTop;
     extern const PtrIntCompareUnitFilter GetRight;

@@ -232,7 +232,7 @@ void Soar_SC::soar_thread_update(bool direct_call)
 				}
 			case Soar_Event::New_Unit: //If we're supposed to add a unit
 				{
-					BWAPI::Unit* unit = event.get_unit(); //Get the unit to add
+					BWAPI::Unit unit = event.get_unit(); //Get the unit to add
 					bwapi_link->add_unit(unit, unit->getPlayer()->isEnemy(BWAPI::Broodwar->self())); //Then add it
 
 					break; //Then break
@@ -276,9 +276,9 @@ void Soar_SC::bwapi_thread_update(bool direct_call)
 			return;
 		}
 
-		std::vector<BWAPI::Unit*> to_erase;
+		std::vector<BWAPI::Unit> to_erase;
 
-		for (std::map<BWAPI::Unit*, BWAPI_Event_Struct* >::iterator it = bwapi_event_queue.begin();it != bwapi_event_queue.end();it++)
+		for (std::map<BWAPI::Unit, BWAPI_Event_Struct* >::iterator it = bwapi_event_queue.begin();it != bwapi_event_queue.end();it++)
 		{
 			BWAPI_Event_Struct* event_struct = it->second;
 			if (event_struct->count <= 0)
@@ -297,7 +297,7 @@ void Soar_SC::bwapi_thread_update(bool direct_call)
 				event_struct->count--;
 		}
 
-		for (std::vector<BWAPI::Unit*>::iterator it = to_erase.begin();it != to_erase.end();it++)
+		for (std::vector<BWAPI::Unit>::iterator it = to_erase.begin();it != to_erase.end();it++)
 			bwapi_event_queue.erase(bwapi_event_queue.find(*it));
 
 		SDL_mutexV(bwapi_event_mutex);

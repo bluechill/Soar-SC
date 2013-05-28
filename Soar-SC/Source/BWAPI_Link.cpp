@@ -61,7 +61,7 @@ void BWAPI_Link::onFrame()
 
 	// Display the game frame rate as text in the upper left area of the screen
 	Broodwar->drawTextScreen(10, 0,  "\x7 FPS: %d", fps );
-	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %d", average_fps);
+	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %f", average_fps);
 	Broodwar->drawTextScreen(10, 30, "\x7 Decisions Per Second: %i", decisions_last_frame * fps);
 	Broodwar->drawTextScreen(10, 45, "\x7 Average Decisions Per Second: %f", get_average_decisions() * average_fps);
 
@@ -87,31 +87,31 @@ void BWAPI_Link::onSendText(std::string text)
 	cout << "Soar: " << text << endl;
 }
 
-void BWAPI_Link::onReceiveText(BWAPI::Player* player, std::string text)
+void BWAPI_Link::onReceiveText(BWAPI::Player player, std::string text)
 {
 	// Parse the received text
 	cout << player->getName() << "said '" << text << "'" << endl;
 	Broodwar->printf("%s said '%s'", player->getName().c_str(), text.c_str());
 }
 
-void BWAPI_Link::onPlayerLeft(BWAPI::Player* player)
+void BWAPI_Link::onPlayerLeft(BWAPI::Player player)
 {}
 
 void BWAPI_Link::onNukeDetect(BWAPI::Position target)
 {}
 
-void BWAPI_Link::onUnitDiscover(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitDiscover(BWAPI::Unit unit)
 {}
 
-void BWAPI_Link::onUnitEvade(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitEvade(BWAPI::Unit unit)
 {}
 
-void BWAPI_Link::onUnitShow(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitShow(BWAPI::Unit unit)
 {}
 
-void BWAPI_Link::onUnitHide(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitHide(BWAPI::Unit unit)
 {
-	std::map<Unit*, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
+	std::map<Unit, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
 
 	if (enemy_it == enemy_units.end())
 		return;
@@ -120,10 +120,10 @@ void BWAPI_Link::onUnitHide(BWAPI::Unit* unit)
 	hiddenUnitsPositions[enemy_it->second->get_id()] = oldPos;
 }
 
-void BWAPI_Link::onUnitCreate(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitCreate(BWAPI::Unit unit)
 {}
 
-void BWAPI_Link::onUnitDestroy(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitDestroy(BWAPI::Unit unit)
 {
 	Unitset::iterator it;
 	if ((it = minerals.find(unit)) != minerals.end()) //Check if it's a mineral
@@ -151,10 +151,10 @@ void BWAPI_Link::onUnitDestroy(BWAPI::Unit* unit)
 	}
 }
 
-void BWAPI_Link::onUnitMorph(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitMorph(BWAPI::Unit unit)
 {}
 
-void BWAPI_Link::onUnitRenegade(BWAPI::Unit* unit)
+void BWAPI_Link::onUnitRenegade(BWAPI::Unit unit)
 {}
 
 void BWAPI_Link::onSaveGame(std::string gameName)
@@ -163,11 +163,11 @@ void BWAPI_Link::onSaveGame(std::string gameName)
 	Broodwar->printf("The game was saved to \"%s\".", gameName.c_str());
 }
 
-void BWAPI_Link::onUnitComplete(BWAPI::Unit *unit)
+void BWAPI_Link::onUnitComplete(BWAPI::Unit unit)
 {}
 
 
-Unit* BWAPI_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version
+Unit BWAPI_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, converts the string to an int then calls the int version
 {
 	int id;
 	stringstream ss(id_string);
@@ -176,9 +176,9 @@ Unit* BWAPI_Link::getUnitFromID(string id_string) //Retrieve a unit from an id, 
 	return getUnitFromID(id);
 }
 
-Unit* BWAPI_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
+Unit BWAPI_Link::getUnitFromID(int id) //Calls the broodwar get unit method.
 {
-	Unit* result = Broodwar->getUnit(id);
+	Unit result = Broodwar->getUnit(id);
 
 	if (result == nullptr)
 	{
@@ -215,7 +215,7 @@ void BWAPI_Link::delete_resource(int bw_id)
 		vesp_gas.erase(it);
 }
 
-void BWAPI_Link::add_unit(BWAPI::Unit* bw_unit, bool enemy) //Add a new unit
+void BWAPI_Link::add_unit(BWAPI::Unit bw_unit, bool enemy) //Add a new unit
 {
 	Soar_Unit* soar_unit = new Soar_Unit(soar_sc_link, bw_unit, enemy);
 
@@ -225,13 +225,13 @@ void BWAPI_Link::add_unit(BWAPI::Unit* bw_unit, bool enemy) //Add a new unit
 		enemy_units[bw_unit] = soar_unit;
 }
 
-void BWAPI_Link::delete_unit(BWAPI::Unit* unit, bool enemy) //Delete an existing unit
+void BWAPI_Link::delete_unit(BWAPI::Unit unit, bool enemy) //Delete an existing unit
 {
-	map<Unit*, Soar_Unit*>::iterator it = my_units.find(unit);
+	map<Unit, Soar_Unit*>::iterator it = my_units.find(unit);
 
 	if (enemy)
 	{
-		map<Unit*, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
+		map<Unit, Soar_Unit*>::iterator enemy_it = enemy_units.find(unit);
 
 		if (enemy_it == enemy_units.end())
 			return;
@@ -267,7 +267,7 @@ void BWAPI_Link::update_resources() //Update the resources
 		{
 			//Doesn't exist in my current list of visible minerals
 
-			Unit* bw_unit = (*it);
+			Unit bw_unit = (*it);
 
 			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
 
@@ -282,7 +282,7 @@ void BWAPI_Link::update_resources() //Update the resources
 		{
 			//Doesn't exist in my current list of visible vespian gas
 
-			Unit* bw_unit = (*it);
+			Unit bw_unit = (*it);
 
 			int size_y = bw_unit->getType().dimensionUp() + bw_unit->getType().dimensionDown() + 1;
 
@@ -306,12 +306,12 @@ void BWAPI_Link::update_units() //Update all player units
 
 	for (Playerset::iterator it = players.begin();it != players.end();it++)
 	{
-		Player* player = *it;
+		Player player = *it;
 		Unitset units = player->getUnits();
 
 		for (Unitset::iterator it = units.begin();it != units.end();it++)
 		{
-			Unit* unit = (*it);
+			Unit unit = (*it);
 
 			if (unit->getPlayer()->isEnemy(Broodwar->self()) || unit->getPlayer()->getID() == Broodwar->self()->getID())
 			{
@@ -336,9 +336,9 @@ void BWAPI_Link::update_units() //Update all player units
 	}
 }
 
-std::map<BWAPI::Unit*, Soar_Unit*> BWAPI_Link::get_units()
+std::map<BWAPI::Unit, Soar_Unit*> BWAPI_Link::get_units()
 {
-	std::map<BWAPI::Unit*, Soar_Unit*> result;
+	std::map<BWAPI::Unit, Soar_Unit*> result;
 	result.insert(my_units.begin(), my_units.end());
 	result.insert(enemy_units.begin(), enemy_units.end());
 

@@ -70,7 +70,7 @@ private:
 	} BWAPI_Event_Struct;
 
 	std::queue<Soar_Event> soar_event_queue; 
-	std::map<BWAPI::Unit*, BWAPI_Event_Struct* > bwapi_event_queue;
+	std::map<BWAPI::Unit, BWAPI_Event_Struct* > bwapi_event_queue;
 
 	//Misc Stuff
 	std::ofstream cout_redirect; //Used for redirecting cout to a file
