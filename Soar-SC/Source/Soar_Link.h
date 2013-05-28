@@ -58,6 +58,8 @@ public:
 	void delete_resource(int bw_id);
 	void update_resource_count(int minerals, int gas, int total_supplies, int used_supplies);
 
+	void update_update_unit_count(std::map<BWAPI::UnitType, unsigned int> unit_counts);
+
 	void start_soar_run();
 	void send_base_input(sml::Agent* agent, bool wait_for_analyzer);
 
@@ -84,6 +86,11 @@ private:
 	bool had_interrupt; //Used for detecting when the agent is stopped, set to true when it is by the misc handler, then it tells the event queue to update forever
 
 	Terrain* terrain; //Terrain analyzer thread, analyzes the map and puts everything into SVS
+
+	//Soar Helper Functions
+	static sml::WMElement* get_child(std::string name, sml::Identifier* parent);
+	static sml::WMElement* find_child_with_attribute_value(std::string attribute_name, std::string value, sml::Identifier* parent);
+	static sml::WMElement* find_child_with_attribute_value(std::string child_name, std::string attribute_name, std::string value, sml::Identifier* parent);
 };
 
 //Global stuff, all just calls the respective Soar_Link function

@@ -334,6 +334,21 @@ void BWAPI_Link::update_units() //Update all player units
 			}
 		}
 	}
+
+	//Count all the units and update that information in the types
+	map<BWAPI::UnitType, unsigned int> unit_type_count;
+
+	for (map<Unit, Soar_Unit*>::iterator it = my_units.begin();it != my_units.end();it++)
+	{
+		UnitType type = it->first->getType();
+
+		if (unit_type_count.find(type) == unit_type_count.end())
+			unit_type_count[type] = 0;
+
+		unit_type_count[type]++;
+	}
+
+	soar_sc_link->get_soar_link()->update_update_unit_count(unit_type_count);
 }
 
 std::map<BWAPI::Unit, Soar_Unit*> BWAPI_Link::get_units()

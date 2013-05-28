@@ -946,3 +946,81 @@ Soar_Unit* Soar_Link::soar_unit_from_svsobject_id(std::string svsobject_id)
 
 	return nullptr;
 }
+
+void Soar_Link::update_update_unit_count(std::map<BWAPI::UnitType, unsigned int> unit_counts)
+{
+	Identifier* input_link = agent->GetInputLink();
+	WMElement* types_wme = input_link->FindByAttribute("types", 0);
+
+	if (types_wme == nullptr)
+		types_wme = input_link->CreateIdWME("types");
+
+	Identifier* types = types_wme->ConvertToIdentifier();
+
+	for (map<BWAPI::UnitType, unsigned int>::iterator it = unit_counts.begin();it != unit_counts.end();it++)
+	{
+		sml::WMElement* type_wme = find_child_with_attribute_value("type", "name", it->first.getName(), types);
+
+		assert(type_wme != nullptr); //Corrupt memory?
+
+		sml::Identifier* type_id = type_wme->ConvertToIdentifier();
+
+		assert(type_id != nullptr); //Should always be an identifier
+
+		sml::WMElement* my_count_wme = get_child("my_count", type_id);
+
+		if (my_count_wme == nullptr)
+			my_count_wme = type_id->CreateIntWME("my_count", 0);
+
+		sml::IntElement* my_count_int = my_count_wme->ConvertToIntElement();
+		
+		assert(my_count_int != nullptr);
+
+		if (it->second != int(my_count_int->GetValue())) //Prevent "blinking"
+			my_count_int->Update(it->second);
+	}
+}
+
+sml::WMElement* Soar_Link::get_child(std::string name, sml::Identifier* parent)
+{
+	for (sml::Identifier::ChildrenIter it = parent->GetChildrenBegin();it != parent->GetChildrenEnd();it++)
+	{
+		if ((*it)->GetAttribute() == name)
+			return *it;
+	}
+
+	return nullptr;
+}
+
+sml::WMElement* Soar_Link::find_child_with_attribute_value(std::string attribute_name, std::string value, sml::Identifier* parent)
+{
+	return find_child_with_attribute_value("", attribute_name, value, parent);
+}
+
+sml::WMElement* Soar_Link::find_child_with_attribute_value(std::string child_name, std::string attribute_name, std::string value, sml::Identifier* parent)
+{
+	for (sml::Identifier::ChildrenIter it = parent->GetChildrenBegin();it != parent->GetChildrenEnd();it++)
+	{
+		if ((*it)->GetAttribute() == child_name || child_name == "")
+		{
+			sml::Identifier* child = (*it)->ConvertToIdentifier();
+
+			if (child != nullptr)
+			{
+				sml::WMElement* attribute = get_child(attribute_name, child);
+
+				if (attribute != nullptr)
+				{
+					string buffer;
+
+					string result = attribute->GetValueAsString(buffer);
+
+					if (result == value)
+						return child;
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
