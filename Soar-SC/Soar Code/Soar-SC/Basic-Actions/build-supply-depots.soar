@@ -3,6 +3,7 @@ sp {propose*build-supply-depot
                   ^superstate nil
                   ^io.input-link <input-link>
                   ^io.output-link <output-link>
+                  ^supply-depot-unit-total <sdut>
                   ^minerals-budget <minerals-budget>)
    (<input-link> ^minerals <m> > 99
                  ^units.unit <scv>

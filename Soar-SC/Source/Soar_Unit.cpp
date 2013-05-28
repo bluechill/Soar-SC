@@ -27,6 +27,8 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit unit, bool enemy)
 	deleted = false;
 
 	this->unit = unit;
+	size = new Size;
+	pos = new Position;
 
 	if (unit == nullptr)
 		return; //This is just a container for something like a fog tile
@@ -72,12 +74,12 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit unit, bool enemy)
 	full_queue = (queue_size >= 5);
 
 	//Set the size
-	size.y = float(type.tileHeight());
-	size.x = float(type.tileWidth());
+	size->y = float(type.tileHeight());
+	size->x = float(type.tileWidth());
 
 	//Set the position
-	pos.x = ((float)unit->getLeft()/32.0f);
-	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y - 1)/32.0f, false);
+	pos->x = ((float)unit->getLeft()/32.0f);
+	pos->y = Terrain::flip_one_d_point(((float)unit->getTop() + size->y - 1)/32.0f, false);
 
 	if (building)
 		svsobject_id = "Building";
@@ -114,11 +116,11 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit unit, bool enemy)
 	unit_id->CreateIntWME("target", targetID);
 
 	ss.str("");
-	ss << size.x/32.0f << " " << size.y/32.0f << " 1";
+	ss << size->x << " " << size->y << " 1";
 	string size = ss.str();
 	ss.str("");
 
-	ss << pos.x << " " << pos.y << " 0";
+	ss << pos->x << " " << pos->y << " 0";
 	string position = ss.str();
 
 	string svs_command = "a " + svsobject_id + " bwapi_unit world v " + Terrain::unit_box_verts + " p " + position + " s " + size + " r 0 0 0" + "\n";
@@ -132,7 +134,10 @@ Soar_Unit::Soar_Unit(Soar_SC* soar_sc_link, Unit unit, bool enemy)
 }
 
 Soar_Unit::~Soar_Unit()
-{}
+{
+	delete pos;
+	delete size;
+}
 
 void Soar_Unit::update()
 {
@@ -262,10 +267,11 @@ void Soar_Unit::update()
 	int size_y = type.dimensionUp() + type.dimensionDown() + 1;
 
 	pos.x = ((float)unit->getLeft()/32.0f);
-	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size.y)/32.0f, false);
-	if (abs(this->pos.x - pos.x) > 0.1f || abs(this->pos.y - pos.y) > 0.1f)
+	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size->y)/32.0f, false);
+	if (abs(this->pos->x - pos.x) > 0.1f || abs(this->pos->y - pos.y) > 0.1f)
 	{
-		this->pos = pos;
+		this->pos->x = pos.x;
+		this->pos->y = pos.y;
 
 		if (unit_id == nullptr)
 			unit_id = get_unit_identifier(false, isEnemy);
@@ -419,7 +425,8 @@ void Soar_Unit::set_position(Position pos)
 	if (svsobject_id != "")
 		return; //Only allow this if the unit doesn't have an svs object id
 
-	this->pos = pos;
+	this->pos->x = pos.x;
+	this->pos->y = pos.y;
 }
 
 void Soar_Unit::set_size(Size size)
@@ -427,5 +434,6 @@ void Soar_Unit::set_size(Size size)
 	if (svsobject_id != "")
 		return; //Only allow this if the unit doesn't have an svs object id
 
-	this->size = size;
+	this->size->x = size.x;
+	this->size->y = size.y;
 }

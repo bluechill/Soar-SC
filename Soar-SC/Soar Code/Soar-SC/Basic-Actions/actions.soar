@@ -4,7 +4,7 @@ source build-units.soar
 source build-supply-depots.soar
 source build-barracks.soar
 source generic-build-operators.soar
-source scout.soar
+#source scout.soar
 source attack.soar
 
 sp {propose*remove-output-commands

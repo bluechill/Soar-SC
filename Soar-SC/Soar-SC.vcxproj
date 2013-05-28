@@ -72,7 +72,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)\Starcraft\bwapi-data\AI\$(TargetName)d$(TargetExt)"
 xcopy /YDE "$(SolutionDir)Starcraft\bwapi-data" "$(ProgramFiles)\Starcraft\bwapi-data\"
 xcopy /YDE "$(SolutionDir)Chaoslauncher" "$(ProgramFiles)\Starcraft\Chaoslauncher\"
 xcopy /YDE "$(SolutionDir)lib\*.dll" "$(ProgramFiles)\Starcraft\"

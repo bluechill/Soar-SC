@@ -42,7 +42,7 @@ sp {apply*generate-grid*create-svs-command
    (<superstate> ^io.input-link.types.type <building-type>)
    (<building-type> ^id <type-id>
                     ^x-size <x>
-                    ^y-size <ecty>
+                    ^y-size <y>
                     ^name <type-name>)
 -->
    (<commands> ^extract <extract-command>)
@@ -137,7 +137,6 @@ sp {apply*build-building
    (state <s> ^operator <op>
               ^io.output-link <o>
               ^io.input-link.types.type <building-type>
-              ^buildings.building <building>
               ^minerals-used <minerals-used>
               ^gas-used <gas-used>)
    (<op> ^name build-building
@@ -145,8 +144,6 @@ sp {apply*build-building
          ^location-x <x>
          ^location-y <y>
          ^type <type-id>)
-   (<building> ^type <type-id>
-               ^count <c>)
    (<building-type> ^id <type-id>
                     ^mineral-cost <mineral-cost>
                     ^gas-cost <gas-cost>)
@@ -157,8 +154,6 @@ sp {apply*build-building
             ^location-x <x>
             ^location-y <y>
             ^worker <id>)
-   (<building> ^count <c> -
-               ^count (+ <c> 1))
    (<s> ^minerals-used <minerals-used> -
         ^gas-used <gas-used> -
         ^minerals-used (+ <minerals-used> <mineral-cost>)

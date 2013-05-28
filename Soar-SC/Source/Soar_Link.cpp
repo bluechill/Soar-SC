@@ -323,7 +323,7 @@ void Soar_Link::start_soar_run()
 	//No error
 
 	agent = kernel->CreateAgent("Soar-SC"); //Create a new agent
-	agent->SetOutputLinkChangeTracking(false);
+	//agent->SetOutputLinkChangeTracking(false);
 
 	if (kernel->HadError()) //Make sure there wasn't an error creating the agent
 	{
