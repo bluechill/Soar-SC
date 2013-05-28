@@ -450,6 +450,7 @@ void Soar_Link::send_base_input(Agent* agent, bool wait_for_analyzer)
 		type->CreateIntWME("x-size", (*it).tileWidth());
 		type->CreateIntWME("y-size", (*it).tileHeight());
 		type->CreateIntWME("building", (*it).isBuilding());
+		type->CreateIntWME("my_count", 0);
 	}
 
 	//Terrain stuff, Put the entire terrain into SVS including barriers around the map so the agent doesn't think it can place stuff there
