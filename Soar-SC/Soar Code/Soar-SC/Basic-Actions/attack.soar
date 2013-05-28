@@ -7,7 +7,8 @@ sp {propose*attack
    (<enemy-units> ^<attr> <enemy>)
    (<enemy> ^id <enemy-id>)
    (<marine-type> ^name |Terran_Marine|
-                  ^id <type-id>)
+                  ^id <type-id>
+                  ^my_count >= 5)
    (<my-units> ^unit <my-unit>)
    (<my-unit> ^type <type-id>
               ^id <marine-id>

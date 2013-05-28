@@ -3,8 +3,6 @@ sp {propose*build-supply-depot
                   ^superstate nil
                   ^io.input-link <input-link>
                   ^io.output-link <output-link>
-                  ^buildings.building <supply-depot-count>
-                  ^supply-depot-unit-total <sdut>
                   ^minerals-budget <minerals-budget>)
    (<input-link> ^minerals <m> > 99
                  ^units.unit <scv>
@@ -32,7 +30,6 @@ sp {propose*build-supply-depot
                                   ^worker <scv-id>
                                   ^idle <scv-idle>
                                   ^carrying <scv-carrying>
-#                                  ^location <l>
                                   ^type <supply-depot-type-id>)
 }
 

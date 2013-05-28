@@ -3,7 +3,6 @@ sp {propose*build-barracks
               ^superstate nil
               ^io.input-link <input-link>
               ^io.output-link <output-link>
-              ^buildings.building <building>
               ^minerals-budget <minerals-budget>
               ^gas-budget <gas-budget>)
    (<input-link> ^minerals <minerals>
@@ -24,14 +23,13 @@ sp {propose*build-barracks
                     ^gas-cost { <= <gas-budget> })
    -{(<output-link> ^build-building <build-building>)
      (<build-building> ^type <barracks-id>
-                         -^status)}
+                      -^status)}
 -->
    (<state> ^operator <operator> + =)
    (<operator> ^name build-building
                ^worker <id>
                ^idle <idle>
                ^carrying <carrying>
-#               ^location <l>
                ^type <barracks-id>)
 }
 
