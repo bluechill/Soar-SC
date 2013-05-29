@@ -270,14 +270,13 @@ void Soar_Link::output_handler(smlRunEventId id, void* d, Agent *a, smlPhase pha
 	soar_sc_link->soar_thread_update(); //Then have the events in the queue execute
 
 	SDL_mutexV(mu);
-
-	double seconds = time.GetTime();
-	cout << "Time (0): " << seconds << endl;
 	
-	if (seconds > 0.02)
-		Broodwar->printf("Time: %f", seconds);
+	double seconds = time.GetTime();
 
-	cout << "Time: " << seconds << endl;
+	if (seconds > 0.05)
+		Broodwar->printf("Time: %f", seconds);
+	
+	//cout << "Time: " << seconds << endl;
 }
 
 void Soar_Link::print_soar(smlPrintEventId id, void *d, Agent *a, char const *m) //Print handler, handles all output of the agent
