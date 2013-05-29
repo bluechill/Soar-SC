@@ -189,7 +189,7 @@
       <tags>categoryTag:Help</tags>
     </sharedElements>
     <sharedElements xsi:type="advanced:Area" xmi:id="_oq5ZIL77EeKVH8OeIkJSyg" elementId="org.eclipse.ui.editorss" selectedElement="_oq5ZIb77EeKVH8OeIkJSyg">
-      <children xsi:type="basic:PartStack" xmi:id="_oq5ZIb77EeKVH8OeIkJSyg" elementId="PartStack@12217da" selectedElement="_-rQjwMfUEeKsJruK2O_3Cw">
+      <children xsi:type="basic:PartStack" xmi:id="_oq5ZIb77EeKVH8OeIkJSyg" elementId="PartStack@12217da" selectedElement="_PrY08Mh6EeK8B86Za3l0Gg">
         <tags>newtablook</tags>
         <tags>org.eclipse.e4.primaryDataStack</tags>
         <tags>EditorStack</tags>
@@ -202,56 +202,50 @@
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
         </children>
         <children xsi:type="basic:Part" xmi:id="_TUwy8MPmEeKT7--skOeFEg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="generic-build-units.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/generic-build-units.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/generic-build-units.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;248&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/generic-build-units.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;149&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_xT6uUMPmEeKT7--skOeFEg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="Soar-SC.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Soar-SC.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Soar-SC.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_KHujoMhwEeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="scout.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/scout.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/scout.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;576&quot; selectionTopPixel=&quot;1350&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_xn-50MPmEeKT7--skOeFEg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="actions.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/actions.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/actions.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;440&quot; selectionTopPixel=&quot;45&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_OjpVUMhwEeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="build-units.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/build-units.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/build-units.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;2&quot; selectionOffset=&quot;703&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_LEvEMMPrEeKT7--skOeFEg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="intialize-soar-sc.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/intialize-soar-sc.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/intialize-soar-sc.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;372&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_L0uscMh6EeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="economy.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/economy.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/economy.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;55&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_o_MSMMfPEeKsJruK2O_3Cw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="generic-build-buildings.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/generic-build-buildings.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/generic-build-buildings.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;893&quot; selectionTopPixel=&quot;180&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_NAxo0Mh6EeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="intialize-soar-sc.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/intialize-soar-sc.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/intialize-soar-sc.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;326&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_vxvkEMfPEeKsJruK2O_3Cw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="build-supply-depots.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/build-supply-depots.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/build-supply-depots.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;1122&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
-          <tags>Editor</tags>
-          <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
-          <tags>removeOnHide</tags>
-        </children>
-        <children xsi:type="basic:Part" xmi:id="_-rQjwMfUEeKsJruK2O_3Cw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="scout.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/scout.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/scout.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;2667&quot; selectionTopPixel=&quot;945&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_PrY08Mh6EeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="build-barracks.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/build-barracks.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/build-barracks.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;505&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
           <tags>activeOnClose</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_KQ38AMfVEeKsJruK2O_3Cw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="gather-minerals.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/gather-minerals.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/gather-minerals.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;2400&quot; selectionTopPixel=&quot;1129&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_heQZoMh6EeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="generic-build-buildings.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/generic-build-buildings.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/generic-build-buildings.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;4526&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_yk0g8MfVEeKsJruK2O_3Cw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="build-units.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/build-units.soar" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/build-units.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;826&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_AtEwoMh8EeK8B86Za3l0Gg" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="generic-build-operators.soar" iconURI="platform:/plugin/edu.umich.soar.editor.SoarEditor/icons/rule.gif" tooltip="Soar-SC/Basic-Actions/generic-build-operators.soar" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;edu.umich.soar.editor.editors.SoarEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/Soar-SC/Basic-Actions/generic-build-operators.soar&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;0&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>edu.umich.soar.editor.editors.SoarEditor</tags>
           <tags>removeOnHide</tags>
@@ -310,7 +304,7 @@
       <toolbar xmi:id="_FEEvscfEEeKsJruK2O_3Cw" elementId="org.eclipse.jdt.ui.SourceView" visible="false"/>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_orUP4L77EeKVH8OeIkJSyg" elementId="org.eclipse.search.ui.views.SearchView" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView" label="Search" iconURI="platform:/plugin/org.eclipse.search//icons/full/eview16/searchres.gif" tooltip="" closeable="true">
-      <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;view isPinned=&quot;false&quot;>&#xD;&#xA;&lt;view IMemento.internal.id=&quot;org.eclipse.search.text.FileSearchResultPage&quot; org.eclipse.search.lastActivation=&quot;1&quot; org.eclipse.search.resultpage.layout=&quot;2&quot; org.eclipse.search.resultpage.limit=&quot;1000&quot; org.eclipse.search.resultpage.sorting=&quot;2&quot;/>&#xD;&#xA;&lt;view IMemento.internal.id=&quot;&quot; org.eclipse.search.lastActivation=&quot;0&quot;/>&#xD;&#xA;&lt;/view>"/>
+      <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;view isPinned=&quot;false&quot;>&#xD;&#xA;&lt;view IMemento.internal.id=&quot;&quot; org.eclipse.search.lastActivation=&quot;0&quot;/>&#xD;&#xA;&lt;/view>"/>
       <tags>View</tags>
       <tags>categoryTag:General</tags>
       <menus xmi:id="_AMyjkMe3EeKsJruK2O_3Cw" elementId="org.eclipse.search.ui.views.SearchView">
@@ -406,18 +400,18 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obiHcL77EeKVH8OeIkJSyg" elementId="org.eclipse.ui.workbench.file">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ1u8MeZEeKsJruK2O_3Cw" elementId="new.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WAMeZEeKsJruK2O_3Cw" elementId="newWizardDropDown"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WAceZEeKsJruK2O_3Cw" elementId="new.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WAseZEeKsJruK2O_3Cw" elementId="save.group" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WA8eZEeKsJruK2O_3Cw" elementId="save"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WBMeZEeKsJruK2O_3Cw" elementId="saveAll"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ2WBceZEeKsJruK2O_3Cw" elementId="save.ext" visible="false"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_hQ29EMeZEeKsJruK2O_3Cw" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.gif" tooltip="Print" command="_oAQgxb77EeKVH8OeIkJSyg"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ7OgMeZEeKsJruK2O_3Cw" elementId="print.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ7OgceZEeKsJruK2O_3Cw" elementId="build.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ7OgseZEeKsJruK2O_3Cw" elementId="build.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71kMeZEeKsJruK2O_3Cw" elementId="additions"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t5soMhvEeK8B86Za3l0Gg" elementId="new.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t5sochvEeK8B86Za3l0Gg" elementId="newWizardDropDown"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t5soshvEeK8B86Za3l0Gg" elementId="new.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t5so8hvEeK8B86Za3l0Gg" elementId="save.group" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t5spMhvEeK8B86Za3l0Gg" elementId="save"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t6TsMhvEeK8B86Za3l0Gg" elementId="saveAll"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t6TschvEeK8B86Za3l0Gg" elementId="save.ext" visible="false"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_3t6TsshvEeK8B86Za3l0Gg" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.gif" tooltip="Print" command="_oAQgxb77EeKVH8OeIkJSyg"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_MMMhvEeK8B86Za3l0Gg" elementId="print.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_MMchvEeK8B86Za3l0Gg" elementId="build.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_MMshvEeK8B86Za3l0Gg" elementId="build.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_MM8hvEeK8B86Za3l0Gg" elementId="additions"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obiugL77EeKVH8OeIkJSyg" elementId="additions" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -425,28 +419,28 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_seauEL77EeKITrloVUp_uA" elementId="org.eclipse.debug.ui.breakpointActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSacQMeZEeKsJruK2O_3Cw" elementId="breakpointGroup"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSacQceZEeKsJruK2O_3Cw" elementId="org.eclipse.debug.ui.actions.SkipAllBreakpoints"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBAMhvEeK8B86Za3l0Gg" elementId="breakpointGroup"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBAchvEeK8B86Za3l0Gg" elementId="org.eclipse.debug.ui.actions.SkipAllBreakpoints"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_ou36ML77EeKVH8OeIkJSyg" elementId="org.eclipse.debug.ui.launchActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSacQseZEeKsJruK2O_3Cw" elementId="debug"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSacQ8eZEeKsJruK2O_3Cw" elementId="org.eclipse.debug.internal.ui.actions.DebugDropDownAction"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDUMeZEeKsJruK2O_3Cw" elementId="org.eclipse.debug.internal.ui.actions.RunDropDownAction"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDUceZEeKsJruK2O_3Cw" elementId="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBAshvEeK8B86Za3l0Gg" elementId="debug"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBA8hvEeK8B86Za3l0Gg" elementId="org.eclipse.debug.internal.ui.actions.DebugDropDownAction"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBBMhvEeK8B86Za3l0Gg" elementId="org.eclipse.debug.internal.ui.actions.RunDropDownAction"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBBchvEeK8B86Za3l0Gg" elementId="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_otNtUL77EeKVH8OeIkJSyg" elementId="org.eclipse.jdt.ui.JavaElementCreationActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDUseZEeKsJruK2O_3Cw" elementId="JavaWizards"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDU8eZEeKsJruK2O_3Cw" elementId="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDVMeZEeKsJruK2O_3Cw" elementId="org.eclipse.jdt.ui.actions.OpenPackageWizard"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDVceZEeKsJruK2O_3Cw" elementId="org.eclipse.jdt.ui.actions.NewTypeDropDown"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfBBshvEeK8B86Za3l0Gg" elementId="JavaWizards"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoEMhvEeK8B86Za3l0Gg" elementId="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoEchvEeK8B86Za3l0Gg" elementId="org.eclipse.jdt.ui.actions.OpenPackageWizard"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoEshvEeK8B86Za3l0Gg" elementId="org.eclipse.jdt.ui.actions.NewTypeDropDown"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_ovBEIL77EeKVH8OeIkJSyg" elementId="org.eclipse.search.searchActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbDVseZEeKsJruK2O_3Cw" elementId="Search"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbqYMeZEeKsJruK2O_3Cw" elementId="openType"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbqYceZEeKsJruK2O_3Cw" elementId="org.eclipse.search.OpenSearchDialogPage"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoE8hvEeK8B86Za3l0Gg" elementId="Search"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoFMhvEeK8B86Za3l0Gg" elementId="openType"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoFchvEeK8B86Za3l0Gg" elementId="org.eclipse.search.OpenSearchDialogPage"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obiugr77EeKVH8OeIkJSyg" elementId="group.nav" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -454,15 +448,15 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obj8oL77EeKVH8OeIkJSyg" elementId="org.eclipse.ui.workbench.navigate">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71kceZEeKsJruK2O_3Cw" elementId="history.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71kseZEeKsJruK2O_3Cw" elementId="group.application" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71k8eZEeKsJruK2O_3Cw" elementId="backardHistory"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71lMeZEeKsJruK2O_3Cw" elementId="forwardHistory"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ71lceZEeKsJruK2O_3Cw" elementId="pin.group"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_hQ8coMeZEeKsJruK2O_3Cw" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.gif" tooltip="Pin the current editor" enabled="false" command="_oALBQ777EeKVH8OeIkJSyg"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbqYseZEeKsJruK2O_3Cw" elementId="org.eclipse.ui.edit.text.gotoNextAnnotation"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbqY8eZEeKsJruK2O_3Cw" elementId="org.eclipse.ui.edit.text.gotoPreviousAnnotation"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hSbqZMeZEeKsJruK2O_3Cw" elementId="org.eclipse.ui.edit.text.gotoLastEditPosition"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_MNMhvEeK8B86Za3l0Gg" elementId="history.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_zQMhvEeK8B86Za3l0Gg" elementId="group.application" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_zQchvEeK8B86Za3l0Gg" elementId="backardHistory"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_zQshvEeK8B86Za3l0Gg" elementId="forwardHistory"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3t_zQ8hvEeK8B86Za3l0Gg" elementId="pin.group"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_3t_zRMhvEeK8B86Za3l0Gg" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.gif" tooltip="Pin the current editor" enabled="false" command="_oALBQ777EeKVH8OeIkJSyg"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoFshvEeK8B86Za3l0Gg" elementId="org.eclipse.ui.edit.text.gotoNextAnnotation"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vfoF8hvEeK8B86Za3l0Gg" elementId="org.eclipse.ui.edit.text.gotoPreviousAnnotation"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3vgPIMhvEeK8B86Za3l0Gg" elementId="org.eclipse.ui.edit.text.gotoLastEditPosition"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obj8ob77EeKVH8OeIkJSyg" elementId="group.editor" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -474,8 +468,8 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_obkjsb77EeKVH8OeIkJSyg" elementId="org.eclipse.ui.workbench.help" visible="false">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ8coceZEeKsJruK2O_3Cw" elementId="group.help"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_hQ8coseZEeKsJruK2O_3Cw" elementId="group.application" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3uAaUMhvEeK8B86Za3l0Gg" elementId="group.help"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_3uAaUchvEeK8B86Za3l0Gg" elementId="group.application" visible="false"/>
       </children>
       <children xsi:type="menu:ToolControl" xmi:id="_pO0lkL77EeKVH8OeIkJSyg" elementId="PerspectiveSpacer" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.LayoutModifierToolControl">
         <tags>stretch</tags>
