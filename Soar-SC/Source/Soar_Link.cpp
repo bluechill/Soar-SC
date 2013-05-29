@@ -324,6 +324,7 @@ void Soar_Link::start_soar_run()
 
 	agent = kernel->CreateAgent("Soar-SC"); //Create a new agent
 	//agent->SetOutputLinkChangeTracking(false);
+	//agent->SendSVSInput("connect_viewer 8888"); 
 
 	if (kernel->HadError()) //Make sure there wasn't an error creating the agent
 	{

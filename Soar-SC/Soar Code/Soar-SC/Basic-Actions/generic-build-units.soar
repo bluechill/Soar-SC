@@ -1,6 +1,6 @@
 sp {apply*build-unit
    (state <s> ^operator <op>
-              ^io.output-link <o>
+              ^io.output-link <output-link>
               ^io.input-link.types.type <unit-type>
               ^minerals-used <minerals-used>
               ^gas-used <gas-used>)
@@ -10,9 +10,8 @@ sp {apply*build-unit
    (<unit-type> ^id <type-id>
                 ^mineral-cost <mineral-cost>
                 ^gas-cost <gas-cost>)
-   -{(<o> ^<attr>.status)}
 -->
-   (<o> ^build-unit <b>)
+   (<output-link> ^build-unit <b>)
    (<b> ^type <type-id>
         ^building <id>)
    (<s> ^minerals-used <minerals-used> -
