@@ -300,6 +300,8 @@ void Soar_SC::bwapi_thread_update(bool direct_call)
 		for (std::vector<BWAPI::Unit>::iterator it = to_erase.begin();it != to_erase.end();it++)
 			bwapi_event_queue.erase(bwapi_event_queue.find(*it));
 
+		bwapi_link->sync_resource_count();
+
 		SDL_mutexV(bwapi_event_mutex);
 
 		if (!run_forever && !direct_call)

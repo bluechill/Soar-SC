@@ -16,6 +16,9 @@ public:
 
 	void execute_command();
 
+	int get_mineral_usage();
+	int get_gas_usage();
+
 private:
 	int id;
 

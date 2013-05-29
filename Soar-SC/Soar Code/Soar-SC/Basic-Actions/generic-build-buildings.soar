@@ -136,17 +136,17 @@ sp {apply*build-at-location
 sp {apply*build-building
    (state <s> ^operator <op>
               ^io.output-link <o>
-              ^io.input-link.types.type <building-type>
-              ^minerals-used <minerals-used>
-              ^gas-used <gas-used>)
+              ^io.input-link.types.type <building-type>)
+#              ^minerals-used <minerals-used>
+#              ^gas-used <gas-used>)
    (<op> ^name build-building
          ^worker <id>
          ^location-x <x>
          ^location-y <y>
          ^type <type-id>)
-   (<building-type> ^id <type-id>
-                    ^mineral-cost <mineral-cost>
-                    ^gas-cost <gas-cost>)
+   (<building-type> ^id <type-id>)
+#                    ^mineral-cost <mineral-cost>
+#                    ^gas-cost <gas-cost>)
    -{(<o> ^<attr>.status)}
 -->
    (<o> ^build-building <build>)
@@ -154,10 +154,10 @@ sp {apply*build-building
             ^location-x <x>
             ^location-y <y>
             ^worker <id>)
-   (<s> ^minerals-used <minerals-used> -
-        ^gas-used <gas-used> -
-        ^minerals-used (+ <minerals-used> <mineral-cost>)
-        ^gas-used (+ <gas-used> <gas-cost>))
+#   (<s> ^minerals-used <minerals-used> -
+#        ^gas-used <gas-used> -
+#        ^minerals-used (+ <minerals-used> <mineral-cost>)
+#        ^gas-used (+ <gas-used> <gas-cost>))
    (write |Building building of type | <type-id> | at location (| <x> |,| <y> |) with worker | <id> (crlf) )
 }
 

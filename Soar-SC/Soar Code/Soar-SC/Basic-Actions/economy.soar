@@ -1,13 +1,11 @@
 sp {elaboration*generate-mineral-budget
-   (state <s> ^minerals-used <minerals-used>
-              ^io.input-link.minerals <minerals-total>)
+   (state <s> ^io.input-link.minerals <minerals-total>)
 -->
-   (<s> ^minerals-budget (- <minerals-total> <minerals-used>))
+   (<s> ^minerals-budget <minerals-total>)
 }
 
 sp {elaboration*generate-gas-budget
-   (state <s> ^gas-used <gas-used>
-              ^io.input-link.gas <gas-total>)
+   (state <s> ^io.input-link.gas <gas-total>)
 -->
-   (<s> ^gas-budget (- <gas-total> <gas-used>))
+   (<s> ^gas-budget <gas-total>)
 }

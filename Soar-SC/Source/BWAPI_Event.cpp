@@ -79,3 +79,13 @@ BWAPI::Unit BWAPI_Event::get_unit()
 {
 	return internal_command.getUnit();
 }
+
+int BWAPI_Event::get_mineral_usage()
+{
+	return internal_command.getUnitType().mineralPrice();
+}
+
+int BWAPI_Event::get_gas_usage()
+{
+	return internal_command.getUnitType().gasPrice();
+}

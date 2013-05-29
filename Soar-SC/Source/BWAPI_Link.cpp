@@ -2,7 +2,9 @@
 #include "Soar_SC.h"
 #include "Soar_Link.h"
 #include "BWAPI_Link.h"
+#include "BWAPI_Event.h"
 #include "Terrain.h"
+#include <queue>
 
 using namespace std;
 using namespace BWAPI;
@@ -59,7 +61,7 @@ void BWAPI_Link::onFrame()
 	double average_fps = Broodwar->getAverageFPS();
 	int fps = Broodwar->getFPS();
 
-	// Display the game frame rate as text in the upper left area of the screen
+	//Display the game frame rate as text in the upper left area of the screen
 	Broodwar->drawTextScreen(10, 0,  "\x7 FPS: %d", fps );
 	Broodwar->drawTextScreen(10, 15, "\x7 Average FPS: %f", average_fps);
 	Broodwar->drawTextScreen(10, 30, "\x7 Decisions Per Second: %i", decisions_last_frame * fps);
@@ -291,13 +293,10 @@ void BWAPI_Link::update_resources() //Update the resources
 		}
 	}
 
-	int minerals = Broodwar->self()->minerals();
-	int gas = Broodwar->self()->gas();
-
 	int total_supplies = Broodwar->self()->supplyTotal();
 	int used_supplies = Broodwar->self()->supplyUsed();
 
-	soar_sc_link->get_soar_link()->update_resource_count(minerals, gas, total_supplies, used_supplies);
+	soar_sc_link->get_soar_link()->update_resource_count(minerals_count, gas_count, total_supplies, used_supplies);
 }
 
 void BWAPI_Link::update_units() //Update all player units
@@ -358,4 +357,27 @@ std::map<BWAPI::Unit, Soar_Unit*> BWAPI_Link::get_units()
 	result.insert(enemy_units.begin(), enemy_units.end());
 
 	return result;
+}
+
+//Doesn't have to worry about mutex, called from within a locked mutex section only
+void BWAPI_Link::sync_resource_count()
+{
+	map<Unit, Soar_SC::BWAPI_Event_Struct*>* queue = soar_sc_link->get_bwapi_event_queue();
+
+	minerals_count = Broodwar->self()->minerals();
+	gas_count = Broodwar->self()->gas();
+
+	for (map<Unit, Soar_SC::BWAPI_Event_Struct*>::iterator it = queue->begin();it != queue->end();it++)
+	{
+		iterable_queue<BWAPI_Event>* queue = &it->second->queue;
+
+		for (std::deque<BWAPI_Event>::iterator jt = queue->begin();jt != queue->end();jt++)
+		{
+			minerals_count -= jt->get_mineral_usage();
+			gas_count -= jt->get_gas_usage();
+		}
+	}
+
+	assert(minerals_count >= 0);
+	assert(gas_count >= 0);
 }

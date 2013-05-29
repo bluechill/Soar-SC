@@ -47,6 +47,8 @@ public:
 	std::map<int, BWAPI::Position> get_hidden_map() { return hiddenUnitsPositions; }
 	std::map<BWAPI::Unit, Soar_Unit*> get_units();
 
+	void sync_resource_count();
+
 private:
 	Soar_SC* soar_sc_link;
 
@@ -56,6 +58,9 @@ private:
 
 	BWAPI::Unitset minerals; //A set for containing all the minerals seen
 	BWAPI::Unitset vesp_gas; //A set for containing all the vesp gas geysers seen
+
+	unsigned int minerals_count;
+	unsigned int gas_count;
 
 	std::vector<int> last_50_decisions;
 	float get_average_decisions();

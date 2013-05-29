@@ -234,8 +234,8 @@ void Soar_Unit::update()
 
 			cerr << "NULLing Build from ERROR!" << endl;
 		}
-		else
-			cerr << "Build exists.  Doing nothing though..., Orders: " << unit->getOrder().getName() << endl;
+		else if (elem != nullptr)
+			cerr << "Build Status Exists already with value '" << elem->GetValueAsString() << "'.  Orders are: " << unit->getOrder().getName() << endl;
 	}
 
 	if (can_produce)
