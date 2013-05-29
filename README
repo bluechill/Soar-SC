@@ -1,4 +1,5 @@
-## Soar-SC ##
+Soar-SC
+=======
 
 Soar-SC stands for Soar-StarCraft.  Soar-SC is an Artificial Intelligence (AI) research platform made,
 maintained, and updated by Alex Turner.  The AI plays StarCraft: Brood War (Not StarCraft 2!).  The
@@ -27,9 +28,11 @@ The AI Portion of Soar-SC can gather minerals, build units such as SCVs and mari
 buildings without the need to have predetermined locations for them and will attack in "groups" of marines.
 The AI can only play as Terran currently.
 
-### List of current goals and work ###
+List of current goals and work
+==============================
 
-#### Completed goals and work ####
+Completed goals and work
+------------------------
 
 - Better Terrain Algorithm for parsing a map (flood fill)
 
@@ -43,7 +46,8 @@ The AI can only play as Terran currently.
 
 - No more rushing (The AI will not attack as soon as it build marines)
 
-#### Future Work ####
+Future Work
+-----------
 
 - Group Unit attacks (no longer attack units with only 1 other unit unless desired)
 
@@ -63,7 +67,8 @@ The AI can only play as Terran currently.
 - Make the middleware AI architecture independent (ie. make it easy to switch between arbitrary architectures
   such as CSoar and JSoar).
 
-#### Very far Future work ####
+Very far Future work
+--------------------
 
 - Better attack strategies
 
