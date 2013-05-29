@@ -195,4 +195,3 @@ sp {pref*reject-fetch-if-set-build-location
 -->
    (<s> ^operator <fetch-grid> -)
 }
-

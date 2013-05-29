@@ -1,48 +1,102 @@
-sp {propose*attack
+#Rule for attacking enemy buildings
+#Only do it if the unit is idle
+sp {propose*attack-enemy-building
    (state <s> ^name Soar-SC
-              ^io.input-link.enemy-units <enemy-units>
-              ^io.input-link.units <my-units>
+              ^io.input-link.enemy-units.building <enemy-unit>
+              ^io.input-link.types.type <enemy-type>
+              ^io.input-link.units.unit <marine>
               ^io.input-link.types.type <marine-type>
               ^io.output-link <output-link>)
-   (<enemy-units> ^<attr> <enemy>)
-   (<enemy> ^id <enemy-id>)
+   (<enemy-unit> ^id <enemy-id>
+                 ^type <enemy-type-id>)
+   (<enemy-type> ^id <enemy-type-id>
+                 ^building 1)
+   (<marine> ^type <marine-type-id>
+             ^id <marine-id>
+             ^idle 1
+            -^scouting)
    (<marine-type> ^name |Terran_Marine|
-                  ^id <type-id>
+                  ^id <marine-type-id>
                   ^my_count >= 5)
-   (<my-units> ^unit <my-unit>)
-   (<my-unit> ^type <type-id>
-              ^id <marine-id>
-              ^idle 1)
    (<output-link> -^move.object <marine-id>)
 -->
    (<s> ^operator <attack-operator> + >)
    (<attack-operator> ^name attack
+                      ^type building
+                      ^enemy <enemy-id>
+                      ^marine <marine-id>)
+}                   
+
+#Rule for attacking enemy units
+#Only do it if the unit is idle
+sp {propose*attack-enemy-unit
+   (state <s> ^name Soar-SC
+              ^io.input-link.enemy-units.unit <enemy-unit>
+              ^io.input-link.types.type <enemy-type>
+              ^io.input-link.units.unit <marine>
+              ^io.input-link.types.type <marine-type>
+              ^io.output-link <output-link>)
+   (<enemy-unit> ^id <enemy-id>
+                 ^type <enemy-type-id>)
+   (<enemy-type> ^id <enemy-type-id>
+                 ^building 0)
+   (<marine> ^type <marine-type-id>
+             ^id <marine-id>
+             ^idle 1
+            -^scouting)
+   (<marine-type> ^name |Terran_Marine|
+                  ^id <marine-type-id>
+                  ^my_count >= 5)
+   (<output-link> -^move.object <marine-id>)
+-->
+   (<s> ^operator <attack-operator> + >)
+   (<attack-operator> ^name attack
+                      ^type unit
                       ^enemy <enemy-id>
                       ^marine <marine-id>)
 }
 
-sp {pref*all-attacks-are-equal
+#If a unit is being targeted, and it isn't already counter attacking
+#Then propose to counter attack
+sp {propose*attack-enemy-unit*counter-attack
    (state <s> ^name Soar-SC
-              ^operator <attack1> +
-              ^operator <attack2> +)
-   (<attack1> ^name attack
-             -^counter-attack)
-   (<attack2> ^name attack
-             -^counter-attack)
+              ^io.input-link.enemy-units.<attr> <enemy-unit>
+              ^io.input-link.units.unit <marine>
+              ^io.input-link.types.type <marine-type>
+              ^io.output-link <output-link>)
+   (<enemy-unit> ^id <enemy-id>
+                 ^target <marine-id>)
+   (<marine> ^id <marine-id>
+             ^type <marine-type-id>
+            -^counter-attacking 1)
+   (<marine-type> ^name |Terran_Marine|
+                  ^id <marine-type-id>)
+   (<output-link> -^move.object <marine-id>)
 -->
-   (<s> ^operator <attack1> = <attack2>)
+   (<s> ^operator <attack-operator> + >)
+   (<attack-operator> ^name attack
+                      ^type unit
+                      ^enemy <enemy-id>
+                      ^marine <marine-id>
+                      ^counter-attack 1)
 }
 
-sp {pref*attack-better-than-all
+#If an enemy unit has a target equal to a marine's id
+#and the marine has that enemy's id as a target
+#Then the unit is counter attacking
+sp {elaboration*unit-is-counter-attacking
    (state <s> ^name Soar-SC
-              ^operator <non-attack> +
-              ^operator <attack> +)
-   (<non-attack> ^name { <> attack })
-   (<attack> ^name attack)
+              ^io.input-link.enemy-units.<attr> <enemy-unit>
+              ^io.input-link.units.unit <my-marine>)
+   (<enemy-unit> ^id <enemy-id>
+                 ^target <marine-id>)
+   (<my-marine> ^id <marine-id>
+                ^target <enemy-id>)
 -->
-   (<s> ^operator <attack> > <non-attack>)
+   (<my-marine> ^counter-attacking 1)
 }
 
+#Apply all the attacks
 sp {apply*attack
    (state <s> ^name Soar-SC
               ^operator <attack-operator>
@@ -58,78 +112,55 @@ sp {apply*attack
    (write |Attacking | <enemy-id> | with | <marine-id> (crlf) )
 }
 
-sp {propose*counter-attack
-   (state <s> ^name Soar-SC
-              ^io.input-link <input-link>
-              ^io.output-link <output-link>)
-   (<input-link> ^units.unit <marine>
-                 ^enemy-units.unit <enemy>
-                 ^types.type <marine-type>)
-   (<enemy> ^id <enemy-id>
-            ^target <marine-id>)
-   (<marine> ^id <marine-id>
-             ^type <marine-type-id>
-             ^target { <> <enemy-id> })
-   (<marine-type> ^name |Terran_Marine|
-                  ^id <marine-type-id>)
-   (<output-link> -^move.object <marine-id>)
--->
-   (<s> ^operator <counter-attack>)
-   (<counter-attack> ^name attack
-                     ^counter-attack 1
-                     ^enemy <enemy-id>
-                     ^marine <marine-id>)
-}
+#Preference rules
 
-sp {pref*remove-new-counter-attack-if-already-counter-attacking
+#Preference attacking a unit over a building only if neither are counter attack operators
+sp {preference*reject-attack-building-if-attack-unit
    (state <s> ^name Soar-SC
-              ^operator <ca> +
-              ^io.input-link <input-link>)
-   (<ca> ^name attack
-         ^counter-attack 1
-         ^marine <marine-id>)
-   (<input-link> ^units.unit <marine>
-                 ^enemy-units.unit <enemy-marine>
-                 ^types.type <marine-type>)
-   (<marine-type> ^name |Terran_Marine|
-                  ^id <marine-type-id>)
-   (<marine> ^id <marine-id>
-             ^target <target-id>)
-   (<enemy-marine> ^id <target-id>
-                   ^target <marine-id>)
+              ^operator <attack-building> +
+              ^operator <attack-unit> +)
+   (<attack-building> ^name attack
+                      ^type building
+                     -^counter-attack)
+   (<attack-unit> ^name attack
+                  ^type unit
+                 -^counter-attack)
 -->
-   (<s> ^operator <ca> -)
+   (<s> ^operator <attack-building> -)
 }  
 
-sp {pref*all-counter-attacks-are-equal
+#Always prefer a counter-attack operator over a non-counter-attack
+sp {prefernece*counter-attacking-is-best
    (state <s> ^name Soar-SC
-              ^operator <ca1> +
-              ^operator <ca2> +)
-   (<ca1> ^name attack
-          ^counter-attack)
-   (<ca2> ^name attack
-          ^counter-attack)
+              ^operator <attack1> +
+              ^operator <other> +)
+   (<attack1> ^counter-attack 1)
 -->
-   (<s> ^operator <ca1> = <ca2>)
+   (<s> ^operator <other> -)
 }
 
-sp {pref*counter-attacks-better-than-regular-attacks
+#All non-counter-attacks of the same type are equal
+sp {preference*attacks-are-equal
    (state <s> ^name Soar-SC
-              ^operator <ca> +
-              ^operator <a> +)
-   (<ca> ^name attack
-         ^counter-attack)
-   (<a> ^name attack
-       -^counter-attack)
+              ^operator <attack1> +
+              ^operator <attack2> +)
+   (<attack1> ^name attack
+             -^counter-attack
+              ^type <type>)
+   (<attack2> ^name attack
+             -^counter-attack
+              ^type <type>)
 -->
-   (<s> ^operator <ca> > <a>)
+   (<s> ^operator <attack1> = <attack2>)
 }
 
-sp {apply*secondary-attack-apply-for-counters
+#All counter attacks are equal regardless of type
+sp {preference*counter-attacks-are-equal
    (state <s> ^name Soar-SC
-              ^operator <ca>)
-   (<ca> ^name attack
-         ^counter-attack)
+              ^operator <attack1> +
+              ^operator <attack2> +)
+   (<attack1> ^counter-attack)
+   (<attack2> ^counter-attack)
 -->
-   (write |Counter Attacking!| (crlf) )
+   (<s> ^operator <attack1> = <attack2>)
 }

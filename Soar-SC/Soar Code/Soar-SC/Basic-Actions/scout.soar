@@ -59,6 +59,18 @@ sp {pref*all-scouts-of-same-type-are-equal
    (<s> ^operator <scout1> = <scout2>)
 }
 
+#Preference creating a scout over attacking
+sp {preference*create-scout-better-than-attacking
+   (state <s> ^name Soar-SC
+              ^operator <scout> +
+              ^operator <attack> +)
+   (<scout> ^type scout-create)
+   (<attack> ^name attack
+            -^counter-attack)
+-->
+   (<s> ^operator <attack> -)
+}
+
 #Create the scout
 #Don't care if there is a previous scout like an SCV,
 #that'll die eventually... but until then it's useful

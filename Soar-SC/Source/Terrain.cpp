@@ -151,7 +151,7 @@ void Terrain::mapping_function() //Main map function generates the rectangles of
 
 	Identifier* terrain_store;
 
-	if (!input_link->FindByAttribute("units", 0))
+	if (!input_link->FindByAttribute("terrain", 0))
 	{
 		//Broodwar->printf("WARNING: No 'units' identifier on the input link! Creating....");
 		cout << "WARNING: No 'units' identifier on the input link! Creating...." << endl;
