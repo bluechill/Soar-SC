@@ -16,8 +16,6 @@
 using namespace std;
 using namespace Zeni;
 
-SVSSocket::socket_type type = SVSSocket::SOCKET;
-
 class Bootstrap {
 	class Gamestate_One_Initializer : public Gamestate_Zero_Initializer {
 		virtual Gamestate_Base * operator()() {
@@ -30,7 +28,7 @@ class Bootstrap {
 			get_Sounds();
 			get_Game().joy_mouse.enabled = true;
 			
-			return new SVSViewerState(type);
+			return new SVSViewerState(Uint16(8888));
 		}
 	} m_goi;
 	
@@ -41,15 +39,5 @@ public:
 } g_bootstrap;
 
 int main(int argc, char **argv) {
-	if (argc > 1)
-	{
-		if (std::string(argv[1]) == "-s")
-			type = SVSSocket::STDIN;
-		else if (std::string(argv[1]) == "-f")
-			type = SVSSocket::FILE_INPUT;
-	}
-	else
-		std::cout << "WARNING: Using sockets/pipes instead of standard input!" << std::endl;
-	
 	return zenilib_main(argc, argv);
 }

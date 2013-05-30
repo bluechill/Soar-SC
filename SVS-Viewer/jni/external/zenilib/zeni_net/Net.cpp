@@ -243,7 +243,9 @@ namespace Zeni {
     Net &nr = get_Net();
 
     IPaddress ip = {0, 0};
-    SDLNet_Write16(port, &ip.port);
+    //SDLNet_Write16(port, &ip.port);
+	if(SDLNet_ResolveHost(&ip, NULL, port) == -1)
+	  throw TCP_Socket_Init_Failure();
 
     sock = SDLNet_TCP_Open(&ip);
     if(!sock)

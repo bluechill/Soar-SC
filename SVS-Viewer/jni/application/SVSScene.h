@@ -42,6 +42,8 @@ public:
 
 	void clear_objects();
 	
+	SVSObject* find_object(std::string name) { return find_object_in_objects(objects, name); }
+
 private:
 	std::string scene_name;
 	

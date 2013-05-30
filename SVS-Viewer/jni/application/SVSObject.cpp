@@ -20,6 +20,17 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 	using namespace Zeni;
 
 	this->name = name;
+
+	Zeni::String color_str = "magenta";
+
+	if (name.find("Enemy") != Zeni::String::npos)
+		color_str = "red";
+	else if (name.find("Terrain") != Zeni::String::npos)
+		color_str = "blue";
+	else if (name.find("Resource") != Zeni::String::npos)
+		color_str = "green";
+	else if (name.find("Fog") != Zeni::String::npos)
+		color_str = "violet";
 	
 	transformation_matrix = Matrix4f::Translate(position) * Matrix4f::Rotate(rotation) * Matrix4f::Scale(scale);
 
@@ -49,7 +60,7 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 		if (it->size() == 3)
 		{
 			//Triangle
-			Zeni::Color color = Zeni::get_Colors()["magenta"];
+			Zeni::Color color = Zeni::get_Colors()[color_str];
 			
 			Zeni::Point3f position1 = verts.at(it->at(0));
 			Zeni::Point3f position2 = verts.at(it->at(1));
@@ -78,7 +89,7 @@ SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Z
 		else if (it->size() == 4)
 		{
 			//Quad
-			Zeni::Color color = Zeni::get_Colors()["magenta"];
+			Zeni::Color color = Zeni::get_Colors()[color_str];
 			
 			Zeni::Point3f position1 = verts.at(it->at(0));
 			Zeni::Point3f position2 = verts.at(it->at(1));

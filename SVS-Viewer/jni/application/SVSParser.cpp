@@ -50,12 +50,6 @@ bool SVSParser::parse_mods(std::vector<std::string> &parts, SVSScene &scene, par
 	
 	std::string name = parts[0];
 	std::string parent_name;
-
-	if (parts.size() == 1 && name == "clear")
-	{
-		scene.clear_objects();
-		return true;
-	}
 	
 	if (parts.size() > 1  && type != CHANGE)
 		parent_name = parts[1];

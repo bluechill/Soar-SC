@@ -21,7 +21,7 @@ int thread_runner(void* viewer)
 	return reinterpret_cast<SVSViewerState*>(viewer)->reader_function();
 }
 
-SVSViewerState::SVSViewerState(SVSSocket::socket_type type)
+SVSViewerState::SVSViewerState(unsigned short port)
 	: max_velo(SVSObject::global_scale * 5, SVSObject::global_scale * 5, SVSObject::global_scale * 5),
 	max_time_step(1.0f / 20.0f),
 	max_time_steps(10.0f)
@@ -32,15 +32,7 @@ SVSViewerState::SVSViewerState(SVSSocket::socket_type type)
 
 	mu = SDL_CreateMutex();
 
-	if (type == SVSSocket::STDIN)
-		reader_socket = new SVSSocket(true);
-	else if (type == SVSSocket::SOCKET)
-		reader_socket = new SVSSocket();
-	else
-	{
-		std::cout << "Invalid type: " << type << std::endl;
-		exit(1);
-	}
+	reader_socket = new SVSSocket(port);
 
 	reader_thread = SDL_CreateThread(thread_runner, this);
 
@@ -74,29 +66,8 @@ bool SVSViewerState::reader_function()
 
 	while (!should_die)
 	{
-
-		bool reopened_pipe = false;
-
-		SDL_mutexP(mu);
-		if (scenes.size() > 0)
-		{
-#ifdef _WIN32
-			reader_socket->reopen_pipe();
-#endif
-
-			reopened_pipe = true;
-		}
-		SDL_mutexV(mu);
-
-		if (!reader_socket->listen())
+		if (!reader_socket->wait_for_connection())
 			return false;
-
-		if (reopened_pipe && scenes.size() > 0)
-		{
-			SDL_mutexP(mu);
-			scenes[0].clear_objects();
-			SDL_mutexV(mu);
-		}
 
 		SDL_mutexP(mu);
 		std::cout << "Got a connection" << std::endl;
@@ -176,6 +147,8 @@ void SVSViewerState::perform_logic()
 
 bool SVSViewerState::parse_command(std::string command)
 {
+	using namespace std;
+
 	std::istringstream iss(command);
 
 	std::vector<std::string> parts;
@@ -184,65 +157,264 @@ bool SVSViewerState::parse_command(std::string command)
 		std::istream_iterator<std::string>(),
 		std::back_inserter<std::vector<std::string> >(parts));
 
-	if (parts.size() == 1 && parts[0] == "clear")
+	//Ripped from the actual SVS Viewer
+	string scene_pat;
+	string geom_pat;
+	vector<string> args;
+	
+	if (parts.size() == 0)
+		return true;
+	else if (parts[0] == "save")
+		return true; //Ignore save commands
+	else if (parts[0] == "layer")
+		return true; /*proc_layer_cmd(fields + 1);*/ //Ignore layer commands
+	else if (parts[0] == "draw")
+	{
+		return true; //Ignore draw commands
+	}
+	else
+	{
+		scene_pat = parts[0];
+		if (parts.size() > 1)
+		{
+			geom_pat = parts[1];
+			args.reserve(parts.size()-1);
+			args.insert(args.end(), parts.begin()+1, parts.end());
+		}
+		else
+			geom_pat = "";
+	}
+	
+	if (scene_pat == "")
+		return true;
+	else if (scene_pat[0] == '+' && (scene_pat.size() > 3 || scene_pat[2] != '1'))
+		return true; //Only care about the first scene since the agent doesn't use anything but that.
+	else if (scene_pat[0] == '-' && (scene_pat.size() > 3 || scene_pat[2] != '1'))
+		return true; //Only care about the first scene since the agent doesn't use anything but that.
+	else if (scene_pat[0] == 'S' && (scene_pat.size() > 2 || scene_pat[1] != '1'))
 		return true;
 
-	if (parts.size() < 3)
-		return false;
-
-	std::string scene_name = parts[0];
-	std::string command_char = parts[1];
-
-	if (command_char.size() != 1)
-		return false;
-
-	int scene_number = -1;
-
-	for (unsigned int i = 0;i < scenes.size();i++)
+	if (scene_pat[0] == '-')
 	{
-		if (scenes[i].get_scene_name() == scene_name)
+		if (scenes.size() > 0)
+			scenes.erase(scenes.begin());
+
+		return true;
+	}
+	else if (scene_pat[0] == '+')
+	{
+		if (scenes.size() == 0)
+			scenes.push_back(new SVSScene(scene_pat.c_str()+1));
+	}
+	
+	if (geom_pat == "")
+		return true;
+	
+	return process_geometry_command(scenes[0], args);
+}
+
+bool SVSViewerState::process_geometry_command(SVSScene* scene, std::vector<std::string> parts)
+{
+	std::vector<Zeni::Point3f> vertices;
+	Zeni::Point3f position;
+	Zeni::Quaternion rotation;
+	Zeni::Point3f scale(1,1,1);
+	
+	if (parts.size() < 1) // Must have at least a name
+		return false;
+	
+	std::string name = parts[0].c_str()+1;
+	std::string parent_name;
+
+	bool is_add = false;
+	bool is_change = false;
+	bool is_delete = false;
+
+	if (parts[0][0] == '+')
+		is_add = true;
+	else if (parts[0][0] == '-')
+		is_delete = true;
+	else
+		return false;
+	
+	if (is_add && scene->find_object(parts[0].c_str()+1) != nullptr)
+		is_change = true;
+
+	for (unsigned int i = 1;i < parts.size();i++)
+	{
+		for (;i < parts.size();i++)
 		{
-			scene_number = i;
+			if (parts[i].size() == 1 && !isdigit(parts[i][0]))
+				break;
+		}
+		
+		if (i == parts.size())
 			break;
+
+		char character = parts[i][0];
+		
+		switch (character) {
+			case 'p':
+			{
+				if (i + 3 >= parts.size())
+				{
+					std::cout << "Invalid position vector" << std::endl;
+					return false;
+				}
+				
+				std::vector<std::string> pos_as_string(parts.begin() + i + 1, parts.begin() + i + 4);
+				if (!parse_vector3(pos_as_string, position))
+					return false;
+				
+				break;
+			}
+			case 'r':
+			{
+				if (i + 3 >= parts.size())
+				{
+					std::cout << "Invalid rotation vector" << std::endl;
+					return false;
+				}
+				
+				Zeni::Point3f temp_rotation;
+				
+				std::vector<std::string> pos_as_string(parts.begin() + i + 1, parts.begin() + i + 4);
+				if (!parse_vector3(pos_as_string, temp_rotation))
+					return false;
+				
+				Zeni::Quaternion* temp_quaternion;
+				
+				temp_quaternion = new Zeni::Quaternion(temp_rotation.y, temp_rotation.x, temp_rotation.z);
+				
+				rotation = (*temp_quaternion);
+				
+				delete temp_quaternion;
+				
+				break;
+			}
+			case 's':
+			{
+				if (i + 3 >= parts.size())
+				{
+					std::cout << "Invalid scale vector" << std::endl;
+					return false;
+				}
+				
+				std::vector<std::string> pos_as_string(parts.begin() + i + 1, parts.begin() + i + 4);
+				if (!parse_vector3(pos_as_string, scale))
+					return false;
+				
+				break;
+			}
+			case 'v':
+			{
+				if (is_change)
+					break;
+
+				unsigned int j;
+				for (j = (i+1);j < parts.size() && parts[j].size() == 1 && isdigit(parts[j][0]);j++);
+				
+				//j is now the next alphanumeric character, go up to j not *to*, *upto*!
+				std::vector<std::string> subvector(parts.begin() + i + 1, parts.begin() + j);
+				if (!parse_verts(subvector, vertices))
+					return false;
+				
+				break;
+			}
+			default:
+			{
+				std::cout << "Unknown option: '" << character << "'" << std::endl;
+				break;
+			}
 		}
 	}
 
-	if (scene_number == -1)
+	if (is_change)
 	{
-		SVSScene new_scene(scene_name);
-		scenes.push_back(new_scene);
-		scene_number = scenes.size()-1;
-
-		SDL_mutexP(mu);
-		std::cout << "Warning: Created new scene: '" << scene_name << "'" << std::endl;
-		SDL_mutexV(mu);
-	}
-
-	std::vector<std::string> subvector(parts.begin()+2, parts.end());
-
-	if (command_char == "a" || command_char == "A")
-	{
-		if (!SVSParser::parse_add(subvector, scenes[scene_number]))
+		if (!scene->update_object(name, position, rotation, scale))
 			return false;
-
+		
 		return true;
 	}
-	else if (command_char == "c" || command_char == "C")
+	else if (is_add)
 	{
-		if (!SVSParser::parse_change(subvector, scenes[scene_number]))
+		if (!scene->add_object(name, parent_name, vertices, position, rotation, scale))
 			return false;
-
+		
 		return true;
 	}
-	else if (command_char == "d" || command_char == "D")
+	else if (is_delete)
 	{
-		if (!SVSParser::parse_delete(subvector, scenes[scene_number]))
+		if (!scene->delete_object(name))
 			return false;
 
 		return true;
 	}
 	else
 		return false;
+}
+
+bool SVSViewerState::parse_verts(std::vector<std::string> &parts, std::vector<Zeni::Point3f> &verts)
+{
+	if (parts.size() % 3 != 0)
+		return false;
+	
+	for (unsigned int i = 0;i < parts.size();i += 3)
+	{
+		Zeni::Point3f vert;
+		
+		std::vector<std::string> subparts(parts.begin() + i, parts.begin() + i + 3);
+		if (!parse_vector3(subparts, vert))
+			return false;
+		
+		verts.push_back(vert);
+	}
+	
+	return true;
+}
+
+bool SVSViewerState::parse_vector3(std::vector<std::string> &parts, Zeni::Point3f &vert)
+{
+	if (parts.size() != 3)
+		return false;
+	
+	std::string test1 = parts[0];
+	std::string test2 = parts[1];
+	std::string test3 = parts[2];
+	
+	if (test1.size() > 1 && test1[0] == '-')
+		test1 = test1.substr(1);
+	
+	if (test2.size() > 1 && test2[0] == '-')
+		test2 = test2.substr(1);
+	
+	if (test3.size() > 1 && test3[0] == '-')
+		test3 = test3.substr(1);
+	
+	if (!(test1.find_first_not_of( "0123456789." ) == std::string::npos) ||
+		!(test2.find_first_not_of( "0123456789." ) == std::string::npos) ||
+		!(test3.find_first_not_of( "0123456789." ) == std::string::npos))
+		return false;
+	
+	if (std::count(test1.begin(), test1.end(), '.') > 1 ||
+		std::count(test2.begin(), test2.end(), '.') > 1 ||
+		std::count(test3.begin(), test3.end(), '.') > 1)
+		return false;
+	
+	char *end;
+	vert.x = (float)strtod(parts[0].c_str(), &end);
+	if (*end != '\0')
+		return false;
+	
+	vert.y = (float)strtod(parts[1].c_str(), &end);
+	if (*end != '\0')
+		return false;
+	
+	vert.z = (float)strtod(parts[2].c_str(), &end);
+	if (*end != '\0')
+		return false;
+	
+	return true;
 }
 
 void SVSViewerState::on_push() {
@@ -475,7 +647,7 @@ void SVSViewerState::render()
 		if (scenes.size() > 0)
 		{
 			SDL_mutexP(mu);
-			scenes[0].render();
+			scenes[0]->render();
 			SDL_mutexV(mu);
 		}
 
@@ -486,7 +658,7 @@ void SVSViewerState::render()
 		if (scenes.size() > 0)
 		{
 			SDL_mutexP(mu);
-			scenes[0].render_wireframe();
+			scenes[0]->render_wireframe();
 			SDL_mutexV(mu);
 		}
 	}
@@ -496,7 +668,7 @@ void SVSViewerState::render()
 		if (scenes.size() > 0)
 		{
 			SDL_mutexP(mu);
-			scenes[0].render();
+			scenes[0]->render();
 			SDL_mutexV(mu);
 		}
 	}

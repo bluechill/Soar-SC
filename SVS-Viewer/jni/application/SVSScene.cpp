@@ -68,11 +68,13 @@ SVSObject* SVSScene::find_object_in_objects(std::vector<SVSObject*> &objects, st
 		{
 			std::vector<SVSObject*> &children = objects[i]->getChildren();
 
-			return find_object_in_objects(children, name);
+			SVSObject* temp = find_object_in_objects(children, name);
+			if (temp != nullptr)
+				return temp;
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 bool SVSScene::add_object(std::string name, std::string parent, std::vector<Zeni::Point3f> vertices, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale)

@@ -268,7 +268,7 @@ void Soar_Unit::update()
 
 	pos.x = ((float)unit->getLeft()/32.0f);
 	pos.y = Terrain::flip_one_d_point(((float)unit->getTop() + size->y)/32.0f, false);
-	if (abs(this->pos->x - pos.x) > 0.1f || abs(this->pos->y - pos.y) > 0.1f)
+	if (abs(this->pos->x - pos.x) > 0.5f || abs(this->pos->y - pos.y) > 0.5f)
 	{
 		this->pos->x = pos.x;
 		this->pos->y = pos.y;

@@ -21,7 +21,7 @@ class SVSViewerState : public Zeni::Gamestate_Base
 {
 	friend int thread_runner(void* viewer);
 public:
-	SVSViewerState(SVSSocket::socket_type type);
+	SVSViewerState(Uint16 port);
 	~SVSViewerState();
 	
 	bool reader_function();
@@ -51,7 +51,7 @@ private:
 	
 	SDL_Thread* reader_thread;
 	
-	std::vector<SVSScene> scenes;
+	std::vector<SVSScene*> scenes;
 	
 	Zeni::Camera camera;
 	
@@ -82,6 +82,10 @@ private:
 	bool mouse_grabbed;
 
 	Zeni::Point3f backup_speed;
+
+	bool process_geometry_command(SVSScene* scene, std::vector<std::string> command);
+	bool parse_verts(std::vector<std::string> &parts, std::vector<Zeni::Point3f> &verts);
+	bool parse_vector3(std::vector<std::string> &parts, Zeni::Point3f &vert);
 };
 
 #endif
