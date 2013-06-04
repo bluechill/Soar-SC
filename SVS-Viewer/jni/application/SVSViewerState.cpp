@@ -635,7 +635,7 @@ void SVSViewerState::render()
 	if (grid)
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
-		draw_grid(0.0f, 0.0f, 256/4, 256/4, SVSObject::global_scale * 4, SVSObject::global_scale * 4);
+		draw_grid(0.0f, 0.0f, 64, 64, 1.0f, 1.0f);
 	}
 
 	if (wireframe)

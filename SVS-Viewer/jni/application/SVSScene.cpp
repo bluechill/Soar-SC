@@ -21,7 +21,7 @@ SVSScene::SVSScene(const SVSScene &source)
 {
 	this->scene_name = source.scene_name;
 
-	this->objects.clear();
+	objects.clear();
 
 	for (unsigned int i = 0;i < source.objects.size();i++)
 		this->objects.push_back(new SVSObject(*source.objects[i]));
@@ -34,7 +34,7 @@ SVSScene& SVSScene::operator=(const SVSScene& source)
 
 	this->scene_name = source.scene_name;
 
-	this->objects.clear();
+	objects.clear();
 
 	for (unsigned int i = 0;i < source.objects.size();i++)
 		this->objects.push_back(new SVSObject(*source.objects[i]));
@@ -50,7 +50,6 @@ SVSScene::~SVSScene()
 
 void SVSScene::clear_objects()
 {
-
 	objects.clear();
 
 	float scale = SVSObject::global_scale;
@@ -79,6 +78,9 @@ SVSObject* SVSScene::find_object_in_objects(std::vector<SVSObject*> &objects, st
 
 bool SVSScene::add_object(std::string name, std::string parent, std::vector<Zeni::Point3f> vertices, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale)
 {
+	if (parent == "" && name != "world")
+		parent = "world";
+
 	if (parent != "")
 	{
 		if (find_object_in_objects(objects, name))

@@ -13,7 +13,7 @@
 #include <fstream>
 #include <sstream>
 
-const float SVSObject::global_scale = 25.0f;
+const float SVSObject::global_scale = 1.0f;
 
 SVSObject::SVSObject(std::string name, const std::vector<Zeni::Point3f> verts, Zeni::Point3f position, Zeni::Quaternion rotation, Zeni::Point3f scale)
 {	
